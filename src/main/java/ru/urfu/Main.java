@@ -12,10 +12,13 @@ import java.util.List;
  * Основной класс для запуска приложения
  */
 public class Main {
-    private static void startTgBot(){
+    /** Запускает Telegram бота с переданным логическим ядром
+     * @param logicCore логическое ядро (обрабатывает постпающие сообщения)
+     */
+    private static void startTelegramBot(LogicCore logicCore) {
         String telegramBotToken = System.getenv("TGMATHMECHBOT_TOKEN");
         if (telegramBotToken == null) {
-            System.out.println("Couldn't retrieve bot token from TGMATHMECHBOT_TOKEN");
+            System.out.println("Couldn't retrieve bot token from MATHMECHBOT_TOKEN");
             return;
         }
 
@@ -55,7 +58,8 @@ public class Main {
         System.out.println("ds bot got created!");
     }
     public static void main(String[] args) {
-        startTgBot();
+        final LogicCore logicCore = new EchoBotCore();
+        startTelegramBot(logicCore);
         startDsBot();
     }
 }
