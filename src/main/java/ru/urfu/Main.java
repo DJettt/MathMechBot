@@ -30,15 +30,17 @@ public class Main {
             }
         }).start();
     }
-    private static void startDsBot(){
-        EchoBotDiscord bot = new EchoBotDiscord();
 
+
+    private static void startDsBot(){
         String discordBotToken = System.getenv("DISCORDBOT_TOKEN");
         if (discordBotToken == null) {
             System.out.println("Couldn't retrieve bot token from DISCORDBOT_TOKEN");
             return;
         }
+        EchoBotDiscord bot = new EchoBotDiscord();
 
+        //TODO: проверить на возникновение исключений
         JDABuilder.createLight(discordBotToken)
                 .addEventListeners(bot)
                 .enableIntents(
