@@ -6,6 +6,9 @@ import org.telegram.telegrambots.longpolling.TelegramBotsLongPollingApplication;
  * Основной класс для запуска приложения
  */
 public class Main {
+    /** Запускает Telegram бота с переданным логическим ядром
+     * @param logicCore логическое ядро (обрабатывает постпающие сообщения)
+     */
     private static void startTelegramBot(LogicCore logicCore) {
         String botToken = System.getenv("MATHMECHBOT_TOKEN");
         if (botToken == null) {

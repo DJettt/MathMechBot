@@ -8,6 +8,9 @@ public class Message {
         text = messageText;
     }
 
+    /** Геттер поля text
+     * @return содержимое поля text
+     */
     public String getText() {
         return text;
     }

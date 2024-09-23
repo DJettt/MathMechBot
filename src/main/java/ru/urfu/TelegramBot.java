@@ -25,6 +25,11 @@ public class TelegramBot implements LongPollingSingleThreadUpdateConsumer {
         return new Message(message_text);
     }
 
+    /** Превращает наш Message в телеграмный SendMessage
+     * @param msg объект нашего универсального сообщения
+     * @param chatId id чата, куда надо отправить сообщение
+     * @return объект SendMessage, который можно отправлять
+     */
     private SendMessage createFromMessage(Message msg, long chatId) {
         return SendMessage
                 .builder()
