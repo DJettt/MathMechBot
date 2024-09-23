@@ -20,7 +20,7 @@ public class TelegramBot implements LongPollingSingleThreadUpdateConsumer {
      * @param message объект сообщения из TelegramBots
      * @return объект нашего универсального сообщения
      */
-    private Message createFromUpdate(org.telegram.telegrambots.meta.api.objects.message.Message message) {
+    private Message createFromTelegramMessage(org.telegram.telegrambots.meta.api.objects.message.Message message) {
         String message_text = message.getText();
         return new Message(message_text);
     }
@@ -42,7 +42,7 @@ public class TelegramBot implements LongPollingSingleThreadUpdateConsumer {
     public void consume(Update update) {
         final long chatId = update.getMessage().getChatId();
 
-        final Message response = logicCore.processMessage(createFromUpdate(update.getMessage()));
+        final Message response = logicCore.processMessage(createFromTelegramMessage(update.getMessage()));
         if (response == null) {
             return;
         }
