@@ -18,13 +18,13 @@ public class Main {
     private static void startTelegramBot(LogicCore logicCore) {
         String telegramBotToken = System.getenv("TGMATHMECHBOT_TOKEN");
         if (telegramBotToken == null) {
-            System.out.println("Couldn't retrieve bot token from MATHMECHBOT_TOKEN");
+            System.out.println("Couldn't retrieve bot token from TGMATHMECHBOT_TOKEN");
             return;
         }
 
         new Thread(() -> {
             try (TelegramBotsLongPollingApplication botsApplication = new TelegramBotsLongPollingApplication()) {
-                botsApplication.registerBot(telegramBotToken, new EchoBot(telegramBotToken));
+                botsApplication.registerBot(telegramBotToken, new TelegramBot(telegramBotToken, logicCore));
                 System.out.println("EchoBot successfully started!");
 
                 Thread.currentThread().join();
@@ -35,13 +35,13 @@ public class Main {
     }
 
 
-    private static void startDsBot(){
+    private static void startDiscordBot(LogicCore logicCore){
         String discordBotToken = System.getenv("DISCORDBOT_TOKEN");
         if (discordBotToken == null) {
             System.out.println("Couldn't retrieve bot token from DISCORDBOT_TOKEN");
             return;
         }
-        EchoBotDiscord bot = new EchoBotDiscord();
+        DiscordBot bot = new DiscordBot(discordBotToken, logicCore);
 
         //TODO: проверить на возникновение исключений
         JDABuilder.createLight(discordBotToken)
@@ -60,6 +60,6 @@ public class Main {
     public static void main(String[] args) {
         final LogicCore logicCore = new EchoBotCore();
         startTelegramBot(logicCore);
-        startDsBot();
+        startDiscordBot(logicCore);
     }
 }
