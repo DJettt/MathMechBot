@@ -25,7 +25,7 @@ public class Main {
         new Thread(() -> {
             try (TelegramBotsLongPollingApplication botsApplication = new TelegramBotsLongPollingApplication()) {
                 botsApplication.registerBot(telegramBotToken, new TelegramBot(telegramBotToken, logicCore));
-                System.out.println("EchoBot successfully started!");
+                System.out.println("Telegram bot successfully started!");
 
                 Thread.currentThread().join();
             } catch (Exception e) {
@@ -55,7 +55,7 @@ public class Main {
                 .setStatus(OnlineStatus.ONLINE)
                 .setActivity(Activity.watching("Klepinin's lections"))
                 .build();
-        System.out.println("ds bot got created!");
+        System.out.println("Discord bot successfully started!");
     }
     public static void main(String[] args) {
         final LogicCore logicCore = new EchoBotCore();
