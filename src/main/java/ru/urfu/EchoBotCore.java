@@ -1,5 +1,11 @@
 package ru.urfu;
 
+
+/**
+ * Логическое ядро эхо-бота.
+ * Отправляет назад несколько изменённое сообщение пользователя).
+ * Обрабатывает команды /help и /start, отвечая на них справкой.
+ */
 public class EchoBotCore extends LogicCore {
 
     public EchoBotCore() {}
