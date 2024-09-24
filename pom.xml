@@ -18,10 +18,12 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <junit-jupiter.version>5.9.2</junit-jupiter.version>
+        <assertj.version>3.24.2</assertj.version>
 
         <!--Эта версия используется в двух библиотеках,
             но мы её определили в одном месте!!! -->
         <junit-platform.version>1.9.2</junit-platform.version>
+        <telegrambots.version>7.10.0</telegrambots.version>
 
         <commons-lang3.version>3.12.0</commons-lang3.version>
         <commons-collections4.version>4.4</commons-collections4.version>
@@ -70,6 +72,37 @@
             <version>${junit-platform.version}</version>
             <scope>test</scope>
         </dependency>
+
+        <!-- AssertJ -->
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>${assertj.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- TelegramBots -->
+        <!-- https://github.com/rubenlagus/TelegramBots -->
+        <!-- https://mvnrepository.com/artifact/org.telegram/telegrambots-longpolling -->
+        <dependency>
+            <groupId>org.telegram</groupId>
+            <artifactId>telegrambots-longpolling</artifactId>
+            <version>${telegrambots.version}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.telegram/telegrambots-client -->
+        <dependency>
+            <groupId>org.telegram</groupId>
+            <artifactId>telegrambots-client</artifactId>
+            <version>${telegrambots.version}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/net.dv8tion/JDA -->
+        <dependency>
+            <groupId>net.dv8tion</groupId>
+            <artifactId>JDA</artifactId>
+            <version>5.1.1</version>
+        </dependency>
+
     </dependencies>
+
 
 </project>
