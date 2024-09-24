@@ -2,8 +2,7 @@ package ru.urfu;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import org.junit.jupiter.api.Assertions;
 
 /**
  * Тесты логики эхо-бота
@@ -23,7 +22,7 @@ public final class EchoBotCoreTest {
     @DisplayName("Проверка команды /help")
     void helpCommandTest() {
         final Message response = new EchoBotCore().processMessage(new Message("/help"));
-        assertThat(response.getText()).isEqualTo(HELP_MESSAGE_TEXT);
+        Assertions.assertEquals(HELP_MESSAGE_TEXT, response.getText());
     }
 
 
@@ -34,7 +33,7 @@ public final class EchoBotCoreTest {
     @DisplayName("Проверка команды /start")
     void startCommandTest() {
         final Message response = new EchoBotCore().processMessage(new Message("/start"));
-        assertThat(response.getText()).isEqualTo(HELP_MESSAGE_TEXT);
+        Assertions.assertEquals(HELP_MESSAGE_TEXT, response.getText());
     }
 
     /**
@@ -45,7 +44,7 @@ public final class EchoBotCoreTest {
     void someTextTest() {
         final String someText = "Lorem Ipsum is simply dummy text of the printing and typesetting industry.";
         final Message response = new EchoBotCore().processMessage(new Message(someText));
-        assertThat(response.getText()).isEqualTo("Ты написал: " + someText);
+        Assertions.assertEquals("Ты написал: " + someText, response.getText());
     }
 
     /**
@@ -55,6 +54,6 @@ public final class EchoBotCoreTest {
     @DisplayName("Сообщение без текста")
     void textIsNull() {
         final Message response = new EchoBotCore().processMessage(new Message(null));
-        assertThat(response).isEqualTo(null);
+        Assertions.assertNull(response);
     }
 }
