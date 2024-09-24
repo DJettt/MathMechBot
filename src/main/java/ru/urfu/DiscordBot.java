@@ -1,21 +1,48 @@
 package ru.urfu;
 
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.OnlineStatus;
+import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.requests.GatewayIntent;
+
+import java.util.List;
 
 /**
  * Простой дискорд-бот, который принимает текстовые сообщения и составляет ответ
  * в зависимости от переданного ему при создании логического ядра (logicCore)
  */
-public class DiscordBot extends ListenerAdapter {
+public class DiscordBot extends ListenerAdapter implements Bot {
     private final LogicCore logicCore;
-
+    private final String botToken;
+    private JDA jda;
     /**
      * @param token токен Discord бота
      * @param core логическое ядро, обрабатывающее сообщения
      */
     public DiscordBot(String token, LogicCore core){
         logicCore = core;
+        botToken = token;
+    }
+
+    public void start() {
+        //TODO: проверить на возникновение исключений
+        jda = JDABuilder.createLight(botToken)
+                .addEventListeners(this)
+                .enableIntents(
+                        List.of(
+                                GatewayIntent.GUILD_MESSAGES,
+                                GatewayIntent.MESSAGE_CONTENT
+                        )
+                )
+                .setStatus(OnlineStatus.ONLINE)
+                .setActivity(Activity.watching("Klepinin's lections"))
+                .build();
+
+        System.out.println("Discord bot successfully started!");
     }
 
     /**
@@ -27,15 +54,23 @@ public class DiscordBot extends ListenerAdapter {
     }
 
     @Override
+    public void sendMessage(Message message, Long id) {
+        final TextChannel textChannel = jda.getTextChannelById(id);
+        System.out.println(id);
+        if (textChannel != null) {
+            textChannel.sendMessage(message.getText()).queue();
+        }
+    }
+
+
+    @Override
     public void onMessageReceived(MessageReceivedEvent event){
         if (event.getAuthor().isBot()){
             return;
         }
         Message msg = createFromDiscordMessage(event);
         final Message response = logicCore.processMessage(msg);
+        sendMessage(response, event.getChannel().getIdLong());
 
-        event.getChannel()
-                .sendMessage(response.getText())
-                .queue();
     }
 }

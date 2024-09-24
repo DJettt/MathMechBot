@@ -1,6 +1,7 @@
 package ru.urfu;
 
 import org.telegram.telegrambots.client.okhttp.OkHttpTelegramClient;
+import org.telegram.telegrambots.longpolling.TelegramBotsLongPollingApplication;
 import org.telegram.telegrambots.longpolling.util.LongPollingSingleThreadUpdateConsumer;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -12,13 +13,38 @@ import org.telegram.telegrambots.meta.generics.TelegramClient;
  * Простой телеграм-бот, который принимает текстовые сообщения и составляет ответ
  * в зависимости от переданного ему при создании логического ядра (logicCore)
  */
-public class TelegramBot implements LongPollingSingleThreadUpdateConsumer {
+public class TelegramBot implements LongPollingSingleThreadUpdateConsumer, Bot {
     private final TelegramClient telegramClient;
     private final LogicCore logicCore;
+    private final String botToken;
+    private final TelegramBotsLongPollingApplication botsApplication;
 
-    public TelegramBot(String botToken, LogicCore core) {
-        telegramClient = new OkHttpTelegramClient(botToken);
+    @Override
+    public void start(){
+        new Thread(() -> {
+            try {
+                botsApplication.registerBot(botToken, this);
+                System.out.println("Telegram bot successfully started!");
+
+                Thread.currentThread().join();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+    @Override
+    public void sendMessage(Message msg, Long id){
+        try {
+            telegramClient.execute(createFromMessage(msg, id));
+        } catch (TelegramApiException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public TelegramBot(String token, LogicCore core) {
+        telegramClient = new OkHttpTelegramClient(token);
         logicCore = core;
+        botToken = token;
+        botsApplication = new TelegramBotsLongPollingApplication();
     }
 
     /**
@@ -54,11 +80,6 @@ public class TelegramBot implements LongPollingSingleThreadUpdateConsumer {
         if (response == null) {
             return;
         }
-
-        try {
-            telegramClient.execute(createFromMessage(response, chatId));
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
-        }
+        sendMessage(response, chatId);
     }
 }
