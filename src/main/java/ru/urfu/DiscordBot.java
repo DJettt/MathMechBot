@@ -4,6 +4,7 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.entities.channel.concrete.PrivateChannel;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -28,6 +29,7 @@ public class DiscordBot extends ListenerAdapter implements Bot {
         botToken = token;
     }
 
+    @Override
     public void start() {
         //TODO: проверить на возникновение исключений
         jda = JDABuilder.createLight(botToken)
@@ -46,13 +48,12 @@ public class DiscordBot extends ListenerAdapter implements Bot {
     }
 
     /**
-     * @param event ивент сообщения
-     * @return тоже сообщение в формате Message для общения с ядром
+     *
+     * Для бота сообщение в текстовом канале НА СЕРВЕРЕ используется TextChannel
+     * а для использования в ЛИЧНОМ СООБЩЕНИИ используется PrivateChannel
+     * (я до конца не разобрался почему именно сейчас это работает только так,
+     * так как до этого мы использовали только TextChannel и все работало корректно и там и там)
      */
-    private Message createFromDiscordMessage(MessageReceivedEvent event){
-        return new Message(event.getMessage().getContentDisplay());
-    }
-
     @Override
     public void sendMessage(Message message, Long id) {
         final TextChannel textChannel = jda.getTextChannelById(id);
@@ -60,6 +61,20 @@ public class DiscordBot extends ListenerAdapter implements Bot {
         if (textChannel != null) {
             textChannel.sendMessage(message.getText()).queue();
         }
+        else {
+            final PrivateChannel privateChannel = jda.getPrivateChannelById(id);
+            if (privateChannel != null) {
+                privateChannel.sendMessage(message.getText()).queue();
+            }
+        }
+    }
+
+    /**
+     * @param event ивент сообщения
+     * @return то же сообщение в формате Message для общения с ядром
+     */
+    private Message createFromDiscordMessage(MessageReceivedEvent event){
+        return new Message(event.getMessage().getContentDisplay());
     }
 
 
