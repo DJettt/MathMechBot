@@ -18,10 +18,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <junit-jupiter.version>5.9.2</junit-jupiter.version>
-        <assertj.version>3.24.2</assertj.version>
-
-        <!--Эта версия используется в двух библиотеках,
-            но мы её определили в одном месте!!! -->
         <junit-platform.version>1.9.2</junit-platform.version>
         <telegrambots.version>7.10.0</telegrambots.version>
 
@@ -31,8 +27,6 @@
     </properties>
 
     <dependencies>
-        <!-- Тут определяются подключаемые библиотеки -->
-
         <!-- Apache Commons (очень полезные библиотеки) -->
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -50,7 +44,7 @@
             <version>${commons-io.version}</version>
         </dependency>
 
-        <!-- JUnit 5-->
+        <!-- JUnit 5 -->
         <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -73,15 +67,7 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- AssertJ -->
-        <dependency>
-            <groupId>org.assertj</groupId>
-            <artifactId>assertj-core</artifactId>
-            <version>${assertj.version}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- TelegramBots -->
+        <!-- Telegram -->
         <!-- https://github.com/rubenlagus/TelegramBots -->
         <!-- https://mvnrepository.com/artifact/org.telegram/telegrambots-longpolling -->
         <dependency>
@@ -95,6 +81,9 @@
             <artifactId>telegrambots-client</artifactId>
             <version>${telegrambots.version}</version>
         </dependency>
+
+        <!-- Discord -->
+        <!-- https://github.com/discord-jda/JDA -->
         <!-- https://mvnrepository.com/artifact/net.dv8tion/JDA -->
         <dependency>
             <groupId>net.dv8tion</groupId>
@@ -103,6 +92,5 @@
         </dependency>
 
     </dependencies>
-
 
 </project>

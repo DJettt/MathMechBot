@@ -1,9 +1,16 @@
 package ru.urfu;
 
+
+/**
+ * Логическое ядро эхо-бота.
+ * Отправляет назад несколько изменённое сообщение пользователя).
+ * Обрабатывает команды /help и /start, отвечая на них справкой.
+ */
 public class EchoBotCore extends LogicCore {
 
     public EchoBotCore() {}
 
+    @Override
     public Message processMessage(Message msg) {
         if (msg.getText() != null) {
             return switch (msg.getText()) {
@@ -15,10 +22,18 @@ public class EchoBotCore extends LogicCore {
         return null;
     }
 
-    private Message defaultHandler(Message inputMeassage) {
-        return new Message("Ты написал: " + inputMeassage.getText());
+    /**
+     * @param inputMessage входящее сообщение
+     * @return ответ на сообщение
+     */
+    private Message defaultHandler(Message inputMessage) {
+        return new Message("Ты написал: " + inputMessage.getText());
     }
 
+    /**
+     * @param inputMessage входящее сообщение с командой /help
+     * @return ответ на сообщение (содержит справку)
+     */
     private Message helpCommandHandler(Message inputMessage) {
         String HELP_MESSAGE = """
                 Привет, я эхо бот! Сейчас я расскажу как ты можешь со мной взаимодействовать.
