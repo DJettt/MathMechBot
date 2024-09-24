@@ -5,31 +5,34 @@ import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import org.telegram.telegrambots.longpolling.TelegramBotsLongPollingApplication;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.List;
 
 /**
  * Основной класс для запуска приложения
  */
 public class Main {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
+
     /** Запускает Telegram бота с переданным логическим ядром
      * @param logicCore логическое ядро (обрабатывает постпающие сообщения)
      */
     private static void startTelegramBot(LogicCore logicCore) {
         String telegramBotToken = System.getenv("TGMATHMECHBOT_TOKEN");
         if (telegramBotToken == null) {
-            System.out.println("Couldn't retrieve bot token from TGMATHMECHBOT_TOKEN");
+            LOGGER.error("Couldn't retrieve bot token from TGMATHMECHBOT_TOKEN");
             return;
         }
 
         new Thread(() -> {
             try (TelegramBotsLongPollingApplication botsApplication = new TelegramBotsLongPollingApplication()) {
                 botsApplication.registerBot(telegramBotToken, new TelegramBot(telegramBotToken, logicCore));
-                System.out.println("Telegram bot successfully started!");
+                LOGGER.info("Telegram bot successfully started!");
 
                 Thread.currentThread().join();
             } catch (Exception e) {
-                e.printStackTrace();
+                LOGGER.error("Exception during bot registration.", e);
             }
         }).start();
     }
@@ -38,7 +41,7 @@ public class Main {
     private static void startDiscordBot(LogicCore logicCore){
         String discordBotToken = System.getenv("DISCORDBOT_TOKEN");
         if (discordBotToken == null) {
-            System.out.println("Couldn't retrieve bot token from DISCORDBOT_TOKEN");
+            LOGGER.error("Couldn't retrieve bot token from DISCORDBOT_TOKEN");
             return;
         }
         DiscordBot bot = new DiscordBot(discordBotToken, logicCore);
@@ -55,7 +58,7 @@ public class Main {
                 .setStatus(OnlineStatus.ONLINE)
                 .setActivity(Activity.watching("Klepinin's lections"))
                 .build();
-        System.out.println("Discord bot successfully started!");
+        LOGGER.info("Discord bot successfully started!");
     }
     public static void main(String[] args) {
         final LogicCore logicCore = new EchoBotCore();
