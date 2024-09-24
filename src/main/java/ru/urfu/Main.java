@@ -12,7 +12,8 @@ import java.util.List;
  * Основной класс для запуска приложения
  */
 public class Main {
-    /** Запускает Telegram бота с переданным логическим ядром
+    /**
+     * Запускает Telegram бота с переданным логическим ядром
      * @param logicCore логическое ядро (обрабатывает постпающие сообщения)
      */
     private static void startTelegramBot(LogicCore logicCore) {
@@ -34,8 +35,11 @@ public class Main {
         }).start();
     }
 
-
-    private static void startDiscordBot(LogicCore logicCore){
+    /**
+     * Запускает Discord бота с переданным логическим ядром
+     * @param logicCore логическое ядро (обрабатывает постпающие сообщения)
+     */
+    private static void startDiscordBot(LogicCore logicCore) {
         String discordBotToken = System.getenv("DISCORDBOT_TOKEN");
         if (discordBotToken == null) {
             System.out.println("Couldn't retrieve bot token from DISCORDBOT_TOKEN");
@@ -57,6 +61,7 @@ public class Main {
                 .build();
         System.out.println("Discord bot successfully started!");
     }
+
     public static void main(String[] args) {
         final LogicCore logicCore = new EchoBotCore();
         startTelegramBot(logicCore);

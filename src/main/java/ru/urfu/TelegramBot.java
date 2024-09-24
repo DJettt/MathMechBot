@@ -21,7 +21,8 @@ public class TelegramBot implements LongPollingSingleThreadUpdateConsumer {
         logicCore = core;
     }
 
-    /** Переводит Telegram-сообщения в наши сообщения
+    /**
+     * Переводит Telegram-сообщения в наши сообщения
      * @param message объект сообщения из TelegramBots
      * @return объект нашего универсального сообщения
      */
@@ -30,7 +31,8 @@ public class TelegramBot implements LongPollingSingleThreadUpdateConsumer {
         return new Message(message_text);
     }
 
-    /** Превращает наш Message в телеграмный SendMessage
+    /**
+     * Превращает наш Message в телеграмный SendMessage
      * @param msg объект нашего универсального сообщения
      * @param chatId id чата, куда надо отправить сообщение
      * @return объект SendMessage, который можно отправлять
