@@ -19,6 +19,13 @@ public class TelegramBot implements LongPollingSingleThreadUpdateConsumer, Bot {
     private final String botToken;
     private final TelegramBotsLongPollingApplication botsApplication;
 
+    public TelegramBot(String token, LogicCore core) {
+        telegramClient = new OkHttpTelegramClient(token);
+        logicCore = core;
+        botToken = token;
+        botsApplication = new TelegramBotsLongPollingApplication();
+    }
+
     @Override
     public void start(){
         new Thread(() -> {
@@ -32,6 +39,7 @@ public class TelegramBot implements LongPollingSingleThreadUpdateConsumer, Bot {
             }
         }).start();
     }
+
     @Override
     public void sendMessage(Message msg, Long id){
         try {
@@ -39,22 +47,6 @@ public class TelegramBot implements LongPollingSingleThreadUpdateConsumer, Bot {
         } catch (TelegramApiException e) {
             throw new RuntimeException(e);
         }
-    }
-    public TelegramBot(String token, LogicCore core) {
-        telegramClient = new OkHttpTelegramClient(token);
-        logicCore = core;
-        botToken = token;
-        botsApplication = new TelegramBotsLongPollingApplication();
-    }
-
-    /**
-     * Переводит Telegram-сообщения в наши сообщения
-     * @param message объект сообщения из TelegramBots
-     * @return объект нашего универсального сообщения
-     */
-    private Message createFromTelegramMessage(org.telegram.telegrambots.meta.api.objects.message.Message message) {
-        String message_text = message.getText();
-        return new Message(message_text);
     }
 
     /**
@@ -69,6 +61,16 @@ public class TelegramBot implements LongPollingSingleThreadUpdateConsumer, Bot {
                 .chatId(chatId)
                 .text(msg.getText())
                 .build();
+    }
+
+    /**
+     * Переводит Telegram-сообщения в наши сообщения
+     * @param message объект сообщения из TelegramBots
+     * @return объект нашего универсального сообщения
+     */
+    private Message createFromTelegramMessage(org.telegram.telegrambots.meta.api.objects.message.Message message) {
+        String message_text = message.getText();
+        return new Message(message_text);
     }
 
     @Override

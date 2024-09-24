@@ -10,15 +10,15 @@ public class Main {
      * @param logicCore логическое ядро (обрабатывает постпающие сообщения)
      */
     private static void startBot(LogicCore logicCore, String env, Class <? extends Bot> botClass){
-        String telegramBotToken = System.getenv(env);
-        if (telegramBotToken == null) {
+        String botToken = System.getenv(env);
+        if (botToken == null) {
             System.out.println("Couldn't retrieve bot token from " + env);
             return;
         }
         try {
             Constructor<? extends Bot> constructor = botClass.getConstructor(String.class, LogicCore.class);
-            Bot myBot = constructor.newInstance(telegramBotToken, logicCore);
-            myBot.start();
+            Bot bot = constructor.newInstance(botToken, logicCore);
+            bot.start();
         } catch (Exception e) {
             // Handle the exception
             e.printStackTrace();
