@@ -7,7 +7,7 @@ import java.lang.reflect.Constructor;
 public class Main {
     /**
      * Запускает Telegram бота с переданным логическим ядром
-     * @param logicCore логическое ядро (обрабатывает постпающие сообщения)
+     * @param logicCore логическое ядро (обрабатывает поступающие сообщения)
      */
     private static void startBot(LogicCore logicCore, String env, Class <? extends Bot> botClass){
         String botToken = System.getenv(env);

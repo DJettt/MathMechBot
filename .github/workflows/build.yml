@@ -1,0 +1,50 @@
+name: Build
+
+on:
+  workflow_dispatch:
+  pull_request:
+
+jobs:
+  # Builds project
+  build:
+    name: Build
+    runs-on: ubuntu-24.04
+
+    permissions:
+      contents: read
+      pull-requests: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Java with Maven
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+          cache: 'maven'
+
+      # Run `mvn package` command
+      - name: Build Maven package
+        run: mvn package
+
+  # Checks code's styles
+  checkstyle:
+    name: Check style
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Java with Maven
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+          cache: 'maven'
+
+      # Run mvn checkstyle:check (checks code style)
+      - name: Run checkstyle plugin
+        run: mvn checkstyle:check

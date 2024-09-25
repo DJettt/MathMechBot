@@ -27,7 +27,7 @@ public class TelegramBot implements LongPollingSingleThreadUpdateConsumer, Bot {
     }
 
     @Override
-    public void start(){
+    public void start() {
         new Thread(() -> {
             try {
                 botsApplication.registerBot(botToken, this);
@@ -41,7 +41,7 @@ public class TelegramBot implements LongPollingSingleThreadUpdateConsumer, Bot {
     }
 
     @Override
-    public void sendMessage(Message msg, Long id){
+    public void sendMessage(Message msg, Long id) {
         try {
             telegramClient.execute(createFromMessage(msg, id));
         } catch (TelegramApiException e) {
@@ -69,8 +69,8 @@ public class TelegramBot implements LongPollingSingleThreadUpdateConsumer, Bot {
      * @return объект нашего универсального сообщения
      */
     private Message createFromTelegramMessage(org.telegram.telegrambots.meta.api.objects.message.Message message) {
-        String message_text = message.getText();
-        return new Message(message_text);
+        String messageText = message.getText();
+        return new Message(messageText);
     }
 
     @Override

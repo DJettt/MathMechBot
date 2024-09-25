@@ -19,15 +19,14 @@
 
         <junit-jupiter.version>5.9.2</junit-jupiter.version>
         <assertj.version>3.24.2</assertj.version>
-
-        <!--Эта версия используется в двух библиотеках,
-            но мы её определили в одном месте!!! -->
         <junit-platform.version>1.9.2</junit-platform.version>
         <telegrambots.version>7.10.0</telegrambots.version>
 
         <commons-lang3.version>3.12.0</commons-lang3.version>
         <commons-collections4.version>4.4</commons-collections4.version>
         <commons-io.version>2.11.0</commons-io.version>
+
+        <maven-checkstyle-plugin.version>3.5.0</maven-checkstyle-plugin.version>
     </properties>
 
     <dependencies>
@@ -104,5 +103,29 @@
 
     </dependencies>
 
+    <build>
+        <plugins>
+            <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-checkstyle-plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>${maven-checkstyle-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <configLocation>checkstyle.xml</configLocation>
+                    <consoleOutput>true</consoleOutput>
+                    <logViolationsToConsole>true</logViolationsToConsole>
+                    <failsOnError>true</failsOnError>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

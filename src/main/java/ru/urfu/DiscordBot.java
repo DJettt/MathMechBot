@@ -1,5 +1,6 @@
 package ru.urfu;
 
+import java.util.List;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
@@ -10,8 +11,6 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 
-import java.util.List;
-
 /**
  * Простой дискорд-бот, который принимает текстовые сообщения и составляет ответ
  * в зависимости от переданного ему при создании логического ядра (logicCore)
@@ -20,11 +19,12 @@ public class DiscordBot extends ListenerAdapter implements Bot {
     private final LogicCore logicCore;
     private final String botToken;
     private JDA jda;
-    /**
+
+    /** Конструктор
      * @param token токен Discord бота
      * @param core логическое ядро, обрабатывающее сообщения
      */
-    public DiscordBot(String token, LogicCore core){
+    public DiscordBot(String token, LogicCore core) {
         logicCore = core;
         botToken = token;
     }
@@ -60,8 +60,7 @@ public class DiscordBot extends ListenerAdapter implements Bot {
         System.out.println(id);
         if (textChannel != null) {
             textChannel.sendMessage(message.getText()).queue();
-        }
-        else {
+        } else {
             final PrivateChannel privateChannel = jda.getPrivateChannelById(id);
             if (privateChannel != null) {
                 privateChannel.sendMessage(message.getText()).queue();
@@ -69,18 +68,18 @@ public class DiscordBot extends ListenerAdapter implements Bot {
         }
     }
 
-    /**
+    /** Создаёт объекты класса Message из дискордоских MessageReceivedEvent
      * @param event ивент сообщения
      * @return то же сообщение в формате Message для общения с ядром
      */
-    private Message createFromDiscordMessage(MessageReceivedEvent event){
+    private Message createFromDiscordMessage(MessageReceivedEvent event) {
         return new Message(event.getMessage().getContentDisplay());
     }
 
 
     @Override
-    public void onMessageReceived(MessageReceivedEvent event){
-        if (event.getAuthor().isBot()){
+    public void onMessageReceived(MessageReceivedEvent event) {
+        if (event.getAuthor().isBot()) {
             return;
         }
         Message msg = createFromDiscordMessage(event);

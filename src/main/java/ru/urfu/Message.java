@@ -7,7 +7,7 @@ public class Message {
     private final String text;
     // TODO: возможность обрабатывать всякие приложения типа фото, музыки и так далее.
 
-    /**
+    /** Конструктор
      * @param messageText текст сообщения
      */
     public Message(String messageText) {
