@@ -1,10 +1,15 @@
 package ru.urfu;
 
 import java.lang.reflect.Constructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Основной класс для запуска приложения
  */
 public class Main {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
+
     /**
      * Запускает Telegram бота с переданным логическим ядром
      * @param logicCore логическое ядро (обрабатывает постпающие сообщения)
@@ -12,7 +17,7 @@ public class Main {
     private static void startBot(LogicCore logicCore, String env, Class <? extends Bot> botClass){
         String botToken = System.getenv(env);
         if (botToken == null) {
-            System.out.println("Couldn't retrieve bot token from " + env);
+            LOGGER.error("Couldn't retrieve bot token from " + env);
             return;
         }
         try {
@@ -20,8 +25,7 @@ public class Main {
             Bot bot = constructor.newInstance(botToken, logicCore);
             bot.start();
         } catch (Exception e) {
-            // Handle the exception
-            e.printStackTrace();
+            LOGGER.error("Error during starting of the bot", e);
         }
     }
     public static void main(String[] args) {
