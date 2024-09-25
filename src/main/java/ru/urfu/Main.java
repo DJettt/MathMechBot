@@ -1,13 +1,6 @@
 package ru.urfu;
 
-import net.dv8tion.jda.api.JDABuilder;
-import net.dv8tion.jda.api.OnlineStatus;
-import net.dv8tion.jda.api.entities.Activity;
-import net.dv8tion.jda.api.requests.GatewayIntent;
-import org.telegram.telegrambots.longpolling.TelegramBotsLongPollingApplication;
-
-import java.util.List;
-
+import java.lang.reflect.Constructor;
 /**
  * Основной класс для запуска приложения
  */
@@ -16,55 +9,24 @@ public class Main {
      * Запускает Telegram бота с переданным логическим ядром
      * @param logicCore логическое ядро (обрабатывает постпающие сообщения)
      */
-    private static void startTelegramBot(LogicCore logicCore) {
-        String telegramBotToken = System.getenv("TGMATHMECHBOT_TOKEN");
-        if (telegramBotToken == null) {
-            System.out.println("Couldn't retrieve bot token from TGMATHMECHBOT_TOKEN");
+    private static void startBot(LogicCore logicCore, String env, Class <? extends Bot> botClass){
+        String botToken = System.getenv(env);
+        if (botToken == null) {
+            System.out.println("Couldn't retrieve bot token from " + env);
             return;
         }
-
-        new Thread(() -> {
-            try (TelegramBotsLongPollingApplication botsApplication = new TelegramBotsLongPollingApplication()) {
-                botsApplication.registerBot(telegramBotToken, new TelegramBot(telegramBotToken, logicCore));
-                System.out.println("Telegram bot successfully started!");
-
-                Thread.currentThread().join();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }).start();
-    }
-
-    /**
-     * Запускает Discord бота с переданным логическим ядром
-     * @param logicCore логическое ядро (обрабатывает постпающие сообщения)
-     */
-    private static void startDiscordBot(LogicCore logicCore) {
-        String discordBotToken = System.getenv("DISCORDBOT_TOKEN");
-        if (discordBotToken == null) {
-            System.out.println("Couldn't retrieve bot token from DISCORDBOT_TOKEN");
-            return;
+        try {
+            Constructor<? extends Bot> constructor = botClass.getConstructor(String.class, LogicCore.class);
+            Bot bot = constructor.newInstance(botToken, logicCore);
+            bot.start();
+        } catch (Exception e) {
+            // Handle the exception
+            e.printStackTrace();
         }
-        DiscordBot bot = new DiscordBot(discordBotToken, logicCore);
-
-        //TODO: проверить на возникновение исключений
-        JDABuilder.createLight(discordBotToken)
-                .addEventListeners(bot)
-                .enableIntents(
-                        List.of(
-                                GatewayIntent.GUILD_MESSAGES,
-                                GatewayIntent.MESSAGE_CONTENT
-                        )
-                )
-                .setStatus(OnlineStatus.ONLINE)
-                .setActivity(Activity.watching("Klepinin's lections"))
-                .build();
-        System.out.println("Discord bot successfully started!");
     }
-
     public static void main(String[] args) {
         final LogicCore logicCore = new EchoBotCore();
-        startTelegramBot(logicCore);
-        startDiscordBot(logicCore);
+        startBot(logicCore, "TGMATHMECHBOT_TOKEN", TelegramBot.class);
+        startBot(logicCore, "DISCORDBOT_TOKEN", DiscordBot.class);
     }
 }
