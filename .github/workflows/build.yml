@@ -7,7 +7,7 @@ on:
 jobs:
   # Builds project
   build:
-    name: Build
+    name: Build project
     runs-on: ubuntu-24.04
 
     permissions:
@@ -25,13 +25,36 @@ jobs:
           java-version: '21'
           cache: 'maven'
 
-      # Run `mvn package` command
-      - name: Build Maven package
+      - name: Build project
         run: mvn package
+
+
+  test:
+    name: Run tests
+    runs-on: ubuntu-24.04
+
+    permissions:
+      contents: read
+      pull-requests: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Java with Maven
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+          cache: 'maven'
+
+      - name: Run tests
+        run: mvn test
+
 
   # Checks code's styles
   checkstyle:
-    name: Check style
+    name: Check code style
     runs-on: ubuntu-24.04
 
     steps:
@@ -46,5 +69,5 @@ jobs:
           cache: 'maven'
 
       # Run mvn checkstyle:check (checks code style)
-      - name: Run checkstyle plugin
+      - name: Check code style
         run: mvn checkstyle:check
