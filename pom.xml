@@ -26,6 +26,7 @@
         <commons-io.version>2.11.0</commons-io.version>
 
         <maven-checkstyle-plugin.version>3.5.0</maven-checkstyle-plugin.version>
+        <maven-surefire-plugin.version>3.5.0</maven-surefire-plugin.version>
     </properties>
 
     <dependencies>
@@ -117,6 +118,12 @@
                     <failsOnError>true</failsOnError>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven-surefire-plugin.version}</version>
+            </plugin>
+
         </plugins>
     </build>
 
