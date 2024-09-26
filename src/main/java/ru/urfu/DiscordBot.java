@@ -21,6 +21,7 @@ public class DiscordBot extends ListenerAdapter implements Bot {
     private static final Logger LOGGER = LoggerFactory.getLogger(DiscordBot.class);
     private final LogicCore logicCore;
     private final String botToken;
+    private static final int i = 10;
     private JDA jda;
 
     /**
