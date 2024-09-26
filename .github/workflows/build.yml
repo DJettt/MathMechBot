@@ -29,6 +29,31 @@ jobs:
       - name: Build Maven package
         run: mvn package
 
+
+  test:
+    name: Run tests
+    runs-on: ubuntu-24.04
+
+    permissions:
+      contents: read
+      pull-requests: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Java with Maven
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+          cache: 'maven'
+
+      # Run `mvn package` command
+      - name: Build Maven package
+        run: mvn test
+
+
   # Checks code's styles
   checkstyle:
     name: Check style
