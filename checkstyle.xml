@@ -2,9 +2,8 @@
 <!DOCTYPE module PUBLIC
     "-//Checkstyle//DTD Checkstyle Configuration 1.3//EN"
     "https://checkstyle.org/dtds/configuration_1_3.dtd">
-<!--
-    Checkstyle configuration
--->
+
+<!-- Checkstyle configuration -->
 <module name="Checker">
 
     <!-- https://checkstyle.org/property_types.html -->
@@ -43,9 +42,9 @@
     <!--      Checks for Size Violations.         -->
     <module name="FileLength"/>
     <module name="LineLength">
-        <property name="max" value="120"/>
         <property name="fileExtensions" value="java"/>
         <property name="ignorePattern" value="^package.*|^import.*|a href|href|http://|https://|ftp://"/>
+        <property name="max" value="120"/>
     </module>
 
 
@@ -73,27 +72,28 @@
     <module name="TreeWalker">
         <!-- https://checkstyle.org/config_javadoc.html -->
         <!--         Checks for Javadoc comments.       -->
-        <!-- <module name="AtclauseOrder"/> -->
-        <!-- <module name="InvalidJavadocPosition"/> -->
-        <!--<module name="JavadocContentLocationCheck"/>-->
-        <!-- <module name="JavadocMethod"/> -->
+        <module name="AtclauseOrder"/>
+        <module name="InvalidJavadocPosition"/>
+        <module name="JavadocContentLocationCheck"/>
+        <module name="JavadocMethod"/>
         <module name="JavadocMissingLeadingAsteriskCheck"/>
         <module name="JavadocMissingWhitespaceAfterAsterisk"/>
         <!-- <module name="JavadocParagraph"/> -->
         <module name="JavadocStyle">
-            <property name="checkFirstSentence" value="false"/>
             <property name="checkEmptyJavadoc" value="true"/>
             <property name="tokens"
                       value="ANNOTATION_DEF, ANNOTATION_FIELD_DEF, CLASS_DEF, CTOR_DEF, ENUM_CONSTANT_DEF, ENUM_DEF, INTERFACE_DEF, METHOD_DEF, VARIABLE_DEF"/>
         </module>
-        <!--<module name="JavadocTagContinuationIndentation"/>-->
-        <!--<module name="JavadocType">-->
-        <!--    <property name="scope" value="public"/>-->
-        <!--</module>-->
+        <module name="JavadocTagContinuationIndentation"/>
+        <module name="JavadocType"/>
         <!-- <module name="JavadocVariable"/> -->
-        <!-- <module name="MissingJavadocMethod"/> -->
+         <module name="MissingJavadocMethod">
+             <property name="scope" value="private"/>
+         </module>
         <!-- <module name="MissingJavadocPackage"/> -->
-        <!-- <module name="MissingJavadocType"/> -->
+        <module name="MissingJavadocType">
+            <property name="scope" value="private"/>
+        </module>
         <module name="NonEmptyAtclauseDescription"/>
         <module name="SingleLineJavadoc"/>
         <!-- <module name="SummaryJavadoc"/> -->
@@ -144,7 +144,7 @@
         <!-- https://checkstyle.org/config_imports.html -->
         <!--            Checks for imports              -->
         <module name="AvoidStarImport"/>
-        <!-- <module name="AvoidStaticImport"/> -->
+        <module name="AvoidStaticImport"/>
         <!-- <module name="CustomImportOrder"/> -->
         <module name="IllegalImport"/> <!-- defaults to sun.* packages -->
         <!-- <module name="ImportControl"/> -->

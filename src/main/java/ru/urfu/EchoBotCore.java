@@ -7,9 +7,6 @@ package ru.urfu;
  * Обрабатывает команды /help и /start, отвечая на них справкой.
  */
 public class EchoBotCore extends LogicCore {
-
-    public EchoBotCore() {}
-
     @Override
     public Message processMessage(Message msg) {
         if (msg.getText() != null) {
@@ -23,7 +20,7 @@ public class EchoBotCore extends LogicCore {
     }
 
     /**
-     * Обрабатывает сообщения, не распознанные как заявленные команды
+     * Обрабатывает сообщения, не распознанные как заявленные команды.
      * @param inputMessage входящее сообщение
      * @return ответ на сообщение
      */
@@ -32,7 +29,7 @@ public class EchoBotCore extends LogicCore {
     }
 
     /**
-     * Выдаёт справку
+     * Выдаёт справку.
      * @param inputMessage входящее сообщение с командой /help
      * @return ответ на сообщение (содержит справку)
      */

@@ -13,14 +13,15 @@ import net.dv8tion.jda.api.requests.GatewayIntent;
 
 /**
  * Простой дискорд-бот, который принимает текстовые сообщения и составляет ответ
- * в зависимости от переданного ему при создании логического ядра (logicCore)
+ * в зависимости от переданного ему при создании логического ядра (logicCore).
  */
 public class DiscordBot extends ListenerAdapter implements Bot {
     private final LogicCore logicCore;
     private final String botToken;
     private JDA jda;
 
-    /** Конструктор
+    /**
+     * Конструктор.
      * @param token токен Discord бота
      * @param core логическое ядро, обрабатывающее сообщения
      */
@@ -47,8 +48,7 @@ public class DiscordBot extends ListenerAdapter implements Bot {
         System.out.println("Discord bot successfully started!");
     }
 
-    /**
-     *
+    /*
      * Для бота сообщение в текстовом канале НА СЕРВЕРЕ используется TextChannel
      * а для использования в ЛИЧНОМ СООБЩЕНИИ используется PrivateChannel
      * (я до конца не разобрался почему именно сейчас это работает только так,
@@ -68,7 +68,8 @@ public class DiscordBot extends ListenerAdapter implements Bot {
         }
     }
 
-    /** Создаёт объекты класса Message из дискордоских MessageReceivedEvent
+    /**
+     * Создаёт объекты класса Message из дискордоских MessageReceivedEvent.
      * @param event ивент сообщения
      * @return то же сообщение в формате Message для общения с ядром
      */

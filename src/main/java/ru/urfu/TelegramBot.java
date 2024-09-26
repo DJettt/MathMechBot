@@ -11,7 +11,7 @@ import org.telegram.telegrambots.meta.generics.TelegramClient;
 
 /**
  * Простой телеграм-бот, который принимает текстовые сообщения и составляет ответ
- * в зависимости от переданного ему при создании логического ядра (logicCore)
+ * в зависимости от переданного ему при создании логического ядра (logicCore).
  */
 public class TelegramBot implements LongPollingSingleThreadUpdateConsumer, Bot {
     private final TelegramClient telegramClient;
@@ -19,6 +19,11 @@ public class TelegramBot implements LongPollingSingleThreadUpdateConsumer, Bot {
     private final String botToken;
     private final TelegramBotsLongPollingApplication botsApplication;
 
+    /**
+     * Конструктор.
+     * @param token строка, содержащая токен для бота
+     * @param core логическое ядро, обрабатывающее сообщения
+     */
     public TelegramBot(String token, LogicCore core) {
         telegramClient = new OkHttpTelegramClient(token);
         logicCore = core;
@@ -50,7 +55,7 @@ public class TelegramBot implements LongPollingSingleThreadUpdateConsumer, Bot {
     }
 
     /**
-     * Превращает наш Message в телеграмный SendMessage
+     * Превращает наш Message в телеграмный SendMessage.
      * @param msg объект нашего универсального сообщения
      * @param chatId id чата, куда надо отправить сообщение
      * @return объект SendMessage, который можно отправлять
@@ -64,7 +69,7 @@ public class TelegramBot implements LongPollingSingleThreadUpdateConsumer, Bot {
     }
 
     /**
-     * Переводит Telegram-сообщения в наши сообщения
+     * Переводит Telegram-сообщения в наши сообщения.
      * @param message объект сообщения из TelegramBots
      * @return объект нашего универсального сообщения
      */

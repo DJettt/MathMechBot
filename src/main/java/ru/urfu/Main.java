@@ -1,15 +1,23 @@
 package ru.urfu;
 
 import java.lang.reflect.Constructor;
+
 /**
- * Основной класс для запуска приложения
+ * Основной класс для запуска приложения.
  */
-public class Main {
+final public class Main {
     /**
-     * Запускает Telegram бота с переданным логическим ядром
-     * @param logicCore логическое ядро (обрабатывает поступающие сообщения)
+     * Приватный конструктор, добавленный для того, чтобы явно сообщить, что не нужно создавать объекты этого класса.
      */
-    private static void startBot(LogicCore logicCore, String env, Class <? extends Bot> botClass){
+    private Main() {}
+
+    /**
+     * Запускает Telegram бота с переданным логическим ядром.
+     * @param logicCore логическое ядро (обрабатывает поступающие сообщения)
+     * @param env строка, содержащая название переменной окружения, в которой находится токен бота
+     * @param botClass класс создаваемого бота
+     */
+    private static void startBot(LogicCore logicCore, String env, Class<? extends Bot> botClass) {
         String botToken = System.getenv(env);
         if (botToken == null) {
             System.out.println("Couldn't retrieve bot token from " + env);
@@ -24,6 +32,11 @@ public class Main {
             e.printStackTrace();
         }
     }
+
+    /**
+     * Точка входа в программу.
+     * @param args аргументы командной строки
+     */
     public static void main(String[] args) {
         final LogicCore logicCore = new EchoBotCore();
         startBot(logicCore, "TGMATHMECHBOT_TOKEN", TelegramBot.class);
