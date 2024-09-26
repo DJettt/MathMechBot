@@ -26,31 +26,10 @@ jobs:
           cache: 'maven'
 
       - name: Build project
-        run: mvn package
-
-
-  # Run tests
-  test:
-    name: Run tests
-    runs-on: ubuntu-24.04
-
-    permissions:
-      contents: read
-      pull-requests: read
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup Java with Maven
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'
-          java-version: '21'
-          cache: 'maven'
+        run: mvn --batch-mode -DskipTests package
 
       - name: Run tests
-        run: mvn test
+        run: mvn --batch-mode test
 
 
   # Checks code's styles
