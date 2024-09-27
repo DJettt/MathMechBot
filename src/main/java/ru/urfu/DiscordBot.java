@@ -1,5 +1,6 @@
 package ru.urfu;
 
+import java.util.ArrayList;
 import java.util.List;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -34,7 +35,6 @@ public class DiscordBot extends ListenerAdapter implements Bot {
 
     @Override
     public void start() {
-        //TODO: проверить на возникновение исключений
         jda = JDABuilder.createLight(botToken)
                 .addEventListeners(this)
                 .enableIntents(
@@ -50,8 +50,7 @@ public class DiscordBot extends ListenerAdapter implements Bot {
         LOGGER.info("Discord bot successfully started!");
     }
 
-    /**
-     *
+    /*
      * Для бота сообщение в текстовом канале НА СЕРВЕРЕ используется TextChannel
      * а для использования в ЛИЧНОМ СООБЩЕНИИ используется PrivateChannel
      * (я до конца не разобрался почему именно сейчас это работает только так,
@@ -62,22 +61,27 @@ public class DiscordBot extends ListenerAdapter implements Bot {
         final TextChannel textChannel = jda.getTextChannelById(id);
 
         if (textChannel != null) {
-            textChannel.sendMessage(message.getText()).queue();
+            textChannel.sendMessage(message.text()).queue();
         }
         else {
             final PrivateChannel privateChannel = jda.getPrivateChannelById(id);
             if (privateChannel != null) {
-                privateChannel.sendMessage(message.getText()).queue();
+                privateChannel.sendMessage(message.text()).queue();
             }
         }
     }
 
+    @Override
+    public void sendImages(Message message, Long id) {
+        // FIXME: надо сделать
+    }
+
     /**
-     * @param event ивент сообщения
+     * @param message полученное сообщение
      * @return то же сообщение в формате Message для общения с ядром
      */
-    private Message createFromDiscordMessage(MessageReceivedEvent event){
-        return new Message(event.getMessage().getContentDisplay());
+    private Message createFromDiscordMessage(net.dv8tion.jda.api.entities.Message message) {
+        return new Message(message.getContentDisplay(), new ArrayList<>());
     }
 
 
@@ -86,9 +90,7 @@ public class DiscordBot extends ListenerAdapter implements Bot {
         if (event.getAuthor().isBot()){
             return;
         }
-        Message msg = createFromDiscordMessage(event);
-        final Message response = logicCore.processMessage(msg);
-        sendMessage(response, event.getChannel().getIdLong());
-
+        Message msg = createFromDiscordMessage(event.getMessage());
+        logicCore.processMessage(msg, event.getChannel().getIdLong(), this);
     }
 }

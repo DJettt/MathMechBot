@@ -15,14 +15,16 @@ public final class EchoBotCoreTest {
                 В любой момент ты можешь написать команду '/help' (без кавычек) и \
                 тогда я тебе напомню как со мной работать! Приятного использования!""";
 
+
     /**
      * Проверяем, что на сообщение /help логика отправляет справку
      */
     @Test
     @DisplayName("Проверка команды /help")
     void helpCommandTest() {
-        final Message response = new EchoBotCore().processMessage(new Message("/help"));
-        Assertions.assertEquals(HELP_MESSAGE_TEXT, response.getText());
+        final Message request = new MessageBuilder().text("/help").build();
+        final Message response = new EchoBotCore().processMessage(request, 0L, new DummyBot());
+        Assertions.assertEquals(HELP_MESSAGE_TEXT, response.text());
     }
 
 
@@ -32,9 +34,11 @@ public final class EchoBotCoreTest {
     @Test
     @DisplayName("Проверка команды /start")
     void startCommandTest() {
-        final Message response = new EchoBotCore().processMessage(new Message("/start"));
-        Assertions.assertEquals(HELP_MESSAGE_TEXT, response.getText());
+        final Message request = new MessageBuilder().text("/start").build();
+        final Message response = new EchoBotCore().processMessage(request, 0L, new DummyBot());
+        Assertions.assertEquals(HELP_MESSAGE_TEXT, response.text());
     }
+
 
     /**
      * Проверяем, что логика дублирует набор слов с префиксом "Ты написал: "
@@ -43,9 +47,11 @@ public final class EchoBotCoreTest {
     @DisplayName("Набор слов")
     void someTextTest() {
         final String someText = "Lorem Ipsum is simply dummy text of the printing and typesetting industry.";
-        final Message response = new EchoBotCore().processMessage(new Message(someText));
-        Assertions.assertEquals("Ты написал: " + someText, response.getText());
+        final Message request = new MessageBuilder().text(someText).build();
+        final Message response = new EchoBotCore().processMessage(request, 0L, new DummyBot());
+        Assertions.assertEquals("Ты написал: " + someText, response.text());
     }
+
 
     /**
      * Проверяем, что на сообщение без текста логика отвечает ничем (вместо Message -- null)
@@ -53,7 +59,8 @@ public final class EchoBotCoreTest {
     @Test
     @DisplayName("Сообщение без текста")
     void textIsNull() {
-        final Message response = new EchoBotCore().processMessage(new Message(null));
+        final Message request = new MessageBuilder().build();
+        final Message response = new EchoBotCore().processMessage(request, 0L, new DummyBot());
         Assertions.assertNull(response);
     }
 }

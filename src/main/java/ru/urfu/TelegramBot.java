@@ -1,12 +1,21 @@
 package ru.urfu;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.telegram.telegrambots.client.okhttp.OkHttpTelegramClient;
 import org.telegram.telegrambots.longpolling.TelegramBotsLongPollingApplication;
 import org.telegram.telegrambots.longpolling.util.LongPollingSingleThreadUpdateConsumer;
+import org.telegram.telegrambots.meta.api.methods.GetFile;
+import org.telegram.telegrambots.meta.api.methods.send.SendMediaGroup;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+import org.telegram.telegrambots.meta.api.objects.File;
+import org.telegram.telegrambots.meta.api.objects.InputFile;
+import org.telegram.telegrambots.meta.api.objects.PhotoSize;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.media.InputMediaPhoto;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
 
@@ -46,24 +55,85 @@ public class TelegramBot implements LongPollingSingleThreadUpdateConsumer, Bot {
     @Override
     public void sendMessage(Message msg, Long id){
         try {
-            telegramClient.execute(createFromMessage(msg, id));
+            telegramClient.execute(createSendMessage(msg, id));
         } catch (TelegramApiException e) {
-            throw new RuntimeException(e);
+            LOGGER.error("Couldn't send message", e);
+        }
+    }
+
+    @Override
+    public void sendImages(Message msg, Long id) {
+        try {
+            if (msg.images().size() == 1) {
+                telegramClient.execute(createSendPhoto(msg, id));
+            } else {
+                telegramClient.execute(createSendMediaGroup(msg, id));
+            }
+        } catch (TelegramApiException e) {
+            LOGGER.error("Couldn't send images", e);
         }
     }
 
     /**
-     * Превращает наш Message в телеграмный SendMessage
-     * @param msg объект нашего универсального сообщения
+     * Превращает Message в SendPhoto.
+     * Стоит использовать в тех случаях, когда сообщение содержит одно изображение.
+     * @param msg объект сообщения
+     * @param chatId id чата, куда надо отправить сообщение
+     * @return объект SendPhoto, который можно отправлять
+     */
+    private SendPhoto createSendPhoto(Message msg, long chatId) {
+        if (msg.images().size() > 1) {
+            LOGGER.warn("createSendPhoto was called for message with more than one image");
+        }
+        return SendPhoto
+                .builder()
+                .chatId(chatId)
+                .photo(new InputFile(msg.images().getFirst()))
+                .caption(msg.text())
+                .build();
+    }
+
+    /**
+     * Превращает Message в SendMediaGroup.
+     * Стоит использовать в тех случаях, когда сообщение содержит несколько медиа-файлов.
+     * @param msg объект сообщения
+     * @param chatId id чата, куда надо отправить сообщение
+     * @return объект SendMediaGroup, который можно отправлять
+     */
+    private SendMediaGroup createSendMediaGroup(Message msg, long chatId) {
+        return SendMediaGroup
+                .builder()
+                .chatId(chatId)
+                .medias(msg.images().stream().map(image -> new InputMediaPhoto(image, "photo")).toList())
+                .build();
+    }
+
+    /**
+     * Превращает Message в SendMessage.
+     * Стоит использовать в тех случаях, когда сообщение содержит лишь текст.
+     * @param msg  объект сообщения
      * @param chatId id чата, куда надо отправить сообщение
      * @return объект SendMessage, который можно отправлять
      */
-    private SendMessage createFromMessage(Message msg, long chatId) {
+    private SendMessage createSendMessage(Message msg, long chatId) {
         return SendMessage
                 .builder()
                 .chatId(chatId)
-                .text(msg.getText())
+                .text(msg.text())
                 .build();
+    }
+
+    private java.io.File downloadFile(PhotoSize photo) {
+        try {
+            final File telegramFile = telegramClient.execute(GetFile
+                    .builder()
+                    .fileId(photo.getFileId())
+                    .build());
+            return telegramClient.downloadFile(telegramFile);
+        } catch (TelegramApiException e) {
+            LOGGER.error("Error during downloading photos", e);
+        }
+        return null;
     }
 
     /**
@@ -72,19 +142,24 @@ public class TelegramBot implements LongPollingSingleThreadUpdateConsumer, Bot {
      * @return объект нашего универсального сообщения
      */
     private Message createFromTelegramMessage(org.telegram.telegrambots.meta.api.objects.message.Message message) {
-        String message_text = message.getText();
-        return new Message(message_text);
+        final String text = (message.hasPhoto()) ? message.getCaption() : message.getText();
+        final List<java.io.File> images = new ArrayList<>();
+
+        if (message.hasPhoto()) {
+            final PhotoSize photo = message.getPhoto().getLast();
+            final java.io.File file = downloadFile(photo);
+
+            if (file != null) {
+                images.add(downloadFile(photo));
+            }
+        }
+        return new Message(text, images);
     }
 
     @Override
     public void consume(Update update) {
         final long chatId = update.getMessage().getChatId();
         final Message msg = createFromTelegramMessage(update.getMessage());
-
-        final Message response = logicCore.processMessage(msg);
-        if (response == null) {
-            return;
-        }
-        sendMessage(response, chatId);
+        logicCore.processMessage(msg, chatId, this);
     }
 }
