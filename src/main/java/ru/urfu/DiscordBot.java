@@ -10,12 +10,15 @@ import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.GatewayIntent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Простой дискорд-бот, который принимает текстовые сообщения и составляет ответ
  * в зависимости от переданного ему при создании логического ядра (logicCore).
  */
 public class DiscordBot extends ListenerAdapter implements Bot {
+    private static final Logger LOGGER = LoggerFactory.getLogger(DiscordBot.class);
     private final LogicCore logicCore;
     private final String botToken;
     private JDA jda;
@@ -45,7 +48,7 @@ public class DiscordBot extends ListenerAdapter implements Bot {
                 .setActivity(Activity.watching("Klepinin's lections"))
                 .build();
 
-        System.out.println("Discord bot successfully started!");
+        LOGGER.info("Discord bot successfully started!");
     }
 
     /*
@@ -57,7 +60,7 @@ public class DiscordBot extends ListenerAdapter implements Bot {
     @Override
     public void sendMessage(Message message, Long id) {
         final TextChannel textChannel = jda.getTextChannelById(id);
-        System.out.println(id);
+
         if (textChannel != null) {
             textChannel.sendMessage(message.getText()).queue();
         } else {
