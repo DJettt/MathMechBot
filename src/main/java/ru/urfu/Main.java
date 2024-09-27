@@ -5,7 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Основной класс для запуска приложения
+ * Основной класс для запуска приложения.
  */
 final public class Main {
     private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
