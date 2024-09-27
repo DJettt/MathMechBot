@@ -1,5 +1,7 @@
 package ru.urfu;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.telegram.telegrambots.client.okhttp.OkHttpTelegramClient;
 import org.telegram.telegrambots.longpolling.TelegramBotsLongPollingApplication;
 import org.telegram.telegrambots.longpolling.util.LongPollingSingleThreadUpdateConsumer;
@@ -14,6 +16,7 @@ import org.telegram.telegrambots.meta.generics.TelegramClient;
  * в зависимости от переданного ему при создании логического ядра (logicCore)
  */
 public class TelegramBot implements LongPollingSingleThreadUpdateConsumer, Bot {
+    private static final Logger LOGGER = LoggerFactory.getLogger(TelegramBot.class);
     private final TelegramClient telegramClient;
     private final LogicCore logicCore;
     private final String botToken;
@@ -31,11 +34,11 @@ public class TelegramBot implements LongPollingSingleThreadUpdateConsumer, Bot {
         new Thread(() -> {
             try {
                 botsApplication.registerBot(botToken, this);
-                System.out.println("Telegram bot successfully started!");
+                LOGGER.info("Telegram bot successfully started!");
 
                 Thread.currentThread().join();
             } catch (Exception e) {
-                e.printStackTrace();
+                LOGGER.error("Bot didn't get registered and didn't run.", e);
             }
         }).start();
     }
