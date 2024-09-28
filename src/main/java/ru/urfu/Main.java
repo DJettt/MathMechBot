@@ -17,7 +17,7 @@ public class Main {
     private static void startBot(LogicCore logicCore, String env, Class <? extends Bot> botClass){
         String botToken = System.getenv(env);
         if (botToken == null) {
-            LOGGER.error("Couldn't retrieve bot token from " + env);
+            LOGGER.error("Couldn't retrieve bot token from {}", env);
             return;
         }
         try {

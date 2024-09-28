@@ -36,12 +36,7 @@ public class EchoBotCore extends LogicCore {
         final Message answer = new Message(
                 (inputMessage.text() != null) ? ("Ты написал: " + inputMessage.text()) : null,
                 inputMessage.images());
-
-        if (!inputMessage.images().isEmpty()) {
-            bot.sendImages(answer, chatId);
-        } else {
-            bot.sendMessage(answer, chatId);
-        }
+        bot.sendMessage(answer, chatId);
         return answer;
     }
 

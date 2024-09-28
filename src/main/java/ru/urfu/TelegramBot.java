@@ -55,22 +55,18 @@ public class TelegramBot implements LongPollingSingleThreadUpdateConsumer, Bot {
     @Override
     public void sendMessage(Message msg, Long id){
         try {
-            telegramClient.execute(createSendMessage(msg, id));
-        } catch (TelegramApiException e) {
-            LOGGER.error("Couldn't send message", e);
-        }
-    }
-
-    @Override
-    public void sendImages(Message msg, Long id) {
-        try {
-            if (msg.images().size() == 1) {
+            if (msg.images().isEmpty()) {
+                telegramClient.execute(createSendMessage(msg, id));
+            } else if (msg.images().size() == 1) {
                 telegramClient.execute(createSendPhoto(msg, id));
             } else {
                 telegramClient.execute(createSendMediaGroup(msg, id));
+                if (msg.text() != null) {
+                    telegramClient.execute(createSendMessage(msg, id));
+                }
             }
         } catch (TelegramApiException e) {
-            LOGGER.error("Couldn't send images", e);
+            LOGGER.error("Couldn't send message", e);
         }
     }
 
@@ -123,6 +119,11 @@ public class TelegramBot implements LongPollingSingleThreadUpdateConsumer, Bot {
                 .build();
     }
 
+    /**
+     * Преобразует PhotoSize в java.io.File
+     * @param photo изображение в виде объекта PhotoSize
+     * @return изображение в виде объекта java.io.File
+     */
     private java.io.File downloadFile(PhotoSize photo) {
         try {
             final File telegramFile = telegramClient.execute(GetFile

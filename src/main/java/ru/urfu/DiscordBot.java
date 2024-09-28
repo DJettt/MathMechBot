@@ -71,11 +71,6 @@ public class DiscordBot extends ListenerAdapter implements Bot {
         }
     }
 
-    @Override
-    public void sendImages(Message message, Long id) {
-        // FIXME: надо сделать
-    }
-
     /**
      * @param message полученное сообщение
      * @return то же сообщение в формате Message для общения с ядром
@@ -83,7 +78,6 @@ public class DiscordBot extends ListenerAdapter implements Bot {
     private Message createFromDiscordMessage(net.dv8tion.jda.api.entities.Message message) {
         return new Message(message.getContentDisplay(), new ArrayList<>());
     }
-
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event){

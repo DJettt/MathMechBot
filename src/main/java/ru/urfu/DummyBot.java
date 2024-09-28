@@ -9,7 +9,4 @@ public class DummyBot implements Bot {
 
     @Override
     public void sendMessage(Message msg, Long id) {}
-
-    @Override
-    public void sendImages(Message msg, Long id) {}
 }

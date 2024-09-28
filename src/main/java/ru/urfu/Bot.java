@@ -4,6 +4,4 @@ public interface Bot {
     void start();
 
     void sendMessage(Message msg, Long id);
-
-    void sendImages(Message msg, Long id);
 }
