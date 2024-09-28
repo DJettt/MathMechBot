@@ -12,6 +12,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
 /**
  * Простой дискорд-бот, который принимает текстовые сообщения и составляет ответ
@@ -58,7 +59,7 @@ public class DiscordBot extends ListenerAdapter implements Bot {
      * так как до этого мы использовали только TextChannel и все работало корректно и там и там)
      */
     @Override
-    public void sendMessage(Message message, Long id) {
+    public void sendMessage(LocalMessage message, Long id) {
         final TextChannel textChannel = jda.getTextChannelById(id);
 
         if (textChannel != null) {
@@ -70,14 +71,16 @@ public class DiscordBot extends ListenerAdapter implements Bot {
                 privateChannel.sendMessage(message.getText()).queue();
             }
         }
+        LOGGER.info("Some info " + message.getText());
     }
+
 
     /**
      * @param event ивент сообщения
      * @return то же сообщение в формате Message для общения с ядром
      */
-    private Message createFromDiscordMessage(MessageReceivedEvent event){
-        return new Message(event.getMessage().getContentDisplay());
+    private LocalMessage createFromDiscordMessage(MessageReceivedEvent event){
+        return new LocalMessage(event.getMessage().getContentDisplay());
     }
 
 
@@ -86,8 +89,8 @@ public class DiscordBot extends ListenerAdapter implements Bot {
         if (event.getAuthor().isBot()){
             return;
         }
-        Message msg = createFromDiscordMessage(event);
-        final Message response = logicCore.processMessage(msg);
+        LocalMessage msg = createFromDiscordMessage(event);
+        final LocalMessage response = logicCore.processMessage(msg);
         sendMessage(response, event.getChannel().getIdLong());
 
     }

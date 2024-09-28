@@ -21,7 +21,7 @@ public final class EchoBotCoreTest {
     @Test
     @DisplayName("Проверка команды /help")
     void helpCommandTest() {
-        final Message response = new EchoBotCore().processMessage(new Message("/help"));
+        final LocalMessage response = new EchoBotCore().processMessage(new LocalMessage("/help"));
         Assertions.assertEquals(HELP_MESSAGE_TEXT, response.getText());
     }
 
@@ -32,7 +32,7 @@ public final class EchoBotCoreTest {
     @Test
     @DisplayName("Проверка команды /start")
     void startCommandTest() {
-        final Message response = new EchoBotCore().processMessage(new Message("/start"));
+        final LocalMessage response = new EchoBotCore().processMessage(new LocalMessage("/start"));
         Assertions.assertEquals(HELP_MESSAGE_TEXT, response.getText());
     }
 
@@ -43,7 +43,7 @@ public final class EchoBotCoreTest {
     @DisplayName("Набор слов")
     void someTextTest() {
         final String someText = "Lorem Ipsum is simply dummy text of the printing and typesetting industry.";
-        final Message response = new EchoBotCore().processMessage(new Message(someText));
+        final LocalMessage response = new EchoBotCore().processMessage(new LocalMessage(someText));
         Assertions.assertEquals("Ты написал: " + someText, response.getText());
     }
 
@@ -53,7 +53,7 @@ public final class EchoBotCoreTest {
     @Test
     @DisplayName("Сообщение без текста")
     void textIsNull() {
-        final Message response = new EchoBotCore().processMessage(new Message(null));
+        final LocalMessage response = new EchoBotCore().processMessage(new LocalMessage(null));
         Assertions.assertNull(response);
     }
 }

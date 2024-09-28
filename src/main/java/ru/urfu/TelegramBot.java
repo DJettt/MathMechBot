@@ -7,6 +7,7 @@ import org.telegram.telegrambots.longpolling.TelegramBotsLongPollingApplication;
 import org.telegram.telegrambots.longpolling.util.LongPollingSingleThreadUpdateConsumer;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
 
@@ -44,7 +45,7 @@ public class TelegramBot implements LongPollingSingleThreadUpdateConsumer, Bot {
     }
 
     @Override
-    public void sendMessage(Message msg, Long id){
+    public void sendMessage(LocalMessage msg, Long id){
         try {
             telegramClient.execute(createFromMessage(msg, id));
         } catch (TelegramApiException e) {
@@ -53,12 +54,26 @@ public class TelegramBot implements LongPollingSingleThreadUpdateConsumer, Bot {
     }
 
     /**
+     * Создание кнопок после сообщения.
+     * @param name текст, который будет написан на кнопке.
+     * @param data текстовая информация, которую бот получит
+     * при нажатии пользователя на кнопку.
+     */
+    private InlineKeyboardButton createButton(String name, String data){
+        return InlineKeyboardButton
+                .builder()
+                .text(name)
+                .callbackData(data)
+                .build();
+    }
+
+    /**
      * Превращает наш Message в телеграмный SendMessage
      * @param msg объект нашего универсального сообщения
      * @param chatId id чата, куда надо отправить сообщение
      * @return объект SendMessage, который можно отправлять
      */
-    private SendMessage createFromMessage(Message msg, long chatId) {
+    private SendMessage createFromMessage(LocalMessage msg, long chatId) {
         return SendMessage
                 .builder()
                 .chatId(chatId)
@@ -71,17 +86,34 @@ public class TelegramBot implements LongPollingSingleThreadUpdateConsumer, Bot {
      * @param message объект сообщения из TelegramBots
      * @return объект нашего универсального сообщения
      */
-    private Message createFromTelegramMessage(org.telegram.telegrambots.meta.api.objects.message.Message message) {
+    private LocalMessage createFromTelegramMessage(org.telegram.telegrambots.meta.api.objects.message.Message message) {
         String message_text = message.getText();
-        return new Message(message_text);
+        return new LocalMessage(message_text);
     }
 
+    /**
+     * Принимает какое-либо обновление в чате с ботом.
+     * @param update объект, в котором содержится информация об обновлении в чате.
+     */
+    //TODO: разобраться с этим методом!
     @Override
     public void consume(Update update) {
+        String data;
+        LocalMessage msg;
+        if (update.hasCallbackQuery()){
+            data = update.getCallbackQuery().getData();
+            msg = new LocalMessage(data);
+        }
+        else if(update.hasMessage()) {
+            data = update.getMessage().getText();
+            msg = createFromTelegramMessage(update.getMessage());
+        }
+        //TODO: убрать костыль!!!!
+        else {
+            msg = new LocalMessage("");
+        }
         final long chatId = update.getMessage().getChatId();
-        final Message msg = createFromTelegramMessage(update.getMessage());
-
-        final Message response = logicCore.processMessage(msg);
+        final LocalMessage response = logicCore.processMessage(msg);
         if (response == null) {
             return;
         }

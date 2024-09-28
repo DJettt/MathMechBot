@@ -9,5 +9,5 @@ public abstract class LogicCore {
      * @param msg сообщение, которое нужно обработать
      * @return ответ на сообщение (null, если ответа нет)
      */
-    public abstract Message processMessage(Message msg);
+    public abstract LocalMessage processMessage(LocalMessage msg);
 }
