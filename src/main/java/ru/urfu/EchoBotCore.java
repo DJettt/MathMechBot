@@ -33,8 +33,8 @@ public class EchoBotCore extends LogicCore {
                 }
                 case "callback_query"->{
                     return switch (msg.getText()){
-                        case "button_1" -> new LocalMessage("Была нажата кнопка 1");
-                        case "button_3" ->  new LocalMessage("Была нажата кнопка 3");
+                        case "button_1" -> new LocalMessage("Была нажата кнопка 1", MESSAGE_STATUS_TEXT_ONLY);
+                        case "button_3" ->  new LocalMessage("Была нажата кнопка 3", MESSAGE_STATUS_TEXT_ONLY);
                         case "/help" -> helpCommandHandler(msg);
                     default -> helpCommandHandler(msg);
                     };
