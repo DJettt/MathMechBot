@@ -1,0 +1,53 @@
+name: Build
+
+on:
+  workflow_dispatch:
+  pull_request:
+
+jobs:
+  # Builds project
+  build:
+    name: Build project
+    runs-on: ubuntu-24.04
+
+    permissions:
+      contents: read
+      pull-requests: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Java with Maven
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+          cache: 'maven'
+
+      - name: Build project
+        run: mvn --batch-mode -DskipTests package
+
+      - name: Run tests
+        run: mvn --batch-mode test
+
+
+  # Checks code's styles
+  checkstyle:
+    name: Check code style
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Java with Maven
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+          cache: 'maven'
+
+      # Run mvn checkstyle:check (checks code style)
+      - name: Check code style
+        run: mvn checkstyle:check

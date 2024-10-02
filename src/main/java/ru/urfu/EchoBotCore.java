@@ -7,9 +7,6 @@ package ru.urfu;
  * Обрабатывает команды /help и /start, отвечая на них справкой.
  */
 public class EchoBotCore extends LogicCore {
-
-    public EchoBotCore() {}
-
     @Override
     public Message processMessage(Message msg) {
         if (msg.getText() != null) {
@@ -23,6 +20,7 @@ public class EchoBotCore extends LogicCore {
     }
 
     /**
+     * Обрабатывает сообщения, не распознанные как заявленные команды.
      * @param inputMessage входящее сообщение
      * @return ответ на сообщение
      */
@@ -31,11 +29,12 @@ public class EchoBotCore extends LogicCore {
     }
 
     /**
+     * Выдаёт справку.
      * @param inputMessage входящее сообщение с командой /help
      * @return ответ на сообщение (содержит справку)
      */
     private Message helpCommandHandler(Message inputMessage) {
-        String HELP_MESSAGE = """
+        final String HELP_MESSAGE = """
                 Привет, я эхо бот! Сейчас я расскажу как ты можешь со мной взаимодействовать.
                  \
                 Я пишу твое сообщение тебе обратно но добавляю фразу 'Ты написал:' в начало твоего сообщения!
