@@ -60,14 +60,18 @@ public class DiscordBot extends ListenerAdapter implements Bot {
      */
     @Override
     public void sendMessage(Message message, Long id) {
+        if (message.text() == null) {
+            return;
+        }
+
         final TextChannel textChannel = jda.getTextChannelById(id);
 
         if (textChannel != null) {
-            textChannel.sendMessage(message.getText()).queue();
+            textChannel.sendMessage(message.text()).queue();
         } else {
             final PrivateChannel privateChannel = jda.getPrivateChannelById(id);
             if (privateChannel != null) {
-                privateChannel.sendMessage(message.getText()).queue();
+                privateChannel.sendMessage(message.text()).queue();
             }
         }
     }

@@ -1,9 +1,11 @@
 package ru.urfu;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
 import ru.urfu.logics.EchoBotCore;
+import ru.urfu.logics.LogicCore;
 
 /**
  * Тесты логики эхо-бота
@@ -16,16 +18,25 @@ public final class EchoBotCoreTest {
                 В любой момент ты можешь написать команду '/help' (без кавычек) и \
                 тогда я тебе напомню как со мной работать! Приятного использования!""";
 
+    private LogicCore logic;
+
+    /**
+     * Создаём объект логики и ложного бота для каждого теста.
+     */
+    @BeforeEach
+    public void setupTest() {
+        logic = new EchoBotCore();
+    }
+
     /**
      * Проверяем, что на сообщение /help логика отправляет справку
      */
     @Test
     @DisplayName("Проверка команды /help")
     void helpCommandTest() {
-        final Message response = new EchoBotCore().processMessage(new Message("/help"));
-        Assertions.assertEquals(HELP_MESSAGE_TEXT, response.getText());
+        final Message response = logic.processMessage(new Message("/help"));
+        Assertions.assertEquals(HELP_MESSAGE_TEXT, response.text());
     }
-
 
     /**
      * Проверяем, что на сообщение /start логика отправляет справку
@@ -33,8 +44,8 @@ public final class EchoBotCoreTest {
     @Test
     @DisplayName("Проверка команды /start")
     void startCommandTest() {
-        final Message response = new EchoBotCore().processMessage(new Message("/start"));
-        Assertions.assertEquals(HELP_MESSAGE_TEXT, response.getText());
+        final Message response = logic.processMessage(new Message("/start"));
+        Assertions.assertEquals(HELP_MESSAGE_TEXT, response.text());
     }
 
     /**
@@ -44,8 +55,8 @@ public final class EchoBotCoreTest {
     @DisplayName("Набор слов")
     void someTextTest() {
         final String someText = "Lorem Ipsum is simply dummy text of the printing and typesetting industry.";
-        final Message response = new EchoBotCore().processMessage(new Message(someText));
-        Assertions.assertEquals("Ты написал: " + someText, response.getText());
+        final Message response = logic.processMessage(new Message(someText));
+        Assertions.assertEquals("Ты написал: " + someText, response.text());
     }
 
     /**
@@ -54,7 +65,7 @@ public final class EchoBotCoreTest {
     @Test
     @DisplayName("Сообщение без текста")
     void textIsNull() {
-        final Message response = new EchoBotCore().processMessage(new Message(null));
+        final Message response = logic.processMessage(new Message(null));
         Assertions.assertNull(response);
     }
 }

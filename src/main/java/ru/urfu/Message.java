@@ -1,25 +1,18 @@
 package ru.urfu;
 
+import org.jetbrains.annotations.Nullable;
+
 /**
  * Класс сообщения, объектами которого общаются боты и логическое ядро.
+ * @param text текст сообщения.
  */
-public class Message {
-    private final String text;
-    // TODO: возможность обрабатывать всякие приложения типа фото, музыки и так далее.
-
+public record Message(@Nullable String text) {
     /**
-     * Конструктор.
-     * @param messageText текст сообщения
+     * Создаёт объект билдера для этого класса.
+     * @return билдер для класса Message
      */
-    public Message(String messageText) {
-        text = messageText;
-    }
-
-    /**
-     * Геттер поля text.
-     * @return содержимое поля text
-     */
-    public String getText() {
-        return text;
+    public MessageBuilder builder() {
+        // TODO: это метод бы сделать статичным.
+        return new MessageBuilder();
     }
 }

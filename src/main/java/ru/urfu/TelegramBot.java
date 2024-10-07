@@ -68,7 +68,7 @@ public class TelegramBot implements LongPollingSingleThreadUpdateConsumer, Bot {
         return SendMessage
                 .builder()
                 .chatId(chatId)
-                .text(msg.getText())
+                .text(msg.text())
                 .build();
     }
 

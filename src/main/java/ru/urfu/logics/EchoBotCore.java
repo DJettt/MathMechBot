@@ -11,8 +11,8 @@ import ru.urfu.Message;
 public class EchoBotCore implements LogicCore {
     @Override
     public Message processMessage(Message msg) {
-        if (msg.getText() != null) {
-            return switch (msg.getText()) {
+        if (msg.text() != null) {
+            return switch (msg.text()) {
                 case "/help", "/start" -> helpCommandHandler(msg);
                 default -> defaultHandler(msg);
             };
@@ -27,7 +27,7 @@ public class EchoBotCore implements LogicCore {
      * @return ответ на сообщение
      */
     private Message defaultHandler(Message inputMessage) {
-        return new Message("Ты написал: " + inputMessage.getText());
+        return new Message("Ты написал: " + inputMessage.text());
     }
 
     /**
