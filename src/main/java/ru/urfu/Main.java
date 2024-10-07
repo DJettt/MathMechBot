@@ -4,7 +4,7 @@ import java.lang.reflect.Constructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.urfu.logics.LogicCore;
-import ru.urfu.logics.EchoBotCore;
+import ru.urfu.logics.MathMechBotCore;
 
 /**
  * Основной класс для запуска приложения.
@@ -43,7 +43,7 @@ final public class Main {
      * @param args аргументы командной строки
      */
     public static void main(String[] args) {
-        final LogicCore logicCore = new EchoBotCore();
+        final LogicCore logicCore = new MathMechBotCore();
         startBot(logicCore, "TGMATHMECHBOT_TOKEN", TelegramBot.class);
         startBot(logicCore, "DISCORDBOT_TOKEN", DiscordBot.class);
     }
