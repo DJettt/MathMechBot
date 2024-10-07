@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import javax.imageio.ImageIO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.telegram.telegrambots.client.okhttp.OkHttpTelegramClient;
@@ -24,12 +25,10 @@ import org.telegram.telegrambots.meta.api.objects.media.InputMediaPhoto;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
 
-import javax.imageio.ImageIO;
-
 
 /**
  * Простой телеграм-бот, который принимает текстовые сообщения и составляет ответ
- * в зависимости от переданного ему при создании логического ядра (logicCore)
+ * в зависимости от переданного ему при создании логического ядра (logicCore).
  */
 public class TelegramBot implements Bot, LongPollingSingleThreadUpdateConsumer {
     private static final Logger LOGGER = LoggerFactory.getLogger(TelegramBot.class);
@@ -38,6 +37,11 @@ public class TelegramBot implements Bot, LongPollingSingleThreadUpdateConsumer {
     private final String botToken;
     private final TelegramBotsLongPollingApplication botsApplication;
 
+    /**
+     * Конструктор.
+     * @param token строка, содержащая токен для бота
+     * @param core логическое ядро, обрабатывающее сообщения
+     */
     public TelegramBot(String token, LogicCore core) {
         telegramClient = new OkHttpTelegramClient(token);
         logicCore = core;
@@ -46,7 +50,7 @@ public class TelegramBot implements Bot, LongPollingSingleThreadUpdateConsumer {
     }
 
     @Override
-    public void start(){
+    public void start() {
         new Thread(() -> {
             try {
                 botsApplication.registerBot(botToken, this);
@@ -60,19 +64,18 @@ public class TelegramBot implements Bot, LongPollingSingleThreadUpdateConsumer {
     }
 
     @Override
-    public void sendMessage(Message msg, Long id){
+    public void sendMessage(Message msg, Long id) {
         try {
-            // Нет картинок.
             if (msg.images().isEmpty()) {
+                // Нет картинок.
                 telegramClient.execute(createSendMessage(msg, id));
-            }
-            // Картинка одна (отдельный случай требует вызова своего метода).
-            else if (msg.images().size() == 1) {
+            } else if (msg.images().size() == 1) {
+                // Картинка одна (отдельный случай требует вызова своего метода).
                 telegramClient.execute(createSendPhoto(msg, id));
-            }
-            // Несколько изображений.
-            else {
+            } else {
+                // Несколько изображений.
                 telegramClient.execute(createSendMediaGroup(msg, id));
+
                 // Если есть ещё и текст, то текст отпраляем отдельно.
                 if (msg.text() != null) {
                     telegramClient.execute(createSendMessage(msg, id));
@@ -92,15 +95,15 @@ public class TelegramBot implements Bot, LongPollingSingleThreadUpdateConsumer {
      */
     private SendPhoto createSendPhoto(Message msg, long chatId) {
         if (msg.images().size() > 1) {
-            LOGGER.warn("createSendPhoto was called for message with more than one image, " +
-                    "createSendMediaGroup should have been called");
+            LOGGER.warn("createSendPhoto was called for message with more than one image, "
+                    + "createSendMediaGroup should have been called");
         }
 
         SendPhoto.SendPhotoBuilder<?, ?> sendPhotoBuilder = SendPhoto
                 .builder()
                 .chatId(chatId);
 
-        try (final ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             final BufferedImage photo = msg.images().getFirst();
             ImageIO.write(photo, "jpeg", outputStream);
             final InputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
@@ -145,7 +148,7 @@ public class TelegramBot implements Bot, LongPollingSingleThreadUpdateConsumer {
     }
 
     /**
-     * Преобразует PhotoSize в BufferedImage
+     * Преобразует PhotoSize в BufferedImage.
      * @param photo изображение в виде объекта PhotoSize
      * @return изображение в виде объекта BufferedImage
      */
@@ -167,7 +170,7 @@ public class TelegramBot implements Bot, LongPollingSingleThreadUpdateConsumer {
     }
 
     /**
-     * Переводит Telegram-сообщения в наши сообщения
+     * Переводит Telegram-сообщения в наши сообщения.
      * @param message объект сообщения из TelegramBots
      * @return объект нашего универсального сообщения
      */

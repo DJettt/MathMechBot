@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Простой дискорд-бот, который принимает текстовые сообщения и составляет ответ
- * в зависимости от переданного ему при создании логического ядра (logicCore)
+ * в зависимости от переданного ему при создании логического ядра (logicCore).
  */
 public class DiscordBot extends ListenerAdapter implements Bot {
     private static final Logger LOGGER = LoggerFactory.getLogger(DiscordBot.class);
@@ -24,16 +24,18 @@ public class DiscordBot extends ListenerAdapter implements Bot {
     private JDA jda;
 
     /**
+     * Конструктор.
      * @param token токен Discord бота
      * @param core логическое ядро, обрабатывающее сообщения
      */
-    public DiscordBot(String token, LogicCore core){
+    public DiscordBot(String token, LogicCore core) {
         logicCore = core;
         botToken = token;
     }
 
     @Override
     public void start() {
+        //TODO: проверить на возникновение исключений
         jda = JDABuilder.createLight(botToken)
                 .addEventListeners(this)
                 .enableIntents(
@@ -67,6 +69,7 @@ public class DiscordBot extends ListenerAdapter implements Bot {
     }
 
     /**
+     * Создаёт объекты класса Message из дискордоских MessageReceivedEvent.
      * @param message полученное сообщение
      * @return то же сообщение в формате Message для общения с ядром
      */
@@ -75,8 +78,8 @@ public class DiscordBot extends ListenerAdapter implements Bot {
     }
 
     @Override
-    public void onMessageReceived(MessageReceivedEvent event){
-        if (event.getAuthor().isBot()){
+    public void onMessageReceived(MessageReceivedEvent event) {
+        if (event.getAuthor().isBot()) {
             return;
         }
         final Message msg = convertDiscordMessage(event.getMessage());

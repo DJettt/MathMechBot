@@ -15,11 +15,13 @@ public class EchoBotCore implements LogicCore {
 
     @Override
     public void processMessage(Message msg, Long chatId, Bot bot) {
-        // Нет текста, но есть картинки.
+        // Нет текста...
         if (msg.text() == null) {
+            // ...но есть картинки.
             if (!msg.images().isEmpty()) {
                 defaultHandler(msg, chatId, bot);
             }
+            // ...и картинок тоже нет.
             return;
         }
 
@@ -30,23 +32,27 @@ public class EchoBotCore implements LogicCore {
         }
     }
 
-
     /**
+     * Обрабатывает сообщения, не распознанные как заявленные команды.
      * @param inputMessage входящее сообщение
+     * @param chatId идентификатор чата отправителя
+     * @param bot бот, от которого пришло сообщение
      */
-    private void defaultHandler(Message inputMessage, Long chatId, Bot bot) {
+    private void defaultHandler(Message inputMessage, long chatId, Bot bot) {
         final Message answer = new Message(
                 (inputMessage.text() != null) ? ("Ты написал: " + inputMessage.text()) : null,
                 inputMessage.images());
         bot.sendMessage(answer, chatId);
     }
 
-
     /**
+     * Выдаёт справку.
      * @param inputMessage входящее сообщение с командой /help
+     * @param chatId идентификатор чата отправителя
+     * @param bot бот, от которого пришло сообщение
      */
     private void helpCommandHandler(Message inputMessage, Long chatId, Bot bot) {
-        String HELP_MESSAGE = """
+       final String HELP_MESSAGE = """
                 Привет, я эхо бот! Сейчас я расскажу как ты можешь со мной взаимодействовать.
                  \
                 Я пишу твое сообщение тебе обратно но добавляю фразу 'Ты написал:' в начало твоего сообщения!
