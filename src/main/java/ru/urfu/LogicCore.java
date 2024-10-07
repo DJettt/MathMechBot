@@ -1,7 +1,7 @@
 package ru.urfu;
 
 /**
- * Абстрактный класс логического ядра
+ * Абстрактный класс логического ядра.
  */
 public abstract class LogicCore {
     /**

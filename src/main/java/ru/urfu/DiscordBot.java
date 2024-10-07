@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Простой дискорд-бот, который принимает текстовые сообщения и составляет ответ
- * в зависимости от переданного ему при создании логического ядра (logicCore)
+ * в зависимости от переданного ему при создании логического ядра (logicCore).
  */
 public class DiscordBot extends ListenerAdapter implements Bot {
     private static final Logger LOGGER = LoggerFactory.getLogger(DiscordBot.class);
@@ -27,10 +27,11 @@ public class DiscordBot extends ListenerAdapter implements Bot {
     private JDA jda;
 
     /**
+     * Конструктор.
      * @param token токен Discord бота
      * @param core логическое ядро, обрабатывающее сообщения
      */
-    public DiscordBot(String token, LogicCore core){
+    public DiscordBot(String token, LogicCore core) {
         logicCore = core;
         botToken = token;
     }
@@ -53,8 +54,7 @@ public class DiscordBot extends ListenerAdapter implements Bot {
         LOGGER.info("Discord bot successfully started!");
     }
 
-    /**
-     *
+    /*
      * Для бота сообщение в текстовом канале НА СЕРВЕРЕ используется TextChannel
      * а для использования в ЛИЧНОМ СООБЩЕНИИ используется PrivateChannel
      * (я до конца не разобрался почему именно сейчас это работает только так,
@@ -92,6 +92,7 @@ public class DiscordBot extends ListenerAdapter implements Bot {
     }
 
     /**
+     * Создаёт объекты класса Message из дискордоских MessageReceivedEvent.
      * @param event ивент сообщения
      * @return то же сообщение в формате Message для общения с ядром
      */
@@ -130,15 +131,14 @@ public class DiscordBot extends ListenerAdapter implements Bot {
      * @param event содержит всю информацию об обновлениях в чате.
      */
     @Override
-    public void onMessageReceived(MessageReceivedEvent event){
-        if (event.getAuthor().isBot()){
+    public void onMessageReceived(MessageReceivedEvent event) {
+        if (event.getAuthor().isBot()) {
             return;
         }
         LocalMessage msg = createFromDiscordMessage(event);
         final LocalMessage response = logicCore.processMessage(msg);
         sendMessage(response, event.getChannel().getIdLong());
-    }
-
+        }
     /**
      * Отслеживает взаимодействия с кнопками.
      * @param event содержит всю информацию об обновлениях.

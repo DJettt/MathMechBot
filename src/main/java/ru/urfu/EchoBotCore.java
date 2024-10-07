@@ -48,6 +48,7 @@ public class EchoBotCore extends LogicCore {
     }
 
     /**
+     * Обрабатывает сообщения, не распознанные как заявленные команды.
      * @param inputMessage входящее сообщение
      * @return ответ на сообщение
      */
@@ -56,6 +57,7 @@ public class EchoBotCore extends LogicCore {
     }
 
     /**
+     * Выдаёт справку.
      * @param inputMessage входящее сообщение с командой /help
      * @return ответ на сообщение (содержит справку)
      */

@@ -1,6 +1,18 @@
 package ru.urfu;
 
+/**
+ * Интерефейс бота, описывающий методы, которые ожидаются в каждом боте.
+ */
 public interface Bot {
+    /**
+     * Запускает бота.
+     */
     void start();
-    void sendMessage(LocalMessage msg, Long id);
+
+    /**
+     * Отправляет сообщение.
+     * @param msg сообщение, которое требуется отправить
+     * @param id идентификатор получателя
+     */
+    void sendMessage(Message msg, Long id);
 }
