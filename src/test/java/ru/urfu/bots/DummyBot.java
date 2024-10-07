@@ -1,4 +1,6 @@
-package ru.urfu;
+package ru.urfu.bots;
+
+import ru.urfu.Message;
 
 import java.util.List;
 import java.util.Stack;

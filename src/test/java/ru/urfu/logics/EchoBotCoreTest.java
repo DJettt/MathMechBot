@@ -4,7 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
-import ru.urfu.DummyBot;
+import ru.urfu.bots.DummyBot;
 import ru.urfu.Message;
 import ru.urfu.MessageBuilder;
 
@@ -42,7 +42,6 @@ public final class EchoBotCoreTest {
         Assertions.assertEquals(HELP_MESSAGE_TEXT, bot.getOutcomingMessageList().getLast().text());
     }
 
-
     /**
      * Проверяем, что на сообщение /start логика отправляет справку
      */
@@ -53,7 +52,6 @@ public final class EchoBotCoreTest {
         logic.processMessage(request, 0L, bot);
         Assertions.assertEquals(HELP_MESSAGE_TEXT, bot.getOutcomingMessageList().getLast().text());
     }
-
 
     /**
      * Проверяем, что логика дублирует набор слов с префиксом "Ты написал: "
@@ -66,7 +64,6 @@ public final class EchoBotCoreTest {
         logic.processMessage(request, 0L, bot);
         Assertions.assertEquals("Ты написал: " + someText, bot.getOutcomingMessageList().getLast().text());
     }
-
 
     /**
      * Проверяем, что на сообщение без текста логика отвечает ничем (вместо Message -- null)

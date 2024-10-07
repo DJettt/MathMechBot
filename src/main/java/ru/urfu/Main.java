@@ -3,6 +3,9 @@ package ru.urfu;
 import java.lang.reflect.Constructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.urfu.bots.Bot;
+import ru.urfu.bots.DiscordBot;
+import ru.urfu.bots.TelegramBot;
 import ru.urfu.logics.LogicCore;
 import ru.urfu.logics.MathMechBotCore;
 

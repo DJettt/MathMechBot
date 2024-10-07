@@ -1,6 +1,6 @@
 package ru.urfu.logics;
 
-import ru.urfu.Bot;
+import ru.urfu.bots.Bot;
 import ru.urfu.Message;
 
 /**

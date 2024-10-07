@@ -1,6 +1,6 @@
 package ru.urfu.logics;
 
-import ru.urfu.Bot;
+import ru.urfu.bots.Bot;
 import ru.urfu.Message;
 import ru.urfu.models.User;
 import ru.urfu.models.UserEntry;
