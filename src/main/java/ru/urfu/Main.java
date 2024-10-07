@@ -3,6 +3,8 @@ package ru.urfu;
 import java.lang.reflect.Constructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.urfu.logics.LogicCore;
+import ru.urfu.logics.EchoBotCore;
 
 /**
  * Основной класс для запуска приложения.

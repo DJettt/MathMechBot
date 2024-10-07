@@ -3,6 +3,7 @@ package ru.urfu;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
+import ru.urfu.logics.EchoBotCore;
 
 /**
  * Тесты логики эхо-бота

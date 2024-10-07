@@ -12,6 +12,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.urfu.logics.LogicCore;
 
 /**
  * Простой дискорд-бот, который принимает текстовые сообщения и составляет ответ

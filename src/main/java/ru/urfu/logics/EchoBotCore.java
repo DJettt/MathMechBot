@@ -1,12 +1,14 @@
-package ru.urfu;
+package ru.urfu.logics;
 
+
+import ru.urfu.Message;
 
 /**
  * Логическое ядро эхо-бота.
  * Отправляет назад несколько изменённое сообщение пользователя).
  * Обрабатывает команды /help и /start, отвечая на них справкой.
  */
-public class EchoBotCore extends LogicCore {
+public class EchoBotCore implements LogicCore {
     @Override
     public Message processMessage(Message msg) {
         if (msg.getText() != null) {
