@@ -7,7 +7,7 @@ import java.util.List;
  */
 public class LocalMessage {
     private final String text;
-    private final List<List<LocalButton>> buttons;
+    private final List<LocalButton> buttons;
 
     /**
      * Конструктор по сообщению.
@@ -23,7 +23,7 @@ public class LocalMessage {
      * @param messageText текст сообщения
      * @param buttons все кнопки, которые должны присутствовать в сообщении
      */
-    public LocalMessage(String messageText, List<List<LocalButton>> buttons) {
+    public LocalMessage(String messageText, List<LocalButton> buttons) {
         text = messageText;
         this.buttons = buttons;
     }
@@ -48,7 +48,7 @@ public class LocalMessage {
      * Геттер поля buttons.
      * @return содержимое поля buttons
      */
-    public List<List<LocalButton>> getButtons() {
+    public List<LocalButton> getButtons() {
         return buttons;
     }
 }

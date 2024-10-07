@@ -1,5 +1,6 @@
 package ru.urfu;
 
+import static java.lang.Math.sqrt;
 import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
@@ -71,6 +72,36 @@ public class TelegramBot implements LongPollingSingleThreadUpdateConsumer, Bot {
     }
 
     /**
+     *  Разделяет список кнопок на строки кнопок определенного размера для более аккуратного вывода кнопок.
+     * @param buttons список кнопок
+     * @param sizeOfSquare количество кнопок, которое должно быть в строчке
+     * @return возвращает сетку кнопок нужного для вывода формата.
+     */
+    private ArrayList<List<LocalButton>> splitButtonList(List<LocalButton> buttons, int sizeOfSquare){
+        ArrayList<List<LocalButton>> splitedButtonList = new ArrayList<>();
+        int count = 0;
+        while (count < buttons.size()) {
+            List<LocalButton> buttonsRow = new ArrayList<>();
+            for (int i = 0; i < buttons.size() && i < sizeOfSquare && count < buttons.size(); i++) {
+                buttonsRow.add(buttons.get(count));
+                count++;
+            }
+            splitedButtonList.add(buttonsRow);
+        }
+        return splitedButtonList;
+    }
+
+    /**
+     *  Подсчитывает сколько кнопок должно быть в ряду в сообщении.
+     * @param listSize все кнопки, которые нужно добавить
+     * @return возвращает количество кнопок должно быть в ряду в сообщении.
+     */
+    private int calculateSizeOfSquare(int listSize){
+        return (int)sqrt(listSize) + 1;
+    }
+
+
+    /**
      * Создание кнопок после сообщения.
      * @param localButton информация об одной кнопке, которую нужно создать в сообщении
      * @return возвращает кнопку фаормата Telegram бота
@@ -82,28 +113,31 @@ public class TelegramBot implements LongPollingSingleThreadUpdateConsumer, Bot {
     }
 
     /**
-     * Создание кнопок.
+     * Создание ряда кнопок.
+     * @param localButtonList контейнер кнопок, который нужно создать
+     * @return возвращает готовый контейнер кнопок
+     */
+    private InlineKeyboardRow createButtonsRow(List<LocalButton> localButtonList) {
+        InlineKeyboardRow inlineKeyboardRow = new InlineKeyboardRow();
+        for (LocalButton btn : localButtonList) {
+            inlineKeyboardRow.add(createButton(btn));
+        }
+        return inlineKeyboardRow;
+    }
+
+    /**
+     * Создание сетки кнопок.
      * @param localButtons информация о кнопках, которые нужно вставить в сообщение
      * @return возвращает сетку кнопок
      */
-    private InlineKeyboardMarkup createButtons(List<List<LocalButton>> localButtons) {
+    private InlineKeyboardMarkup createButtons(List<LocalButton> localButtons) {
+        int size = calculateSizeOfSquare(localButtons.size());
+        ArrayList<List<LocalButton>> splitedButtonList = splitButtonList(localButtons, size);
         List<InlineKeyboardRow> keyboard = new ArrayList<>();
-
-        for (List<LocalButton> buttonRow : localButtons) {
-            if (!buttonRow.isEmpty()) { // проверка, что внутренний список не пустой
-                List<InlineKeyboardButton> inlineButtons = new ArrayList<>();
-                for (LocalButton localButton : buttonRow) {
-                    inlineButtons.add(createButton(localButton));
-                }
-                keyboard.add(new InlineKeyboardRow(inlineButtons));
-            }
+        for (List<LocalButton> localButtonRow : splitedButtonList){
+            keyboard.add(createButtonsRow(localButtonRow));
         }
-
-        if (keyboard.isEmpty()) {
-            return null;
-        } else {
-            return new InlineKeyboardMarkup(keyboard);
-        }
+        return new InlineKeyboardMarkup(keyboard);
     }
 
     /**
