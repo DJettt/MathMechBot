@@ -1,15 +1,18 @@
 package ru.urfu.logics;
 
+import ru.urfu.Bot;
 import ru.urfu.Message;
 
 /**
- * Абстрактный класс логического ядра.
+ * Интерфейс логического ядра.
  */
 public interface LogicCore {
     /**
      * Обработчик сообщений, возвращающий ответы на них.
+     * В процессе обработки может вызывать методы ботов, чтобы, например, отправлять сообщения.
      * @param msg сообщение, которое нужно обработать
-     * @return ответ на сообщение (null, если ответа нет)
+     * @param chatId id чата, от кого пришло сообщение
+     * @param bot бот, который получил сообщение
      */
-    Message processMessage(Message msg);
+    void processMessage(Message msg, long chatId, Bot bot);
 }

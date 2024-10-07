@@ -5,8 +5,7 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
-import net.dv8tion.jda.api.entities.channel.concrete.PrivateChannel;
-import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.GatewayIntent;
@@ -52,48 +51,38 @@ public class DiscordBot extends ListenerAdapter implements Bot {
         LOGGER.info("Discord bot successfully started!");
     }
 
-    /*
-     * Для бота сообщение в текстовом канале НА СЕРВЕРЕ используется TextChannel
-     * а для использования в ЛИЧНОМ СООБЩЕНИИ используется PrivateChannel
-     * (я до конца не разобрался почему именно сейчас это работает только так,
-     * так как до этого мы использовали только TextChannel и все работало корректно и там и там)
-     */
     @Override
     public void sendMessage(Message message, Long id) {
-        if (message.text() == null) {
+        MessageChannel channel = jda.getTextChannelById(id);
+        if (channel == null) {
+            channel = jda.getPrivateChannelById(id);
+        }
+
+        if (channel == null) {
+            LOGGER.warn("Couldn't find channel to send message to. Given ID: {}", id);
             return;
         }
 
-        final TextChannel textChannel = jda.getTextChannelById(id);
-
-        if (textChannel != null) {
-            textChannel.sendMessage(message.text()).queue();
-        } else {
-            final PrivateChannel privateChannel = jda.getPrivateChannelById(id);
-            if (privateChannel != null) {
-                privateChannel.sendMessage(message.text()).queue();
-            }
+        if (message.text() != null) {
+            channel.sendMessage(message.text()).queue();
         }
     }
 
     /**
      * Создаёт объекты класса Message из дискордоских MessageReceivedEvent.
-     * @param event ивент сообщения
+     * @param message полученное сообщение
      * @return то же сообщение в формате Message для общения с ядром
      */
-    private Message createFromDiscordMessage(MessageReceivedEvent event) {
-        return new Message(event.getMessage().getContentDisplay());
+    private Message convertDiscordMessage(net.dv8tion.jda.api.entities.Message message) {
+        return new Message(message.getContentDisplay());
     }
-
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
         if (event.getAuthor().isBot()) {
             return;
         }
-        Message msg = createFromDiscordMessage(event);
-        final Message response = logicCore.processMessage(msg);
-        sendMessage(response, event.getChannel().getIdLong());
-
+        final Message msg = convertDiscordMessage(event.getMessage());
+        logicCore.processMessage(msg, event.getChannel().getIdLong(), this);
     }
 }

@@ -18,6 +18,7 @@ public final class EchoBotCoreTest {
                 В любой момент ты можешь написать команду '/help' (без кавычек) и \
                 тогда я тебе напомню как со мной работать! Приятного использования!""";
 
+    private DummyBot bot;
     private LogicCore logic;
 
     /**
@@ -25,6 +26,7 @@ public final class EchoBotCoreTest {
      */
     @BeforeEach
     public void setupTest() {
+        bot = new DummyBot();
         logic = new EchoBotCore();
     }
 
@@ -34,9 +36,11 @@ public final class EchoBotCoreTest {
     @Test
     @DisplayName("Проверка команды /help")
     void helpCommandTest() {
-        final Message response = logic.processMessage(new Message("/help"));
-        Assertions.assertEquals(HELP_MESSAGE_TEXT, response.text());
+        final Message request = new MessageBuilder().text("/help").build();
+        logic.processMessage(request, 0L, bot);
+        Assertions.assertEquals(HELP_MESSAGE_TEXT, bot.getOutcomingMessageList().getLast().text());
     }
+
 
     /**
      * Проверяем, что на сообщение /start логика отправляет справку
@@ -44,9 +48,11 @@ public final class EchoBotCoreTest {
     @Test
     @DisplayName("Проверка команды /start")
     void startCommandTest() {
-        final Message response = logic.processMessage(new Message("/start"));
-        Assertions.assertEquals(HELP_MESSAGE_TEXT, response.text());
+        final Message request = new MessageBuilder().text("/start").build();
+        logic.processMessage(request, 0L, bot);
+        Assertions.assertEquals(HELP_MESSAGE_TEXT, bot.getOutcomingMessageList().getLast().text());
     }
+
 
     /**
      * Проверяем, что логика дублирует набор слов с префиксом "Ты написал: "
@@ -55,9 +61,11 @@ public final class EchoBotCoreTest {
     @DisplayName("Набор слов")
     void someTextTest() {
         final String someText = "Lorem Ipsum is simply dummy text of the printing and typesetting industry.";
-        final Message response = logic.processMessage(new Message(someText));
-        Assertions.assertEquals("Ты написал: " + someText, response.text());
+        final Message request = new MessageBuilder().text(someText).build();
+        logic.processMessage(request, 0L, bot);
+        Assertions.assertEquals("Ты написал: " + someText, bot.getOutcomingMessageList().getLast().text());
     }
+
 
     /**
      * Проверяем, что на сообщение без текста логика отвечает ничем (вместо Message -- null)
@@ -65,7 +73,8 @@ public final class EchoBotCoreTest {
     @Test
     @DisplayName("Сообщение без текста")
     void textIsNull() {
-        final Message response = logic.processMessage(new Message(null));
-        Assertions.assertNull(response);
+        final Message request = new MessageBuilder().build();
+        logic.processMessage(request, 0L, bot);
+        Assertions.assertTrue(bot.getOutcomingMessageList().isEmpty());
     }
 }
