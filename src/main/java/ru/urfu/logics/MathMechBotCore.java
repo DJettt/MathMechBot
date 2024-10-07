@@ -2,7 +2,15 @@ package ru.urfu.logics;
 
 import ru.urfu.Bot;
 import ru.urfu.Message;
+import ru.urfu.models.User;
+import ru.urfu.models.UserEntry;
+import ru.urfu.storages.ArrayStorage;
+import ru.urfu.storages.Storage;
 
+/**
+ * Логическое ядро бота, парсящего каналы в Telegram на предмет упоминания студентов.
+ * На данный момент просто сохраняет информацию о тех пользователях, чьи упоминания надо искать.
+ */
 public class MathMechBotCore implements LogicCore {
     final static String START_COMMAND = "/start";
     final static String HELP_COMMAND = "/help";
@@ -11,6 +19,23 @@ public class MathMechBotCore implements LogicCore {
     final static String EDIT_COMMAND = "/edit";
     final static String DELETE_COMMAND = "/delete";
     final static String BACK_COMMAND = "/back";
+
+    final static String USER_INFO_TEMPLATE = """
+            ФИО: %s %s %s
+            Направление: %s
+            Курс: %d
+            Группа: %d""";
+
+    final Storage<User, Long> users;
+    final Storage<UserEntry, Long> userEntries;
+
+    /**
+     * Конструктор.
+     */
+    public MathMechBotCore() {
+        users = new ArrayStorage<>();
+        userEntries = new ArrayStorage<>();
+    }
 
 
     @Override
