@@ -1,36 +1,12 @@
 package ru.urfu;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Объект, содержащий в себе все кнопки,
  * которые должны быть в сообщении бота.
+ * @param name текст в кнопке
+ * @param data информация, которая возвращается при нажатии на кнопку
  */
-public class LocalButton {
-    private final String name;
-    private final String data;
-
-    /**
-     * Конструктор.
-     * @param name имя на кнопке
-     * @param data возвращаемое значение
-     */
-    public LocalButton(String name, String data) {
-        this.name = name;
-        this.data = data;
-    }
-
-    /**
-     * Геттер поля name.
-     * @return содержимое поля name
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * Геттер поля data.
-     * @return содержимое поля data
-     */
-    public String getData() {
-        return data;
-    }
+public record LocalButton(@NotNull String name, @NotNull String data) {
 }

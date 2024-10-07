@@ -1,6 +1,5 @@
 package ru.urfu;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -8,55 +7,38 @@ import java.util.List;
  */
 public class LocalMessage {
     private final String text;
-    private final String MESSAGE_STATUS;
-    private final List<ArrayList<LocalButton>> buttons;
-    // TODO: возможность обрабатывать всякие приложения типа фото, музыки и так далее.
+    private final List<List<LocalButton>> buttons;
 
     /**
-     * Конструктор по строке.
+     * Конструктор по сообщению.
      * @param messageText текст сообщения
      */
     public LocalMessage(String messageText) {
         text = messageText;
-        MESSAGE_STATUS = "string_only";
-        buttons = null;
-        System.out.println("\u001B[31m" + "UNKNOWN LocalMessage.MESSAGE_STATUS" + "\u001B[0m");
-    }
-
-    /**
-     * Конструктор по строке и статусу.
-     * @param messageText текст сообщения
-     * @param status характеристика сообщения
-     */
-    public LocalMessage(String messageText, String status) {
-        text = messageText;
-        MESSAGE_STATUS = status;
         buttons = null;
     }
 
     /**
      * Перегрузка конструктора на случай если нужно будет передать информацию о кнопках в сообщении.
      * @param messageText текст сообщения
-     * @param status статус сообщения, которое сгенерировал Core
-     * @param btns все кнопки, которые должны присутствовать в сообщении
+     * @param buttons все кнопки, которые должны присутствовать в сообщении
      */
-    public LocalMessage(String messageText, String status, List<ArrayList<LocalButton>> btns) {
+    public LocalMessage(String messageText, List<List<LocalButton>> buttons) {
         text = messageText;
-        MESSAGE_STATUS = status;
-        buttons = btns;
+        this.buttons = buttons;
     }
 
     /**
      * Геттер поля MESSAGE_STATUS.
-     * @return содержимое поля MESSAGE_STATUS.
+     * @return содержимое поля MESSAGE_STATUS
      */
-    public String getStatus() {
-        return MESSAGE_STATUS;
+    public boolean hasButtons() {
+        return buttons != null;
     }
 
     /**
      * Геттер поля text.
-     * @return содержимое поля text.
+     * @return содержимое поля text
      */
     public String getText() {
         return text;
@@ -64,9 +46,9 @@ public class LocalMessage {
 
     /**
      * Геттер поля buttons.
-     * @return содержимое поля buttons.
+     * @return содержимое поля buttons
      */
-    public List<ArrayList<LocalButton>> getButtons() {
+    public List<List<LocalButton>> getButtons() {
         return buttons;
     }
 }

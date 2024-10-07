@@ -1,9 +1,9 @@
 package ru.urfu;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.telegram.telegrambots.client.okhttp.OkHttpTelegramClient;
 import org.telegram.telegrambots.longpolling.TelegramBotsLongPollingApplication;
 import org.telegram.telegrambots.longpolling.util.LongPollingSingleThreadUpdateConsumer;
@@ -14,6 +14,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
+
 
 /**
  * Простой телеграм-бот, который принимает текстовые сообщения и составляет ответ
@@ -72,12 +73,11 @@ public class TelegramBot implements LongPollingSingleThreadUpdateConsumer, Bot {
     /**
      * Создание кнопок после сообщения.
      * @param localButton информация об одной кнопке, которую нужно создать в сообщении
-     * @return возвращает кнопку формата Телеграма
+     * @return возвращает кнопку фаормата Telegram бота
      */
     private InlineKeyboardButton createButton(LocalButton localButton) {
-        InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton(" ");
-        inlineKeyboardButton.setText(localButton.getName());
-        inlineKeyboardButton.setCallbackData(localButton.getData());
+        InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton(localButton.name());
+        inlineKeyboardButton.setCallbackData(localButton.data());
         return inlineKeyboardButton;
     }
 
@@ -86,17 +86,15 @@ public class TelegramBot implements LongPollingSingleThreadUpdateConsumer, Bot {
      * @param localButtons информация о кнопках, которые нужно вставить в сообщение
      * @return возвращает сетку кнопок
      */
-    private InlineKeyboardMarkup createButtons(List<ArrayList<LocalButton>> localButtons) {
+    private InlineKeyboardMarkup createButtons(List<List<LocalButton>> localButtons) {
         List<InlineKeyboardRow> keyboard = new ArrayList<>();
 
-        for (ArrayList<LocalButton> buttonRow : localButtons) {
+        for (List<LocalButton> buttonRow : localButtons) {
             if (!buttonRow.isEmpty()) { // проверка, что внутренний список не пустой
                 List<InlineKeyboardButton> inlineButtons = new ArrayList<>();
-
                 for (LocalButton localButton : buttonRow) {
                     inlineButtons.add(createButton(localButton));
                 }
-
                 keyboard.add(new InlineKeyboardRow(inlineButtons));
             }
         }
@@ -116,42 +114,26 @@ public class TelegramBot implements LongPollingSingleThreadUpdateConsumer, Bot {
      * @return объект SendMessage, который можно отправлять
      */
     private SendMessage createFromMessage(LocalMessage msg, long chatId) {
-        switch (msg.getStatus()) {
-            case "text_only" -> {
-                return SendMessage
-                        .builder()
-                        .chatId(Long.valueOf(chatId))
-                        .text(msg.getText())
-                        .build();
-            }
-            case "text_with_buttons" -> {
-                return SendMessage
-                        .builder()
-                        .chatId(Long.valueOf(chatId))
-                        .replyMarkup(createButtons(msg.getButtons()))
-                        .text(msg.getText())
-                        .build();
-            }
-            default -> {
-                LOGGER.error("TelegramBot:: Incorrect LocalMessage status!");
-                return SendMessage
-                        .builder()
-                        .chatId(Long.valueOf(chatId))
-                        .text("Извините, произошла непредвиденная ошибка. Скоро все починим!")
-                        .build();
-            }
+        SendMessage.SendMessageBuilder<?, ?> sendMessage = SendMessage
+                .builder()
+                .chatId(chatId)
+                .text(msg.getText());
+        if (msg.hasButtons()) {
+            sendMessage = sendMessage.replyMarkup(createButtons(msg.getButtons()));
         }
+        return sendMessage.build();
     }
 
-    /**
-     * Переводит Telegram-сообщения в наши сообщения.
-     * @param message объект сообщения из TelegramBots
-     * @return объект нашего универсального сообщения
-     */
-    private LocalMessage createFromTelegramMessage(org.telegram.telegrambots.meta.api.objects.message.Message message) {
-        final String message_text = message.getText();
-        return new LocalMessage(message_text, sendBackStatusMessage());
-    }
+//    /**
+//     * Переводит Telegram-сообщения в наши сообщения.
+//     * @param message объект сообщения из TelegramBots
+//     * @return объект нашего универсального сообщения
+//     */
+//    private LocalMessage createFromTelegramMessage(org.telegram.telegrambots
+//    .meta.api.objects.message.Message message){
+//        String messageText = message.getText();
+//        return new LocalMessage(messageText);
+//    }
 
     /**
      * Принимает какое-либо обновление в чате с ботом.
@@ -160,43 +142,23 @@ public class TelegramBot implements LongPollingSingleThreadUpdateConsumer, Bot {
     @Override
     public void consume(Update update) {
         LocalMessage msg;
-        Long id = null;
+        long chatId;
+
         if (update.hasCallbackQuery()) {
-            msg = new LocalMessage(update.getCallbackQuery().getData(), sendBackStatusCallback());
-            id = update.getCallbackQuery().getMessage().getChatId();
+            msg = new LocalMessage(update.getCallbackQuery().getData());
+            chatId = update.getCallbackQuery().getMessage().getChatId();
         } else if (update.hasMessage()) {
-            LOGGER.info(update.getMessage().getText());
-            msg = new LocalMessage(update.getMessage().getText(), sendBackStatusMessage());
-            id = update.getMessage().getChatId();
+            msg = new LocalMessage(update.getMessage().getText());
+            chatId = update.getMessage().getChatId();
         } else {
-            msg = new LocalMessage(null);
             LOGGER.error("Unknown message type!");
+            return;
         }
-        final long chatId = id;
+
         final LocalMessage response = logicCore.processMessage(msg);
         if (response == null) {
             return;
         }
-        sendMessage(response, Long.valueOf(chatId));
-    }
-
-    //TODO: эту и подобные функции было бы лучше сделать по-другому
-    /**
-     * Возвращает назад статус о том, что информация получена из callBackQuery.
-     * @return статус для ядра в виде строки
-     */
-    private String sendBackStatusCallback() {
-        final String STATUS_CALLBACK = "button_interaction";
-        return STATUS_CALLBACK;
-    }
-
-    /**
-     * Возвращает назад статус о том, что информация получена из Message.
-     * То есть бот получил обычное сообщение.
-     * @return статус для ядра в виде строки
-     */
-    private String sendBackStatusMessage() {
-        final String STATUS_CALLBACK = "message";
-        return STATUS_CALLBACK;
+        sendMessage(response, chatId);
     }
 }

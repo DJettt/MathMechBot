@@ -13,6 +13,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.requests.GatewayIntent;
+import net.dv8tion.jda.api.requests.restaction.MessageCreateAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,30 +65,21 @@ public class DiscordBot extends ListenerAdapter implements Bot {
     public void sendMessage(LocalMessage message, Long id) {
         final TextChannel textChannel = jda.getTextChannelById(id);
         final PrivateChannel privateChannel = jda.getPrivateChannelById(id);
+
         if (textChannel != null) {
-            switch (message.getStatus()) {
-                case "text_only" ->
-                    textChannel.sendMessage(message.getText()).queue();
-                case "text_with_buttons" -> textChannel.sendMessage(message.getText())
-                        .setActionRow(createButtons(message.getButtons())).queue();
-                default -> {
-                    LOGGER.error("DiscordBot:: Incorrect LocalMessage status!");
-                    textChannel.sendMessage("Извините, произошла непредвиденная ошибка. Скоро все починим!").queue();
-                }
+            MessageCreateAction messageCreateAction = textChannel.sendMessage(message.getText());
+            if (message.hasButtons()) {
+                messageCreateAction = messageCreateAction.setActionRow(createButtons(message.getButtons()));
             }
+            messageCreateAction.queue();
         } else if (privateChannel != null) {
-            switch (message.getStatus()) {
-                case "text_only" ->
-                        privateChannel.sendMessage(message.getText()).queue();
-                case "text_with_buttons" -> privateChannel.sendMessage(message.getText())
-                        .setActionRow(createButtons(message.getButtons())).queue();
-                default -> {
-                    LOGGER.error("DiscordBot:: Incorrect LocalMessage status!");
-                    privateChannel.sendMessage("Извините, произошла непредвиденная ошибка. Скоро все починим!").queue();
-                }
+            MessageCreateAction messageCreateAction = privateChannel.sendMessage(message.getText());
+            if (message.hasButtons()) {
+                messageCreateAction = messageCreateAction.setActionRow(createButtons(message.getButtons()));
             }
+            messageCreateAction.queue();
         } else {
-            LOGGER.error("DiscordBot:: Unknown message source!");
+            LOGGER.warn("Unknown message source!");
         }
     }
 
@@ -97,7 +89,7 @@ public class DiscordBot extends ListenerAdapter implements Bot {
      * @return то же сообщение в формате Message для общения с ядром
      */
     private LocalMessage createFromDiscordMessage(MessageReceivedEvent event) {
-        return new LocalMessage(event.getMessage().getContentDisplay(), sendBackStatusMessage());
+        return new LocalMessage(event.getMessage().getContentDisplay());
     }
 
     /**
@@ -106,22 +98,23 @@ public class DiscordBot extends ListenerAdapter implements Bot {
      * @return возвращает кнопку формата Discord
      */
     private Button createButton(LocalButton btn) {
-        return Button.primary(btn.getData(), btn.getName());
+        return Button.primary(btn.data(), btn.name());
     }
 
     /**
      * Создает кнопки в сообщении.
-     * @param btn локальные кнопки, которые ядро отправило боту.
+     * @param buttonGrid локальные кнопки, которые ядро отправило боту.
      * @return возвращает готовые кнопки в нужном формате для бота в Discord.
      */
-    private ArrayList<Button> createButtons(List<ArrayList<LocalButton>> btn) {
-        ArrayList<LocalButton> localButtons = new ArrayList<>();
-        for (ArrayList<LocalButton> buttonsRow : btn) {
-            localButtons.addAll(buttonsRow);
+    private List<Button> createButtons(List<List<LocalButton>> buttonGrid) {
+        final List<LocalButton> localButtons = new ArrayList<>();
+        for (List<LocalButton> buttonRow : buttonGrid) {
+            localButtons.addAll(buttonRow);
         }
-        ArrayList<Button> buttons = new ArrayList<>();
-        for (LocalButton localBtn : localButtons) {
-            buttons.add(createButton(localBtn));
+
+        final List<Button> buttons = new ArrayList<>();
+        for (LocalButton localButton : localButtons) {
+            buttons.add(createButton(localButton));
         }
         return buttons;
     }
@@ -144,43 +137,10 @@ public class DiscordBot extends ListenerAdapter implements Bot {
      * Отслеживает взаимодействия с кнопками.
      * @param event содержит всю информацию об обновлениях.
      */
+    @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {
-        LocalMessage msg;
-        Long id = event.getChannelIdLong();
-        if (event.getButton().getId().equals("button_1")) {
-            msg = new LocalMessage(event.getButton().getId(), sendBackStatusCallback());
-            LocalMessage response = logicCore.processMessage(msg);
-            sendMessage(response, id);
-        } else if (event.getButton().getId().equals("/help")) {
-            msg = new LocalMessage(event.getButton().getId(), sendBackStatusCallback());
-            LocalMessage response = logicCore.processMessage(msg);
-            sendMessage(response, id);
-        } else if (event.getButton().getId().equals("button_3")) {
-            msg = new LocalMessage(event.getButton().getId(), sendBackStatusCallback());
-            LocalMessage response = logicCore.processMessage(msg);
-            sendMessage(response, id);
-        } else {
-            LOGGER.error("DiscordBot :: Incorrect button id!");
-        }
-    }
-
-    //TODO: эту и подобные функции было бы лучше сделать по-другому
-    /**
-     * Возвращает назад статус о том, что информация получена из callBackQuery.
-     * @return статус
-     */
-    private String sendBackStatusCallback() {
-        final String STATUS_CALLBACK = "button_interaction";
-        return STATUS_CALLBACK;
-    }
-
-    /**
-     * Возвращает назад статус о том, что информация получена из Message.
-     * То есть бот получил обычное сообщение.
-     * @return статус
-     */
-    private String sendBackStatusMessage() {
-        final String STATUS_CALLBACK = "message";
-        return STATUS_CALLBACK;
+        LocalMessage msg = new LocalMessage(event.getButton().getId());
+        LocalMessage response = logicCore.processMessage(msg);
+        sendMessage(response, event.getChannelIdLong());
     }
 }
