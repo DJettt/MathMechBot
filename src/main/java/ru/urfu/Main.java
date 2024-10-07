@@ -28,6 +28,7 @@ public class Main {
             LOGGER.error("Error during starting of the bot", e);
         }
     }
+
     public static void main(String[] args) {
         final LogicCore logicCore = new EchoBotCore();
         startBot(logicCore, "TGMATHMECHBOT_TOKEN", TelegramBot.class);

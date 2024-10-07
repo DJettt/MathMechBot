@@ -1,27 +1,28 @@
 package ru.urfu;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.io.File;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
 
 public final class MessageBuilder {
     private String text;
-    private List<File> images;
+    private List<BufferedImage> images;
 
     public MessageBuilder() {
         text = null;
         images = new ArrayList<>();
     }
 
-    public MessageBuilder text(String text) {
+    public MessageBuilder text(@Nullable String text) {
         this.text = text;
         return this;
     }
 
-    public MessageBuilder images(@NotNull List<File> images) {
+    public MessageBuilder images(@NotNull List<BufferedImage> images) {
         this.images = images;
         return this;
     }

@@ -1,5 +1,6 @@
 package ru.urfu;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
@@ -15,6 +16,17 @@ public final class EchoBotCoreTest {
                 В любой момент ты можешь написать команду '/help' (без кавычек) и \
                 тогда я тебе напомню как со мной работать! Приятного использования!""";
 
+    private DummyBot bot;
+    private LogicCore logic;
+
+    /**
+     * Создаём объект логики и ложного бота для каждого теста.
+     */
+    @BeforeEach
+    public void setupTest() {
+        bot = new DummyBot();
+        logic = new EchoBotCore();
+    }
 
     /**
      * Проверяем, что на сообщение /help логика отправляет справку
@@ -23,8 +35,8 @@ public final class EchoBotCoreTest {
     @DisplayName("Проверка команды /help")
     void helpCommandTest() {
         final Message request = new MessageBuilder().text("/help").build();
-        final Message response = new EchoBotCore().processMessage(request, 0L, new DummyBot());
-        Assertions.assertEquals(HELP_MESSAGE_TEXT, response.text());
+        logic.processMessage(request, 0L, bot);
+        Assertions.assertEquals(HELP_MESSAGE_TEXT, bot.getOutcomingMessageList().getLast().text());
     }
 
 
@@ -35,8 +47,8 @@ public final class EchoBotCoreTest {
     @DisplayName("Проверка команды /start")
     void startCommandTest() {
         final Message request = new MessageBuilder().text("/start").build();
-        final Message response = new EchoBotCore().processMessage(request, 0L, new DummyBot());
-        Assertions.assertEquals(HELP_MESSAGE_TEXT, response.text());
+        logic.processMessage(request, 0L, bot);
+        Assertions.assertEquals(HELP_MESSAGE_TEXT, bot.getOutcomingMessageList().getLast().text());
     }
 
 
@@ -48,8 +60,8 @@ public final class EchoBotCoreTest {
     void someTextTest() {
         final String someText = "Lorem Ipsum is simply dummy text of the printing and typesetting industry.";
         final Message request = new MessageBuilder().text(someText).build();
-        final Message response = new EchoBotCore().processMessage(request, 0L, new DummyBot());
-        Assertions.assertEquals("Ты написал: " + someText, response.text());
+        logic.processMessage(request, 0L, bot);
+        Assertions.assertEquals("Ты написал: " + someText, bot.getOutcomingMessageList().getLast().text());
     }
 
 
@@ -60,7 +72,7 @@ public final class EchoBotCoreTest {
     @DisplayName("Сообщение без текста")
     void textIsNull() {
         final Message request = new MessageBuilder().build();
-        final Message response = new EchoBotCore().processMessage(request, 0L, new DummyBot());
-        Assertions.assertNull(response);
+        logic.processMessage(request, 0L, bot);
+        Assertions.assertTrue(bot.getOutcomingMessageList().isEmpty());
     }
 }
