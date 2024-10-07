@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Класс сообщения, объектами которого общаются боты и логическое ядро
+ * Класс сообщения, объектами которого общаются боты и логическое ядро.
  */
 public class LocalMessage {
     private final String text;
@@ -13,6 +13,7 @@ public class LocalMessage {
     // TODO: возможность обрабатывать всякие приложения типа фото, музыки и так далее.
 
     /**
+     * Конструктор по строке.
      * @param messageText текст сообщения
      */
     public LocalMessage(String messageText) {
@@ -21,7 +22,9 @@ public class LocalMessage {
         buttons = null;
         System.out.println("\u001B[31m" + "UNKNOWN LocalMessage.MESSAGE_STATUS" + "\u001B[0m");
     }
+
     /**
+     * Конструктор по строке и статусу.
      * @param messageText текст сообщения
      * @param status характеристика сообщения
      */
@@ -44,21 +47,26 @@ public class LocalMessage {
     }
 
     /**
-     * Геттер поля MESSAGE_STATUS
-     * @return содержимое поля MESSAGE_STATUS
+     * Геттер поля MESSAGE_STATUS.
+     * @return содержимое поля MESSAGE_STATUS.
      */
-    public String getStatus(){ return MESSAGE_STATUS; }
+    public String getStatus() {
+        return MESSAGE_STATUS;
+    }
+
     /**
-     * Геттер поля text
-     * @return содержимое поля text
+     * Геттер поля text.
+     * @return содержимое поля text.
      */
     public String getText() {
         return text;
     }
 
     /**
-     * Геттер поля buttons
-     * @return содержимое поля buttons
+     * Геттер поля buttons.
+     * @return содержимое поля buttons.
      */
-    public List<ArrayList<LocalButton>> getButtons(){ return buttons; }
+    public List<ArrayList<LocalButton>> getButtons() {
+        return buttons;
+    }
 }

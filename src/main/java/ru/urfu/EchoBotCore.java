@@ -6,18 +6,22 @@ import java.util.List;
 
 /**
  * Логическое ядро эхо-бота.
- * Отправляет назад несколько изменённое сообщение пользователя).
+ * Отправляет назад несколько изменённое сообщение пользователя.
  * Обрабатывает команды /help и /start, отвечая на них справкой.
  */
 public class EchoBotCore extends LogicCore {
     //TODO: нужно придумать, как глобально хранить все статусы.
     private final String MESSAGE_STATUS_TEXT_ONLY = "text_only";
     private final String MESSAGE_STATUS_TEXT_WITH_BUTTONS = "text_with_buttons";
+
+    /**
+     * Пустой конструктор.
+     */
     public EchoBotCore() {}
 
     /**
      * Обрабатывает всю информацию, полученную с ботов.
-     * @param msg сообщение, которое нужно обработать
+     * @param msg сообщение, которое нужно обработать.
      * @return возвращает команду ботам, что отправлять в ответ.
      */
     @Override
@@ -27,12 +31,12 @@ public class EchoBotCore extends LogicCore {
                 case "message" -> {
                     return switch (msg.getText()) {
                         case "/help", "/start" -> helpCommandHandler(msg);
-                        case "/buttons" -> checkButtons(msg);
+                        case "/buttons" -> checkButtons();
                     default -> defaultHandler(msg);
                 };
                 }
-                case "callback_query"->{
-                    return switch (msg.getText()){
+                case "button_interaction" -> {
+                    return switch (msg.getText()) {
                         case "button_1" -> new LocalMessage("Была нажата кнопка 1", MESSAGE_STATUS_TEXT_ONLY);
                         case "button_3" ->  new LocalMessage("Была нажата кнопка 3", MESSAGE_STATUS_TEXT_ONLY);
                         case "/help" -> helpCommandHandler(msg);
@@ -42,15 +46,15 @@ public class EchoBotCore extends LogicCore {
                 default -> {
                     System.out.println("\u001B[31m" + "UNKNOWN LocalMessage.MESSAGE_STATUS" + "\u001B[0m");
                 }
-            };
+            }
         }
         return null;
     }
 
     /**
      * Обрабатывает сообщения, не распознанные как заявленные команды.
-     * @param inputMessage входящее сообщение
-     * @return ответ на сообщение
+     * @param inputMessage входящее сообщение.
+     * @return ответ на сообщение.
      */
     private LocalMessage defaultHandler(LocalMessage inputMessage) {
         return new LocalMessage("Ты написал: " + inputMessage.getText(), MESSAGE_STATUS_TEXT_ONLY);
@@ -58,11 +62,11 @@ public class EchoBotCore extends LogicCore {
 
     /**
      * Выдаёт справку.
-     * @param inputMessage входящее сообщение с командой /help
-     * @return ответ на сообщение (содержит справку)
+     * @param inputMessage входящее сообщение с командой /help.
+     * @return ответ на сообщение (содержит справку).
      */
     private LocalMessage helpCommandHandler(LocalMessage inputMessage) {
-        String HELP_MESSAGE = """
+        final String HELP_MESSAGE = """
                 Привет, я эхо бот! Сейчас я расскажу как ты можешь со мной взаимодействовать.\n
                 Пассивная способность: Я пишу твое сообщение тебе обратно но добавляю фразу 'Ты написал:' в начало твоего сообщения!\n
                 /help - Показать доступные команды.
@@ -74,8 +78,9 @@ public class EchoBotCore extends LogicCore {
 
     /**
      * Отдельный метод для проверки работы кнопок в сообщении.
+     * @return возвращает сообщение с кнопками, которое бот должен отправить пользователю
      */
-    private LocalMessage checkButtons(LocalMessage inputMessage){
+    private LocalMessage checkButtons() {
         List<ArrayList<LocalButton>> btns = new ArrayList<>();
         ArrayList<LocalButton> buttonList = new ArrayList<>();
         buttonList.add(new LocalButton("Кнопка номер 1", "button_1"));

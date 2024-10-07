@@ -9,7 +9,7 @@ public class LocalButton {
     private final String data;
 
     /**
-     * Конструктор
+     * Конструктор.
      * @param name имя на кнопке
      * @param data возвращаемое значение
      */
@@ -19,18 +19,18 @@ public class LocalButton {
     }
 
     /**
-     * Геттер поля name
+     * Геттер поля name.
      * @return содержимое поля name
      */
-    public String getName(){
+    public String getName() {
         return name;
     }
 
     /**
-     * Геттер поля data
+     * Геттер поля data.
      * @return содержимое поля data
      */
-    public String getData(){
+    public String getData() {
         return data;
     }
 }
