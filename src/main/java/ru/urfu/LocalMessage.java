@@ -17,9 +17,9 @@ public class LocalMessage {
      */
     public LocalMessage(String messageText) {
         text = messageText;
-        //TODO: костыль, чтобы Discord бот продолжал работать
-        MESSAGE_STATUS = "message";
+        MESSAGE_STATUS = "string_only";
         buttons = null;
+        System.out.println("\u001B[31m" + "UNKNOWN LocalMessage.MESSAGE_STATUS" + "\u001B[0m");
     }
     /**
      * @param messageText текст сообщения

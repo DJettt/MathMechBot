@@ -80,6 +80,6 @@ public class EchoBotCore extends LogicCore {
         buttonList.add(new LocalButton("/help",          "/help"));
         buttonList.add(new LocalButton("Кнопка номер 3", "button_3"));
         btns.add(buttonList);
-        return new LocalMessage("Ты написал: " + inputMessage.getText(),MESSAGE_STATUS_TEXT_WITH_BUTTONS, btns);
+        return new LocalMessage("О, ты решил протестировать то, как работают кнопки!", MESSAGE_STATUS_TEXT_WITH_BUTTONS, btns);
     }
 }

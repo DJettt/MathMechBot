@@ -115,23 +115,23 @@ public class TelegramBot implements LongPollingSingleThreadUpdateConsumer, Bot {
             case "text_only" -> {
                 return SendMessage
                         .builder()
-                        .chatId(chatId)
+                        .chatId(Long.valueOf(chatId))
                         .text(msg.getText())
                         .build();
             }
             case "text_with_buttons" -> {
                 return SendMessage
                         .builder()
-                        .chatId(chatId)
+                        .chatId(Long.valueOf(chatId))
                         .replyMarkup(createButtons(msg.getButtons()))
                         .text(msg.getText())
                         .build();
             }
             default -> {
-                LOGGER.error("Incorrect LocalMessage status!");
+                LOGGER.error("TelegramBot:: Incorrect LocalMessage status!");
                 return SendMessage
                         .builder()
-                        .chatId(chatId)
+                        .chatId(Long.valueOf(chatId))
                         .text("Извините, произошла непредвиденная ошибка. Скоро все починим!")
                         .build();
             }
@@ -145,7 +145,7 @@ public class TelegramBot implements LongPollingSingleThreadUpdateConsumer, Bot {
      */
     private LocalMessage createFromTelegramMessage(org.telegram.telegrambots.meta.api.objects.message.Message message) {
         String message_text = message.getText();
-        return new LocalMessage(message_text);
+        return new LocalMessage(message_text, sendBackStatusMessage());
     }
 
     /**
@@ -173,7 +173,7 @@ public class TelegramBot implements LongPollingSingleThreadUpdateConsumer, Bot {
         if (response == null) {
             return;
         }
-        sendMessage(response, chatId);
+        sendMessage(response, Long.valueOf(chatId));
     }
 
     //TODO: эту и подобные функции было бы лучше сделать по-другому
