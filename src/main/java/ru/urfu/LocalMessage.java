@@ -3,13 +3,14 @@ package ru.urfu;
 import java.util.List;
 
 /**
- * Класс сообщения, объектами которого общаются боты и логическое ядро
+ * Класс сообщения, объектами которого общаются боты и логическое ядро.
  */
 public class LocalMessage {
     private final String text;
     private final List<List<LocalButton>> buttons;
 
     /**
+     * Конструктор по сообщению.
      * @param messageText текст сообщения
      */
     public LocalMessage(String messageText) {
@@ -28,7 +29,7 @@ public class LocalMessage {
     }
 
     /**
-     * Геттер поля MESSAGE_STATUS
+     * Геттер поля MESSAGE_STATUS.
      * @return содержимое поля MESSAGE_STATUS
      */
     public boolean hasButtons() {
@@ -36,7 +37,7 @@ public class LocalMessage {
     }
 
     /**
-     * Геттер поля text
+     * Геттер поля text.
      * @return содержимое поля text
      */
     public String getText() {
@@ -44,8 +45,10 @@ public class LocalMessage {
     }
 
     /**
-     * Геттер поля buttons
+     * Геттер поля buttons.
      * @return содержимое поля buttons
      */
-    public List<List<LocalButton>> getButtons() { return buttons; }
+    public List<List<LocalButton>> getButtons() {
+        return buttons;
+    }
 }

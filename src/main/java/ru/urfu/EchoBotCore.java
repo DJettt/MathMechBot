@@ -1,15 +1,18 @@
 package ru.urfu;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Логическое ядро эхо-бота.
- * Отправляет назад несколько изменённое сообщение пользователя).
+ * Отправляет назад несколько изменённое сообщение пользователя.
  * Обрабатывает команды /help и /start, отвечая на них справкой.
  */
 public class EchoBotCore extends LogicCore {
+
+    /**
+     * Пустой конструктор.
+     */
     public EchoBotCore() {}
 
     /**
@@ -22,7 +25,7 @@ public class EchoBotCore extends LogicCore {
         if (msg.getText() != null) {
             return switch (msg.getText()) {
                 case "/help", "/start" -> helpCommandHandler(msg);
-                case "/buttons" -> buttonsCommandHandler(msg);
+                case "/buttons" -> buttonsCommandHandler();
                 case "button_1" -> new LocalMessage("Была нажата кнопка 1");
                 case "button_3" ->  new LocalMessage("Была нажата кнопка 3");
                 default -> defaultHandler(msg);
@@ -45,8 +48,9 @@ public class EchoBotCore extends LogicCore {
      * @param inputMessage входящее сообщение с командой /help
      * @return ответ на сообщение (содержит справку)
      */
+    @SuppressWarnings("LineLength")
     private LocalMessage helpCommandHandler(LocalMessage inputMessage) {
-        String HELP_MESSAGE = """
+        final String HELP_MESSAGE = """
                 Привет, я эхо бот! Сейчас я расскажу как ты можешь со мной взаимодействовать.\n
                 Пассивная способность: Я пишу твое сообщение тебе обратно но добавляю фразу 'Ты написал:' в начало твоего сообщения!\n
                 /help - Показать доступные команды.
@@ -58,8 +62,9 @@ public class EchoBotCore extends LogicCore {
 
     /**
      * Отдельный метод для проверки работы кнопок в сообщении.
+     * @return возвращает сообщение для отправки пользователю.
      */
-    private LocalMessage buttonsCommandHandler(LocalMessage inputMessage) {
+    private LocalMessage buttonsCommandHandler() {
         List<List<LocalButton>> buttonGrid = new ArrayList<>();
         List<LocalButton> buttonRow = new ArrayList<>();
 

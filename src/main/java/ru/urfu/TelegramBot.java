@@ -1,5 +1,7 @@
 package ru.urfu;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.telegram.telegrambots.client.okhttp.OkHttpTelegramClient;
@@ -12,9 +14,6 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**
@@ -44,7 +43,7 @@ public class TelegramBot implements LongPollingSingleThreadUpdateConsumer, Bot {
      * Запуск бота в отдельном потоке.
      */
     @Override
-    public void start(){
+    public void start() {
         new Thread(() -> {
             try {
                 botsApplication.registerBot(botToken, this);
@@ -58,12 +57,12 @@ public class TelegramBot implements LongPollingSingleThreadUpdateConsumer, Bot {
     }
 
     /**
-     * Отправление сообщения, формат которого содержится в msg
+     * Отправление сообщения, формат которого содержится в msg.
      * @param msg вся информация о том, что должно содержаться в сообщении
      * @param id id пользователя
      */
     @Override
-    public void sendMessage(LocalMessage msg, Long id){
+    public void sendMessage(LocalMessage msg, Long id) {
         try {
             telegramClient.execute(createFromMessage(msg, id));
         } catch (TelegramApiException e) {
@@ -74,6 +73,7 @@ public class TelegramBot implements LongPollingSingleThreadUpdateConsumer, Bot {
     /**
      * Создание кнопок после сообщения.
      * @param localButton информация об одной кнопке, которую нужно создать в сообщении
+     * @return возвращает кнопку фаормата Telegram бота
      */
     private InlineKeyboardButton createButton(LocalButton localButton) {
         InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton(localButton.name());
@@ -84,6 +84,7 @@ public class TelegramBot implements LongPollingSingleThreadUpdateConsumer, Bot {
     /**
      * Создание кнопок.
      * @param localButtons информация о кнопках, которые нужно вставить в сообщение
+     * @return возвращает сетку кнопок
      */
     private InlineKeyboardMarkup createButtons(List<List<LocalButton>> localButtons) {
         List<InlineKeyboardRow> keyboard = new ArrayList<>();
@@ -107,7 +108,7 @@ public class TelegramBot implements LongPollingSingleThreadUpdateConsumer, Bot {
 
     /**
      * Превращает наш LocalMessage в телеграмный SendMessage и
-     * по статусу LocalMessage определяет какой тип сообщения нужно отправить
+     * по статусу LocalMessage определяет какой тип сообщения нужно отправить.
      * @param msg объект нашего универсального сообщения
      * @param chatId id чата, куда надо отправить сообщение
      * @return объект SendMessage, который можно отправлять
@@ -128,7 +129,8 @@ public class TelegramBot implements LongPollingSingleThreadUpdateConsumer, Bot {
 //     * @param message объект сообщения из TelegramBots
 //     * @return объект нашего универсального сообщения
 //     */
-//    private LocalMessage createFromTelegramMessage(org.telegram.telegrambots.meta.api.objects.message.Message message) {
+//    private LocalMessage createFromTelegramMessage(org.telegram.telegrambots
+//    .meta.api.objects.message.Message message){
 //        String messageText = message.getText();
 //        return new LocalMessage(messageText);
 //    }

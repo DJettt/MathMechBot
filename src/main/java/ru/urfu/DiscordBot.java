@@ -72,15 +72,13 @@ public class DiscordBot extends ListenerAdapter implements Bot {
                 messageCreateAction = messageCreateAction.setActionRow(createButtons(message.getButtons()));
             }
             messageCreateAction.queue();
-        }
-        else if (privateChannel != null) {
+        } else if (privateChannel != null) {
             MessageCreateAction messageCreateAction = privateChannel.sendMessage(message.getText());
             if (message.hasButtons()) {
                 messageCreateAction = messageCreateAction.setActionRow(createButtons(message.getButtons()));
             }
             messageCreateAction.queue();
-        }
-        else {
+        } else {
             LOGGER.warn("Unknown message source!");
         }
     }
@@ -90,7 +88,7 @@ public class DiscordBot extends ListenerAdapter implements Bot {
      * @param event ивент сообщения
      * @return то же сообщение в формате Message для общения с ядром
      */
-    private LocalMessage createFromDiscordMessage(MessageReceivedEvent event){
+    private LocalMessage createFromDiscordMessage(MessageReceivedEvent event) {
         return new LocalMessage(event.getMessage().getContentDisplay());
     }
 
@@ -99,7 +97,7 @@ public class DiscordBot extends ListenerAdapter implements Bot {
      * @param btn кнопка, которую отправило ядро
      * @return возвращает кнопку формата Discord
      */
-    private Button createButton(LocalButton btn){
+    private Button createButton(LocalButton btn) {
         return Button.primary(btn.data(), btn.name());
     }
 
@@ -108,14 +106,14 @@ public class DiscordBot extends ListenerAdapter implements Bot {
      * @param buttonGrid локальные кнопки, которые ядро отправило боту.
      * @return возвращает готовые кнопки в нужном формате для бота в Discord.
      */
-    private List<Button> createButtons(List<List<LocalButton>> buttonGrid){
+    private List<Button> createButtons(List<List<LocalButton>> buttonGrid) {
         final List<LocalButton> localButtons = new ArrayList<>();
-        for (List<LocalButton> buttonRow : buttonGrid){
+        for (List<LocalButton> buttonRow : buttonGrid) {
             localButtons.addAll(buttonRow);
         }
 
         final List<Button> buttons = new ArrayList<>();
-        for (LocalButton localButton : localButtons){
+        for (LocalButton localButton : localButtons) {
             buttons.add(createButton(localButton));
         }
         return buttons;
