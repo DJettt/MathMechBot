@@ -14,5 +14,5 @@ public interface Bot {
      * @param msg сообщение, которое требуется отправить
      * @param id идентификатор получателя
      */
-    void sendMessage(Message msg, Long id);
+    void sendMessage(LocalMessage msg, Long id);
 }

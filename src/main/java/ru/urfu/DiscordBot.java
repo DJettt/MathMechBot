@@ -102,8 +102,8 @@ public class DiscordBot extends ListenerAdapter implements Bot {
 
     /**
      * Создает кнопку в нужном формате для бота Discord.
-     * @param btn
-     * @return
+     * @param btn кнопка, которую отправило ядро
+     * @return возвращает кнопку формата Discord
      */
     private Button createButton(LocalButton btn){
         return Button.primary(btn.getData(), btn.getName());
@@ -138,7 +138,7 @@ public class DiscordBot extends ListenerAdapter implements Bot {
         LocalMessage msg = createFromDiscordMessage(event);
         final LocalMessage response = logicCore.processMessage(msg);
         sendMessage(response, event.getChannel().getIdLong());
-        }
+    }
     /**
      * Отслеживает взаимодействия с кнопками.
      * @param event содержит всю информацию об обновлениях.
