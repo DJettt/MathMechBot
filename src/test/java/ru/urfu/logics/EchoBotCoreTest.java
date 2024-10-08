@@ -9,7 +9,7 @@ import ru.urfu.Message;
 import ru.urfu.MessageBuilder;
 
 /**
- * Тесты логики эхо-бота
+ * Тесты для класса EchoBotCore
  */
 public final class EchoBotCoreTest {
     final static String HELP_MESSAGE_TEXT = """

@@ -6,17 +6,17 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 /**
- * Тесты для класса ArrayStorage
+ * Тесты для класса HashMapStorage
  */
-class ArrayStorageTest {
-    private ArrayStorage<StringWithId, Integer> arrayStorage;
+class HashMapStorageTest {
+    private HashMapStorage<StringWithId, Integer> arrayStorage;
 
     /**
      * Создаём хранилище для каждого теста.
      */
     @BeforeEach
     void setupTest() {
-        arrayStorage = new ArrayStorage<>();
+        arrayStorage = new HashMapStorage<>();
     }
 
     /**
