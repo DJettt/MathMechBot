@@ -21,5 +21,9 @@ public interface Storage<T extends Identifiable<I>, I> {
      */
     T getById(I id);
 
-    void removeById(I chatId);
+    /**
+     * Удаляет элемент с данным идентификатором.
+     * @param id идентификатор.
+     */
+    void deleteById(I id);
 }

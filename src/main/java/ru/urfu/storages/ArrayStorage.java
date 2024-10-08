@@ -37,4 +37,19 @@ public class ArrayStorage<T extends Identifiable<I>, I> implements Storage<T, I>
         }
         return null;
     }
+
+    @Override
+    public void deleteById(I id) {
+        boolean changed = false;
+        int index = 0;
+        for (T t : array) {
+            if (changed = t.id().equals(id)) {
+                break;
+            }
+            ++index;
+        }
+        if (changed) {
+            array.remove(index);
+        }
+    }
 }

@@ -6,17 +6,17 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 /**
- * Тесты для класса ArrayStorage
+ * Тесты для класса HashMapStorage
  */
-class ArrayStorageTest {
-    private ArrayStorage<StringWithId, Integer> storage;
+class HashMapStorageTest {
+    private HashMapStorage<StringWithId, Integer> storage;
 
     /**
      * Создаём хранилище для каждого теста.
      */
     @BeforeEach
     void setupTest() {
-        storage = new ArrayStorage<>();
+        storage = new HashMapStorage<>();
     }
 
     /**
@@ -48,8 +48,7 @@ class ArrayStorageTest {
     @DisplayName("Попытка найти несуществующий элемент")
     void testNoElement() {
         storage.add(new StringWithId(1, "String"));
-        final StringWithId found = storage.getById(2);
-        Assertions.assertNull(found);
+        Assertions.assertNull(storage.getById(2));
     }
 
     /**

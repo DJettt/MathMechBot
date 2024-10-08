@@ -1,18 +1,19 @@
 package ru.urfu.logics;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import ru.urfu.bots.Bot;
+import ru.urfu.enums.processes.DeletionProcessState;
+import ru.urfu.enums.processes.Process;
 import ru.urfu.localobjects.LocalButton;
 import ru.urfu.localobjects.LocalMessage;
+import ru.urfu.localobjects.LocalMessageBuilder;
 import ru.urfu.models.User;
 import ru.urfu.models.UserEntry;
 import ru.urfu.storages.ArrayStorage;
 import ru.urfu.storages.Storage;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.logging.Logger;
 
 /**
  * Логическое ядро бота, парсящего каналы в Telegram на предмет упоминания студентов.
@@ -69,15 +70,19 @@ public class MathMechBotCore implements LogicCore {
      * @param bot бот, от которого пришло сообщение
      */
     private void defaultHandler(LocalMessage inputMessage, long chatId, Bot bot) {
-        switch (users.getById(chatId).getCurrentProcess()){
-            case "process_delete" -> deleteCommandHandler(inputMessage, chatId, bot);
-            case "process_edit" -> editCommandHandler(inputMessage, chatId, bot);
-            case "process_register" -> registerCommandHandler(inputMessage, chatId, bot);
-            case "process_info" -> infoCommandHandler(inputMessage, chatId, bot);
+        final User user = users.getById(chatId);
+        if (user == null) {
+            bot.sendMessage(new LocalMessageBuilder()
+                    .text("Сперва зарегистрируйтесь с помощью команды /register")
+                    .build(), chatId);
+            return;
+        }
+
+        switch (user.currentProcess()) {
+            case Process.REGISTRATION -> registerCommandHandler(inputMessage, chatId, bot);
+            case Process.DELETION -> deleteCommandHandler(inputMessage, chatId, bot);
+            case Process.EDITION -> editCommandHandler(inputMessage, chatId, bot);
             default -> {
-                LocalMessage msg = new LocalMessage("Извините, произошла непредвиденная ошибка.",
-                        null);
-                bot.sendMessage(msg, chatId);
             }
         }
     }
@@ -89,10 +94,12 @@ public class MathMechBotCore implements LogicCore {
      * @param bot бот, от которого пришло сообщение
      */
     private void registerCommandHandler(LocalMessage inputMessage, long chatId, Bot bot) {
-        User user = new User(chatId, chatId, "chatid", null, 0);
-        users.add(user);
-        LocalMessage msg = new LocalMessage("Вы были успешно зарегистрированы.", null);
-        bot.sendMessage(msg, chatId);
+        if (users.getById(chatId) == null) {
+            users.add(new User(chatId, chatId, chatId, null, null));
+            bot.sendMessage(new LocalMessageBuilder()
+                    .text("Зарегал тебя, твой id " + chatId)
+                    .build(), chatId);
+        }
     }
 
     /**
@@ -102,7 +109,6 @@ public class MathMechBotCore implements LogicCore {
      * @param bot бот, от которого пришло сообщение
      */
     private void infoCommandHandler(LocalMessage inputMessage, long chatId, Bot bot) {
-
     }
 
     /**
@@ -121,50 +127,52 @@ public class MathMechBotCore implements LogicCore {
      * @param bot бот, от которого пришло сообщение
      */
     private void deleteCommandHandler(LocalMessage inputMessage, long chatId, Bot bot) {
-        if (users.getById(chatId) != null) {
-            if (users.getById(chatId).currentProcess() == null) {
-                users.getById(chatId).setCurrentProcess("process_delete");
-                users.getById(chatId).setCurrentState(0);
-                List<LocalButton> buttons = List
-                        .of(new LocalButton("Да", "delete_sure_yes"),
-                                new LocalButton("Нет", "delete_sure_no"));
-                LocalMessage msg = new LocalMessage("Вы уверены, что хотите удалить все данные?", buttons);
-                bot.sendMessage(msg, chatId);
-            } else if (Objects.equals(users.getById(chatId).currentProcess(), "process_deleting")) {
-                switch (inputMessage.text()){
-                    case "delete_sure_yes" -> users.getById(chatId).setCurrentState(1);
-                    case "delete_sure_no" -> users.getById(chatId).setCurrentState(2);
-                    default -> users.getById(chatId).setCurrentState(1000);
-                }
-                int currentPosition = users.getById(chatId).getCurrentState();
-                LocalMessage msg = null;
-                switch (currentPosition) {
-                    case 0 -> {
-                        List<LocalButton> buttons = List
-                                .of(new LocalButton("Да", "delete_sure_yes"),
-                                        new LocalButton("Нет", "delete_sure_no"));
-                        msg = new LocalMessage("Вы уверены, что хотите удалить все данные?", buttons);
-                    }
-                    case 1 -> {
-                        users.removeById(chatId);
-                        msg = new LocalMessage("Удаление завершено.", null);
-                    }
-                    case 2 -> {
-                        msg = new LocalMessage("Удаление отменено.", null);
-                        users.getById(chatId).setCurrentState(0);
-                        users.getById(chatId).setCurrentProcess(null);
-                    }
-                    default -> {
-                        msg = new LocalMessage("Что-то пошло не так...", null);
-                        System.out.println("ОШИБКА!!!");
-                    }
-                }
-                bot.sendMessage(msg, chatId);
-            }
-        } else {
-            LocalMessage msg = new LocalMessage("Данный пользователь не зарегистрирован.", null);
-            bot.sendMessage(msg, chatId);
+        final User user = users.getById(chatId);
+
+        if (user == null) {
+            bot.sendMessage(new LocalMessageBuilder()
+                    .text("Сперва зарегистрируйтесь с помощью команды /register")
+                    .build(), chatId);
+            return;
         }
+
+        if (user.currentProcess() == null) {
+            user.setCurrentProcess(Process.DELETION);
+            user.setCurrentState(DeletionProcessState.CONFIRMATION);
+            bot.sendMessage(new LocalMessageBuilder()
+                    .text("Точно удалить?")
+                    .buttons(new ArrayList<>(
+                            List.of(
+                                    new LocalButton("да", "да"),
+                                    new LocalButton("нет", "нет")
+                            )))
+                    .build(), chatId);
+            return;
+        } else if (user.currentProcess() != Process.DELETION) {
+            bot.sendMessage(new LocalMessageBuilder()
+                    .text("Вы находитесь посреди другого процесса, завершите его.")
+                    .build(), chatId);
+            return;
+        }
+
+        final LocalMessageBuilder responseBuilder = new LocalMessageBuilder();
+        if (user.currentState() == DeletionProcessState.CONFIRMATION) {
+            if (Objects.equals(inputMessage.text(), "да")) {
+                // TODO: удаляй нормально
+                users.deleteById(chatId);
+                userEntries.deleteById(chatId);
+                user.setCurrentProcess(null);
+                user.setCurrentState(null);
+                responseBuilder.text("Удаляю...");
+            } else if (Objects.equals(inputMessage.text(), "нет")) {
+                user.setCurrentProcess(null);
+                user.setCurrentState(null);
+                responseBuilder.text("Не удаляю...");
+            } else {
+                responseBuilder.text("Не понял, повтори.");
+            }
+        }
+        bot.sendMessage(responseBuilder.build(), chatId);
     }
 
     /**

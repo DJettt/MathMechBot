@@ -5,11 +5,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
 import ru.urfu.localobjects.LocalMessage;
-import ru.urfu.bots.DummyBot;
 import ru.urfu.localobjects.LocalMessageBuilder;
 
 /**
- * Тесты логики эхо-бота
+ * Тесты для класса EchoBotCore
  */
 public final class EchoBotCoreTest {
     final static String HELP_MESSAGE_TEXT = """

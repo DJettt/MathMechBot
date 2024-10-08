@@ -2,6 +2,8 @@ package ru.urfu.models;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import ru.urfu.enums.processes.Process;
+import ru.urfu.enums.processes.ProcessState;
 
 import java.util.Objects;
 
@@ -9,14 +11,16 @@ import java.util.Objects;
  * Модель пользователя, подписавшегося на пересылку информации.
  */
 public final class User implements Identifiable<Long> {
+    @NotNull
     private final Long id;
-    @NotNull
-    private final Long telegramId;
-    @NotNull
-    private final String discordId;
     @Nullable
-    private String currentProcess;
-    private int currentState;
+    private final Long telegramId;
+    @Nullable
+    private final Long discordId;
+    @Nullable
+    private Process currentProcess;
+    @Nullable
+    private ProcessState currentState;
 
     /**
      * @param id             внутренний идентификатор пользователя.
@@ -26,11 +30,11 @@ public final class User implements Identifiable<Long> {
      * @param currentState   состояние процесса, в котором находится пользователь.
      */
     public User(
-            Long id,
-            @NotNull Long telegramId,
-            @NotNull String discordId,
-            @Nullable String currentProcess,
-            int currentState
+            @NotNull Long id,
+            @Nullable Long telegramId,
+            @Nullable Long discordId,
+            @Nullable Process currentProcess,
+            @Nullable ProcessState currentState
     ) {
         this.id = id;
         this.telegramId = telegramId;
@@ -39,44 +43,38 @@ public final class User implements Identifiable<Long> {
         this.currentState = currentState;
     }
 
-    public void setCurrentProcess(String process) {
-        this.currentProcess = process;
-    }
-
-    public String getCurrentProcess() {
-        return this.currentProcess;
-    }
-
-    public void setCurrentState(int position){
-        this.currentState = position;
-    }
-
-    public int getCurrentState() {
-        return this.currentState;
-    }
-
     @Override
+    @NotNull
     public Long id() {
         return id;
     }
 
-    @NotNull
+    @Nullable
     public Long telegramId() {
         return telegramId;
     }
 
-    @NotNull
-    public String discordId() {
+    @Nullable
+    public Long discordId() {
         return discordId;
     }
 
     @Nullable
-    public String currentProcess() {
+    public Process currentProcess() {
         return currentProcess;
     }
 
-    public int currentState(int i) {
+    public void setCurrentProcess(@Nullable Process process) {
+        this.currentProcess = process;
+    }
+
+    @Nullable
+    public ProcessState currentState() {
         return currentState;
+    }
+
+    public void setCurrentState(@Nullable ProcessState state) {
+        this.currentState = state;
     }
 
     @Override
@@ -88,7 +86,7 @@ public final class User implements Identifiable<Long> {
                 Objects.equals(this.telegramId, that.telegramId) &&
                 Objects.equals(this.discordId, that.discordId) &&
                 Objects.equals(this.currentProcess, that.currentProcess) &&
-                this.currentState == that.currentState;
+                Objects.equals(this.currentState, that.currentState);
     }
 
     @Override
