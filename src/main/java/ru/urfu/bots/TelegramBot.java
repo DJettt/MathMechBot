@@ -152,11 +152,14 @@ public class TelegramBot implements Bot, LongPollingSingleThreadUpdateConsumer {
      * @return объект SendMessage, который можно отправлять
      */
     private SendMessage createSendMessage(LocalMessage msg, long chatId) {
-        return SendMessage
+        SendMessage.SendMessageBuilder<?, ?> sendMessage = SendMessage
                 .builder()
                 .chatId(chatId)
-                .text(msg.text())
-                .build();
+                .text(msg.text());
+        if (msg.hasButtons()) {
+            sendMessage = sendMessage.replyMarkup(createButtons(msg.buttons()));
+        }
+        return sendMessage.build();
     }
 
     /**

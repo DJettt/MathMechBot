@@ -20,4 +20,6 @@ public interface Storage<T extends Identifiable<I>, I> {
      * @return первый элемент из хранилища с данным идентификатором.
      */
     T getById(I id);
+
+    void removeById(I chatId);
 }
