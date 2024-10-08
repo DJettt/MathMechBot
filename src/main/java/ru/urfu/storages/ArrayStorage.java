@@ -24,11 +24,6 @@ public class ArrayStorage<T extends Identifiable<I>, I> implements Storage<T, I>
     }
 
     @Override
-    public void removeById(I id) {
-        array.removeIf(t -> t.id().equals(id));
-    }
-
-    @Override
     public T getById(I id) {
         for (T t : array) {
             if (t.id().equals(id)) {

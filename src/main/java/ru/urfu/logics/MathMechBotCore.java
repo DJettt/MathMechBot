@@ -14,6 +14,11 @@ import ru.urfu.models.UserEntry;
 import ru.urfu.storages.ArrayStorage;
 import ru.urfu.storages.Storage;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.logging.Logger;
 
 /**
  * Логическое ядро бота, парсящего каналы в Telegram на предмет упоминания студентов.
@@ -83,6 +88,9 @@ public class MathMechBotCore implements LogicCore {
             case Process.DELETION -> deleteCommandHandler(inputMessage, chatId, bot);
             case Process.EDITION -> editCommandHandler(inputMessage, chatId, bot);
             default -> {
+                LocalMessage msg = new LocalMessage("Извините, произошла непредвиденная ошибка.",
+                        null);
+                bot.sendMessage(msg, chatId);
             }
         }
     }
@@ -109,6 +117,23 @@ public class MathMechBotCore implements LogicCore {
      * @param bot бот, от которого пришло сообщение
      */
     private void infoCommandHandler(LocalMessage inputMessage, long chatId, Bot bot) {
+        LocalMessage msg;
+        if (users.getById(chatId).getCurrentProcess() == null) {
+            String userInfo = String.format(USER_INFO_TEMPLATE,
+                    userEntries.getById(chatId).surname(),
+                    userEntries.getById(chatId).name(),
+                    userEntries.getById(chatId).patronym(),
+                    userEntries.getById(chatId).specialty(),
+                    userEntries.getById(chatId).year(),
+                    userEntries.getById(chatId).group()
+            );
+            msg = new LocalMessage(userInfo, null);
+        } else {
+            msg = new LocalMessage("Сейчас просмотр информации невозможен.\n" +
+                    "Повторите попытку после завершения текущего действия",
+                    null);
+        }
+        bot.sendMessage(msg, chatId);
     }
 
     /**
@@ -119,7 +144,6 @@ public class MathMechBotCore implements LogicCore {
      */
     private void editCommandHandler(LocalMessage inputMessage, long chatId, Bot bot) {
     }
-
     /**
      * Запускает процесс удаления зарегистрированной информации.
      * @param inputMessage входящее сообщение
