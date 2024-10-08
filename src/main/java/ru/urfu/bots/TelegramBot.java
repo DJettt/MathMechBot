@@ -1,4 +1,4 @@
-package ru.urfu;
+package ru.urfu.bots;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,13 +9,15 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
+import ru.urfu.Message;
+import ru.urfu.logics.LogicCore;
 
 
 /**
  * Простой телеграм-бот, который принимает текстовые сообщения и составляет ответ
  * в зависимости от переданного ему при создании логического ядра (logicCore).
  */
-public class TelegramBot implements LongPollingSingleThreadUpdateConsumer, Bot {
+public class TelegramBot implements Bot, LongPollingSingleThreadUpdateConsumer {
     private static final Logger LOGGER = LoggerFactory.getLogger(TelegramBot.class);
     private final TelegramClient telegramClient;
     private final LogicCore logicCore;
@@ -51,23 +53,26 @@ public class TelegramBot implements LongPollingSingleThreadUpdateConsumer, Bot {
     @Override
     public void sendMessage(Message msg, Long id) {
         try {
-            telegramClient.execute(createFromMessage(msg, id));
+            if (msg.text() != null) {
+                telegramClient.execute(createSendMessage(msg, id));
+            }
         } catch (TelegramApiException e) {
-            throw new RuntimeException(e);
+            LOGGER.error("Couldn't send message", e);
         }
     }
 
     /**
-     * Превращает наш Message в телеграмный SendMessage.
-     * @param msg объект нашего универсального сообщения
+     * Превращает Message в SendMessage.
+     * Стоит использовать в тех случаях, когда сообщение содержит лишь текст.
+     * @param msg  объект сообщения
      * @param chatId id чата, куда надо отправить сообщение
      * @return объект SendMessage, который можно отправлять
      */
-    private SendMessage createFromMessage(Message msg, long chatId) {
+    private SendMessage createSendMessage(Message msg, long chatId) {
         return SendMessage
                 .builder()
                 .chatId(chatId)
-                .text(msg.getText())
+                .text(msg.text())
                 .build();
     }
 
@@ -76,20 +81,15 @@ public class TelegramBot implements LongPollingSingleThreadUpdateConsumer, Bot {
      * @param message объект сообщения из TelegramBots
      * @return объект нашего универсального сообщения
      */
-    private Message createFromTelegramMessage(org.telegram.telegrambots.meta.api.objects.message.Message message) {
-        String messageText = message.getText();
-        return new Message(messageText);
+    private Message convertTelegramMessage(org.telegram.telegrambots.meta.api.objects.message.Message message) {
+        final String text = (message.hasPhoto()) ? message.getCaption() : message.getText();
+        return new Message(text);
     }
 
     @Override
     public void consume(Update update) {
         final long chatId = update.getMessage().getChatId();
-        final Message msg = createFromTelegramMessage(update.getMessage());
-
-        final Message response = logicCore.processMessage(msg);
-        if (response == null) {
-            return;
-        }
-        sendMessage(response, chatId);
+        final Message msg = convertTelegramMessage(update.getMessage());
+        logicCore.processMessage(msg, chatId, this);
     }
 }
