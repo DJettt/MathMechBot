@@ -1,4 +1,4 @@
-package ru.urfu;
+package ru.urfu.bots;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +15,8 @@ import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.requests.restaction.MessageCreateAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.urfu.Message;
+import ru.urfu.logics.LogicCore;
 
 /**
  * Простой дискорд-бот, который принимает текстовые сообщения и составляет ответ
@@ -122,11 +124,11 @@ public class DiscordBot extends ListenerAdapter implements Bot {
 
     /**
      * Создаёт объекты класса Message из дискордоских MessageReceivedEvent.
-     * @param event ивент сообщения
+     * @param message полученное сообщение
      * @return то же сообщение в формате Message для общения с ядром
      */
-    private LocalMessage createFromDiscordMessage(MessageReceivedEvent event) {
-        return new LocalMessage(event.getMessage().getContentDisplay());
+    private Message convertDiscordMessage(net.dv8tion.jda.api.entities.Message message) {
+        return new Message(message.getContentDisplay());
     }
 
     /**

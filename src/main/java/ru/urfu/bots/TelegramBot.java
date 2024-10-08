@@ -1,4 +1,4 @@
-package ru.urfu;
+package ru.urfu.bots;
 
 import static java.lang.Math.sqrt;
 import java.util.ArrayList;
@@ -15,13 +15,16 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
+import ru.urfu.LocalMessage;
+import ru.urfu.Message;
+import ru.urfu.logics.LogicCore;
 
 
 /**
  * Простой телеграм-бот, который принимает текстовые сообщения и составляет ответ
  * в зависимости от переданного ему при создании логического ядра (logicCore).
  */
-public class TelegramBot implements LongPollingSingleThreadUpdateConsumer, Bot {
+public class TelegramBot implements Bot, LongPollingSingleThreadUpdateConsumer {
     private static final Logger LOGGER = LoggerFactory.getLogger(TelegramBot.class);
     private final TelegramClient telegramClient;
     private final LogicCore logicCore;
@@ -65,9 +68,11 @@ public class TelegramBot implements LongPollingSingleThreadUpdateConsumer, Bot {
     @Override
     public void sendMessage(LocalMessage msg, Long id) {
         try {
-            telegramClient.execute(createFromMessage(msg, id));
+            if (msg.text() != null) {
+                telegramClient.execute(createSendMessage(msg, id));
+            }
         } catch (TelegramApiException e) {
-            throw new RuntimeException(e);
+            LOGGER.error("Couldn't send message", e);
         }
     }
 
@@ -141,6 +146,21 @@ public class TelegramBot implements LongPollingSingleThreadUpdateConsumer, Bot {
     }
 
     /**
+     * Превращает Message в SendMessage.
+     * Стоит использовать в тех случаях, когда сообщение содержит лишь текст.
+     * @param msg  объект сообщения
+     * @param chatId id чата, куда надо отправить сообщение
+     * @return объект SendMessage, который можно отправлять
+     */
+    private SendMessage createSendMessage(Message msg, long chatId) {
+        return SendMessage
+                .builder()
+                .chatId(chatId)
+                .text(msg.text())
+                .build();
+    }
+
+    /**
      * Превращает наш LocalMessage в телеграмный SendMessage и
      * по статусу LocalMessage определяет какой тип сообщения нужно отправить.
      * @param msg объект нашего универсального сообщения
@@ -158,21 +178,17 @@ public class TelegramBot implements LongPollingSingleThreadUpdateConsumer, Bot {
         return sendMessage.build();
     }
 
-//    /**
-//     * Переводит Telegram-сообщения в наши сообщения.
-//     * @param message объект сообщения из TelegramBots
-//     * @return объект нашего универсального сообщения
-//     */
-//    private LocalMessage createFromTelegramMessage(org.telegram.telegrambots
-//    .meta.api.objects.message.Message message){
-//        String messageText = message.getText();
-//        return new LocalMessage(messageText);
-//    }
 
     /**
-     * Принимает какое-либо обновление в чате с ботом.
-     * @param update объект, в котором содержится информация об обновлении в чате.
+     * Переводит Telegram-сообщения в наши сообщения.
+     * @param message объект сообщения из TelegramBots
+     * @return объект нашего универсального сообщения
      */
+    private LocalMessage convertTelegramMessage(org.telegram.telegrambots.meta.api.objects.message.Message message) {
+        final String text = (message.hasPhoto()) ? message.getCaption() : message.getText();
+        return new LocalMessage(text);
+    }
+
     @Override
     public void consume(Update update) {
         LocalMessage msg;
@@ -182,17 +198,13 @@ public class TelegramBot implements LongPollingSingleThreadUpdateConsumer, Bot {
             msg = new LocalMessage(update.getCallbackQuery().getData());
             chatId = update.getCallbackQuery().getMessage().getChatId();
         } else if (update.hasMessage()) {
-            msg = new LocalMessage(update.getMessage().getText());
+            msg = new convertTelegramMessage(update.getMessage());
             chatId = update.getMessage().getChatId();
         } else {
             LOGGER.error("Unknown message type!");
             return;
         }
 
-        final LocalMessage response = logicCore.processMessage(msg);
-        if (response == null) {
-            return;
-        }
-        sendMessage(response, chatId);
+        logicCore.processMessage(msg, chatId, this);
     }
 }

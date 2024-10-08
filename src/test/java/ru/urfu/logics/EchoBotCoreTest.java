@@ -1,8 +1,12 @@
-package ru.urfu;
+package ru.urfu.logics;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
+import ru.urfu.bots.DummyBot;
+import ru.urfu.Message;
+import ru.urfu.MessageBuilder;
 
 /**
  * Тесты логики эхо-бота
@@ -15,25 +19,38 @@ public final class EchoBotCoreTest {
                 В любой момент ты можешь написать команду '/help' (без кавычек) и \
                 тогда я тебе напомню как со мной работать! Приятного использования!""";
 
+    private DummyBot bot;
+    private EchoBotCore logic;
+
+    /**
+     * Создаём объект логики и ложного бота для каждого теста.
+     */
+    @BeforeEach
+    public void setupTest() {
+        bot = new DummyBot();
+        logic = new EchoBotCore();
+    }
+
     /**
      * Проверяем, что на сообщение /help логика отправляет справку
      */
     @Test
     @DisplayName("Проверка команды /help")
-    void helpCommandTest() {
-        final LocalMessage response = new EchoBotCore().processMessage(new LocalMessage("/help"));
-        Assertions.assertEquals(HELP_MESSAGE_TEXT, response.getText());
+    void testHelpCommand() {
+        final Message request = new MessageBuilder().text("/help").build();
+        logic.processMessage(request, 0L, bot);
+        Assertions.assertEquals(HELP_MESSAGE_TEXT, bot.getOutcomingMessageList().getLast().text());
     }
-
 
     /**
      * Проверяем, что на сообщение /start логика отправляет справку
      */
     @Test
     @DisplayName("Проверка команды /start")
-    void startCommandTest() {
-        final LocalMessage response = new EchoBotCore().processMessage(new LocalMessage("/start"));
-        Assertions.assertEquals(HELP_MESSAGE_TEXT, response.getText());
+    void testStartCommand() {
+        final Message request = new MessageBuilder().text("/start").build();
+        logic.processMessage(request, 0L, bot);
+        Assertions.assertEquals(HELP_MESSAGE_TEXT, bot.getOutcomingMessageList().getLast().text());
     }
 
     /**
@@ -41,10 +58,11 @@ public final class EchoBotCoreTest {
      */
     @Test
     @DisplayName("Набор слов")
-    void someTextTest() {
+    void testSomeText() {
         final String someText = "Lorem Ipsum is simply dummy text of the printing and typesetting industry.";
-        final LocalMessage response = new EchoBotCore().processMessage(new LocalMessage(someText));
-        Assertions.assertEquals("Ты написал: " + someText, response.getText());
+        final Message request = new MessageBuilder().text(someText).build();
+        logic.processMessage(request, 0L, bot);
+        Assertions.assertEquals("Ты написал: " + someText, bot.getOutcomingMessageList().getLast().text());
     }
 
     /**
@@ -52,8 +70,9 @@ public final class EchoBotCoreTest {
      */
     @Test
     @DisplayName("Сообщение без текста")
-    void textIsNull() {
-        final LocalMessage response = new EchoBotCore().processMessage(new LocalMessage(null));
-        Assertions.assertNull(response);
+    void testNullText() {
+        final Message request = new MessageBuilder().build();
+        logic.processMessage(request, 0L, bot);
+        Assertions.assertTrue(bot.getOutcomingMessageList().isEmpty());
     }
 }
