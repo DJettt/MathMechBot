@@ -146,17 +146,20 @@ public class TelegramBot implements Bot, LongPollingSingleThreadUpdateConsumer {
 
     /**
      * Превращает LocalMessage в SendMessage.
-     * Стоит использовать в тех случаях, когда сообщение содержит лишь текст.
+     * Стоит использовать в тех случаях, когда нет картинок.
      * @param msg  объект сообщения
      * @param chatId id чата, куда надо отправить сообщение
      * @return объект SendMessage, который можно отправлять
      */
     private SendMessage createSendMessage(LocalMessage msg, long chatId) {
-        return SendMessage
+        SendMessage.SendMessageBuilder<?, ?> sendMessage = SendMessage
                 .builder()
                 .chatId(chatId)
-                .text(msg.text())
-                .build();
+                .text(msg.text());
+        if (msg.hasButtons()) {
+            sendMessage = sendMessage.replyMarkup(createButtons(msg.buttons()));
+        }
+        return sendMessage.build();
     }
 
     /**

@@ -1,11 +1,19 @@
 package ru.urfu.logics;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import ru.urfu.bots.Bot;
+import ru.urfu.enums.processes.DeletionProcessState;
+import ru.urfu.enums.processes.Process;
+import ru.urfu.localobjects.LocalButton;
 import ru.urfu.localobjects.LocalMessage;
+import ru.urfu.localobjects.LocalMessageBuilder;
 import ru.urfu.models.User;
 import ru.urfu.models.UserEntry;
 import ru.urfu.storages.ArrayStorage;
 import ru.urfu.storages.Storage;
+
 
 /**
  * Логическое ядро бота, парсящего каналы в Telegram на предмет упоминания студентов.
@@ -62,6 +70,21 @@ public class MathMechBotCore implements LogicCore {
      * @param bot бот, от которого пришло сообщение
      */
     private void defaultHandler(LocalMessage inputMessage, long chatId, Bot bot) {
+        final User user = users.getById(chatId);
+        if (user == null) {
+            bot.sendMessage(new LocalMessageBuilder()
+                    .text("Сперва зарегистрируйтесь с помощью команды /register")
+                    .build(), chatId);
+            return;
+        }
+
+        switch (user.currentProcess()) {
+            case Process.REGISTRATION -> registerCommandHandler(inputMessage, chatId, bot);
+            case Process.DELETION -> deleteCommandHandler(inputMessage, chatId, bot);
+            case Process.EDITION -> editCommandHandler(inputMessage, chatId, bot);
+            default -> {
+            }
+        }
     }
 
     /**
@@ -71,6 +94,12 @@ public class MathMechBotCore implements LogicCore {
      * @param bot бот, от которого пришло сообщение
      */
     private void registerCommandHandler(LocalMessage inputMessage, long chatId, Bot bot) {
+        if (users.getById(chatId) == null) {
+            users.add(new User(chatId, chatId, chatId, null, null));
+            bot.sendMessage(new LocalMessageBuilder()
+                    .text("Зарегал тебя, твой id " + chatId)
+                    .build(), chatId);
+        }
     }
 
     /**
@@ -98,6 +127,52 @@ public class MathMechBotCore implements LogicCore {
      * @param bot бот, от которого пришло сообщение
      */
     private void deleteCommandHandler(LocalMessage inputMessage, long chatId, Bot bot) {
+        final User user = users.getById(chatId);
+
+        if (user == null) {
+            bot.sendMessage(new LocalMessageBuilder()
+                    .text("Сперва зарегистрируйтесь с помощью команды /register")
+                    .build(), chatId);
+            return;
+        }
+
+        if (user.currentProcess() == null) {
+            user.setCurrentProcess(Process.DELETION);
+            user.setCurrentState(DeletionProcessState.CONFIRMATION);
+            bot.sendMessage(new LocalMessageBuilder()
+                    .text("Точно удалить?")
+                    .buttons(new ArrayList<>(
+                            List.of(
+                                    new LocalButton("да", "да"),
+                                    new LocalButton("нет", "нет")
+                            )))
+                    .build(), chatId);
+            return;
+        } else if (user.currentProcess() != Process.DELETION) {
+            bot.sendMessage(new LocalMessageBuilder()
+                    .text("Вы находитесь посреди другого процесса, завершите его.")
+                    .build(), chatId);
+            return;
+        }
+
+        final LocalMessageBuilder responseBuilder = new LocalMessageBuilder();
+        if (user.currentState() == DeletionProcessState.CONFIRMATION) {
+            if (Objects.equals(inputMessage.text(), "да")) {
+                // TODO: удаляй нормально
+                users.deleteById(chatId);
+                userEntries.deleteById(chatId);
+                user.setCurrentProcess(null);
+                user.setCurrentState(null);
+                responseBuilder.text("Удаляю...");
+            } else if (Objects.equals(inputMessage.text(), "нет")) {
+                user.setCurrentProcess(null);
+                user.setCurrentState(null);
+                responseBuilder.text("Не удаляю...");
+            } else {
+                responseBuilder.text("Не понял, повтори.");
+            }
+        }
+        bot.sendMessage(responseBuilder.build(), chatId);
     }
 
     /**
