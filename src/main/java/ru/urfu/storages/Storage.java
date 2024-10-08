@@ -14,7 +14,6 @@ public interface Storage<T extends Identifiable<I>, I> {
      */
     void add(T member);
 
-
     /**
      * Ищет элемент с данным идентификатором.
      * @param id идентификатор.
