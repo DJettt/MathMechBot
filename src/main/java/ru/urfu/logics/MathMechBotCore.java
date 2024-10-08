@@ -82,8 +82,7 @@ public class MathMechBotCore implements LogicCore {
             case Process.REGISTRATION -> registerCommandHandler(inputMessage, chatId, bot);
             case Process.DELETION -> deleteCommandHandler(inputMessage, chatId, bot);
             case Process.EDITION -> editCommandHandler(inputMessage, chatId, bot);
-            default -> {
-            }
+            default -> helpCommandHandler(inputMessage, chatId, bot);
         }
     }
 

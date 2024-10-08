@@ -17,13 +17,4 @@ public record LocalMessage(@Nullable String text, @Nullable List<LocalButton> bu
     public boolean hasButtons() {
         return buttons != null;
     }
-
-    /**
-     * Создаёт объект билдера для этого класса.
-     * @return билдер для класса LocalMessage
-     */
-    public LocalMessageBuilder builder() {
-        // TODO: это метод бы сделать статичным.
-        return new LocalMessageBuilder();
-    }
 }
