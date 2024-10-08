@@ -15,11 +15,15 @@ public enum Specialty {
     PM("ПМ"),
     MO("МО"),
     KN("КН");
-
+    private final String abbreviation;
     /**
      * Конструктор элемента перечисления.
      * @param abbreviation аббревиатура направления
      */
     Specialty(@NotNull String abbreviation) {
+        this.abbreviation = abbreviation;
+    }
+    public String getAbbreviation(){
+        return abbreviation;
     }
 }

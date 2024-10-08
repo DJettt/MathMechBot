@@ -64,9 +64,6 @@ public final class User implements Identifiable<Long> {
         return currentProcess;
     }
 
-    public Process getCurrentProcess(){
-        return currentProcess;
-    }
     public void setCurrentProcess(@Nullable Process process) {
         this.currentProcess = process;
     }
