@@ -1,6 +1,6 @@
 package ru.urfu.bots;
 
-import ru.urfu.Message;
+import ru.urfu.localobjects.LocalMessage;
 
 /**
  * Интерефейс бота, описывающий методы, которые ожидаются в каждом боте.
@@ -16,5 +16,5 @@ public interface Bot {
      * @param msg сообщение, которое требуется отправить
      * @param id идентификатор получателя
      */
-    void sendMessage(Message msg, Long id);
+    void sendMessage(LocalMessage msg, Long id);
 }

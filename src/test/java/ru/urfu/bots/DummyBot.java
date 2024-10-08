@@ -1,6 +1,6 @@
 package ru.urfu.bots;
 
-import ru.urfu.Message;
+import ru.urfu.localobjects.LocalMessage;
 
 import java.util.List;
 import java.util.Stack;
@@ -9,13 +9,13 @@ import java.util.Stack;
  * Ничего просто сохраняющий сообщения. Создан для тестов.
  */
 public class DummyBot implements Bot {
-    final private List<Message> outcomingMessageList;
+    final private List<LocalMessage> outcomingMessageList;
 
     public DummyBot() {
         outcomingMessageList = new Stack<>();
     }
 
-    public List<Message> getOutcomingMessageList() {
+    public List<LocalMessage> getOutcomingMessageList() {
         return outcomingMessageList;
     }
 
@@ -23,7 +23,7 @@ public class DummyBot implements Bot {
     public void start() {}
 
     @Override
-    public void sendMessage(Message msg, Long id) {
+    public void sendMessage(LocalMessage msg, Long id) {
         outcomingMessageList.add(msg);
     }
 }
