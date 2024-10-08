@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import ru.urfu.bots.Bot;
+import ru.urfu.enums.Specialty;
 import ru.urfu.enums.processes.DeletionProcessState;
 import ru.urfu.enums.processes.Process;
+import ru.urfu.enums.processes.RegistrationProcessState;
 import ru.urfu.localobjects.LocalButton;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
@@ -32,12 +34,19 @@ public class MathMechBotCore implements LogicCore {
     final static String EDIT_COMMAND = "/edit";
     final static String DELETE_COMMAND = "/delete";
     final static String BACK_COMMAND = "/back";
+    final static List<List<String>> REGISTRATION_COMMAND_CENTER = Arrays.asList(
+            Arrays.asList("-"),
+            Arrays.asList("1", "2", "3", "4", "back_button"),
+            Arrays.asList("КНМО", "ММП", "КБ", "ФТ", "back_button"),
+            Arrays.asList("КН", "МО", "МХ", "МТ", "ПМ", "ФТ", "КБ", "back_button"),
+            Arrays.asList("1", "2", "3", "4", "5",  "back_button")
+            );
 
     final static String USER_INFO_TEMPLATE = """
-            ФИО: %s %s %s
+            ФИО: %s
             Направление: %s
-            Курс: %d
-            Группа: %d""";
+            Курс: %s
+            Группа: %s""";
 
     final Storage<User, Long> users;
     final Storage<UserEntry, Long> userEntries;
@@ -96,6 +105,83 @@ public class MathMechBotCore implements LogicCore {
     }
 
     /**
+     * Подтверждает корректность введенного ФИО.
+     * @param str ФИО (или ФИ)
+     * @return true - все верно, false - это не ФИО.
+     */
+    public boolean correctName(String str){
+        if (str.isEmpty()) {
+            return false;
+        }
+
+        if (!Character.isUpperCase(str.charAt(0))) {
+            return false;
+        }
+
+        int spaceCount = 0;
+
+        for (int i = 1; i < str.length(); i++) {
+            if (str.charAt(i) == ' ') {
+                spaceCount++;
+                if (i + 1 < str.length() && !Character.isUpperCase(str.charAt(i + 1))) {
+                    return false;
+                }
+            } else if (Character.isUpperCase(str.charAt(i)) && str.charAt(i - 1) != ' ') {
+                return false;
+            }
+        }
+
+        if (spaceCount > 2 && spaceCount > 0) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Проверяет корректность строки МЕН которую отправил пользователь
+     * @param input строка от пользователя
+     * @return true - все верно, false - не все верно...
+     */
+    public boolean correctMen(String input) {
+        if (input.length() != 10) {
+            return false;
+        }
+
+        if (!input.substring(0, 3).equals("МЕН")) {
+            return false;
+        }
+
+        if (input.charAt(3) != '-') {
+            return false;
+        }
+
+        for (int i = 4; i < 10; i++) {
+            if (!Character.isDigit(input.charAt(i))) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     *
+     * @param index
+     * @param command
+     * @return
+     */
+    public boolean isCommand(int index, String command) {
+        List<String> specificList = REGISTRATION_COMMAND_CENTER.get(index);
+        for (String str : specificList){
+            if (Objects.equals(str, command)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Запускает процесс регистрации пользователя.
      * @param inputMessage входящее сообщение
      * @param chatId идентификатор чата отправителя
@@ -103,11 +189,275 @@ public class MathMechBotCore implements LogicCore {
      */
     private void registerCommandHandler(LocalMessage inputMessage, long chatId, Bot bot) {
         if (users.getById(chatId) == null) {
-            users.add(new User(chatId, chatId, chatId, null, null));
-            bot.sendMessage(new LocalMessageBuilder()
-                    .text("Зарегал тебя, твой id " + chatId)
-                    .build(), chatId);
+            users.add(new User(chatId, chatId, chatId, Process.REGISTRATION, RegistrationProcessState.NAME));
+            userEntries.add(new UserEntry(chatId, null, null, null, null, null,
+                    null, null, chatId));
         }
+
+        if (inputMessage.text() == null) {
+            return;
+        }
+        if (users.getById(chatId).currentProcess() == null && users.getById(chatId) != null && inputMessage.text().equals("/register")) {
+            bot.sendMessage(new LocalMessageBuilder()
+                    .text("Вы уже зарегистрированы.").build(), chatId);
+        }
+        switch (users.getById(chatId).currentState()){
+            case RegistrationProcessState.NAME -> {
+                if (correctName(inputMessage.text())) {
+                    userEntries.getById(chatId).setName(inputMessage.text());
+                    users.getById(chatId).setCurrentState(RegistrationProcessState.YEAR);
+                } else if (!inputMessage.text().equals(REGISTER_COMMAND)){
+                    bot.sendMessage(new LocalMessageBuilder()
+                            .text("Некорректный формат ФИО.").build(), chatId);
+                }
+            }
+            case RegistrationProcessState.YEAR -> {
+                if (isCommand(1, inputMessage.text())) {
+                    if (Objects.equals(inputMessage.text(), "back_button")) {
+                        userEntries.getById(chatId).setName(null);
+                        users.getById(chatId).setCurrentState(RegistrationProcessState.NAME);
+                    } else {
+                        userEntries.getById(chatId).setYear(inputMessage.text());
+                        if (Objects.equals(inputMessage.text(), "1")) {
+                            users.getById(chatId).setCurrentState(RegistrationProcessState.SPECIALTY1);
+                        } else {
+                            users.getById(chatId).setCurrentState(RegistrationProcessState.SPECIALTY2);
+                        }
+                    }
+                } else {
+                    bot.sendMessage(new LocalMessageBuilder()
+                            .text("Некорректный формат курса.").build(), chatId);
+                }
+            }
+            case RegistrationProcessState.SPECIALTY1 -> {
+                switch (inputMessage.text()) {
+                    case "КНМО" -> {
+                        userEntries.getById(chatId).setSpecialty(Specialty.KNMO);
+                        users.getById(chatId).setCurrentState(RegistrationProcessState.GROUP);
+                    }
+                    case "ММП" -> {
+                        userEntries.getById(chatId).setSpecialty(Specialty.MMP);
+                        users.getById(chatId).setCurrentState(RegistrationProcessState.GROUP);
+                    }
+                    case "КБ" -> {
+                        userEntries.getById(chatId).setSpecialty(Specialty.KB);
+                        users.getById(chatId).setCurrentState(RegistrationProcessState.GROUP);
+                    }
+                    case "ФТ" -> {
+                        userEntries.getById(chatId).setSpecialty(Specialty.FT);
+                        users.getById(chatId).setCurrentState(RegistrationProcessState.GROUP);
+                    }
+                    case "back_button" -> {
+                        userEntries.getById(chatId).setYear(null);
+                        users.getById(chatId).setCurrentState(RegistrationProcessState.YEAR);
+                    }
+                    default -> bot.sendMessage(new LocalMessageBuilder()
+                            .text("Некорректный формат направления.").build(), chatId);
+                }
+            }
+            case RegistrationProcessState.SPECIALTY2 -> {
+                switch (inputMessage.text()) {
+                    case "КН" -> {
+                        userEntries.getById(chatId).setSpecialty(Specialty.KN);
+                        users.getById(chatId).setCurrentState(RegistrationProcessState.GROUP);
+                    }
+                    case "МО" -> {
+                        userEntries.getById(chatId).setSpecialty(Specialty.MO);
+                        users.getById(chatId).setCurrentState(RegistrationProcessState.GROUP);
+                    }
+                    case "МХ" -> {
+                        userEntries.getById(chatId).setSpecialty(Specialty.MH);
+                        users.getById(chatId).setCurrentState(RegistrationProcessState.GROUP);
+                    }
+                    case "МТ" -> {
+                        userEntries.getById(chatId).setSpecialty(Specialty.MT);
+                        users.getById(chatId).setCurrentState(RegistrationProcessState.GROUP);
+                    }
+                    case "ПМ" -> {
+                        userEntries.getById(chatId).setSpecialty(Specialty.PM);
+                        users.getById(chatId).setCurrentState(RegistrationProcessState.GROUP);
+                    }
+                    case "КБ" -> {
+                        userEntries.getById(chatId).setSpecialty(Specialty.KB);
+                        users.getById(chatId).setCurrentState(RegistrationProcessState.GROUP);
+                    }
+                    case "ФТ" -> {
+                        userEntries.getById(chatId).setSpecialty(Specialty.FT);
+                        users.getById(chatId).setCurrentState(RegistrationProcessState.GROUP);
+                    }
+                    case "back_button" -> {
+                        userEntries.getById(chatId).setYear(null);
+                        users.getById(chatId).setCurrentState(RegistrationProcessState.YEAR);
+                    }
+                    default -> bot.sendMessage(new LocalMessageBuilder()
+                            .text("Некорректный формат направления.").build(), chatId);
+                }
+            }
+            case RegistrationProcessState.GROUP -> {
+                if (isCommand(4, inputMessage.text())) {
+                    if (Objects.equals(inputMessage.text(), "back_button")) {
+                        userEntries.getById(chatId).setSpecialty(null);
+                        if (Objects.equals(userEntries.getById(chatId).year(), "1")) {
+                            users.getById(chatId).setCurrentState(RegistrationProcessState.SPECIALTY1);
+                        } else {
+                            users.getById(chatId).setCurrentState(RegistrationProcessState.SPECIALTY2);
+                        }
+                    } else {
+                        userEntries.getById(chatId).setGroup(inputMessage.text());
+                        users.getById(chatId).setCurrentState(RegistrationProcessState.MEN);
+                    }
+                } else {
+                    bot.sendMessage(new LocalMessageBuilder()
+                            .text("Некорректный формат группы.").build(), chatId);
+                }
+            }
+            case RegistrationProcessState.MEN -> {
+                if (inputMessage.text().equals("back_button")){
+                    userEntries.getById(chatId).setGroup(null);
+                    users.getById(chatId).setCurrentState(RegistrationProcessState.GROUP);
+                } else if (correctMen(inputMessage.text())) {
+                    userEntries.getById(chatId).setMen(inputMessage.text());
+                    users.getById(chatId).setCurrentState(RegistrationProcessState.CONFIRMATION);
+                } else {
+                    bot.sendMessage(new LocalMessageBuilder()
+                            .text("Некорректный формат строки МЕН-123456.").build(), chatId);
+                }
+            }
+            default -> {
+                if (inputMessage.text().equals("confirm_yes")) {
+                    bot.sendMessage(new LocalMessageBuilder()
+                            .text("Ваши данные сохранены.").build(), chatId);
+                    users.getById(chatId).setCurrentState(null);
+                    users.getById(chatId).setCurrentProcess(null);
+                } else if (inputMessage.text().equals("confirm_no")) {
+                    users.getById(chatId).setCurrentState(null);
+                    users.getById(chatId).setCurrentProcess(null);
+                    bot.sendMessage(new LocalMessageBuilder()
+                            .text("Давайте начнем все с начала!")
+                            .buttons(new ArrayList<>(
+                                    List.of(
+                                            new LocalButton("Регистрация", REGISTER_COMMAND)
+                                    )))
+                            .build(), chatId);
+                    return;
+                } else if (inputMessage.text().equals("back_button")){
+                    userEntries.getById(chatId).setMen(null);
+                    users.getById(chatId).setCurrentState(RegistrationProcessState.MEN);
+                } else {
+                    bot.sendMessage(new LocalMessageBuilder()
+                            .text("Некорректный формат ответа.").build(), chatId);
+                }
+            }
+        }
+
+        final User user = users.getById(chatId);
+        final UserEntry userEntry = userEntries.getById(chatId);
+        switch (user.currentState()) {
+            case RegistrationProcessState.NAME -> {
+                bot.sendMessage(new LocalMessageBuilder()
+                        .text("Введите свое ФИО в формате: \nИванов Артём Иванович\nБез дополнительных " +
+                                "пробелов и с буквой ё, если нужно.").build(), chatId);
+                return;
+            }
+            case RegistrationProcessState.YEAR -> {
+                bot.sendMessage(new LocalMessageBuilder()
+                        .text("На каком курсе Вы обучаетесь?")
+                        .buttons(new ArrayList<>(
+                                List.of(
+                                        new LocalButton("1 курс", "1"),
+                                        new LocalButton("2 курс", "2"),
+                                        new LocalButton("3 курс", "3"),
+                                        new LocalButton("4 курс", "4"),
+                                        new LocalButton("Назад", "back_button")
+                                )))
+                        .build(), chatId);
+                return;
+            }
+            case RegistrationProcessState.SPECIALTY1 -> {
+                bot.sendMessage(new LocalMessageBuilder()
+                        .text("На каком направлении?")
+                        .buttons(new ArrayList<>(
+                                List.of(
+                                        new LocalButton(Specialty.KNMO.getAbbreviation(), Specialty.KNMO.getAbbreviation()),
+                                        new LocalButton(Specialty.MMP.getAbbreviation(), Specialty.MMP.getAbbreviation()),
+                                        new LocalButton(Specialty.KB.getAbbreviation(), Specialty.KB.getAbbreviation()),
+                                        new LocalButton(Specialty.FT.getAbbreviation(), Specialty.FT.getAbbreviation()),
+                                        new LocalButton("Назад", "back_button")
+                                )))
+                        .build(), chatId);
+            }
+            case RegistrationProcessState.SPECIALTY2 -> {
+                bot.sendMessage(new LocalMessageBuilder()
+                        .text("На каком направлении?")
+                        .buttons(new ArrayList<>(
+                                List.of(
+                                        new LocalButton(Specialty.KN.getAbbreviation(), Specialty.KN.getAbbreviation()),
+                                        new LocalButton(Specialty.MO.getAbbreviation(), Specialty.MO.getAbbreviation()),
+                                        new LocalButton(Specialty.MH.getAbbreviation(), Specialty.MH.getAbbreviation()),
+                                        new LocalButton(Specialty.MT.getAbbreviation(), Specialty.MT.getAbbreviation()),
+                                        new LocalButton(Specialty.PM.getAbbreviation(), Specialty.PM.getAbbreviation()),
+                                        new LocalButton(Specialty.KB.getAbbreviation(), Specialty.KB.getAbbreviation()),
+                                        new LocalButton(Specialty.FT.getAbbreviation(), Specialty.FT.getAbbreviation()),
+                                        new LocalButton("Назад", "back_button")
+                                )))
+                        .build(), chatId);
+            }
+            case RegistrationProcessState.GROUP -> {
+                String button_data;
+                if (Objects.equals(userEntries.getById(chatId).year(), "1")) {
+                    button_data = "back_to_spec1_button";
+                } else {
+                    button_data = "back_to_spec2_button";
+                }
+                bot.sendMessage(new LocalMessageBuilder()
+                        .text("Какая у Вас группа?")
+                        .buttons(new ArrayList<>(
+                                List.of(
+                                        new LocalButton("1 группа", "1"),
+                                        new LocalButton("2 группа", "2"),
+                                        new LocalButton("3 группа", "3"),
+                                        new LocalButton("4 группа", "4"),
+                                        new LocalButton("5 группа", "5"),
+                                        new LocalButton("Назад", "back_button")
+                                )))
+                        .build(), chatId);
+            }
+            case RegistrationProcessState.MEN -> {
+                bot.sendMessage(new LocalMessageBuilder()
+                        .text("Введите свою академическую группу в формате:\nМЕН-123456")
+                                .buttons(new ArrayList<>(
+                                        List.of(
+                                                new LocalButton("Назад", "back_button")
+                                        )))
+                        .build(), chatId);
+            }
+            case RegistrationProcessState.CONFIRMATION -> {
+                bot.sendMessage(new LocalMessageBuilder()
+                        .text("Ваша информация:\nФИО: " + userEntry.name() + "\nКурс: " + userEntry.year() +
+                                "\nНаправление: " + userEntry.specialty() + "\nГруппа: " + userEntry.group() +
+                                "\nАкадемическая группа: " + userEntry.men() + "\nВсе верно?")
+                        .buttons(new ArrayList<>(
+                                List.of(
+                                        new LocalButton("Да", "confirm_yes"),
+                                        new LocalButton("Неа", "confirm_no"),
+                                        new LocalButton("Назад", "back_button")
+                                )))
+                        .build(), chatId);
+            }
+            case null -> {
+            }
+            default -> {
+                bot.sendMessage(new LocalMessageBuilder()
+                        .text("У нас что-то сломалось... Давайте попробуем заново?")
+                        .buttons(new ArrayList<>(
+                                List.of(
+                                        new LocalButton("Регистрация", REGISTER_COMMAND)
+                                )))
+                        .build(), chatId);
+            }
+        }
+
+
     }
 
     /**
@@ -117,15 +467,24 @@ public class MathMechBotCore implements LogicCore {
      * @param bot бот, от которого пришло сообщение
      */
     private void infoCommandHandler(LocalMessage inputMessage, long chatId, Bot bot) {
+        if (users.getById(chatId) == null) {
+            bot.sendMessage(new LocalMessageBuilder()
+                    .text("Пользователь не зарегистрирован.")
+                            .buttons(new ArrayList<>(
+                                    List.of(
+                                            new LocalButton("Регистрация", REGISTER_COMMAND)
+                                    )))
+                    .build(), chatId);
+            ;
+        }
         LocalMessage msg;
-        if (users.getById(chatId).getCurrentProcess() == null) {
+        UserEntry currentUserEntry = userEntries.getById(chatId);
+        if (users.getById(chatId).currentProcess() == null) {
             String userInfo = String.format(USER_INFO_TEMPLATE,
-                    userEntries.getById(chatId).surname(),
-                    userEntries.getById(chatId).name(),
-                    userEntries.getById(chatId).patronym(),
-                    userEntries.getById(chatId).specialty(),
-                    userEntries.getById(chatId).year(),
-                    userEntries.getById(chatId).group()
+                    currentUserEntry.name(),
+                    currentUserEntry.specialty(),
+                    currentUserEntry.year(),
+                    currentUserEntry.group()
             );
             msg = new LocalMessage(userInfo, null);
         } else {
