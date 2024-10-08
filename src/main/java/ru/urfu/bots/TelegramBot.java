@@ -15,8 +15,8 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
-import ru.urfu.LocalMessage;
-import ru.urfu.Message;
+import ru.urfu.localobjects.LocalButton;
+import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.logics.LogicCore;
 
 
@@ -146,13 +146,13 @@ public class TelegramBot implements Bot, LongPollingSingleThreadUpdateConsumer {
     }
 
     /**
-     * Превращает Message в SendMessage.
+     * Превращает LocalMessage в SendMessage.
      * Стоит использовать в тех случаях, когда сообщение содержит лишь текст.
      * @param msg  объект сообщения
      * @param chatId id чата, куда надо отправить сообщение
      * @return объект SendMessage, который можно отправлять
      */
-    private SendMessage createSendMessage(Message msg, long chatId) {
+    private SendMessage createSendMessage(LocalMessage msg, long chatId) {
         return SendMessage
                 .builder()
                 .chatId(chatId)
@@ -161,32 +161,13 @@ public class TelegramBot implements Bot, LongPollingSingleThreadUpdateConsumer {
     }
 
     /**
-     * Превращает наш LocalMessage в телеграмный SendMessage и
-     * по статусу LocalMessage определяет какой тип сообщения нужно отправить.
-     * @param msg объект нашего универсального сообщения
-     * @param chatId id чата, куда надо отправить сообщение
-     * @return объект SendMessage, который можно отправлять
-     */
-    private SendMessage createFromMessage(LocalMessage msg, long chatId) {
-        SendMessage.SendMessageBuilder<?, ?> sendMessage = SendMessage
-                .builder()
-                .chatId(chatId)
-                .text(msg.getText());
-        if (msg.hasButtons()) {
-            sendMessage = sendMessage.replyMarkup(createButtons(msg.getButtons()));
-        }
-        return sendMessage.build();
-    }
-
-
-    /**
      * Переводит Telegram-сообщения в наши сообщения.
      * @param message объект сообщения из TelegramBots
      * @return объект нашего универсального сообщения
      */
     private LocalMessage convertTelegramMessage(org.telegram.telegrambots.meta.api.objects.message.Message message) {
         final String text = (message.hasPhoto()) ? message.getCaption() : message.getText();
-        return new LocalMessage(text);
+        return new LocalMessage(text, null);
     }
 
     @Override
@@ -195,16 +176,15 @@ public class TelegramBot implements Bot, LongPollingSingleThreadUpdateConsumer {
         long chatId;
 
         if (update.hasCallbackQuery()) {
-            msg = new LocalMessage(update.getCallbackQuery().getData());
+            msg = new LocalMessage(update.getCallbackQuery().getData(), null);
             chatId = update.getCallbackQuery().getMessage().getChatId();
         } else if (update.hasMessage()) {
-            msg = new convertTelegramMessage(update.getMessage());
+            msg = convertTelegramMessage(update.getMessage());
             chatId = update.getMessage().getChatId();
         } else {
             LOGGER.error("Unknown message type!");
             return;
         }
-
         logicCore.processMessage(msg, chatId, this);
     }
 }

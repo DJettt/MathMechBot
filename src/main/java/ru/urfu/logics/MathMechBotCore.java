@@ -1,6 +1,6 @@
 package ru.urfu.logics;
 
-import ru.urfu.Message;
+import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.bots.Bot;
 import ru.urfu.models.User;
 import ru.urfu.models.UserEntry;
@@ -39,7 +39,7 @@ public class MathMechBotCore implements LogicCore {
 
 
     @Override
-    public void processMessage(Message msg, long chatId, Bot bot) {
+    public void processMessage(LocalMessage msg, long chatId, Bot bot) {
         if (msg.text() == null) {
             return;
         }
@@ -61,7 +61,7 @@ public class MathMechBotCore implements LogicCore {
      * @param chatId идентификатор чата отправителя
      * @param bot бот, от которого пришло сообщение
      */
-    private void defaultHandler(Message inputMessage, long chatId, Bot bot) {
+    private void defaultHandler(LocalMessage inputMessage, long chatId, Bot bot) {
     }
 
     /**
@@ -70,7 +70,7 @@ public class MathMechBotCore implements LogicCore {
      * @param chatId идентификатор чата отправителя
      * @param bot бот, от которого пришло сообщение
      */
-    private void registerCommandHandler(Message inputMessage, long chatId, Bot bot) {
+    private void registerCommandHandler(LocalMessage inputMessage, long chatId, Bot bot) {
     }
 
     /**
@@ -79,7 +79,7 @@ public class MathMechBotCore implements LogicCore {
      * @param chatId идентификатор чата отправителя
      * @param bot бот, от которого пришло сообщение
      */
-    private void infoCommandHandler(Message inputMessage, long chatId, Bot bot) {
+    private void infoCommandHandler(LocalMessage inputMessage, long chatId, Bot bot) {
     }
 
     /**
@@ -88,7 +88,7 @@ public class MathMechBotCore implements LogicCore {
      * @param chatId идентификатор чата отправителя
      * @param bot бот, от которого пришло сообщение
      */
-    private void editCommandHandler(Message inputMessage, long chatId, Bot bot) {
+    private void editCommandHandler(LocalMessage inputMessage, long chatId, Bot bot) {
     }
 
     /**
@@ -97,7 +97,7 @@ public class MathMechBotCore implements LogicCore {
      * @param chatId идентификатор чата отправителя
      * @param bot бот, от которого пришло сообщение
      */
-    private void deleteCommandHandler(Message inputMessage, long chatId, Bot bot) {
+    private void deleteCommandHandler(LocalMessage inputMessage, long chatId, Bot bot) {
     }
 
     /**
@@ -106,7 +106,7 @@ public class MathMechBotCore implements LogicCore {
      * @param chatId идентификатор чата отправителя
      * @param bot бот, от которого пришло сообщение
      */
-    private void backCommandHandler(Message inputMessage, long chatId, Bot bot) {
+    private void backCommandHandler(LocalMessage inputMessage, long chatId, Bot bot) {
     }
 
     /**
@@ -115,9 +115,9 @@ public class MathMechBotCore implements LogicCore {
      * @param chatId идентификатор чата отправителя
      * @param bot бот, от которого пришло сообщение
      */
-    private void helpCommandHandler(Message inputMessage, Long chatId, Bot bot) {
+    private void helpCommandHandler(LocalMessage inputMessage, Long chatId, Bot bot) {
         final String HELP_MESSAGE = "Справка";
-        final Message answer = new Message(HELP_MESSAGE);
+        final LocalMessage answer = new LocalMessage(HELP_MESSAGE, null);
         bot.sendMessage(answer, chatId);
     }
 }

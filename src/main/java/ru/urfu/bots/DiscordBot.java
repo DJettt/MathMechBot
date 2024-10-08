@@ -15,7 +15,8 @@ import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.requests.restaction.MessageCreateAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.urfu.Message;
+import ru.urfu.localobjects.LocalButton;
+import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.logics.LogicCore;
 
 /**
@@ -64,15 +65,16 @@ public class DiscordBot extends ListenerAdapter implements Bot {
      * @return возвращает ArrayList списков, чтобы бот отправлял их по очерди в каждом сообщении.
      */
     private ArrayList<List<LocalButton>> splitButtons(LocalMessage message){
+        final int maxSize = 5;
         ArrayList<List<LocalButton>> arrayOfButtons = new ArrayList<>();
-        if (message.getButtons().size() <= 5) {
-            arrayOfButtons.add(message.getButtons());
+        if (message.buttons().size() <= maxSize) {
+            arrayOfButtons.add(message.buttons());
         } else {
             int buttonIndex = 0;
-            while (buttonIndex < message.getButtons().size()) {
+            while (buttonIndex < message.buttons().size()) {
                 List<LocalButton> localListOfFiveButtons = new ArrayList<>();
-                for (int i = 0; i < 5  && buttonIndex < message.getButtons().size(); i++, buttonIndex++) {
-                    localListOfFiveButtons.add(message.getButtons().get(buttonIndex));
+                for (int i = 0; i < maxSize  && buttonIndex < message.buttons().size(); i++, buttonIndex++) {
+                    localListOfFiveButtons.add(message.buttons().get(buttonIndex));
                 }
                 arrayOfButtons.add(localListOfFiveButtons);
             }
@@ -98,8 +100,8 @@ public class DiscordBot extends ListenerAdapter implements Bot {
             LOGGER.warn("Couldn't find channel to send message to. Given ID: {}", id);
             return;
         }
-        if (message.getText() != null) {
-            MessageCreateAction messageCreateAction = channel.sendMessage(message.getText());
+        if (message.text() != null) {
+            MessageCreateAction messageCreateAction = channel.sendMessage(message.text());
             if (message.hasButtons()) {
                 ArrayList<List<LocalButton>> splitButtons = splitButtons(message);
                 boolean first = true;
@@ -123,12 +125,12 @@ public class DiscordBot extends ListenerAdapter implements Bot {
     }
 
     /**
-     * Создаёт объекты класса Message из дискордоских MessageReceivedEvent.
+     * Создаёт объекты класса LocalMessage из дискордоских MessageReceivedEvent.
      * @param message полученное сообщение
-     * @return то же сообщение в формате Message для общения с ядром
+     * @return то же сообщение в формате LocalMessage для общения с ядром
      */
-    private Message convertDiscordMessage(net.dv8tion.jda.api.entities.Message message) {
-        return new Message(message.getContentDisplay());
+    private LocalMessage convertDiscordMessage(net.dv8tion.jda.api.entities.Message message) {
+        return new LocalMessage(message.getContentDisplay(), null);
     }
 
     /**
@@ -162,9 +164,8 @@ public class DiscordBot extends ListenerAdapter implements Bot {
         if (event.getAuthor().isBot()) {
             return;
         }
-        LocalMessage msg = createFromDiscordMessage(event);
-        final LocalMessage response = logicCore.processMessage(msg);
-        sendMessage(response, event.getChannel().getIdLong());
+        LocalMessage msg = convertDiscordMessage(event.getMessage());
+        logicCore.processMessage(msg, event.getChannel().getIdLong(), this);
     }
 
     /**
@@ -173,8 +174,7 @@ public class DiscordBot extends ListenerAdapter implements Bot {
      */
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {
-        LocalMessage msg = new LocalMessage(event.getButton().getId());
-        LocalMessage response = logicCore.processMessage(msg);
-        sendMessage(response, event.getChannelIdLong());
+        LocalMessage msg = new LocalMessage(event.getButton().getId(), null);
+        logicCore.processMessage(msg, event.getChannelIdLong(), this);
     }
 }

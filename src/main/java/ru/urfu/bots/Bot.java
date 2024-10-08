@@ -1,6 +1,6 @@
 package ru.urfu.bots;
 
-import ru.urfu.Message;
+import ru.urfu.localobjects.LocalMessage;
 
 /**
  * Интерефейс бота, описывающий методы, которые ожидаются в каждом боте.

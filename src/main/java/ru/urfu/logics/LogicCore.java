@@ -1,6 +1,6 @@
 package ru.urfu.logics;
 
-import ru.urfu.Message;
+import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.bots.Bot;
 
 /**
@@ -14,5 +14,5 @@ public interface LogicCore {
      * @param chatId id чата, от кого пришло сообщение
      * @param bot бот, который получил сообщение
      */
-    void processMessage(Message msg, long chatId, Bot bot);
+    void processMessage(LocalMessage msg, long chatId, Bot bot);
 }
