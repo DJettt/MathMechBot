@@ -1,20 +1,24 @@
 package ru.urfu.logics;
 
-import ru.urfu.Message;
 import ru.urfu.bots.Bot;
+import ru.urfu.localobjects.LocalMessage;
+import ru.urfu.localobjects.LocalMessageBuilder;
 
 /**
  * Логическое ядро эхо-бота.
- * Отправляет назад несколько изменённое сообщение пользователя).
+ * Отправляет назад несколько изменённое сообщение пользователя.
  * Обрабатывает команды /help и /start, отвечая на них справкой.
  */
 public class EchoBotCore implements LogicCore {
     final static String START_COMMAND = "/start";
     final static String HELP_COMMAND = "/help";
 
-
+    /**
+     * Обрабатывает всю информацию, полученную с ботов.
+     * @param msg сообщение, которое нужно обработать
+     */
     @Override
-    public void processMessage(Message msg, long chatId, Bot bot) {
+    public void processMessage(LocalMessage msg, long chatId, Bot bot) {
         if (msg.text() == null) {
             return;
         }
@@ -31,9 +35,10 @@ public class EchoBotCore implements LogicCore {
      * @param chatId идентификатор чата отправителя
      * @param bot бот, от которого пришло сообщение
      */
-    private void defaultHandler(Message inputMessage, long chatId, Bot bot) {
-        final Message answer = new Message(
-                (inputMessage.text() != null) ? ("Ты написал: " + inputMessage.text()) : null);
+    private void defaultHandler(LocalMessage inputMessage, long chatId, Bot bot) {
+        final LocalMessage answer = new LocalMessageBuilder()
+                .text("Ты написал: " + inputMessage.text())
+                .build();
         bot.sendMessage(answer, chatId);
     }
 
@@ -43,15 +48,18 @@ public class EchoBotCore implements LogicCore {
      * @param chatId идентификатор чата отправителя
      * @param bot бот, от которого пришло сообщение
      */
-    private void helpCommandHandler(Message inputMessage, Long chatId, Bot bot) {
+    private void helpCommandHandler(LocalMessage inputMessage, Long chatId, Bot bot) {
         final String HELP_MESSAGE = """
                 Привет, я эхо бот! Сейчас я расскажу как ты можешь со мной взаимодействовать.
-                 \
-                Я пишу твое сообщение тебе обратно но добавляю фразу 'Ты написал:' в начало твоего сообщения!
-                В любой момент ты можешь написать команду '/help' (без кавычек) и \
-                тогда я тебе напомню как со мной работать! Приятного использования!""";
+                Пассивная способность: Я пишу твое сообщение тебе обратно но добавляю фразу 'Ты написал:' в начало \
+                твоего сообщения!\n
+                /help - Показать доступные команды.
+                /start - Начинает диалог с начала. (нет)
+                Приятного использования!""";
 
-        final Message answer = new Message(HELP_MESSAGE);
+        final LocalMessage answer = new LocalMessageBuilder()
+                .text(HELP_MESSAGE)
+                .build();
         bot.sendMessage(answer, chatId);
     }
 }
