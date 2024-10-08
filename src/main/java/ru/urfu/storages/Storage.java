@@ -14,10 +14,17 @@ public interface Storage<T extends Identifiable<I>, I> {
      */
     void add(T member);
 
+
     /**
      * Ищет элемент с данным идентификатором.
      * @param id идентификатор.
      * @return первый элемент из хранилища с данным идентификатором.
      */
     T getById(I id);
+
+    /**
+     * Удаляет элемент с данным идентификатором.
+     * @param id идентификатор.
+     */
+    void deleteById(I id);
 }

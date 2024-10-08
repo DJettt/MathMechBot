@@ -9,14 +9,14 @@ import org.junit.jupiter.api.Test;
  * Тесты для класса HashMapStorage
  */
 class HashMapStorageTest {
-    private HashMapStorage<StringWithId, Integer> arrayStorage;
+    private HashMapStorage<StringWithId, Integer> storage;
 
     /**
      * Создаём хранилище для каждого теста.
      */
     @BeforeEach
     void setupTest() {
-        arrayStorage = new HashMapStorage<>();
+        storage = new HashMapStorage<>();
     }
 
     /**
@@ -30,10 +30,10 @@ class HashMapStorageTest {
     @Test
     @DisplayName("Добавление и изъятие элемента")
     void testAddAndGetElement() {
-        arrayStorage.add(new StringWithId(6, "String"));
-        arrayStorage.add(new StringWithId(2, "String 2"));
-        Assertions.assertEquals("String", arrayStorage.getById(6).str());
-        Assertions.assertEquals("String 2", arrayStorage.getById(2).str());
+        storage.add(new StringWithId(6, "String"));
+        storage.add(new StringWithId(2, "String 2"));
+        Assertions.assertEquals("String", storage.getById(6).str());
+        Assertions.assertEquals("String 2", storage.getById(2).str());
     }
 
     /**
@@ -47,8 +47,45 @@ class HashMapStorageTest {
     @Test
     @DisplayName("Попытка найти несуществующий элемент")
     void testNoElement() {
-        arrayStorage.add(new StringWithId(1, "String"));
-        final StringWithId found = arrayStorage.getById(2);
-        Assertions.assertNull(found);
+        storage.add(new StringWithId(1, "String"));
+        Assertions.assertNull(storage.getById(2));
+    }
+
+    /**
+     * Тестируем добавление элемента в хранилище и удаление элемента
+     * <ol>
+     *     <li>Добавляем в хранилище элемент с одним id.</li>
+     *     <li>Проверяем, что он добавился.</li>
+     *     <li>Пробуем его удалить.</li>
+     *     <li>Проверяем, что он удалился.</li>
+     * </ol>
+     */
+    @Test
+    @DisplayName("Удаление элемента")
+    void testDeleteElement() {
+        storage.add(new StringWithId(1, "String"));
+        Assertions.assertEquals("String", storage.getById(1).str());
+
+        storage.deleteById(1);
+        Assertions.assertNull(storage.getById(1));
+    }
+
+    /**
+     * Тестируем добавление элемента в хранилище и удаление элемента
+     * <ol>
+     *     <li>Добавляем в хранилище элемент с одним id.</li>
+     *     <li>Проверяем, что он добавился.</li>
+     *     <li>Пробуем удалить.</li>
+     *     <li>Проверяем, что он удалился.</li>
+     * </ol>
+     */
+    @Test
+    @DisplayName("Удаление элемента")
+    void testDeleteElementThatDontExist() {
+        storage.add(new StringWithId(1, "String"));
+        Assertions.assertEquals("String", storage.getById(1).str());
+
+        storage.deleteById(2);
+        Assertions.assertEquals("String", storage.getById(1).str());
     }
 }

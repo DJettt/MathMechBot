@@ -1,6 +1,8 @@
 package ru.urfu.storages;
 
 import java.util.HashMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.urfu.models.Identifiable;
 
 /**
@@ -26,5 +28,10 @@ public class HashMapStorage<T extends Identifiable<I>, I> implements Storage<T, 
     @Override
     public T getById(I id) {
         return hashMap.get(id);
+    }
+
+    @Override
+    public void deleteById(I id) {
+        hashMap.remove(id);
     }
 }

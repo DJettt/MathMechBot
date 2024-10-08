@@ -1,9 +1,9 @@
-package ru.urfu.bots;
-
-import ru.urfu.localobjects.LocalMessage;
+package ru.urfu.logics;
 
 import java.util.List;
 import java.util.Stack;
+import ru.urfu.bots.Bot;
+import ru.urfu.localobjects.LocalMessage;
 
 /**
  * Ничего просто сохраняющий сообщения. Создан для тестов.

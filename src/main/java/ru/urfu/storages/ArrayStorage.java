@@ -1,6 +1,7 @@
 package ru.urfu.storages;
 
 import java.util.ArrayList;
+import java.util.Objects;
 import ru.urfu.models.Identifiable;
 
 /**
@@ -26,10 +27,25 @@ public class ArrayStorage<T extends Identifiable<I>, I> implements Storage<T, I>
     @Override
     public T getById(I id) {
         for (T t : array) {
-            if (t.id() == id) {
+            if (t.id().equals(id)) {
                 return t;
             }
         }
         return null;
+    }
+
+    @Override
+    public void deleteById(I id) {
+        boolean changed = false;
+        int index = 0;
+        for (T t : array) {
+            if (changed = t.id().equals(id)) {
+                break;
+            }
+            ++index;
+        }
+        if (changed) {
+            array.remove(index);
+        }
     }
 }
