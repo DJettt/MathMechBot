@@ -1,7 +1,8 @@
 package ru.urfu.models;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import ru.urfu.enums.processes.Process;
+import ru.urfu.enums.processes.ProcessState;
 
 /**
  * Модель пользователя, подписавшегося на пересылку информации.
@@ -13,9 +14,9 @@ import org.jetbrains.annotations.Nullable;
  */
 public record User(
         Long id,
-        @NotNull String telegramId,
-        @NotNull String discordId,
-        @Nullable String currentProcess,
-        int currentState
+        @Nullable String telegramId,
+        @Nullable String discordId,
+        @Nullable Process currentProcess,
+        @Nullable ProcessState currentState
 ) implements Identifiable<Long> {
 }
