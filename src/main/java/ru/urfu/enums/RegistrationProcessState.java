@@ -1,4 +1,4 @@
-package ru.urfu.enums.processes;
+package ru.urfu.enums;
 
 /**
  * Состояния в процессе регистрации.
@@ -58,5 +58,5 @@ public enum RegistrationProcessState implements ProcessState {
     SPECIALTY2,
     GROUP,
     MEN,
-    CONFIRMATION;
+    CONFIRMATION
 }

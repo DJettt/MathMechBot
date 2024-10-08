@@ -1,4 +1,4 @@
-package ru.urfu.enums.processes;
+package ru.urfu.enums;
 
 /**
  * Состояния в процессе удаления.

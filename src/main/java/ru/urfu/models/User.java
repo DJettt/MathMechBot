@@ -2,8 +2,8 @@ package ru.urfu.models;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import ru.urfu.enums.processes.Process;
-import ru.urfu.enums.processes.ProcessState;
+import ru.urfu.enums.Process;
+import ru.urfu.enums.ProcessState;
 
 import java.util.Objects;
 

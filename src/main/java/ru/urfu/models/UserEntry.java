@@ -1,8 +1,6 @@
 package ru.urfu.models;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import ru.urfu.enums.Specialty;
 
 import java.util.Objects;
 
@@ -18,7 +16,7 @@ public final class UserEntry implements Identifiable<Long> {
     @Nullable
     private final String patronym;
     @Nullable
-    private Specialty specialty;
+    private String specialty;
     @Nullable
     private String men;
     @Nullable
@@ -42,7 +40,7 @@ public final class UserEntry implements Identifiable<Long> {
             @Nullable String name,
             @Nullable String surname,
             @Nullable String patronym,
-            @Nullable Specialty specialty,
+            @Nullable String specialty,
             @Nullable String men,
             @Nullable String year,
             @Nullable String group,
@@ -83,10 +81,11 @@ public final class UserEntry implements Identifiable<Long> {
     }
 
     @Nullable
-    public Specialty specialty() {
+    public String specialty() {
         return specialty;
     }
-    public void setSpecialty(@Nullable Specialty spec) {
+
+    public void setSpecialty(@Nullable String spec) {
         this.specialty = spec;
     }
 

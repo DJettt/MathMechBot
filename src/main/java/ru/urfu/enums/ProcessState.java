@@ -1,4 +1,5 @@
-package ru.urfu.enums.processes;
+package ru.urfu.enums;
 
 public interface ProcessState {
+
 }
