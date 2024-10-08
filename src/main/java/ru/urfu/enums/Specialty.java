@@ -23,7 +23,12 @@ public enum Specialty {
     Specialty(@NotNull String abbreviation) {
         this.abbreviation = abbreviation;
     }
-    public String getAbbreviation(){
+
+    /**
+     * Геттер поля abbreviation.
+     * @return значение abbreviation
+     */
+    public String getAbbreviation() {
         return abbreviation;
     }
 }

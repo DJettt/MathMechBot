@@ -38,7 +38,8 @@ public class ArrayStorage<T extends Identifiable<I>, I> implements Storage<T, I>
         boolean changed = false;
         int index = 0;
         for (T t : array) {
-            if (changed = t.id().equals(id)) {
+            changed = t.id().equals(id);
+            if (changed) {
                 break;
             }
             ++index;

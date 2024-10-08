@@ -1,6 +1,7 @@
 package ru.urfu.logics;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import ru.urfu.bots.Bot;
@@ -15,12 +16,6 @@ import ru.urfu.models.User;
 import ru.urfu.models.UserEntry;
 import ru.urfu.storages.ArrayStorage;
 import ru.urfu.storages.Storage;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.logging.Logger;
 
 /**
  * Логическое ядро бота, парсящего каналы в Telegram на предмет упоминания студентов.
@@ -113,11 +108,6 @@ public class MathMechBotCore implements LogicCore {
         if (str.isEmpty()) {
             return false;
         }
-
-        if (!Character.isUpperCase(str.charAt(0))) {
-            return false;
-        }
-
         int spaceCount = 0;
 
         for (int i = 1; i < str.length(); i++) {
@@ -130,11 +120,9 @@ public class MathMechBotCore implements LogicCore {
                 return false;
             }
         }
-
-        if (spaceCount > 2 && spaceCount > 0) {
+        if (!Character.isUpperCase(str.charAt(0)) || spaceCount > 2 || spaceCount < 0) {
             return false;
         }
-
         return true;
     }
 
@@ -197,7 +185,7 @@ public class MathMechBotCore implements LogicCore {
         if (inputMessage.text() == null) {
             return;
         }
-        if (users.getById(chatId).currentProcess() == null && users.getById(chatId) != null && inputMessage.text().equals("/register")) {
+        if (users.getById(chatId).currentProcess() == null && users.getById(chatId) != null && inputMessage.text().equals(REGISTER_COMMAND)) {
             bot.sendMessage(new LocalMessageBuilder()
                     .text("Вы уже зарегистрированы.").build(), chatId);
         }
@@ -574,7 +562,14 @@ public class MathMechBotCore implements LogicCore {
      * @param bot бот, от которого пришло сообщение
      */
     private void helpCommandHandler(LocalMessage inputMessage, Long chatId, Bot bot) {
-        final String HELP_MESSAGE = "Справка";
+        final String HELP_MESSAGE = """
+                /start - начало общения с ботом
+                /help - выводит команды, которые принимает бот
+                /register - регистрация
+                /info - посмотреть информацию о себе
+                /edit - изменение информации о себе
+                /delete - удаление информации о себе
+                """;
         final LocalMessage answer = new LocalMessage(HELP_MESSAGE, null);
         bot.sendMessage(answer, chatId);
     }

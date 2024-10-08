@@ -1,6 +1,11 @@
 package ru.urfu.enums.processes;
 
-// TODO: нормальное описание и реализацию
+/**
+ * Состояния в процессе редактирования.
+ * Пользователь попадает в процесс, отправив команду редактирования.
+ * Класс не доделан.
+ * //TODO::доделать!
+ */
 public enum EditionProcessState implements ProcessState {
     CONFIRMATION;
 }
