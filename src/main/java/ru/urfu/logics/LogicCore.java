@@ -1,7 +1,7 @@
 package ru.urfu.logics;
 
-import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.bots.Bot;
+import ru.urfu.localobjects.LocalMessage;
 
 /**
  * Интерфейс логического ядра.

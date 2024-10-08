@@ -1,7 +1,7 @@
 package ru.urfu.logics;
 
-import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.bots.Bot;
+import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.models.User;
 import ru.urfu.models.UserEntry;
 import ru.urfu.storages.ArrayStorage;

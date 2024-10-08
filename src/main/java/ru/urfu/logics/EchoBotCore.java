@@ -1,8 +1,8 @@
 package ru.urfu.logics;
 
+import ru.urfu.bots.Bot;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
-import ru.urfu.bots.Bot;
 
 /**
  * Логическое ядро эхо-бота.
@@ -50,14 +50,12 @@ public class EchoBotCore implements LogicCore {
      */
     private void helpCommandHandler(LocalMessage inputMessage, Long chatId, Bot bot) {
         final String HELP_MESSAGE = """
-               Привет, я эхо бот! Сейчас я расскажу как ты можешь со мной взаимодействовать.
-               
-               Пассивная способность: Я пишу твое сообщение тебе обратно но добавляю фразу 'Ты написал:' в начало твоего сообщения!
-               
-               /help - Показать доступные команды.
-               /start - Начинает диалог с начала. (нет)
-
-               Приятного использования!""";
+                Привет, я эхо бот! Сейчас я расскажу как ты можешь со мной взаимодействовать.
+                Пассивная способность: Я пишу твое сообщение тебе обратно но добавляю фразу 'Ты написал:' в начало \
+                твоего сообщения!\n
+                /help - Показать доступные команды.
+                /start - Начинает диалог с начала. (нет)
+                Приятного использования!""";
 
         final LocalMessage answer = new LocalMessageBuilder()
                 .text(HELP_MESSAGE)

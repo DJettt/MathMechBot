@@ -59,12 +59,13 @@ public class DiscordBot extends ListenerAdapter implements Bot {
 
         LOGGER.info("Discord bot successfully started!");
     }
+
     /**
      * Разделяет один большой список кнопок на несколько других размером не больше 5.
      * @param message принимает LocalMessage, откуда берет список кнопок.
      * @return возвращает ArrayList списков, чтобы бот отправлял их по очерди в каждом сообщении.
      */
-    private ArrayList<List<LocalButton>> splitButtons(LocalMessage message){
+    private ArrayList<List<LocalButton>> splitButtons(LocalMessage message) {
         final int maxSize = 5;
         ArrayList<List<LocalButton>> arrayOfButtons = new ArrayList<>();
         if (message.buttons().size() <= maxSize) {

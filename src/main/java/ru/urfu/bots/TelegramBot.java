@@ -1,6 +1,5 @@
 package ru.urfu.bots;
 
-import static java.lang.Math.sqrt;
 import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
@@ -82,7 +81,7 @@ public class TelegramBot implements Bot, LongPollingSingleThreadUpdateConsumer {
      * @param sizeOfSquare количество кнопок, которое должно быть в строчке
      * @return возвращает сетку кнопок нужного для вывода формата.
      */
-    private ArrayList<List<LocalButton>> splitButtonList(List<LocalButton> buttons, int sizeOfSquare){
+    private ArrayList<List<LocalButton>> splitButtonList(List<LocalButton> buttons, int sizeOfSquare) {
         ArrayList<List<LocalButton>> splitedButtonList = new ArrayList<>();
         int count = 0;
         while (count < buttons.size()) {
@@ -101,8 +100,8 @@ public class TelegramBot implements Bot, LongPollingSingleThreadUpdateConsumer {
      * @param listSize все кнопки, которые нужно добавить
      * @return возвращает количество кнопок должно быть в ряду в сообщении.
      */
-    private int calculateSizeOfSquare(int listSize){
-        return (int)sqrt(listSize) + 1;
+    private int calculateSizeOfSquare(int listSize) {
+        return (int) Math.sqrt(listSize) + 1;
     }
 
 
@@ -139,7 +138,7 @@ public class TelegramBot implements Bot, LongPollingSingleThreadUpdateConsumer {
         int size = calculateSizeOfSquare(localButtons.size());
         ArrayList<List<LocalButton>> splitedButtonList = splitButtonList(localButtons, size);
         List<InlineKeyboardRow> keyboard = new ArrayList<>();
-        for (List<LocalButton> localButtonRow : splitedButtonList){
+        for (List<LocalButton> localButtonRow : splitedButtonList) {
             keyboard.add(createButtonsRow(localButtonRow));
         }
         return new InlineKeyboardMarkup(keyboard);

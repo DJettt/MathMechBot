@@ -1,8 +1,7 @@
 package ru.urfu.localobjects;
 
-import org.jetbrains.annotations.Nullable;
-
 import java.util.List;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Билдер для класса LocalMessage.

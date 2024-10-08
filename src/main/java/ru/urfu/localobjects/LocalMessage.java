@@ -1,12 +1,12 @@
 package ru.urfu.localobjects;
 
-import org.jetbrains.annotations.Nullable;
-
 import java.util.List;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Класс сообщения, объектами которого общаются боты и логическое ядро.
  * @param text текст сообщения.
+ * @param buttons кнопки сообщения.
  */
 public record LocalMessage(@Nullable String text, @Nullable List<LocalButton> buttons) {
 
@@ -17,6 +17,7 @@ public record LocalMessage(@Nullable String text, @Nullable List<LocalButton> bu
     public boolean hasButtons() {
         return buttons != null;
     }
+
     /**
      * Создаёт объект билдера для этого класса.
      * @return билдер для класса LocalMessage
