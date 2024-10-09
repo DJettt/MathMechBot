@@ -1,6 +1,8 @@
 package ru.urfu.logics;
 
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import ru.urfu.localobjects.LocalButton;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
@@ -11,7 +13,7 @@ import java.util.List;
 
 
 /**
- * Тесты для класса EchoBotCore
+ * Тесты для класса MathMechBotCore
  */
 public final class MathMechBotCoreTest {
     private final static String ACCEPT_COMMAND = "/yes";
@@ -22,6 +24,7 @@ public final class MathMechBotCoreTest {
     private final static LocalMessage BACK_MESSAGE = new LocalMessageBuilder().text(BACK_COMMAND).build();
     private final static LocalMessage INFO_MESSAGE = new LocalMessageBuilder().text("/info").build();
     private final static LocalMessage DELETE_MESSAGE = new LocalMessageBuilder().text("/delete").build();
+    private final static LocalMessage REGISTER_MESSAGE = new LocalMessageBuilder().text("/register").build();
     private final static LocalMessage ASK_FOR_REGISTRATION_MESSAGE = new LocalMessageBuilder()
             .text("Сперва нужно зарегистрироваться.")
             .build();
@@ -36,10 +39,11 @@ public final class MathMechBotCoreTest {
                     /info - информация о Вас
                     /delete - удалить информацию о Вас""")
             .build();
+    private final static LocalButton BACK_BUTTON = new LocalButton("Назад", BACK_COMMAND);
     private final static List<LocalButton> YES_NO_BACK = new ArrayList<>(List.of(
             new LocalButton("Да", ACCEPT_COMMAND),
             new LocalButton("Неа", DECLINE_COMMAND),
-            new LocalButton("Назад", BACK_COMMAND)
+            BACK_BUTTON
     ));
 
     private DummyBot bot;
@@ -66,7 +70,7 @@ public final class MathMechBotCoreTest {
      */
     private LocalMessage registerUser(String fullName, int year, String specialty, int group, String men) {
         final ArrayList<LocalMessage> messages = new ArrayList<>(List.of(
-                new LocalMessageBuilder().text("/register").build(),
+                REGISTER_MESSAGE,
                 new LocalMessageBuilder().text(fullName).build(),
                 new LocalMessageBuilder().text(String.valueOf(year)).build(),
                 new LocalMessageBuilder().text(specialty).build(),
@@ -82,10 +86,79 @@ public final class MathMechBotCoreTest {
         return bot.getOutcomingMessageList().getLast();
     }
 
+
     /**
-     * Тесты для команды удаления.
+     * Тесты для команды регистрации
      */
     @Nested
+    @DisplayName("Тестирование команды /register и её состояний")
+    class RegisterCommandTest {
+        private final static LocalMessage ASK_FULL_NAME = new LocalMessageBuilder()
+                .text("""
+                        Введите свое ФИО в формате:
+                        Иванов Артём Иванович
+                        Без дополнительных пробелов и с буквой ё, если нужно.""")
+                .build();
+        private final static LocalMessage ASK_YEAR = new LocalMessageBuilder()
+                .text("На каком курсе Вы обучаетесь?")
+                .buttons(new ArrayList<>(List.of(
+                        new LocalButton("1 курс", "1"),
+                        new LocalButton("2 курс", "2"),
+                        new LocalButton("3 курс", "3"),
+                        new LocalButton("4 курс", "4"),
+                        new LocalButton("5 курс", "5"),
+                        new LocalButton("6 курс", "6"),
+                        BACK_BUTTON
+                )))
+                .build();
+
+        /**
+         * Проверяем, что бот принимает корректные ФИО или ФИ.
+         * <ol>
+         *     <li>Отправляем команду <code>/register</code>.</li>
+         *     <li>Проверяем, что бот спросил ФИО.</li>
+         *     <li>Отправляем корректное ФИО или ФИ.</li>
+         *     <li>Проверяем, что бот принял их.</li>
+         * </ol>
+         *
+         * @param fullName корректные ФИО или ФИ.
+         */
+        @ParameterizedTest(name = "{0} - корректное ФИО")
+        @ValueSource(strings = {"Иванов Иван", "Иванов Иван Иванович", "Ии Ии Ии", "Ии Ии"})
+        @DisplayName("Различные корректные ФИО или ФИ")
+        void testCorrectFullNames(String fullName) {
+            logic.processMessage(REGISTER_MESSAGE, 0L, bot);
+            Assertions.assertEquals(ASK_FULL_NAME, bot.getOutcomingMessageList().getLast());
+
+            logic.processMessage(new LocalMessageBuilder().text(fullName).build(), 0L, bot);
+            Assertions.assertEquals(ASK_YEAR, bot.getOutcomingMessageList().getLast());
+        }
+
+        /**
+         * Проверяем, что бот не принимает некорректные ФИО или ФИ.
+         * <ol>
+         *     <li>Отправляем команду <code>/register</code>.</li>
+         *     <li>Отправляем некорректное ФИО или ФИ.</li>
+         *     <li>Проверяем, что бот запросил повторить ввод.</li>
+         * </ol>
+         *
+         * @param fullName некорректные ФИО или ФИ.
+         */
+        @ParameterizedTest(name = "{0} - некорректное ФИО")
+        @ValueSource(strings = {"Иванов", "Иванов И", "И Иванов", "Иванов Иванов И", "ИВанов Иванов"})
+        @DisplayName("Различные некорректные ФИО или ФИ")
+        void testIncorrectFullNames(String fullName) {
+            logic.processMessage(REGISTER_MESSAGE, 0L, bot);
+            logic.processMessage(new LocalMessageBuilder().text(fullName).build(), 0L, bot);
+            Assertions.assertEquals(TRY_AGAIN, bot.getOutcomingMessageList().getLast());
+        }
+    }
+
+    /**
+     * Тесты для команды удаления
+     */
+    @Nested
+    @DisplayName("Тестирование команды /delete и её состояний")
     class DeleteCommandTest {
         /**
          * Проверяем, что на попытку незарегистрированного пользователя
