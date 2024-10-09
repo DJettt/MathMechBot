@@ -2,6 +2,7 @@ package ru.urfu.logics;
 
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EmptySource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import ru.urfu.localobjects.LocalButton;
@@ -142,6 +143,18 @@ public final class MathMechBotCoreTest {
         private final static LocalMessage ASK_LATER_YEAR_SPECIALTY = new LocalMessageBuilder()
                 .text("На каком направлении?")
                 .buttons(ASK_LATER_YEAR_SPECIALTY_BUTTONS)
+                .build();
+
+        private final static LocalMessage ASK_GROUP_NUMBER = new LocalMessageBuilder()
+                .text("На каком курсе Вы обучаетесь?")
+                .buttons(new ArrayList<>(List.of(
+                        new LocalButton("1 группа", "1"),
+                        new LocalButton("2 группа", "2"),
+                        new LocalButton("3 группа", "3"),
+                        new LocalButton("4 группа", "4"),
+                        new LocalButton("5 группа", "5"),
+                        BACK_BUTTON
+                )))
                 .build();
 
         /**
@@ -286,6 +299,142 @@ public final class MathMechBotCoreTest {
                 Assertions.assertEquals(ASK_FULL_NAME, bot.getOutcomingMessageList().getLast());
             }
         }
+
+        /**
+         * Тесты для команды регистрации в состоянии запроса направления подготовки для первокурсников.
+         */
+        @Nested
+        @DisplayName("Состояние: запрос направления подготовки")
+        class Specialty {
+            /**
+             * До тестов регистрируем двух студентов, первокурсника и второкурсника.
+             */
+            @BeforeEach
+            void setupTest() {
+                logic.processMessage(REGISTER_MESSAGE, 0L, bot);
+                logic.processMessage(new LocalMessageBuilder().text("Иванов Иван Иванович").build(), 0L, bot);
+                logic.processMessage(new LocalMessageBuilder().text("1").build(), 0L, bot);
+
+                logic.processMessage(REGISTER_MESSAGE, 1L, bot);
+                logic.processMessage(new LocalMessageBuilder().text("Ильин Илья Ильич").build(), 1L, bot);
+                logic.processMessage(new LocalMessageBuilder().text("2").build(), 1L, bot);
+
+                bot.getOutcomingMessageList().clear();
+            }
+
+            /**
+             * Проверяем, что бот принимает общие направления и для первокурсника, и для второкурсника.
+             * <ol>
+             *     <li>Отправляем от первокурсника корректную аббревиатуру направления подготовки.</li>
+             *     <li>Проверяем, что бот принял их.</li>
+             *     <li>Аналогично для второкурсника</li>
+             * </ol>
+             *
+             * @param specialtyAbbreviation корректная аббревиатура направления подготовки, общего для всех курсов.
+             */
+            @ParameterizedTest(name = "{0} - корректное направление подготовки для обоих курсов")
+            @ValueSource(strings = {"КБ", "ФТ"})
+            @DisplayName("Все возможные корректные направления подготовки, общие для всех курсов")
+            void testCommonData(String specialtyAbbreviation) {
+                for (long id = 0; id < 2; ++id) {
+                    logic.processMessage(new LocalMessageBuilder().text(specialtyAbbreviation).build(), id, bot);
+                    Assertions.assertEquals(ASK_GROUP_NUMBER, bot.getOutcomingMessageList().getFirst());
+                    bot.getOutcomingMessageList().clear();
+                }
+            }
+
+            /**
+             * Проверяем, что бот принимает направления подготовки первого курса только у первокурсников.
+             * <ol>
+             *     <li>Отправляем корректную аббревиатуру направления подготовки первого курса.</li>
+             *     <li>Проверяем, что бот принял её от первокурсника.</li>
+             *     <li>Аналогично проверяем, что бот не принял её от второкурсника.</li>
+             * </ol>
+             *
+             * @param specialtyAbbreviation корректная аббревиатура направления подготовки первого курса.
+             */
+            @ParameterizedTest(name = "{0} - корректное направление подготовки только для первого курса")
+            @ValueSource(strings = {"КНМО", "ММП"})
+            @DisplayName("Все возможные корректные направления подготовки первого курса")
+            void testFirstYearOnlyData(String specialtyAbbreviation) {
+                // Первокурсник
+                logic.processMessage(new LocalMessageBuilder().text(specialtyAbbreviation).build(), 0L, bot);
+                Assertions.assertEquals(ASK_GROUP_NUMBER, bot.getOutcomingMessageList().getFirst());
+                bot.getOutcomingMessageList().clear();
+
+                // Второкурсник
+                logic.processMessage(new LocalMessageBuilder().text(specialtyAbbreviation).build(), 1L, bot);
+                Assertions.assertEquals(TRY_AGAIN, bot.getOutcomingMessageList().getFirst());
+                Assertions.assertEquals(ASK_LATER_YEAR_SPECIALTY, bot.getOutcomingMessageList().get(1));
+            }
+
+            /**
+             * Проверяем, что бот принимает направления подготовки первого курса только у первокурсников.
+             * <ol>
+             *     <li>Отправляем корректную аббревиатуру направления подготовки первого курса.</li>
+             *     <li>Проверяем, что бот не принял её от первокурсника.</li>
+             *     <li>Аналогично проверяем, что бот принял её от второкурсника.</li>
+             * </ol>
+             *
+             * @param specialtyAbbreviation корректная аббревиатура направления подготовки не первых курсов.
+             */
+            @ParameterizedTest(name = "{0} - корректное направление подготовки только для поздних курса")
+            @ValueSource(strings = {"КН", "МО", "МХ", "ПМ"})
+            @DisplayName("Все возможные корректные направления подготовки поздних курса")
+            void testLaterYearsOnlyData(String specialtyAbbreviation) {
+                // Первокурсник
+                logic.processMessage(new LocalMessageBuilder().text(specialtyAbbreviation).build(), 0L, bot);
+                Assertions.assertEquals(TRY_AGAIN, bot.getOutcomingMessageList().getFirst());
+                Assertions.assertEquals(ASK_FIRST_YEAR_SPECIALTY, bot.getOutcomingMessageList().get(1));
+                bot.getOutcomingMessageList().clear();
+
+                // Второкурсник
+                logic.processMessage(new LocalMessageBuilder().text(specialtyAbbreviation).build(), 1L, bot);
+                Assertions.assertEquals(ASK_GROUP_NUMBER, bot.getOutcomingMessageList().getFirst());
+            }
+
+            /**
+             * Проверяем, что бот принимает направления подготовки первого курса только у первокурсников.
+             * <ol>
+             *     <li>Отправляем корректную аббревиатуру направления подготовки первого курса.</li>
+             *     <li>Проверяем, что бот не принял её от первокурсника.</li>
+             *     <li>Аналогично проверяем, что бот принял её от второкурсника.</li>
+             * </ol>
+             *
+             * @param specialtyAbbreviation корректная аббревиатура направления подготовки не первых курсов.
+             */
+            @ParameterizedTest(name = "'{0}' не является разрешённым направление подготовки")
+            @EmptySource
+            @NullSource
+            @ValueSource(strings = {"кн", "string", "0"})
+            @DisplayName("Некорректный ввод")
+            void testIncorrectData(String specialtyAbbreviation) {
+                // Первокурсник
+                logic.processMessage(new LocalMessageBuilder().text(specialtyAbbreviation).build(), 0L, bot);
+                Assertions.assertEquals(TRY_AGAIN, bot.getOutcomingMessageList().getFirst());
+                Assertions.assertEquals(ASK_FIRST_YEAR_SPECIALTY, bot.getOutcomingMessageList().get(1));
+                bot.getOutcomingMessageList().clear();
+
+                // Второкурсник
+                logic.processMessage(new LocalMessageBuilder().text(specialtyAbbreviation).build(), 1L, bot);
+                Assertions.assertEquals(TRY_AGAIN, bot.getOutcomingMessageList().getFirst());
+                Assertions.assertEquals(ASK_LATER_YEAR_SPECIALTY, bot.getOutcomingMessageList().get(1));
+            }
+
+            /**
+             * Проверяем, что бот корректно возвращает на шаг назад, то есть в состояние запроса года обучения.
+             * <ol>
+             *     <li>Нажимаем кнопку "Назад"</li>
+             *     <li>Проверяем, что бот в вернулся в состояние запроса года обучения (снова спросил его).</li>
+             * </ol>
+             */
+            @Test
+            @DisplayName("Нажата кнопка 'Назад'")
+            void testBackCommand() {
+                logic.processMessage(BACK_MESSAGE, 0L, bot);
+                Assertions.assertEquals(ASK_YEAR, bot.getOutcomingMessageList().getFirst());
+            }
+        }
     }
 
     /**
@@ -326,7 +475,7 @@ public final class MathMechBotCoreTest {
             Assertions.assertEquals(
                     new LocalMessageBuilder().text("""
                                     Точно удаляем?
-                                                                        
+                                    
                                     ФИО: Иванов Иван Иванович
                                     Группа: ММП-102 (МЕН-123456)""")
                             .buttons(YES_NO_BACK)
