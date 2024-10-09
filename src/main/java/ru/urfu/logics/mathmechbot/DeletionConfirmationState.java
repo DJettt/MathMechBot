@@ -36,7 +36,7 @@ public class DeletionConfirmationState extends MathMechBotState {
 
             case ACCEPT_COMMAND -> {
                 context.userEntries.deleteById(chatId);
-                context.users.deleteById(chatId);
+                context.users.changeUserState(chatId, DefaultStateList.DEFAULT);
                 bot.sendMessage(new LocalMessageBuilder().text("Удаляем...").build(), chatId);
                 new DefaultState(context).onEnter(msg, chatId, bot);
             }
