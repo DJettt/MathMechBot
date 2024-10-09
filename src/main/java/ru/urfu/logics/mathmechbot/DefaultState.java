@@ -13,6 +13,9 @@ import ru.urfu.models.User;
 import ru.urfu.models.UserEntry;
 
 
+/**
+ * Состояние, в котором изначально пребывает пользователь.
+ */
 public class DefaultState extends MathMechBotState {
     private final static Logger LOGGER = LoggerFactory.getLogger(DefaultState.class);
 
@@ -22,7 +25,11 @@ public class DefaultState extends MathMechBotState {
     private final static String INFO_COMMAND = "/info";
     private final static String DELETE_COMMAND = "/delete";
 
-
+    /**
+     * Конструктор состояния.
+     *
+     * @param context контекст (в том же смысле, что и в паттерне "State").
+     */
     public DefaultState(MathMechBotCore context) {
         super(context);
     }
@@ -84,19 +91,19 @@ public class DefaultState extends MathMechBotState {
 
     /**
      * Выдаёт информацию о пользователе.
-     *
      * @param message входящее сообщение
      * @param chatId  идентификатор чата отправителя
      * @param bot     бот, от которого пришло сообщение
      */
     private void infoCommandHandler(LocalMessage message, long chatId, Bot bot) {
         final User user = context.users.getById(chatId);
+        final UserEntry userEntry = context.userEntries.getById(chatId);
+
         if (user == null) {
             notRegistered(message, chatId, bot);
             return;
         }
 
-        final UserEntry userEntry = context.userEntries.getById(chatId);
         if (userEntry == null) {
             LOGGER.error("User without entry asked for info");
             return;

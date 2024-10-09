@@ -5,6 +5,9 @@ import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
 import ru.urfu.logics.State;
 
+/**
+ * Состояние для MathMechBot, которые определяют ряд констант, используемых во всех состояниях.
+ */
 public abstract class MathMechBotState implements State {
     protected final static String ACCEPT_COMMAND = "/yes";
     protected final static String DECLINE_COMMAND = "/no";
@@ -24,6 +27,11 @@ public abstract class MathMechBotState implements State {
 
     protected final MathMechBotCore context;
 
+    /**
+     * Конструктор состояния.
+     *
+     * @param context контекст (в том же смысле, что и в паттерне "State").
+     */
     public MathMechBotState(MathMechBotCore context) {
         this.context = context;
     }

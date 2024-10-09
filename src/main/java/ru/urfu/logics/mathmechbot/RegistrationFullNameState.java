@@ -1,5 +1,6 @@
 package ru.urfu.logics.mathmechbot;
 
+
 import ru.urfu.bots.Bot;
 import ru.urfu.enums.RegistrationProcessState;
 import ru.urfu.localobjects.LocalMessage;
@@ -10,7 +11,15 @@ import ru.urfu.models.UserEntry;
 import java.util.List;
 
 
+/**
+ * Состояние ожидания ввода ФИО во время регистрации.
+ */
 public class RegistrationFullNameState extends MathMechBotState {
+    /**
+     * Конструктор состояния.
+     *
+     * @param context контекст (в том же смысле, что и в паттерне "State").
+     */
     public RegistrationFullNameState(MathMechBotCore context) {
         super(context);
     }
@@ -71,6 +80,7 @@ public class RegistrationFullNameState extends MathMechBotState {
      * @param chatId идентификатор чата
      * @param bot бот, принявший сообщение
      */
+    @SuppressWarnings("MagicNumber")
     public void textHandler(LocalMessage message, long chatId, Bot bot) {
         assert message.text() != null;
         final String trimmedText = message.text().trim();
@@ -81,6 +91,7 @@ public class RegistrationFullNameState extends MathMechBotState {
         }
 
         final List<String> strs = List.of(trimmedText.split(" "));
+
         context.userEntries.add(new UserEntry(
                 chatId, strs.get(1), strs.get(0), (strs.size() == 3) ? strs.get(2) : "",
                 null, null, null, null, chatId));

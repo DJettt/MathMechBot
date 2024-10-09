@@ -11,7 +11,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+/**
+ * Состояние запроса номера группы во время регистрации.
+ */
 public class RegistrationGroupState extends MathMechBotState {
+    /**
+     * Конструктор состояния.
+     *
+     * @param context контекст (в том же смысле, что и в паттерне "State").
+     */
     public RegistrationGroupState(MathMechBotCore context) {
         super(context);
     }
@@ -29,9 +37,10 @@ public class RegistrationGroupState extends MathMechBotState {
             case null -> bot.sendMessage(TRY_AGAIN, chatId);
 
             default -> {
+                final int maxYear = 5;
                 try {
                     final int group = Integer.parseInt(msg.text().trim());
-                    if (group >= 1 && group <= 5) {
+                    if (group >= 1 && group <= maxYear) {
                         context.userEntries.getById(chatId).setGroup(String.valueOf(group));
                         context.users.getById(chatId).setCurrentState(RegistrationProcessState.MEN);
                         final State newState = new RegistrationMenGroupState(context);

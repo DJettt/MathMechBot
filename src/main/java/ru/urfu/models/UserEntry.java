@@ -127,8 +127,8 @@ public final class UserEntry implements Identifiable<Long> {
                 Objects.equals(this.patronym, that.patronym) &&
                 Objects.equals(this.specialty, that.specialty) &&
                 Objects.equals(this.men, that.men) &&
-                this.year == that.year &&
-                this.group == that.group &&
+                Objects.equals(this.year, that.year) &&
+                Objects.equals(this.group, that.group) &&
                 Objects.equals(this.userId, that.userId);
     }
 
@@ -150,5 +150,4 @@ public final class UserEntry implements Identifiable<Long> {
                 "group=" + group + ", " +
                 "userId=" + userId + ']';
     }
-
 }

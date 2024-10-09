@@ -12,11 +12,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+/**
+ * Состояние запроса направления подготовки.
+ * Предлагает пользователю направление подготовки
+ * из списка, который возвращает метод allowedSpecialties.
+ */
 public class RegistrationSpecialitiesState extends MathMechBotState {
+    /**
+     * Конструктор состояния.
+     *
+     * @param context контекст (в том же смысле, что и в паттерне "State").
+     */
     public RegistrationSpecialitiesState(MathMechBotCore context) {
         super(context);
     }
 
+    /**
+     * Возвращает список разрешённых специальностей.
+     * Нужно для наследования от этого класса.
+     *
+     * @return список разрешённых специальностей
+     */
     protected List<Specialty> allowedSpecialties() {
         return new ArrayList<>() {
         };
@@ -51,7 +67,7 @@ public class RegistrationSpecialitiesState extends MathMechBotState {
     }
 
     /**
-     * Возвращаем пользователя на шаг назад, то есть на запрос года обучения
+     * Возвращаем пользователя на шаг назад, то есть на запрос года обучения.
      *
      * @param message полученное сообщение
      * @param chatId  идентификатор чата

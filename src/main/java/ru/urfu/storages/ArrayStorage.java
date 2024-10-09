@@ -1,7 +1,8 @@
 package ru.urfu.storages;
 
-import java.util.ArrayList;
 import ru.urfu.models.Identifiable;
+
+import java.util.ArrayList;
 
 /**
  * Хранилище данных, реализованное на простом массиве.
@@ -38,7 +39,8 @@ public class ArrayStorage<T extends Identifiable<I>, I> implements Storage<T, I>
         boolean changed = false;
         int index = 0;
         for (T t : array) {
-            if (changed = t.id().equals(id)) {
+            changed = t.id().equals(id);
+            if (changed) {
                 break;
             }
             ++index;

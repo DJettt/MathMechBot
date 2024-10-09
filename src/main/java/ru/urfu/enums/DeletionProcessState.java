@@ -15,5 +15,5 @@ package ru.urfu.enums;
  * </ol>
  */
 public enum DeletionProcessState implements ProcessState {
-    CONFIRMATION;
+    CONFIRMATION
 }

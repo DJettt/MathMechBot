@@ -12,9 +12,18 @@ import ru.urfu.models.UserEntry;
 import java.util.ArrayList;
 import java.util.List;
 
+
+/**
+ * Состояние ожидания подтверждения удаления данных.
+ */
 public class DeletionConfirmationState extends MathMechBotState {
     private final static Logger LOGGER = LoggerFactory.getLogger(DeletionConfirmationState.class);
 
+    /**
+     * Конструктор состояния.
+     *
+     * @param context контекст (в том же смысле, что и в паттерне "State").
+     */
     public DeletionConfirmationState(MathMechBotCore context) {
         super(context);
     }

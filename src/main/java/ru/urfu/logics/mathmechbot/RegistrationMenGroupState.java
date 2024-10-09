@@ -10,8 +10,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+/**
+ * Состояние ожидания ввода академической группы в формате МЕН во время регистрации.
+ */
 public class RegistrationMenGroupState extends MathMechBotState {
-
+    /**
+     * Конструктор состояния.
+     *
+     * @param context контекст (в том же смысле, что и в паттерне "State").
+     */
     public RegistrationMenGroupState(MathMechBotCore context) {
         super(context);
     }

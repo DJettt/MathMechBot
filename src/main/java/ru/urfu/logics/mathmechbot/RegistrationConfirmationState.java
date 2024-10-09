@@ -13,9 +13,18 @@ import ru.urfu.models.UserEntry;
 import java.util.ArrayList;
 import java.util.List;
 
+
+/**
+ * Состояние подтверждения введённых данных во время регистрации.
+ */
 public class RegistrationConfirmationState extends MathMechBotState {
     private final static Logger LOGGER = LoggerFactory.getLogger(RegistrationConfirmationState.class);
 
+    /**
+     * Конструктор состояния.
+     *
+     * @param context контекст (в том же смысле, что и в паттерне "State").
+     */
     public RegistrationConfirmationState(MathMechBotCore context) {
         super(context);
     }

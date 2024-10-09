@@ -11,6 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+/**
+ * Состояние ожидания ответа на запрос года обучения во время регистрации.
+ */
 public class RegistrationYearState extends MathMechBotState {
     private final static LocalMessage ON_ENTER_MESSAGE = new LocalMessageBuilder()
             .text("На каком курсе Вы обучаетесь?")
@@ -25,6 +28,11 @@ public class RegistrationYearState extends MathMechBotState {
             )))
             .build();
 
+    /**
+     * Конструктор состояния.
+     *
+     * @param context контекст (в том же смысле, что и в паттерне "State").
+     */
     public RegistrationYearState(MathMechBotCore context) {
         super(context);
     }
@@ -76,6 +84,7 @@ public class RegistrationYearState extends MathMechBotState {
         assert message.text() != null;
 
         try {
+            final int maxYear = 6;
             final int year = Integer.parseInt(message.text().trim());
             if (year == 1) {
                 context.userEntries.getById(chatId).setYear(String.valueOf(year));
@@ -84,7 +93,7 @@ public class RegistrationYearState extends MathMechBotState {
                 final State newState = new RegistrationFirstYearSpecialtiesState(context);
                 newState.onEnter(message, chatId, bot);
                 context.changeState(newState);
-            } else if (year > 1 && year <= 6) {
+            } else if (year > 1 && year <= maxYear) {
                 context.userEntries.getById(chatId).setYear(String.valueOf(year));
                 context.users.getById(chatId).setCurrentState(RegistrationProcessState.SPECIALTY2);
 

@@ -1,6 +1,7 @@
 package ru.urfu.logics.mathmechbot;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.urfu.bots.Bot;
@@ -36,12 +37,24 @@ public class MathMechBotCore implements LogicCore {
         userEntries = new ArrayStorage<>();
     }
 
+    /**
+     * Меняет состояние контекста (см. паттерн "State").
+     * Состояния могут вызывать этот метод.
+     *
+     * @param state новое состояние контекста.
+     */
     void changeState(State state) {
         currentState = state;
     }
 
-    private State getStateBasedOnUser(@NotNull User user) {
-        return switch (user.currentProcess()) {
+    /**
+     * Определяет состояние контекста для данного пользователя.
+     *
+     * @param user пользователь.
+     * @return состояние, в котором должен пребывать данный пользователь.
+     */
+    private @Nullable State getStateBasedOnUser(@NotNull User user) {
+        final State state = switch (user.currentProcess()) {
             case null -> new DefaultState(this);
             case Process.DEFAULT -> new DefaultState(this);
 
@@ -53,23 +66,24 @@ public class MathMechBotCore implements LogicCore {
                 case RegistrationProcessState.GROUP -> new RegistrationGroupState(this);
                 case RegistrationProcessState.MEN -> new RegistrationMenGroupState(this);
                 case RegistrationProcessState.CONFIRMATION -> new RegistrationConfirmationState(this);
-                case null, default -> {
-                    LOGGER.error("Unknown user state: {}", user.currentState());
-                    yield null;
-                }
+                case null, default -> null;
             };
             case Process.DELETION -> switch (user.currentState()) {
                 case DeletionProcessState.CONFIRMATION -> new DeletionConfirmationState(this);
-                case null, default -> {
-                    LOGGER.error("Unknown user state: {}", user.currentState());
-                    yield null;
-                }
+                case null, default -> null;
             };
             default -> {
                 LOGGER.error("Unknown user process: {}", user.currentProcess());
                 yield null;
             }
         };
+
+        if (state == null) {
+            LOGGER.error("Unknown user state: {}", user.currentState());
+            return null;
+        }
+
+        return state;
     }
 
     @Override
