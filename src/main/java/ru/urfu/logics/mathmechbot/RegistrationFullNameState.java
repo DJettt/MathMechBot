@@ -1,7 +1,6 @@
 package ru.urfu.logics.mathmechbot;
 
 import ru.urfu.bots.Bot;
-import ru.urfu.enums.Process;
 import ru.urfu.enums.RegistrationProcessState;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
@@ -30,31 +29,9 @@ public class RegistrationFullNameState extends MathMechBotState {
     @Override
     public void processMessage(LocalMessage msg, long chatId, Bot bot) {
         switch (msg.text()) {
-            case BACK_COMMAND -> {
-                context.users.getById(chatId).setCurrentProcess(Process.DEFAULT);
-                final State newState = new DefaultState(context);
-                newState.onEnter(msg, chatId, bot);
-                context.changeState(newState);
-            }
-
+            case BACK_COMMAND -> backCommandHandler(msg, chatId, bot);
             case null -> bot.sendMessage(TRY_AGAIN, chatId);
-
-            default -> {
-                final String trimmedText = msg.text().trim();
-
-                if (!validateFullName(trimmedText)) {
-                    bot.sendMessage(TRY_AGAIN, chatId);
-                    return;
-                }
-                final List<String> strs = List.of(trimmedText.split(" "));
-                context.userEntries.add(new UserEntry(
-                        chatId, strs.get(1), strs.get(0), (strs.size() == 3) ? strs.get(2) : "",
-                        null, null, null, null, chatId));
-                context.users.getById(chatId).setCurrentState(RegistrationProcessState.YEAR);
-                final State newState = new RegistrationYearState(context);
-                newState.onEnter(msg, chatId, bot);
-                context.changeState(newState);
-            }
+            default -> textHandler(msg, chatId, bot);
         }
     }
 
@@ -67,5 +44,34 @@ public class RegistrationFullNameState extends MathMechBotState {
                         Без дополнительных пробелов и с буквой ё, если нужно.""")
                 .build();
         bot.sendMessage(message, chatId);
+    }
+
+    private void backCommandHandler(LocalMessage message, long chatId, Bot bot) {
+        context.users.deleteById(chatId);
+        context.userEntries.deleteById(chatId);
+
+        final State newState = new DefaultState(context);
+        newState.onEnter(message, chatId, bot);
+        context.changeState(newState);
+    }
+
+    public void textHandler(LocalMessage message, long chatId, Bot bot) {
+        assert message.text() != null;
+        final String trimmedText = message.text().trim();
+
+        if (!validateFullName(trimmedText)) {
+            bot.sendMessage(TRY_AGAIN, chatId);
+            return;
+        }
+
+        final List<String> strs = List.of(trimmedText.split(" "));
+        context.userEntries.add(new UserEntry(
+                chatId, strs.get(1), strs.get(0), (strs.size() == 3) ? strs.get(2) : "",
+                null, null, null, null, chatId));
+        context.users.getById(chatId).setCurrentState(RegistrationProcessState.YEAR);
+
+        final State newState = new RegistrationYearState(context);
+        newState.onEnter(message, chatId, bot);
+        context.changeState(newState);
     }
 }
