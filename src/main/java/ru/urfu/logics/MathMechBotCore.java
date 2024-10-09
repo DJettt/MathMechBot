@@ -41,7 +41,9 @@ public class MathMechBotCore implements LogicCore {
             ФИО: %s
             Направление: %s
             Курс: %s
-            Группа: %s""";
+            Группа: %s
+            Академ. группа: %s
+            """;
 
     final Storage<User, Long> users;
     final Storage<UserEntry, Long> userEntries;
@@ -104,7 +106,8 @@ public class MathMechBotCore implements LogicCore {
      * @param str ФИО (или ФИ)
      * @return true - все верно, false - это не ФИО.
      */
-    public boolean correctName(String str){
+    @SuppressWarnings("ReturnCount")
+    public boolean correctName(String str) {
         if (str.isEmpty()) {
             return false;
         }
@@ -127,41 +130,32 @@ public class MathMechBotCore implements LogicCore {
     }
 
     /**
-     * Проверяет корректность строки МЕН которую отправил пользователь
+     * Проверяет корректность строки МЕН которую отправил пользователь.
      * @param input строка от пользователя
      * @return true - все верно, false - не все верно...
      */
+    @SuppressWarnings("MagicNumber")
     public boolean correctMen(String input) {
-        if (input.length() != 10) {
+        if (!input.startsWith("МЕН") || input.charAt(3) != '-' || input.length() != 10) {
             return false;
         }
-
-        if (!input.substring(0, 3).equals("МЕН")) {
-            return false;
-        }
-
-        if (input.charAt(3) != '-') {
-            return false;
-        }
-
         for (int i = 4; i < 10; i++) {
             if (!Character.isDigit(input.charAt(i))) {
                 return false;
             }
         }
-
         return true;
     }
 
     /**
-     *
-     * @param index
-     * @param command
-     * @return
+     * Проверка является ли полученное сообщение одной из ожидаемых команд.
+     * @param index индекс списка команд
+     * @param command полученный текст
+     * @return да или нет
      */
     public boolean isCommand(int index, String command) {
         List<String> specificList = REGISTRATION_COMMAND_CENTER.get(index);
-        for (String str : specificList){
+        for (String str : specificList) {
             if (Objects.equals(str, command)) {
                 return true;
             }
@@ -170,31 +164,18 @@ public class MathMechBotCore implements LogicCore {
     }
 
     /**
-     * Запускает процесс регистрации пользователя.
-     * @param inputMessage входящее сообщение
-     * @param chatId идентификатор чата отправителя
-     * @param bot бот, от которого пришло сообщение
+     * Обрабатывает команды пользователя при регистрации.
+     * @param inputMessage команда
+     * @param chatId id чата
+     * @param bot бот в котором пришло сообщение
      */
-    private void registerCommandHandler(LocalMessage inputMessage, long chatId, Bot bot) {
-        if (users.getById(chatId) == null) {
-            users.add(new User(chatId, chatId, chatId, Process.REGISTRATION, RegistrationProcessState.NAME));
-            userEntries.add(new UserEntry(chatId, null, null, null, null, null,
-                    null, null, chatId));
-        }
-
-        if (inputMessage.text() == null) {
-            return;
-        }
-        if (users.getById(chatId).currentProcess() == null && users.getById(chatId) != null && inputMessage.text().equals(REGISTER_COMMAND)) {
-            bot.sendMessage(new LocalMessageBuilder()
-                    .text("Вы уже зарегистрированы.").build(), chatId);
-        }
-        switch (users.getById(chatId).currentState()){
+    private void registerCommandCatcher(LocalMessage inputMessage, long chatId, Bot bot) {
+        switch (users.getById(chatId).currentState()) {
             case RegistrationProcessState.NAME -> {
                 if (correctName(inputMessage.text())) {
                     userEntries.getById(chatId).setName(inputMessage.text());
                     users.getById(chatId).setCurrentState(RegistrationProcessState.YEAR);
-                } else if (!inputMessage.text().equals(REGISTER_COMMAND)){
+                } else if (!inputMessage.text().equals(REGISTER_COMMAND)) {
                     bot.sendMessage(new LocalMessageBuilder()
                             .text("Некорректный формат ФИО.").build(), chatId);
                 }
@@ -300,7 +281,7 @@ public class MathMechBotCore implements LogicCore {
                 }
             }
             case RegistrationProcessState.MEN -> {
-                if (inputMessage.text().equals("back_button")){
+                if (inputMessage.text().equals("back_button")) {
                     userEntries.getById(chatId).setGroup(null);
                     users.getById(chatId).setCurrentState(RegistrationProcessState.GROUP);
                 } else if (correctMen(inputMessage.text())) {
@@ -318,8 +299,8 @@ public class MathMechBotCore implements LogicCore {
                     users.getById(chatId).setCurrentState(null);
                     users.getById(chatId).setCurrentProcess(null);
                 } else if (inputMessage.text().equals("confirm_no")) {
-                    users.getById(chatId).setCurrentState(null);
-                    users.getById(chatId).setCurrentProcess(null);
+                    users.deleteById(chatId);
+                    userEntries.deleteById(chatId);
                     bot.sendMessage(new LocalMessageBuilder()
                             .text("Давайте начнем все с начала!")
                             .buttons(new ArrayList<>(
@@ -328,7 +309,7 @@ public class MathMechBotCore implements LogicCore {
                                     )))
                             .build(), chatId);
                     return;
-                } else if (inputMessage.text().equals("back_button")){
+                } else if (inputMessage.text().equals("back_button")) {
                     userEntries.getById(chatId).setMen(null);
                     users.getById(chatId).setCurrentState(RegistrationProcessState.MEN);
                 } else {
@@ -337,14 +318,21 @@ public class MathMechBotCore implements LogicCore {
                 }
             }
         }
+    }
 
+    /**
+     * Отправляет команды пользователи при регистрации.
+     * @param chatId id чата
+     * @param bot бот в котором надо отправить сообщение
+     */
+    private void registerCommandSender(long chatId, Bot bot) {
         final User user = users.getById(chatId);
         final UserEntry userEntry = userEntries.getById(chatId);
         switch (user.currentState()) {
             case RegistrationProcessState.NAME -> {
                 bot.sendMessage(new LocalMessageBuilder()
-                        .text("Введите свое ФИО в формате: \nИванов Артём Иванович\nБез дополнительных " +
-                                "пробелов и с буквой ё, если нужно.").build(), chatId);
+                        .text("Введите свое ФИО в формате: \nИванов Артём Иванович\nБез дополнительных "
+                                + "пробелов и с буквой ё, если нужно.").build(), chatId);
                 return;
             }
             case RegistrationProcessState.YEAR -> {
@@ -366,10 +354,14 @@ public class MathMechBotCore implements LogicCore {
                         .text("На каком направлении?")
                         .buttons(new ArrayList<>(
                                 List.of(
-                                        new LocalButton(Specialty.KNMO.getAbbreviation(), Specialty.KNMO.getAbbreviation()),
-                                        new LocalButton(Specialty.MMP.getAbbreviation(), Specialty.MMP.getAbbreviation()),
-                                        new LocalButton(Specialty.KB.getAbbreviation(), Specialty.KB.getAbbreviation()),
-                                        new LocalButton(Specialty.FT.getAbbreviation(), Specialty.FT.getAbbreviation()),
+                                        new LocalButton(Specialty.KNMO.getAbbreviation(),
+                                                Specialty.KNMO.getAbbreviation()),
+                                        new LocalButton(Specialty.MMP.getAbbreviation(),
+                                                Specialty.MMP.getAbbreviation()),
+                                        new LocalButton(Specialty.KB.getAbbreviation(),
+                                                Specialty.KB.getAbbreviation()),
+                                        new LocalButton(Specialty.FT.getAbbreviation(),
+                                                Specialty.FT.getAbbreviation()),
                                         new LocalButton("Назад", "back_button")
                                 )))
                         .build(), chatId);
@@ -391,12 +383,6 @@ public class MathMechBotCore implements LogicCore {
                         .build(), chatId);
             }
             case RegistrationProcessState.GROUP -> {
-                String button_data;
-                if (Objects.equals(userEntries.getById(chatId).year(), "1")) {
-                    button_data = "back_to_spec1_button";
-                } else {
-                    button_data = "back_to_spec2_button";
-                }
                 bot.sendMessage(new LocalMessageBuilder()
                         .text("Какая у Вас группа?")
                         .buttons(new ArrayList<>(
@@ -413,17 +399,17 @@ public class MathMechBotCore implements LogicCore {
             case RegistrationProcessState.MEN -> {
                 bot.sendMessage(new LocalMessageBuilder()
                         .text("Введите свою академическую группу в формате:\nМЕН-123456")
-                                .buttons(new ArrayList<>(
-                                        List.of(
-                                                new LocalButton("Назад", "back_button")
-                                        )))
+                        .buttons(new ArrayList<>(
+                                List.of(
+                                        new LocalButton("Назад", "back_button")
+                                )))
                         .build(), chatId);
             }
             case RegistrationProcessState.CONFIRMATION -> {
                 bot.sendMessage(new LocalMessageBuilder()
-                        .text("Ваша информация:\nФИО: " + userEntry.name() + "\nКурс: " + userEntry.year() +
-                                "\nНаправление: " + userEntry.specialty() + "\nГруппа: " + userEntry.group() +
-                                "\nАкадемическая группа: " + userEntry.men() + "\nВсе верно?")
+                        .text("Ваша информация:\nФИО: " + userEntry.name() + "\nКурс: " + userEntry.year()
+                                + "\nНаправление: " + userEntry.specialty() + "\nГруппа: " + userEntry.group()
+                                + "\nАкадемическая группа: " + userEntry.men() + "\nВсе верно?")
                         .buttons(new ArrayList<>(
                                 List.of(
                                         new LocalButton("Да", "confirm_yes"),
@@ -449,6 +435,31 @@ public class MathMechBotCore implements LogicCore {
     }
 
     /**
+     * Запускает процесс регистрации пользователя.
+     * @param inputMessage входящее сообщение
+     * @param chatId идентификатор чата отправителя
+     * @param bot бот, от которого пришло сообщение
+     */
+    private void registerCommandHandler(LocalMessage inputMessage, long chatId, Bot bot) {
+        if (users.getById(chatId) == null) {
+            users.add(new User(chatId, chatId, chatId, Process.REGISTRATION, RegistrationProcessState.NAME));
+            userEntries.add(new UserEntry(chatId, null, null, null, null, null,
+                    null, null, chatId));
+        }
+
+        if (inputMessage.text() == null) {
+            return;
+        }
+        if (users.getById(chatId).currentProcess() == null && users.getById(chatId) != null
+                && inputMessage.text().equals(REGISTER_COMMAND)) {
+            bot.sendMessage(new LocalMessageBuilder()
+                    .text("Вы уже зарегистрированы.").build(), chatId);
+        }
+        registerCommandCatcher(inputMessage, chatId, bot);
+        registerCommandSender(chatId, bot);
+    }
+
+    /**
      * Отправляет зарегистрированную информацию.
      * @param inputMessage входящее сообщение
      * @param chatId идентификатор чата отправителя
@@ -463,7 +474,6 @@ public class MathMechBotCore implements LogicCore {
                                             new LocalButton("Регистрация", REGISTER_COMMAND)
                                     )))
                     .build(), chatId);
-            ;
         }
         LocalMessage msg;
         UserEntry currentUserEntry = userEntries.getById(chatId);
@@ -472,12 +482,13 @@ public class MathMechBotCore implements LogicCore {
                     currentUserEntry.name(),
                     currentUserEntry.specialty(),
                     currentUserEntry.year(),
-                    currentUserEntry.group()
+                    currentUserEntry.group(),
+                    currentUserEntry.men()
             );
             msg = new LocalMessage(userInfo, null);
         } else {
-            msg = new LocalMessage("Сейчас просмотр информации невозможен.\n" +
-                    "Повторите попытку после завершения текущего действия",
+            msg = new LocalMessage("Сейчас просмотр информации невозможен.\n"
+                    + "Повторите попытку после завершения текущего действия",
                     null);
         }
         bot.sendMessage(msg, chatId);
@@ -491,6 +502,7 @@ public class MathMechBotCore implements LogicCore {
      */
     private void editCommandHandler(LocalMessage inputMessage, long chatId, Bot bot) {
     }
+
     /**
      * Запускает процесс удаления зарегистрированной информации.
      * @param inputMessage входящее сообщение

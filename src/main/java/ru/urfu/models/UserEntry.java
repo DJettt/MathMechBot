@@ -175,21 +175,21 @@ public final class UserEntry implements Identifiable<Long> {
         return userId;
     }
 
-    @SuppressWarnings({"NeedBranches", "OperatorWrap"})
+    @SuppressWarnings("NeedBraces")
     @Override
     public boolean equals(Object obj) {
         if (obj == this) return true;
         if (obj == null || obj.getClass() != this.getClass()) return false;
         var that = (UserEntry) obj;
-        return Objects.equals(this.id, that.id) &&
-                Objects.equals(this.name, that.name) &&
-                Objects.equals(this.surname, that.surname) &&
-                Objects.equals(this.patronym, that.patronym) &&
-                Objects.equals(this.specialty, that.specialty) &&
-                Objects.equals(this.men, that.men) &&
-                this.year == that.year &&
-                this.group == that.group &&
-                Objects.equals(this.userId, that.userId);
+        return Objects.equals(this.id, that.id)
+                && Objects.equals(this.name, that.name)
+                && Objects.equals(this.surname, that.surname)
+                && Objects.equals(this.patronym, that.patronym)
+                && Objects.equals(this.specialty, that.specialty)
+                && Objects.equals(this.men, that.men)
+                && this.year == that.year
+                && this.group == that.group
+                && Objects.equals(this.userId, that.userId);
     }
 
     @Override
@@ -199,16 +199,16 @@ public final class UserEntry implements Identifiable<Long> {
 
     @Override
     public String toString() {
-        return "UserEntry[" +
-                "id=" + id + ", " +
-                "name=" + name + ", " +
-                "surname=" + surname + ", " +
-                "patronym=" + patronym + ", " +
-                "specialty=" + specialty + ", " +
-                "men=" + men + ", " +
-                "year=" + year + ", " +
-                "group=" + group + ", " +
-                "userId=" + userId + ']';
+        return "UserEntry["
+                + "id=" + id + ", "
+                + "name=" + name + ", "
+                + "surname=" + surname + ", "
+                + "patronym=" + patronym + ", "
+                + "specialty=" + specialty + ", "
+                + "men=" + men + ", "
+                + "year=" + year + ", "
+                + "group=" + group + ", "
+                + "userId=" + userId + ']';
     }
 
 }
