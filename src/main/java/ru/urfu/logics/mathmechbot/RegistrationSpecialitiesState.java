@@ -1,5 +1,7 @@
 package ru.urfu.logics.mathmechbot;
 
+import java.util.ArrayList;
+import java.util.List;
 import ru.urfu.bots.Bot;
 import ru.urfu.enums.RegistrationProcessState;
 import ru.urfu.enums.Specialty;
@@ -7,9 +9,6 @@ import ru.urfu.localobjects.LocalButton;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
 import ru.urfu.logics.State;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**
@@ -58,10 +57,7 @@ public class RegistrationSpecialitiesState extends MathMechBotState {
         }
         buttons.add(BACK_BUTTON);
 
-        final LocalMessage message = new LocalMessageBuilder()
-                .text("На каком направлении?")
-                .buttons(buttons)
-                .build();
+        final LocalMessage message = new LocalMessageBuilder().text("На каком направлении?").buttons(buttons).build();
 
         bot.sendMessage(message, chatId);
     }
@@ -74,7 +70,7 @@ public class RegistrationSpecialitiesState extends MathMechBotState {
      * @param bot     бот, принявший сообщение
      */
     private void backCommandHandler(LocalMessage message, long chatId, Bot bot) {
-        context.users.getById(chatId).setCurrentState(RegistrationProcessState.YEAR);
+        context.users.changeUserState(chatId, RegistrationProcessState.YEAR);
         final State newState = new RegistrationYearState(context);
         newState.onEnter(message, chatId, bot);
         context.changeState(newState);
@@ -99,8 +95,8 @@ public class RegistrationSpecialitiesState extends MathMechBotState {
             return;
         }
 
-        context.userEntries.getById(chatId).setSpecialty(message.text());
-        context.users.getById(chatId).setCurrentState(RegistrationProcessState.GROUP);
+        context.userEntries.changeUserEntrySpecialty(chatId, message.text());
+        context.users.changeUserState(chatId, RegistrationProcessState.GROUP);
         final State newState = new RegistrationGroupState(context);
         newState.onEnter(message, chatId, bot);
         context.changeState(newState);

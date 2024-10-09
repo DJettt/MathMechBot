@@ -1,9 +1,8 @@
 package ru.urfu.logics.mathmechbot;
 
-import ru.urfu.enums.Specialty;
-
 import java.util.ArrayList;
 import java.util.List;
+import ru.urfu.enums.Specialty;
 
 
 /**

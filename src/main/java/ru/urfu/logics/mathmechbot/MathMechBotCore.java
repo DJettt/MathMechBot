@@ -12,9 +12,10 @@ import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.logics.LogicCore;
 import ru.urfu.logics.State;
 import ru.urfu.models.User;
-import ru.urfu.models.UserEntry;
-import ru.urfu.storages.ArrayStorage;
-import ru.urfu.storages.Storage;
+import ru.urfu.storages.UserArrayStorage;
+import ru.urfu.storages.UserEntryArrayStorage;
+import ru.urfu.storages.UserEntryStorage;
+import ru.urfu.storages.UserStorage;
 
 
 /**
@@ -25,16 +26,16 @@ public class MathMechBotCore implements LogicCore {
     private final static Logger LOGGER = LoggerFactory.getLogger(MathMechBotCore.class);
     private State currentState;
 
-    final Storage<User, Long> users;
-    final Storage<UserEntry, Long> userEntries;
+    final UserStorage users;
+    final UserEntryStorage userEntries;
 
     /**
      * Конструктор.
      */
     public MathMechBotCore() {
         currentState = new DefaultState(this);
-        users = new ArrayStorage<>();
-        userEntries = new ArrayStorage<>();
+        users = new UserArrayStorage();
+        userEntries = new UserEntryArrayStorage();
     }
 
     /**

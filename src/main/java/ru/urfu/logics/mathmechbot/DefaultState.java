@@ -129,8 +129,8 @@ public class DefaultState extends MathMechBotState {
     private void deleteCommandHandler(LocalMessage message, long chatId, Bot bot) {
         final User user = context.users.getById(chatId);
         if (user != null) {
-            user.setCurrentProcess(Process.DELETION);
-            user.setCurrentState(DeletionProcessState.CONFIRMATION);
+            context.users.changeUserProcess(chatId, Process.DELETION);
+            context.users.changeUserState(chatId, DeletionProcessState.CONFIRMATION);
 
             final State newState = new DeletionConfirmationState(context);
             newState.onEnter(message, chatId, bot);

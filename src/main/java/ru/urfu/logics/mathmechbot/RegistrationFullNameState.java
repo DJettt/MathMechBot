@@ -1,6 +1,7 @@
 package ru.urfu.logics.mathmechbot;
 
 
+import java.util.List;
 import ru.urfu.bots.Bot;
 import ru.urfu.enums.RegistrationProcessState;
 import ru.urfu.localobjects.LocalMessage;
@@ -8,7 +9,6 @@ import ru.urfu.localobjects.LocalMessageBuilder;
 import ru.urfu.logics.State;
 import ru.urfu.models.UserEntry;
 
-import java.util.List;
 
 
 /**
@@ -93,9 +93,9 @@ public class RegistrationFullNameState extends MathMechBotState {
         final List<String> strs = List.of(trimmedText.split(" "));
 
         context.userEntries.add(new UserEntry(
-                chatId, strs.get(1), strs.get(0), (strs.size() == 3) ? strs.get(2) : "",
+                chatId, strs.get(0), strs.get(1), (strs.size() == 3) ? strs.get(2) : "",
                 null, null, null, null, chatId));
-        context.users.getById(chatId).setCurrentState(RegistrationProcessState.YEAR);
+        context.users.changeUserState(chatId, RegistrationProcessState.YEAR);
 
         final State newState = new RegistrationYearState(context);
         newState.onEnter(message, chatId, bot);

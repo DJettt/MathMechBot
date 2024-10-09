@@ -7,7 +7,7 @@ import ru.urfu.bots.Bot;
 import ru.urfu.bots.DiscordBot;
 import ru.urfu.bots.TelegramBot;
 import ru.urfu.logics.LogicCore;
-import ru.urfu.logics.MathMechBotCore;
+import ru.urfu.logics.mathmechbot.MathMechBotCore;
 
 /**
  * Основной класс для запуска приложения.
