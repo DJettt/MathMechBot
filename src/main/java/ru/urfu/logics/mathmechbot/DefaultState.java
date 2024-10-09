@@ -1,7 +1,5 @@
 package ru.urfu.logics.mathmechbot;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import ru.urfu.bots.Bot;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
@@ -13,9 +11,7 @@ import ru.urfu.logics.mathmechbot.models.UserEntry;
 /**
  * Состояние, в котором изначально пребывает пользователь.
  */
-public class DefaultState extends MathMechBotState {
-    private final static Logger LOGGER = LoggerFactory.getLogger(DefaultState.class);
-
+public final class DefaultState extends MathMechBotState {
     private final static String START_COMMAND = "/start";
     private final static String HELP_COMMAND = "/help";
     private final static String REGISTER_COMMAND = "/register";

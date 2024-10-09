@@ -8,7 +8,7 @@ import ru.urfu.logics.mathmechbot.enums.Specialty;
 /**
  * Состояние запроса направления подготовки для поздних курсов.
  */
-public class RegistrationLaterYearSpecialitiesState extends RegistrationSpecialitiesState {
+public final class RegistrationLaterYearSpecialitiesState extends RegistrationSpecialitiesState {
     @Override
     protected List<Specialty> allowedSpecialties() {
         return new ArrayList<>(List.of(

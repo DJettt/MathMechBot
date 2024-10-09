@@ -23,7 +23,7 @@ import ru.urfu.logics.LogicCore;
  * Простой телеграм-бот, который принимает текстовые сообщения и составляет ответ
  * в зависимости от переданного ему при создании логического ядра (logicCore).
  */
-public class TelegramBot implements Bot, LongPollingSingleThreadUpdateConsumer {
+public final class TelegramBot implements Bot, LongPollingSingleThreadUpdateConsumer {
     private static final Logger LOGGER = LoggerFactory.getLogger(TelegramBot.class);
     private final TelegramClient telegramClient;
     private final LogicCore logicCore;

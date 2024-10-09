@@ -8,7 +8,7 @@ import ru.urfu.localobjects.LocalMessage;
 /**
  * Ничего просто сохраняющий сообщения. Создан для тестов.
  */
-public class DummyBot implements Bot {
+public final class DummyBot implements Bot {
     final private List<LocalMessage> outcomingMessageList;
 
     public DummyBot() {

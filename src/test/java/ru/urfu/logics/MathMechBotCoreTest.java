@@ -1,6 +1,13 @@
 package ru.urfu.logics;
 
-import org.junit.jupiter.api.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EmptySource;
 import org.junit.jupiter.params.provider.NullSource;
@@ -10,32 +17,28 @@ import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
 import ru.urfu.logics.mathmechbot.MathMechBotCore;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
 
 /**
  * Тесты для класса MathMechBotCore
  */
-public final class MathMechBotCoreTest {
-    private final static String ACCEPT_COMMAND = "/yes";
-    private final static String DECLINE_COMMAND = "/no";
-    private final static String BACK_COMMAND = "/back";
-    private final static LocalButton BACK_BUTTON = new LocalButton("Назад", BACK_COMMAND);
-    private final static LocalMessage ACCEPT_MESSAGE = new LocalMessageBuilder().text(ACCEPT_COMMAND).build();
-    private final static LocalMessage DECLINE_MESSAGE = new LocalMessageBuilder().text(DECLINE_COMMAND).build();
-    private final static LocalMessage BACK_MESSAGE = new LocalMessageBuilder().text(BACK_COMMAND).build();
-    private final static LocalMessage INFO_MESSAGE = new LocalMessageBuilder().text("/info").build();
-    private final static LocalMessage DELETE_MESSAGE = new LocalMessageBuilder().text("/delete").build();
-    private final static LocalMessage REGISTER_MESSAGE = new LocalMessageBuilder().text("/register").build();
+final class MathMechBotCoreTest {
+    final static String ACCEPT_COMMAND = "/yes";
+    final static String DECLINE_COMMAND = "/no";
+    final static String BACK_COMMAND = "/back";
+    final static LocalButton BACK_BUTTON = new LocalButton("Назад", BACK_COMMAND);
+    final static LocalMessage ACCEPT_MESSAGE = new LocalMessageBuilder().text(ACCEPT_COMMAND).build();
+    final static LocalMessage DECLINE_MESSAGE = new LocalMessageBuilder().text(DECLINE_COMMAND).build();
+    final static LocalMessage BACK_MESSAGE = new LocalMessageBuilder().text(BACK_COMMAND).build();
+    final static LocalMessage INFO_MESSAGE = new LocalMessageBuilder().text("/info").build();
+    final static LocalMessage DELETE_MESSAGE = new LocalMessageBuilder().text("/delete").build();
+    final static LocalMessage REGISTER_MESSAGE = new LocalMessageBuilder().text("/register").build();
 
-    private final static LocalMessage ASK_FOR_REGISTRATION_MESSAGE = new LocalMessageBuilder()
+    final static LocalMessage ASK_FOR_REGISTRATION_MESSAGE = new LocalMessageBuilder()
             .text("Сперва нужно зарегистрироваться.").build();
-    private final static LocalMessage TRY_AGAIN = new LocalMessageBuilder()
+    final static LocalMessage TRY_AGAIN = new LocalMessageBuilder()
             .text("Попробуйте снова.").build();
 
-    private final static LocalMessage HELP = new LocalMessageBuilder()
+    final static LocalMessage HELP = new LocalMessageBuilder()
             .text("""
                     /start - начало общения с ботом
                     /help - выводит команды, которые принимает бот
@@ -44,7 +47,7 @@ public final class MathMechBotCoreTest {
                     /delete - удалить информацию о Вас""")
             .build();
 
-    private final static List<LocalButton> YES_NO_BACK = new ArrayList<>(List.of(
+    final static List<LocalButton> YES_NO_BACK = new ArrayList<>(List.of(
             new LocalButton("Да", ACCEPT_COMMAND),
             new LocalButton("Неа", DECLINE_COMMAND),
             BACK_BUTTON
@@ -57,7 +60,7 @@ public final class MathMechBotCoreTest {
      * Создаём объект логики и ложного бота для каждого теста.
      */
     @BeforeEach
-    public void setupTest() {
+    void setupTest() {
         bot = new DummyBot();
         logic = new MathMechBotCore();
     }
@@ -73,7 +76,7 @@ public final class MathMechBotCoreTest {
      * @param men       группа в формате МЕН.
      * @return результат команды <code>/info</code> для него.
      */
-    private LocalMessage registerUser(String fullName, int year, String specialty, int group, String men) {
+    LocalMessage registerUser(String fullName, int year, String specialty, int group, String men) {
         final ArrayList<LocalMessage> messages = new ArrayList<>(List.of(
                 REGISTER_MESSAGE,
                 new LocalMessageBuilder().text(fullName).build(),
@@ -104,7 +107,7 @@ public final class MathMechBotCoreTest {
         Assertions.assertEquals(new LocalMessageBuilder()
                         .text("""
                                 Данные о Вас:
-                                                        
+
                                 ФИО: Ильин Илья Ильич
                                 Группа: КН-203 (МЕН-654321)""")
                         .build(),
@@ -118,13 +121,13 @@ public final class MathMechBotCoreTest {
     @Nested
     @DisplayName("Тестирование команды /register и её состояний")
     class RegisterCommandTest {
-        private final static LocalMessage ASK_FULL_NAME = new LocalMessageBuilder()
+        final static LocalMessage ASK_FULL_NAME = new LocalMessageBuilder()
                 .text("""
                         Введите свое ФИО в формате:
                         Иванов Артём Иванович
                         Без дополнительных пробелов и с буквой ё, если нужно.""")
                 .build();
-        private final static LocalMessage ASK_YEAR = new LocalMessageBuilder()
+        final static LocalMessage ASK_YEAR = new LocalMessageBuilder()
                 .text("На каком курсе Вы обучаетесь?")
                 .buttons(new ArrayList<>(List.of(
                         new LocalButton("1 курс", "1"),
@@ -137,7 +140,7 @@ public final class MathMechBotCoreTest {
                 )))
                 .build();
 
-        private final static List<LocalButton> ASK_FIRST_YEAR_SPECIALTY_BUTTONS = new ArrayList<>(
+        final static List<LocalButton> ASK_FIRST_YEAR_SPECIALTY_BUTTONS = new ArrayList<>(
                 List.of(
                         new LocalButton("КНМО", "КНМО"),
                         new LocalButton("ММП", "ММП"),
@@ -145,12 +148,12 @@ public final class MathMechBotCoreTest {
                         new LocalButton("ФТ", "ФТ"),
                         BACK_BUTTON
                 ));
-        private final static LocalMessage ASK_FIRST_YEAR_SPECIALTY = new LocalMessageBuilder()
+        final static LocalMessage ASK_FIRST_YEAR_SPECIALTY = new LocalMessageBuilder()
                 .text("На каком направлении?")
                 .buttons(ASK_FIRST_YEAR_SPECIALTY_BUTTONS)
                 .build();
 
-        private final static List<LocalButton> ASK_LATER_YEAR_SPECIALTY_BUTTONS = new ArrayList<>(
+        final static List<LocalButton> ASK_LATER_YEAR_SPECIALTY_BUTTONS = new ArrayList<>(
                 List.of(
                         new LocalButton("КН", "КН"),
                         new LocalButton("МО", "МО"),
@@ -161,12 +164,12 @@ public final class MathMechBotCoreTest {
                         new LocalButton("ФТ", "ФТ"),
                         BACK_BUTTON
                 ));
-        private final static LocalMessage ASK_LATER_YEAR_SPECIALTY = new LocalMessageBuilder()
+        final static LocalMessage ASK_LATER_YEAR_SPECIALTY = new LocalMessageBuilder()
                 .text("На каком направлении?")
                 .buttons(ASK_LATER_YEAR_SPECIALTY_BUTTONS)
                 .build();
 
-        private final static LocalMessage ASK_GROUP_NUMBER = new LocalMessageBuilder()
+        final static LocalMessage ASK_GROUP_NUMBER = new LocalMessageBuilder()
                 .text("На каком курсе Вы обучаетесь?")
                 .buttons(new ArrayList<>(List.of(
                         new LocalButton("1 группа", "1"),

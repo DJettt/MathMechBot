@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Тесты для класса HashMapStorage
  */
-class HashMapStorageTest {
+final class HashMapStorageTest {
     private HashMapStorage<StringWithId, Integer> storage;
 
     /**

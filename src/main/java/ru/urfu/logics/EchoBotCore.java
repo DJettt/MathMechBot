@@ -9,7 +9,7 @@ import ru.urfu.localobjects.LocalMessageBuilder;
  * Отправляет назад несколько изменённое сообщение пользователя.
  * Обрабатывает команды /help и /start, отвечая на них справкой.
  */
-public class EchoBotCore implements LogicCore {
+public final class EchoBotCore implements LogicCore {
     final static String START_COMMAND = "/start";
     final static String HELP_COMMAND = "/help";
 
@@ -52,7 +52,8 @@ public class EchoBotCore implements LogicCore {
         final String HELP_MESSAGE = """
                 Привет, я эхо бот! Сейчас я расскажу как ты можешь со мной взаимодействовать.
                 Пассивная способность: Я пишу твое сообщение тебе обратно но добавляю фразу 'Ты написал:' в начало \
-                твоего сообщения!\n
+                твоего сообщения!
+
                 /help - Показать доступные команды.
                 /start - Начинает диалог с начала. (нет)
                 Приятного использования!""";

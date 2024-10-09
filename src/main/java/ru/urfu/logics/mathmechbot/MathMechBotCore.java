@@ -21,7 +21,7 @@ import ru.urfu.logics.mathmechbot.storages.UserStorage;
  * Логическое ядро бота, парсящего каналы в Telegram на предмет упоминания студентов.
  * На данный момент просто сохраняет информацию о тех пользователях, чьи упоминания надо искать.
  */
-public class MathMechBotCore implements LogicCore {
+public final class MathMechBotCore implements LogicCore {
     private final static Logger LOGGER = LoggerFactory.getLogger(MathMechBotCore.class);
     private State currentState;
 

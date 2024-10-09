@@ -15,7 +15,7 @@ import ru.urfu.logics.mathmechbot.models.UserEntry;
 /**
  * Состояние подтверждения введённых данных во время регистрации.
  */
-public class RegistrationConfirmationState extends MathMechBotState {
+public final class RegistrationConfirmationState extends MathMechBotState {
     private final static Logger LOGGER = LoggerFactory.getLogger(RegistrationConfirmationState.class);
 
     /**

@@ -23,7 +23,7 @@ import ru.urfu.logics.LogicCore;
  * Простой дискорд-бот, который принимает текстовые сообщения и составляет ответ
  * в зависимости от переданного ему при создании логического ядра (logicCore).
  */
-public class DiscordBot extends ListenerAdapter implements Bot {
+public final class DiscordBot extends ListenerAdapter implements Bot {
     private static final Logger LOGGER = LoggerFactory.getLogger(DiscordBot.class);
     private final LogicCore logicCore;
     private final String botToken;
@@ -66,6 +66,8 @@ public class DiscordBot extends ListenerAdapter implements Bot {
      * @return возвращает ArrayList списков, чтобы бот отправлял их по очерди в каждом сообщении.
      */
     private ArrayList<List<LocalButton>> splitButtons(LocalMessage message) {
+        assert message.buttons() != null;
+
         final int maxSize = 5;
         ArrayList<List<LocalButton>> arrayOfButtons = new ArrayList<>();
         if (message.buttons().size() <= maxSize) {

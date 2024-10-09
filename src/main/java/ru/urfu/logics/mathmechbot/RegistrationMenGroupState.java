@@ -3,8 +3,6 @@ package ru.urfu.logics.mathmechbot;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import ru.urfu.bots.Bot;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
@@ -14,9 +12,7 @@ import ru.urfu.logics.mathmechbot.enums.RegistrationStateList;
 /**
  * Состояние ожидания ввода академической группы в формате МЕН во время регистрации.
  */
-public class RegistrationMenGroupState extends MathMechBotState {
-    private final static Logger LOGGER = LoggerFactory.getLogger(RegistrationMenGroupState.class);
-
+public final class RegistrationMenGroupState extends MathMechBotState {
     /**
      * Конструктор состояния.
      *

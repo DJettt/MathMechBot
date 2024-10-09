@@ -12,7 +12,7 @@ import ru.urfu.logics.mathmechbot.models.UserEntry;
 /**
  * Состояние ожидания ввода ФИО во время регистрации.
  */
-public class RegistrationFullNameState extends MathMechBotState {
+public final class RegistrationFullNameState extends MathMechBotState {
     /**
      * Конструктор состояния.
      *

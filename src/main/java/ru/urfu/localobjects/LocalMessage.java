@@ -15,6 +15,6 @@ public record LocalMessage(@Nullable String text, @Nullable List<LocalButton> bu
      * @return есть ли кнопки или нет.
      */
     public boolean hasButtons() {
-        return buttons != null;
+        return buttons != null && !buttons.isEmpty();
     }
 }

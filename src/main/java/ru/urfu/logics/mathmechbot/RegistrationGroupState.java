@@ -13,7 +13,7 @@ import ru.urfu.logics.mathmechbot.enums.RegistrationStateList;
 /**
  * Состояние запроса номера группы во время регистрации.
  */
-public class RegistrationGroupState extends MathMechBotState {
+public final class RegistrationGroupState extends MathMechBotState {
     /**
      * Конструктор состояния.
      *

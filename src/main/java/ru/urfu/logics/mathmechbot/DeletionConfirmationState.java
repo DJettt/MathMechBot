@@ -14,7 +14,7 @@ import ru.urfu.logics.mathmechbot.models.UserEntry;
 /**
  * Состояние ожидания подтверждения удаления данных.
  */
-public class DeletionConfirmationState extends MathMechBotState {
+public final class DeletionConfirmationState extends MathMechBotState {
     private final static Logger LOGGER = LoggerFactory.getLogger(DeletionConfirmationState.class);
 
     /**

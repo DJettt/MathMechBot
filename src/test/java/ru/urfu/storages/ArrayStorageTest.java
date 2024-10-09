@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Тесты для класса ArrayStorage
  */
-class ArrayStorageTest {
+final class ArrayStorageTest {
     private ArrayStorage<StringWithId, Integer> storage;
 
     /**

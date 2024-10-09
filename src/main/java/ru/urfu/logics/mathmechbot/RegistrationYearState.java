@@ -13,7 +13,7 @@ import ru.urfu.logics.mathmechbot.enums.RegistrationStateList;
 /**
  * Состояние ожидания ответа на запрос года обучения во время регистрации.
  */
-public class RegistrationYearState extends MathMechBotState {
+public final class RegistrationYearState extends MathMechBotState {
     private final static LocalMessage ON_ENTER_MESSAGE = new LocalMessageBuilder()
             .text("На каком курсе Вы обучаетесь?")
             .buttons(new ArrayList<>(List.of(
