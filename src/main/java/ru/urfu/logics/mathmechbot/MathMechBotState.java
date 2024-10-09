@@ -5,7 +5,7 @@ import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
 import ru.urfu.logics.State;
 
-public abstract class MathMechBotState extends State {
+public abstract class MathMechBotState implements State {
     protected final static String ACCEPT_COMMAND = "/yes";
     protected final static String DECLINE_COMMAND = "/no";
     protected final static String BACK_COMMAND = "/back";

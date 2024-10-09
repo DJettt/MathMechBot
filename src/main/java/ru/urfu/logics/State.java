@@ -3,7 +3,7 @@ package ru.urfu.logics;
 import ru.urfu.bots.Bot;
 import ru.urfu.localobjects.LocalMessage;
 
-public abstract class State {
+public interface State {
     /**
      * Обработчик сообщений, возвращающий ответы на них.
      * В процессе обработки может вызывать методы ботов, чтобы, например, отправлять сообщения.
@@ -12,7 +12,7 @@ public abstract class State {
      * @param chatId id чата, от кого пришло сообщение
      * @param bot    бот, который получил сообщение
      */
-    public abstract void processMessage(LocalMessage msg, long chatId, Bot bot);
+    void processMessage(LocalMessage msg, long chatId, Bot bot);
 
-    public abstract void onEnter(LocalMessage msg, long chatId, Bot bot);
+    void onEnter(LocalMessage msg, long chatId, Bot bot);
 }
