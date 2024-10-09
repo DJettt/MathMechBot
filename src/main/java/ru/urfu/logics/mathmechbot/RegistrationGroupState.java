@@ -57,7 +57,7 @@ public class RegistrationGroupState extends MathMechBotState {
                         new LocalButton("3 группа", "3"),
                         new LocalButton("4 группа", "4"),
                         new LocalButton("5 группа", "5"),
-                        new LocalButton("Назад", BACK_COMMAND)
+                        BACK_BUTTON
                 )))
                 .build();
         bot.sendMessage(message, chatId);

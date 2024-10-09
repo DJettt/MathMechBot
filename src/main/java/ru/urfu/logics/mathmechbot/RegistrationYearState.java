@@ -64,7 +64,7 @@ public class RegistrationYearState extends MathMechBotState {
                         new LocalButton("4 курс", "4"),
                         new LocalButton("5 курс", "5"),
                         new LocalButton("6 курс", "6"),
-                        new LocalButton("Назад", BACK_COMMAND)
+                        BACK_BUTTON
                 )))
                 .build();
         bot.sendMessage(message, chatId);

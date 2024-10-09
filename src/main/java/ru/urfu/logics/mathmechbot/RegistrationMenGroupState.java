@@ -2,7 +2,6 @@ package ru.urfu.logics.mathmechbot;
 
 import ru.urfu.bots.Bot;
 import ru.urfu.enums.RegistrationProcessState;
-import ru.urfu.localobjects.LocalButton;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
 import ru.urfu.logics.State;
@@ -61,9 +60,7 @@ public class RegistrationMenGroupState extends MathMechBotState {
     public void onEnter(LocalMessage msg, long chatId, Bot bot) {
         final LocalMessage message = new LocalMessageBuilder()
                 .text("Введите свою академическую группу в формате:\nМЕН-123456")
-                .buttons(new ArrayList<>(List.of(
-                        new LocalButton("Назад", BACK_COMMAND)
-                )))
+                .buttons(new ArrayList<>(List.of(BACK_BUTTON)))
                 .build();
         bot.sendMessage(message, chatId);
     }

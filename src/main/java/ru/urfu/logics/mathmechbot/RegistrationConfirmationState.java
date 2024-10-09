@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import ru.urfu.bots.Bot;
 import ru.urfu.enums.Process;
 import ru.urfu.enums.RegistrationProcessState;
-import ru.urfu.localobjects.LocalButton;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
 import ru.urfu.logics.State;
@@ -66,11 +65,7 @@ public class RegistrationConfirmationState extends MathMechBotState {
 
         final LocalMessage message = new LocalMessageBuilder()
                 .text(userInfo)
-                .buttons(new ArrayList<>(List.of(
-                        new LocalButton("Да", ACCEPT_COMMAND),
-                        new LocalButton("Неа", DECLINE_COMMAND),
-                        new LocalButton("Назад", BACK_COMMAND)
-                )))
+                .buttons(new ArrayList<>(List.of(YES_BUTTON, NO_BUTTON, BACK_BUTTON)))
                 .build();
         bot.sendMessage(message, chatId);
     }

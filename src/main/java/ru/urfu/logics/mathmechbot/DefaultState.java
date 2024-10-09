@@ -55,8 +55,8 @@ public class DefaultState extends MathMechBotState {
                 %s - выводит команды, которые принимает бот
                 %s - регистрация
                 %s - информация о Вас
-                %s - удалить информацию о Вас
-                """.formatted(START_COMMAND, HELP_COMMAND, REGISTER_COMMAND, INFO_COMMAND, DELETE_COMMAND);
+                %s - удалить информацию о Вас"""
+                .formatted(START_COMMAND, HELP_COMMAND, REGISTER_COMMAND, INFO_COMMAND, DELETE_COMMAND);
         final LocalMessage answer = new LocalMessageBuilder().text(HELP_MESSAGE).build();
         bot.sendMessage(answer, chatId);
     }

@@ -55,7 +55,7 @@ public class RegistrationSpecialitiesState extends MathMechBotState {
         for (Specialty specialty : allowedSpecialties()) {
             buttons.add(new LocalButton(specialty.getAbbreviation(), specialty.getAbbreviation()));
         }
-        buttons.add(new LocalButton("Назад", BACK_COMMAND));
+        buttons.add(BACK_BUTTON);
 
         final LocalMessage message = new LocalMessageBuilder()
                 .text("На каком направлении?")
