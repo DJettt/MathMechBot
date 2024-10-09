@@ -8,7 +8,7 @@ import ru.urfu.logics.State;
 /**
  * Состояние для MathMechBot, которые определяют ряд констант, используемых во всех состояниях.
  */
-public abstract class MathMechBotState implements State {
+public abstract class MathMechBotState extends State {
     protected final static String ACCEPT_COMMAND = "/yes";
     protected final static String DECLINE_COMMAND = "/no";
     protected final static String BACK_COMMAND = "/back";
@@ -20,12 +20,14 @@ public abstract class MathMechBotState implements State {
     protected final static LocalMessage TRY_AGAIN = new LocalMessageBuilder()
             .text("Попробуйте снова.")
             .build();
+    protected final static LocalMessage ASK_FOR_REGISTRATION = new LocalMessageBuilder()
+            .text("Сперва нужно зарегистрироваться.").build();
 
     protected final static String USER_INFO_TEMPLATE = """
             ФИО: %s
             Группа: %s-%d0%d (%s)""";
 
-    protected final MathMechBotCore context;
+    final MathMechBotCore context;
 
     /**
      * Конструктор состояния.
@@ -33,6 +35,7 @@ public abstract class MathMechBotState implements State {
      * @param context контекст (в том же смысле, что и в паттерне "State").
      */
     protected MathMechBotState(MathMechBotCore context) {
+        super(context);
         this.context = context;
     }
 }

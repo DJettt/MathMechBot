@@ -7,8 +7,7 @@ import org.slf4j.LoggerFactory;
 import ru.urfu.bots.Bot;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
-import ru.urfu.logics.State;
-import ru.urfu.logics.mathmechbot.enums.MathMechBotProcess;
+import ru.urfu.logics.mathmechbot.enums.DefaultStateList;
 import ru.urfu.logics.mathmechbot.models.UserEntry;
 
 
@@ -31,27 +30,21 @@ public class DeletionConfirmationState extends MathMechBotState {
     public void processMessage(LocalMessage msg, long chatId, Bot bot) {
         switch (msg.text()) {
             case BACK_COMMAND -> {
-                context.users.changeUserProcess(chatId, MathMechBotProcess.DEFAULT);
-                final State newState = new DefaultState(context);
-                newState.onEnter(msg, chatId, bot);
-                context.changeState(newState);
+                context.users.changeUserState(chatId, DefaultStateList.DEFAULT);
+                new DefaultState(context).onEnter(msg, chatId, bot);
             }
 
             case ACCEPT_COMMAND -> {
                 context.userEntries.deleteById(chatId);
                 context.users.deleteById(chatId);
                 bot.sendMessage(new LocalMessageBuilder().text("Удаляем...").build(), chatId);
-                final State newState = new DefaultState(context);
-                newState.onEnter(msg, chatId, bot);
-                context.changeState(newState);
+                new DefaultState(context).onEnter(msg, chatId, bot);
             }
 
             case DECLINE_COMMAND -> {
-                context.users.changeUserProcess(chatId, MathMechBotProcess.DEFAULT);
+                context.users.changeUserState(chatId, DefaultStateList.DEFAULT);
                 bot.sendMessage(new LocalMessageBuilder().text("Отмена...").build(), chatId);
-                final State newState = new DefaultState(context);
-                newState.onEnter(msg, chatId, bot);
-                context.changeState(newState);
+                new DefaultState(context).onEnter(msg, chatId, bot);
             }
 
             case null, default -> bot.sendMessage(TRY_AGAIN, chatId);

@@ -3,13 +3,10 @@ package ru.urfu.logics.mathmechbot;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.urfu.bots.Bot;
-import ru.urfu.enums.DeletionState;
-import ru.urfu.enums.RegistrationState;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
-import ru.urfu.logics.State;
-import ru.urfu.logics.mathmechbot.enums.MathMechBotProcess;
-import ru.urfu.logics.mathmechbot.models.User;
+import ru.urfu.logics.mathmechbot.enums.DeletionStateList;
+import ru.urfu.logics.mathmechbot.enums.RegistrationStateList;
 import ru.urfu.logics.mathmechbot.models.UserEntry;
 
 
@@ -76,14 +73,10 @@ public class DefaultState extends MathMechBotState {
      * @param bot     бот, от которого пришло сообщение
      */
     private void registerCommandHandler(LocalMessage message, long chatId, Bot bot) {
-        final User user = context.users.getById(chatId);
-        if (user == null) {
-            context.users.add(new User(chatId, chatId, chatId,
-                    MathMechBotProcess.REGISTRATION,
-                    RegistrationState.NAME));
-            final State newState = new RegistrationFullNameState(context);
-            newState.onEnter(message, chatId, bot);
-            context.changeState(newState);
+        final UserEntry userEntry = context.userEntries.getById(chatId);
+        if (userEntry == null) {
+            context.users.changeUserState(chatId, RegistrationStateList.NAME);
+            new RegistrationFullNameState(context).onEnter(message, chatId, bot);
         } else {
             alreadyRegistered(message, chatId, bot);
         }
@@ -96,15 +89,9 @@ public class DefaultState extends MathMechBotState {
      * @param bot     бот, от которого пришло сообщение
      */
     private void infoCommandHandler(LocalMessage message, long chatId, Bot bot) {
-        final User user = context.users.getById(chatId);
-        if (user == null) {
-            notRegistered(message, chatId, bot);
-            return;
-        }
-
         final UserEntry userEntry = context.userEntries.getById(chatId);
         if (userEntry == null) {
-            LOGGER.error("User without entry asked for info");
+            bot.sendMessage(ASK_FOR_REGISTRATION, chatId);
             return;
         }
 
@@ -126,16 +113,12 @@ public class DefaultState extends MathMechBotState {
      * @param bot     бот, от которого пришло сообщение
      */
     private void deleteCommandHandler(LocalMessage message, long chatId, Bot bot) {
-        final User user = context.users.getById(chatId);
-        if (user != null) {
-            context.users.changeUserProcess(chatId, MathMechBotProcess.DELETION);
-            context.users.changeUserState(chatId, DeletionState.CONFIRMATION);
-
-            final State newState = new DeletionConfirmationState(context);
-            newState.onEnter(message, chatId, bot);
-            context.changeState(newState);
+        final UserEntry userEntry = context.userEntries.getById(chatId);
+        if (userEntry != null) {
+            context.users.changeUserState(chatId, DeletionStateList.CONFIRMATION);
+            new DeletionConfirmationState(context).onEnter(message, chatId, bot);
         } else {
-            notRegistered(message, chatId, bot);
+            bot.sendMessage(ASK_FOR_REGISTRATION, chatId);
         }
     }
 
@@ -149,20 +132,6 @@ public class DefaultState extends MathMechBotState {
     private void alreadyRegistered(LocalMessage message, long chatId, Bot bot) {
         final LocalMessage answer = new LocalMessageBuilder()
                 .text("Вы уже зарегистрированы. Пока что регистрировать можно только одного человека.")
-                .build();
-        bot.sendMessage(answer, chatId);
-    }
-
-    /**
-     * Говорит пользователю, что тот ещё не зарегистрировался.
-     *
-     * @param message входящее сообщение
-     * @param chatId  идентификатор чата отправителя
-     * @param bot     бот, от которого пришло сообщение
-     */
-    private void notRegistered(LocalMessage message, long chatId, Bot bot) {
-        final LocalMessage answer = new LocalMessageBuilder()
-                .text("Сперва нужно зарегистрироваться.")
                 .build();
         bot.sendMessage(answer, chatId);
     }

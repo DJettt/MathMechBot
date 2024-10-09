@@ -4,12 +4,10 @@ package ru.urfu.logics.mathmechbot;
 import java.util.ArrayList;
 import java.util.List;
 import ru.urfu.bots.Bot;
-import ru.urfu.enums.RegistrationState;
 import ru.urfu.localobjects.LocalButton;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
-import ru.urfu.logics.State;
-
+import ru.urfu.logics.mathmechbot.enums.RegistrationStateList;
 
 
 /**
@@ -63,10 +61,8 @@ public class RegistrationYearState extends MathMechBotState {
      * @param bot     бот, принявший сообщение
      */
     private void backCommandHandler(LocalMessage message, long chatId, Bot bot) {
-        context.users.changeUserState(chatId, RegistrationState.NAME);
-        final State newState = new RegistrationFullNameState(context);
-        newState.onEnter(message, chatId, bot);
-        context.changeState(newState);
+        context.users.changeUserState(chatId, RegistrationStateList.NAME);
+        new RegistrationFullNameState(context).onEnter(message, chatId, bot);
     }
 
     /**
@@ -89,18 +85,14 @@ public class RegistrationYearState extends MathMechBotState {
             final int year = Integer.parseInt(message.text().trim());
             if (year == 1) {
                 context.userEntries.changeUserEntryYear(chatId, year);
-                context.users.changeUserState(chatId, RegistrationState.SPECIALTY1);
+                context.users.changeUserState(chatId, RegistrationStateList.SPECIALTY1);
 
-                final State newState = new RegistrationFirstYearSpecialtiesState(context);
-                newState.onEnter(message, chatId, bot);
-                context.changeState(newState);
+                new RegistrationFirstYearSpecialtiesState(context).onEnter(message, chatId, bot);
             } else if (year > 1 && year <= maxYear) {
                 context.userEntries.changeUserEntryYear(chatId, year);
-                context.users.changeUserState(chatId, RegistrationState.SPECIALTY2);
+                context.users.changeUserState(chatId, RegistrationStateList.SPECIALTY2);
 
-                final State newState = new RegistrationLaterYearSpecialitiesState(context);
-                newState.onEnter(message, chatId, bot);
-                context.changeState(newState);
+                new RegistrationLaterYearSpecialitiesState(context).onEnter(message, chatId, bot);
             } else {
                 bot.sendMessage(TRY_AGAIN, chatId);
                 bot.sendMessage(ON_ENTER_MESSAGE, chatId);

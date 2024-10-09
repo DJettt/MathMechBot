@@ -1,5 +1,6 @@
-package ru.urfu.enums;
+package ru.urfu.logics.mathmechbot.enums;
 
+import ru.urfu.logics.mathmechbot.MathMechBotState;
 import ru.urfu.logics.mathmechbot.RegistrationConfirmationState;
 import ru.urfu.logics.mathmechbot.RegistrationFirstYearSpecialtiesState;
 import ru.urfu.logics.mathmechbot.RegistrationFullNameState;
@@ -9,7 +10,7 @@ import ru.urfu.logics.mathmechbot.RegistrationMenGroupState;
 import ru.urfu.logics.mathmechbot.RegistrationYearState;
 
 /**
- * Состояния в процессе регистрации.
+ * Список состояний в процессе регистрации.
  * Пользователь попадает в процесс, отправив команду регистрации.
  * <ol>
  *     <li>Первое состояние внутри этого процесса - <code>NAME</code>.<br/>
@@ -59,7 +60,7 @@ import ru.urfu.logics.mathmechbot.RegistrationYearState;
  *     </li>
  * </ol>
  */
-public enum RegistrationState implements State {
+public enum RegistrationStateList implements MathMechBotStateList {
     NAME(RegistrationFullNameState.class),
     YEAR(RegistrationYearState.class),
     SPECIALTY1(RegistrationFirstYearSpecialtiesState.class),
@@ -68,13 +69,19 @@ public enum RegistrationState implements State {
     MEN(RegistrationMenGroupState.class),
     CONFIRMATION(RegistrationConfirmationState.class);
 
-    private final Class<? extends ru.urfu.logics.State> stateClass;
+    private final Class<? extends MathMechBotState> stateClass;
 
-    RegistrationState(Class<? extends ru.urfu.logics.State> stateClass) {
+    /**
+     * Устанавливает класс для данного состояния.
+     *
+     * @param stateClass класс состояния.
+     */
+    RegistrationStateList(Class<? extends MathMechBotState> stateClass) {
         this.stateClass = stateClass;
     }
 
-    public Class<? extends ru.urfu.logics.State> stateClass() {
+    @Override
+    public Class<? extends MathMechBotState> stateClass() {
         return stateClass;
     }
 }
