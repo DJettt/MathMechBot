@@ -48,7 +48,7 @@ public class RegistrationFullNameState extends MathMechBotState {
                 }
                 final List<String> strs = List.of(trimmedText.split(" "));
                 context.userEntries.add(new UserEntry(
-                        chatId, strs.get(1), strs.get(0), strs.get(2),
+                        chatId, strs.get(1), strs.get(0), (strs.size() == 3) ? strs.get(2) : "",
                         null, null, null, null, chatId));
                 context.users.getById(chatId).setCurrentState(RegistrationProcessState.YEAR);
                 final State newState = new RegistrationYearState(context);
