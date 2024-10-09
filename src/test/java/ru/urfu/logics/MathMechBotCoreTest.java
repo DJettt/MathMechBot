@@ -63,7 +63,8 @@ public final class MathMechBotCoreTest {
     }
 
     /**
-     * Регистрирует человека со следующими данными
+     * Регистрирует человека со следующими данными.
+     * Нужна для быстрых тестов команд, где требуется зарегистрированный пользователь.
      *
      * @param fullName  ФИО или ФИ
      * @param year      год обучения.
@@ -87,7 +88,27 @@ public final class MathMechBotCoreTest {
         for (final LocalMessage message : messages) {
             logic.processMessage(message, 0L, bot);
         }
-        return bot.getOutcomingMessageList().getLast();
+        final LocalMessage infoResult = bot.getOutcomingMessageList().getLast();
+        bot.getOutcomingMessageList().clear();
+        return infoResult;
+    }
+
+    @Test
+    @DisplayName("Тестирование команды /info")
+    void testInfoExist() {
+        logic.processMessage(INFO_MESSAGE, 0L, bot);
+        Assertions.assertEquals(ASK_FOR_REGISTRATION_MESSAGE, bot.getOutcomingMessageList().getFirst());
+
+        registerUser("Ильин Илья Ильич", 2, "КН", 3, "МЕН-654321");
+        logic.processMessage(INFO_MESSAGE, 0L, bot);
+        Assertions.assertEquals(new LocalMessageBuilder()
+                        .text("""
+                                Данные о Вас:
+                                                        
+                                ФИО: Ильин Илья Ильич
+                                Группа: КН-203 (МЕН-654321)""")
+                        .build(),
+                bot.getOutcomingMessageList().getFirst());
     }
 
 
@@ -482,18 +503,16 @@ public final class MathMechBotCoreTest {
                                     Группа: ММП-102 (МЕН-123456)""")
                             .buttons(YES_NO_BACK)
                             .build(),
-                    bot.getOutcomingMessageList().getLast());
-
-            bot.getOutcomingMessageList().clear();
+                    bot.getOutcomingMessageList().getFirst());
 
             logic.processMessage(ACCEPT_MESSAGE, 0L, bot);
             Assertions.assertEquals(
                     new LocalMessageBuilder().text("Удаляем...").build(),
-                    bot.getOutcomingMessageList().getFirst());
-            Assertions.assertEquals(HELP, bot.getOutcomingMessageList().getLast());
+                    bot.getOutcomingMessageList().get(1));
+            Assertions.assertEquals(HELP, bot.getOutcomingMessageList().get(2));
 
             logic.processMessage(INFO_MESSAGE, 0L, bot);
-            Assertions.assertEquals(ASK_FOR_REGISTRATION_MESSAGE, bot.getOutcomingMessageList().getLast());
+            Assertions.assertEquals(ASK_FOR_REGISTRATION_MESSAGE, bot.getOutcomingMessageList().get(3));
         }
 
         /**
@@ -512,10 +531,6 @@ public final class MathMechBotCoreTest {
         void testRegisteredUserSaysNo() {
             final LocalMessage userInfo = registerUser(
                     "Иванов Иван Иванович", 1, "ММП", 2, "МЕН-123456");
-
-            logic.processMessage(
-                    new LocalMessageBuilder().text("/register").build(),
-                    0L, bot);
             logic.processMessage(DELETE_MESSAGE, 0L, bot);
             bot.getOutcomingMessageList().clear();
 
@@ -523,10 +538,10 @@ public final class MathMechBotCoreTest {
             Assertions.assertEquals(
                     new LocalMessageBuilder().text("Отмена...").build(),
                     bot.getOutcomingMessageList().getFirst());
-            Assertions.assertEquals(HELP, bot.getOutcomingMessageList().getLast());
+            Assertions.assertEquals(HELP, bot.getOutcomingMessageList().get(1));
 
             logic.processMessage(INFO_MESSAGE, 0L, bot);
-            Assertions.assertEquals(userInfo, bot.getOutcomingMessageList().getLast());
+            Assertions.assertEquals(userInfo, bot.getOutcomingMessageList().get(2));
         }
 
         /**
@@ -545,18 +560,14 @@ public final class MathMechBotCoreTest {
         void testRegisteredUserSaysBack() {
             final LocalMessage userInfo = registerUser(
                     "Иванов Иван Иванович", 1, "ММП", 2, "МЕН-123456");
-
-            logic.processMessage(
-                    new LocalMessageBuilder().text("/register").build(),
-                    0L, bot);
             logic.processMessage(DELETE_MESSAGE, 0L, bot);
             bot.getOutcomingMessageList().clear();
 
             logic.processMessage(BACK_MESSAGE, 0L, bot);
-            Assertions.assertEquals(HELP, bot.getOutcomingMessageList().getLast());
+            Assertions.assertEquals(HELP, bot.getOutcomingMessageList().getFirst());
 
             logic.processMessage(INFO_MESSAGE, 0L, bot);
-            Assertions.assertEquals(userInfo, bot.getOutcomingMessageList().getLast());
+            Assertions.assertEquals(userInfo, bot.getOutcomingMessageList().get(1));
         }
 
         /**
@@ -574,12 +585,13 @@ public final class MathMechBotCoreTest {
         @DisplayName("Вместо подтверждения пришёл неожиданный текст")
         void testRegisteredUserSaysSomethingElse() {
             registerUser("Иванов Иван Иванович", 1, "ММП", 2, "МЕН-123456");
-
             logic.processMessage(DELETE_MESSAGE, 0L, bot);
+            bot.getOutcomingMessageList().clear();
+
             logic.processMessage(
                     new LocalMessageBuilder().text("SomethingElse").build(),
                     0L, bot);
-            Assertions.assertEquals(TRY_AGAIN, bot.getOutcomingMessageList().getLast());
+            Assertions.assertEquals(TRY_AGAIN, bot.getOutcomingMessageList().getFirst());
         }
     }
 }

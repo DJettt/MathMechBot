@@ -1,6 +1,7 @@
 package ru.urfu.storages;
 
 import ru.urfu.models.UserEntry;
+import ru.urfu.models.builders.UserEntryBuilder;
 
 /**
  * Хранилище объектов модели UserEntry, предоставляющее методы по изменению отдельных полей.
@@ -15,16 +16,9 @@ public interface UserEntryStorage extends Storage<UserEntry, Long> {
     default void changeUserEntryYear(Long id, Integer year) {
         final UserEntry userEntry = getById(id);
         deleteById(id);
-        add(new UserEntry(
-                userEntry.userId(),
-                userEntry.surname(),
-                userEntry.name(),
-                userEntry.patronym(),
-                userEntry.specialty(),
-                userEntry.men(),
-                year,
-                userEntry.group(),
-                userEntry.userId()));
+        add(new UserEntryBuilder(userEntry)
+                .year(year)
+                .build());
     }
 
     /**
@@ -36,16 +30,9 @@ public interface UserEntryStorage extends Storage<UserEntry, Long> {
     default void changeUserEntrySpecialty(Long id, String specialty) {
         final UserEntry userEntry = getById(id);
         deleteById(id);
-        add(new UserEntry(
-                userEntry.userId(),
-                userEntry.surname(),
-                userEntry.name(),
-                userEntry.patronym(),
-                specialty,
-                userEntry.men(),
-                userEntry.year(),
-                userEntry.group(),
-                userEntry.userId()));
+        add(new UserEntryBuilder(userEntry)
+                .specialty(specialty)
+                .build());
     }
 
     /**
@@ -57,16 +44,9 @@ public interface UserEntryStorage extends Storage<UserEntry, Long> {
     default void changeUserEntryMen(Long id, String men) {
         final UserEntry userEntry = getById(id);
         deleteById(id);
-        add(new UserEntry(
-                userEntry.userId(),
-                userEntry.surname(),
-                userEntry.name(),
-                userEntry.patronym(),
-                userEntry.specialty(),
-                men,
-                userEntry.year(),
-                userEntry.group(),
-                userEntry.userId()));
+        add(new UserEntryBuilder(userEntry)
+                .men(men)
+                .build());
     }
 
     /**
@@ -78,15 +58,8 @@ public interface UserEntryStorage extends Storage<UserEntry, Long> {
     default void changeUserEntryGroup(Long id, Integer group) {
         final UserEntry userEntry = getById(id);
         deleteById(id);
-        add(new UserEntry(
-                userEntry.userId(),
-                userEntry.surname(),
-                userEntry.name(),
-                userEntry.patronym(),
-                userEntry.specialty(),
-                userEntry.men(),
-                userEntry.year(),
-                group,
-                userEntry.userId()));
+        add(new UserEntryBuilder(userEntry)
+                .group(group)
+                .build());
     }
 }

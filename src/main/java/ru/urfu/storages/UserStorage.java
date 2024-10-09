@@ -3,6 +3,7 @@ package ru.urfu.storages;
 import ru.urfu.enums.Process;
 import ru.urfu.enums.ProcessState;
 import ru.urfu.models.User;
+import ru.urfu.models.builders.UserBuilder;
 
 /**
  * Хранилище объектов модели User, предоставляющее методы по изменению отдельных полей.
@@ -17,13 +18,7 @@ public interface UserStorage extends Storage<User, Long> {
     default void changeUserProcess(Long id, Process process) {
         final User user = getById(id);
         deleteById(id);
-        add(new User(
-                user.id(),
-                user.telegramId(),
-                user.discordId(),
-                process,
-                user.currentState()
-        ));
+        add(new UserBuilder(user).currentProcess(process).build());
     }
 
     /**
@@ -35,12 +30,6 @@ public interface UserStorage extends Storage<User, Long> {
     default void changeUserState(Long id, ProcessState state) {
         final User user = getById(id);
         deleteById(id);
-        add(new User(
-                user.id(),
-                user.telegramId(),
-                user.discordId(),
-                user.currentProcess(),
-                state
-        ));
+        add(new UserBuilder(user).currentState(state).build());
     }
 }

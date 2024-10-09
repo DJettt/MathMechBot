@@ -23,7 +23,7 @@ public abstract class MathMechBotState implements State {
 
     protected final static String USER_INFO_TEMPLATE = """
             ФИО: %s
-            Группа: %s-%s0%s (%s)""";
+            Группа: %s-%d0%d (%s)""";
 
     protected final MathMechBotCore context;
 
@@ -32,7 +32,7 @@ public abstract class MathMechBotState implements State {
      *
      * @param context контекст (в том же смысле, что и в паттерне "State").
      */
-    public MathMechBotState(MathMechBotCore context) {
+    protected MathMechBotState(MathMechBotCore context) {
         this.context = context;
     }
 }

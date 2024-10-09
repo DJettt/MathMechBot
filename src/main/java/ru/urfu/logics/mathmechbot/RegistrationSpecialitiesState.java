@@ -2,6 +2,8 @@ package ru.urfu.logics.mathmechbot;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.urfu.bots.Bot;
 import ru.urfu.enums.RegistrationProcessState;
 import ru.urfu.enums.Specialty;
@@ -17,6 +19,8 @@ import ru.urfu.logics.State;
  * из списка, который возвращает метод allowedSpecialties.
  */
 public class RegistrationSpecialitiesState extends MathMechBotState {
+    private final static Logger LOGGER = LoggerFactory.getLogger(RegistrationSpecialitiesState.class);
+
     /**
      * Конструктор состояния.
      *

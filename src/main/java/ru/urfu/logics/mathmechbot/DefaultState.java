@@ -97,13 +97,12 @@ public class DefaultState extends MathMechBotState {
      */
     private void infoCommandHandler(LocalMessage message, long chatId, Bot bot) {
         final User user = context.users.getById(chatId);
-        final UserEntry userEntry = context.userEntries.getById(chatId);
-
         if (user == null) {
             notRegistered(message, chatId, bot);
             return;
         }
 
+        final UserEntry userEntry = context.userEntries.getById(chatId);
         if (userEntry == null) {
             LOGGER.error("User without entry asked for info");
             return;
