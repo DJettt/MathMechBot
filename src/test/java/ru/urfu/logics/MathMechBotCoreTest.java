@@ -174,7 +174,7 @@ public final class MathMechBotCoreTest {
              *
              * @param fullName корректные ФИО или ФИ.
              */
-            @ParameterizedTest(name = "{0} - корректное ФИО")
+            @ParameterizedTest(name = "\"{0}\" - корректное ФИО")
             @ValueSource(strings = {"Иванов Иван", "Иванов Иван Иванович", "Ии Ии Ии", "Ии Ии"})
             @DisplayName("Различные корректные ФИО или ФИ")
             void testCorrectData(String fullName) {
@@ -195,7 +195,8 @@ public final class MathMechBotCoreTest {
              *
              * @param fullName некорректные ФИО или ФИ.
              */
-            @ParameterizedTest(name = "{0} - некорректное ФИО")
+            @ParameterizedTest(name = "\"{0}\" - некорректное ФИО")
+            @EmptySource
             @NullSource
             @ValueSource(strings = {"Иванов", "Иванов И", "И Иванов", "Иванов Иванов И", "ИВанов Иванов"})
             @DisplayName("Различные некорректные ФИО или ФИ")
@@ -253,7 +254,7 @@ public final class MathMechBotCoreTest {
              *
              * @param year корректный год обучения.
              */
-            @ParameterizedTest(name = "{0} - корректный год обучения")
+            @ParameterizedTest(name = "\"{0}\" - корректный год обучения")
             @ValueSource(strings = {"1", "2", "3", "4", "5", "6"})
             @DisplayName("Все возможные корректные годы обучения")
             void testCorrectData(String year) {
@@ -274,7 +275,8 @@ public final class MathMechBotCoreTest {
              *
              * @param text некорректное сообщение.
              */
-            @ParameterizedTest(name = "{0} не является годом обучения")
+            @ParameterizedTest(name = "\"{0}\" не является годом обучения")
+            @EmptySource
             @NullSource
             @ValueSource(strings = {"0", "7", "10", "a", "((("})
             @DisplayName("Некорректный ввод")
@@ -332,7 +334,7 @@ public final class MathMechBotCoreTest {
              *
              * @param specialtyAbbreviation корректная аббревиатура направления подготовки, общего для всех курсов.
              */
-            @ParameterizedTest(name = "{0} - корректное направление подготовки для обоих курсов")
+            @ParameterizedTest(name = "\"{0}\" - корректное направление подготовки для обоих курсов")
             @ValueSource(strings = {"КБ", "ФТ"})
             @DisplayName("Все возможные корректные направления подготовки, общие для всех курсов")
             void testCommonData(String specialtyAbbreviation) {
@@ -353,7 +355,7 @@ public final class MathMechBotCoreTest {
              *
              * @param specialtyAbbreviation корректная аббревиатура направления подготовки первого курса.
              */
-            @ParameterizedTest(name = "{0} - корректное направление подготовки только для первого курса")
+            @ParameterizedTest(name = "\"{0}\" - корректное направление подготовки только для первого курса")
             @ValueSource(strings = {"КНМО", "ММП"})
             @DisplayName("Все возможные корректные направления подготовки первого курса")
             void testFirstYearOnlyData(String specialtyAbbreviation) {
@@ -378,7 +380,7 @@ public final class MathMechBotCoreTest {
              *
              * @param specialtyAbbreviation корректная аббревиатура направления подготовки не первых курсов.
              */
-            @ParameterizedTest(name = "{0} - корректное направление подготовки только для поздних курса")
+            @ParameterizedTest(name = "\"{0}\" - корректное направление подготовки только для поздних курса")
             @ValueSource(strings = {"КН", "МО", "МХ", "ПМ"})
             @DisplayName("Все возможные корректные направления подготовки поздних курса")
             void testLaterYearsOnlyData(String specialtyAbbreviation) {
@@ -403,7 +405,7 @@ public final class MathMechBotCoreTest {
              *
              * @param specialtyAbbreviation корректная аббревиатура направления подготовки не первых курсов.
              */
-            @ParameterizedTest(name = "'{0}' не является разрешённым направление подготовки")
+            @ParameterizedTest(name = "\"{0}\" не является разрешённым направление подготовки")
             @EmptySource
             @NullSource
             @ValueSource(strings = {"кн", "string", "0"})
