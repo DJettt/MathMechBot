@@ -4,7 +4,7 @@ package ru.urfu.logics.mathmechbot;
 import java.util.ArrayList;
 import java.util.List;
 import ru.urfu.bots.Bot;
-import ru.urfu.enums.RegistrationProcessState;
+import ru.urfu.enums.RegistrationState;
 import ru.urfu.localobjects.LocalButton;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
@@ -29,7 +29,7 @@ public class RegistrationGroupState extends MathMechBotState {
     public void processMessage(LocalMessage msg, long chatId, Bot bot) {
         switch (msg.text()) {
             case BACK_COMMAND -> {
-                context.users.changeUserState(chatId, RegistrationProcessState.YEAR);
+                context.users.changeUserState(chatId, RegistrationState.YEAR);
                 final State newState = new RegistrationYearState(context);
                 newState.onEnter(msg, chatId, bot);
                 context.changeState(newState);
@@ -43,7 +43,7 @@ public class RegistrationGroupState extends MathMechBotState {
                     final int group = Integer.parseInt(msg.text().trim());
                     if (group >= 1 && group <= maxYear) {
                         context.userEntries.changeUserEntryGroup(chatId, group);
-                        context.users.changeUserState(chatId, RegistrationProcessState.MEN);
+                        context.users.changeUserState(chatId, RegistrationState.MEN);
                         final State newState = new RegistrationMenGroupState(context);
                         newState.onEnter(msg, chatId, bot);
                         context.changeState(newState);

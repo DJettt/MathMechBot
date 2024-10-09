@@ -5,11 +5,11 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.urfu.bots.Bot;
-import ru.urfu.enums.Process;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
 import ru.urfu.logics.State;
-import ru.urfu.models.UserEntry;
+import ru.urfu.logics.mathmechbot.enums.MathMechBotProcess;
+import ru.urfu.logics.mathmechbot.models.UserEntry;
 
 
 /**
@@ -31,7 +31,7 @@ public class DeletionConfirmationState extends MathMechBotState {
     public void processMessage(LocalMessage msg, long chatId, Bot bot) {
         switch (msg.text()) {
             case BACK_COMMAND -> {
-                context.users.changeUserProcess(chatId, Process.DEFAULT);
+                context.users.changeUserProcess(chatId, MathMechBotProcess.DEFAULT);
                 final State newState = new DefaultState(context);
                 newState.onEnter(msg, chatId, bot);
                 context.changeState(newState);
@@ -47,7 +47,7 @@ public class DeletionConfirmationState extends MathMechBotState {
             }
 
             case DECLINE_COMMAND -> {
-                context.users.changeUserProcess(chatId, Process.DEFAULT);
+                context.users.changeUserProcess(chatId, MathMechBotProcess.DEFAULT);
                 bot.sendMessage(new LocalMessageBuilder().text("Отмена...").build(), chatId);
                 final State newState = new DefaultState(context);
                 newState.onEnter(msg, chatId, bot);

@@ -1,10 +1,10 @@
-package ru.urfu.models.builders;
+package ru.urfu.logics.mathmechbot.models.builders;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import ru.urfu.enums.Process;
-import ru.urfu.enums.ProcessState;
-import ru.urfu.models.User;
+import ru.urfu.enums.State;
+import ru.urfu.logics.mathmechbot.enums.MathMechBotProcess;
+import ru.urfu.logics.mathmechbot.models.User;
 
 /**
  * Билдер для рекорда User.
@@ -13,8 +13,8 @@ public final class UserBuilder {
     private final Long id;
     private Long telegramId;
     private Long discordId;
-    private Process currentProcess;
-    private ProcessState currentState;
+    private MathMechBotProcess currentProcess;
+    private State currentState;
 
     /**
      * Конструктор, устанавливающий дефолтные значения для полей.
@@ -70,7 +70,7 @@ public final class UserBuilder {
      * @param currentProcess строка, которую нужно положить в discordId
      * @return себя же
      */
-    public UserBuilder currentProcess(@Nullable Process currentProcess) {
+    public UserBuilder currentProcess(@Nullable MathMechBotProcess currentProcess) {
         this.currentProcess = currentProcess;
         return this;
     }
@@ -81,7 +81,7 @@ public final class UserBuilder {
      * @param currentState строка, которую нужно положить в discordId
      * @return себя же
      */
-    public UserBuilder currentState(@Nullable ProcessState currentState) {
+    public UserBuilder currentState(@Nullable State currentState) {
         this.currentState = currentState;
         return this;
     }

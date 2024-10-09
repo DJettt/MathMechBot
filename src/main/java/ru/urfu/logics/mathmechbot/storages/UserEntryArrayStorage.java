@@ -1,6 +1,7 @@
-package ru.urfu.storages;
+package ru.urfu.logics.mathmechbot.storages;
 
-import ru.urfu.models.UserEntry;
+import ru.urfu.logics.mathmechbot.models.UserEntry;
+import ru.urfu.storages.ArrayStorage;
 
 /**
  * Имплементация UserEntryStorage через ArrayStorage.

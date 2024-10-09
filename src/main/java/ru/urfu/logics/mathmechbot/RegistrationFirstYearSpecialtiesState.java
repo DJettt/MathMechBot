@@ -2,7 +2,7 @@ package ru.urfu.logics.mathmechbot;
 
 import java.util.ArrayList;
 import java.util.List;
-import ru.urfu.enums.Specialty;
+import ru.urfu.logics.mathmechbot.enums.Specialty;
 
 
 /**

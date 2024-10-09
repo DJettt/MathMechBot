@@ -1,7 +1,7 @@
 package ru.urfu.storages;
 
 import java.util.HashMap;
-import ru.urfu.models.Identifiable;
+import ru.urfu.logics.mathmechbot.models.Identifiable;
 
 /**
  * Хранилище данных, реализованное на хэш-мапе.

@@ -6,7 +6,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.urfu.bots.Bot;
-import ru.urfu.enums.RegistrationProcessState;
+import ru.urfu.enums.RegistrationState;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
 import ru.urfu.logics.State;
@@ -43,7 +43,7 @@ public class RegistrationMenGroupState extends MathMechBotState {
     public void processMessage(LocalMessage msg, long chatId, Bot bot) {
         switch (msg.text()) {
             case BACK_COMMAND -> {
-                context.users.changeUserState(chatId, RegistrationProcessState.GROUP);
+                context.users.changeUserState(chatId, RegistrationState.GROUP);
                 final State newState = new RegistrationGroupState(context);
                 newState.onEnter(msg, chatId, bot);
                 context.changeState(newState);
@@ -60,7 +60,7 @@ public class RegistrationMenGroupState extends MathMechBotState {
                 }
 
                 context.userEntries.changeUserEntryMen(chatId, msg.text());
-                context.users.changeUserState(chatId, RegistrationProcessState.CONFIRMATION);
+                context.users.changeUserState(chatId, RegistrationState.CONFIRMATION);
                 final State newState = new RegistrationConfirmationState(context);
                 newState.onEnter(msg, chatId, bot);
                 context.changeState(newState);

@@ -1,5 +1,13 @@
 package ru.urfu.enums;
 
+import ru.urfu.logics.mathmechbot.RegistrationConfirmationState;
+import ru.urfu.logics.mathmechbot.RegistrationFirstYearSpecialtiesState;
+import ru.urfu.logics.mathmechbot.RegistrationFullNameState;
+import ru.urfu.logics.mathmechbot.RegistrationGroupState;
+import ru.urfu.logics.mathmechbot.RegistrationLaterYearSpecialitiesState;
+import ru.urfu.logics.mathmechbot.RegistrationMenGroupState;
+import ru.urfu.logics.mathmechbot.RegistrationYearState;
+
 /**
  * Состояния в процессе регистрации.
  * Пользователь попадает в процесс, отправив команду регистрации.
@@ -51,12 +59,22 @@ package ru.urfu.enums;
  *     </li>
  * </ol>
  */
-public enum RegistrationProcessState implements ProcessState {
-    NAME,
-    YEAR,
-    SPECIALTY1,
-    SPECIALTY2,
-    GROUP,
-    MEN,
-    CONFIRMATION
+public enum RegistrationState implements State {
+    NAME(RegistrationFullNameState.class),
+    YEAR(RegistrationYearState.class),
+    SPECIALTY1(RegistrationFirstYearSpecialtiesState.class),
+    SPECIALTY2(RegistrationLaterYearSpecialitiesState.class),
+    GROUP(RegistrationGroupState.class),
+    MEN(RegistrationMenGroupState.class),
+    CONFIRMATION(RegistrationConfirmationState.class);
+
+    private final Class<? extends ru.urfu.logics.State> stateClass;
+
+    RegistrationState(Class<? extends ru.urfu.logics.State> stateClass) {
+        this.stateClass = stateClass;
+    }
+
+    public Class<? extends ru.urfu.logics.State> stateClass() {
+        return stateClass;
+    }
 }

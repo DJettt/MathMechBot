@@ -1,7 +1,8 @@
-package ru.urfu.storages;
+package ru.urfu.logics.mathmechbot.storages;
 
-import ru.urfu.models.UserEntry;
-import ru.urfu.models.builders.UserEntryBuilder;
+import ru.urfu.logics.mathmechbot.models.UserEntry;
+import ru.urfu.logics.mathmechbot.models.builders.UserEntryBuilder;
+import ru.urfu.storages.Storage;
 
 /**
  * Хранилище объектов модели UserEntry, предоставляющее методы по изменению отдельных полей.

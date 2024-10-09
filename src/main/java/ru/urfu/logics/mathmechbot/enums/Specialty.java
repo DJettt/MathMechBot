@@ -1,4 +1,4 @@
-package ru.urfu.enums;
+package ru.urfu.logics.mathmechbot.enums;
 
 import org.jetbrains.annotations.NotNull;
 

@@ -5,17 +5,17 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.urfu.bots.Bot;
-import ru.urfu.enums.DeletionProcessState;
-import ru.urfu.enums.Process;
-import ru.urfu.enums.RegistrationProcessState;
+import ru.urfu.enums.DeletionState;
+import ru.urfu.enums.RegistrationState;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.logics.LogicCore;
 import ru.urfu.logics.State;
-import ru.urfu.models.User;
-import ru.urfu.storages.UserArrayStorage;
-import ru.urfu.storages.UserEntryArrayStorage;
-import ru.urfu.storages.UserEntryStorage;
-import ru.urfu.storages.UserStorage;
+import ru.urfu.logics.mathmechbot.enums.MathMechBotProcess;
+import ru.urfu.logics.mathmechbot.models.User;
+import ru.urfu.logics.mathmechbot.storages.UserArrayStorage;
+import ru.urfu.logics.mathmechbot.storages.UserEntryArrayStorage;
+import ru.urfu.logics.mathmechbot.storages.UserEntryStorage;
+import ru.urfu.logics.mathmechbot.storages.UserStorage;
 
 
 /**
@@ -57,26 +57,22 @@ public class MathMechBotCore implements LogicCore {
     private @Nullable State getStateBasedOnUser(@NotNull User user) {
         final State state = switch (user.currentProcess()) {
             case null -> new DefaultState(this);
-            case Process.DEFAULT -> new DefaultState(this);
+            case MathMechBotProcess.DEFAULT -> new DefaultState(this);
 
-            case Process.REGISTRATION -> switch (user.currentState()) {
-                case RegistrationProcessState.NAME -> new RegistrationFullNameState(this);
-                case RegistrationProcessState.YEAR -> new RegistrationYearState(this);
-                case RegistrationProcessState.SPECIALTY1 -> new RegistrationFirstYearSpecialtiesState(this);
-                case RegistrationProcessState.SPECIALTY2 -> new RegistrationLaterYearSpecialitiesState(this);
-                case RegistrationProcessState.GROUP -> new RegistrationGroupState(this);
-                case RegistrationProcessState.MEN -> new RegistrationMenGroupState(this);
-                case RegistrationProcessState.CONFIRMATION -> new RegistrationConfirmationState(this);
+            case MathMechBotProcess.REGISTRATION -> switch (user.currentState()) {
+                case RegistrationState.NAME -> new RegistrationFullNameState(this);
+                case RegistrationState.YEAR -> new RegistrationYearState(this);
+                case RegistrationState.SPECIALTY1 -> new RegistrationFirstYearSpecialtiesState(this);
+                case RegistrationState.SPECIALTY2 -> new RegistrationLaterYearSpecialitiesState(this);
+                case RegistrationState.GROUP -> new RegistrationGroupState(this);
+                case RegistrationState.MEN -> new RegistrationMenGroupState(this);
+                case RegistrationState.CONFIRMATION -> new RegistrationConfirmationState(this);
                 case null, default -> null;
             };
-            case Process.DELETION -> switch (user.currentState()) {
-                case DeletionProcessState.CONFIRMATION -> new DeletionConfirmationState(this);
+            case MathMechBotProcess.DELETION -> switch (user.currentState()) {
+                case DeletionState.CONFIRMATION -> new DeletionConfirmationState(this);
                 case null, default -> null;
             };
-            default -> {
-                LOGGER.error("Unknown user process: {}", user.currentProcess());
-                yield null;
-            }
         };
 
         if (state == null) {

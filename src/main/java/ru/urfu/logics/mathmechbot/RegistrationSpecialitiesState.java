@@ -5,12 +5,12 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.urfu.bots.Bot;
-import ru.urfu.enums.RegistrationProcessState;
-import ru.urfu.enums.Specialty;
+import ru.urfu.enums.RegistrationState;
 import ru.urfu.localobjects.LocalButton;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
 import ru.urfu.logics.State;
+import ru.urfu.logics.mathmechbot.enums.Specialty;
 
 
 /**
@@ -74,7 +74,7 @@ public class RegistrationSpecialitiesState extends MathMechBotState {
      * @param bot     бот, принявший сообщение
      */
     private void backCommandHandler(LocalMessage message, long chatId, Bot bot) {
-        context.users.changeUserState(chatId, RegistrationProcessState.YEAR);
+        context.users.changeUserState(chatId, RegistrationState.YEAR);
         final State newState = new RegistrationYearState(context);
         newState.onEnter(message, chatId, bot);
         context.changeState(newState);
@@ -100,7 +100,7 @@ public class RegistrationSpecialitiesState extends MathMechBotState {
         }
 
         context.userEntries.changeUserEntrySpecialty(chatId, message.text());
-        context.users.changeUserState(chatId, RegistrationProcessState.GROUP);
+        context.users.changeUserState(chatId, RegistrationState.GROUP);
         final State newState = new RegistrationGroupState(context);
         newState.onEnter(message, chatId, bot);
         context.changeState(newState);

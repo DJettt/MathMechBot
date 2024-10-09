@@ -1,6 +1,6 @@
 package ru.urfu.storages;
 
-import ru.urfu.models.Identifiable;
+import ru.urfu.logics.mathmechbot.models.Identifiable;
 
 /**
  * Интерфейс хранилища, некоторой абстракции над данными.

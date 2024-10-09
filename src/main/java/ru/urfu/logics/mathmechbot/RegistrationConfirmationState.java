@@ -5,12 +5,12 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.urfu.bots.Bot;
-import ru.urfu.enums.Process;
-import ru.urfu.enums.RegistrationProcessState;
+import ru.urfu.enums.RegistrationState;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
 import ru.urfu.logics.State;
-import ru.urfu.models.UserEntry;
+import ru.urfu.logics.mathmechbot.enums.MathMechBotProcess;
+import ru.urfu.logics.mathmechbot.models.UserEntry;
 
 
 /**
@@ -32,14 +32,14 @@ public class RegistrationConfirmationState extends MathMechBotState {
     public void processMessage(LocalMessage msg, long chatId, Bot bot) {
         switch (msg.text()) {
             case BACK_COMMAND -> {
-                context.users.changeUserState(chatId, RegistrationProcessState.MEN);
+                context.users.changeUserState(chatId, RegistrationState.MEN);
                 final State newState = new RegistrationMenGroupState(context);
                 newState.onEnter(msg, chatId, bot);
                 context.changeState(newState);
             }
 
             case ACCEPT_COMMAND -> {
-                context.users.changeUserProcess(chatId, Process.DEFAULT);
+                context.users.changeUserProcess(chatId, MathMechBotProcess.DEFAULT);
                 bot.sendMessage(new LocalMessageBuilder().text("Сохранил...").build(), chatId);
                 final State newState = new DefaultState(context);
                 newState.onEnter(msg, chatId, bot);
@@ -47,7 +47,7 @@ public class RegistrationConfirmationState extends MathMechBotState {
             }
 
             case DECLINE_COMMAND -> {
-                context.users.changeUserProcess(chatId, Process.DEFAULT);
+                context.users.changeUserProcess(chatId, MathMechBotProcess.DEFAULT);
                 bot.sendMessage(new LocalMessageBuilder().text("Отмена...").build(), chatId);
                 final State newState = new DefaultState(context);
                 newState.onEnter(msg, chatId, bot);

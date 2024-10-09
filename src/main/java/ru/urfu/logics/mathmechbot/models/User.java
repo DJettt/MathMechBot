@@ -1,9 +1,9 @@
-package ru.urfu.models;
+package ru.urfu.logics.mathmechbot.models;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import ru.urfu.enums.Process;
-import ru.urfu.enums.ProcessState;
+import ru.urfu.enums.State;
+import ru.urfu.logics.mathmechbot.enums.MathMechBotProcess;
 
 /**
  * Модель пользователя, подписавшегося на пересылку информации.
@@ -17,7 +17,7 @@ public record User(
         @NotNull Long id,
         @Nullable Long telegramId,
         @Nullable Long discordId,
-        @Nullable Process currentProcess,
-        @Nullable ProcessState currentState
+        @Nullable MathMechBotProcess currentProcess,
+        @Nullable State currentState
 ) implements Identifiable<Long> {
 }

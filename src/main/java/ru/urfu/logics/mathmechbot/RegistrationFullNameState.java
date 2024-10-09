@@ -3,11 +3,11 @@ package ru.urfu.logics.mathmechbot;
 
 import java.util.List;
 import ru.urfu.bots.Bot;
-import ru.urfu.enums.RegistrationProcessState;
+import ru.urfu.enums.RegistrationState;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
 import ru.urfu.logics.State;
-import ru.urfu.models.UserEntry;
+import ru.urfu.logics.mathmechbot.models.UserEntry;
 
 
 
@@ -95,7 +95,7 @@ public class RegistrationFullNameState extends MathMechBotState {
         context.userEntries.add(new UserEntry(
                 chatId, strs.get(0), strs.get(1), (strs.size() == 3) ? strs.get(2) : "",
                 null, null, null, null, chatId));
-        context.users.changeUserState(chatId, RegistrationProcessState.YEAR);
+        context.users.changeUserState(chatId, RegistrationState.YEAR);
 
         final State newState = new RegistrationYearState(context);
         newState.onEnter(message, chatId, bot);

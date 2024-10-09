@@ -1,9 +1,10 @@
-package ru.urfu.storages;
+package ru.urfu.logics.mathmechbot.storages;
 
-import ru.urfu.enums.Process;
-import ru.urfu.enums.ProcessState;
-import ru.urfu.models.User;
-import ru.urfu.models.builders.UserBuilder;
+import ru.urfu.enums.State;
+import ru.urfu.logics.mathmechbot.enums.MathMechBotProcess;
+import ru.urfu.logics.mathmechbot.models.User;
+import ru.urfu.logics.mathmechbot.models.builders.UserBuilder;
+import ru.urfu.storages.Storage;
 
 /**
  * Хранилище объектов модели User, предоставляющее методы по изменению отдельных полей.
@@ -15,7 +16,7 @@ public interface UserStorage extends Storage<User, Long> {
      * @param id      идентификатор пользователя в хранилище.
      * @param process новый текущий процесс.
      */
-    default void changeUserProcess(Long id, Process process) {
+    default void changeUserProcess(Long id, MathMechBotProcess process) {
         final User user = getById(id);
         deleteById(id);
         add(new UserBuilder(user).currentProcess(process).build());
@@ -27,7 +28,7 @@ public interface UserStorage extends Storage<User, Long> {
      * @param id    идентификатор пользователя в хранилище.
      * @param state новое текущее состояние.
      */
-    default void changeUserState(Long id, ProcessState state) {
+    default void changeUserState(Long id, State state) {
         final User user = getById(id);
         deleteById(id);
         add(new UserBuilder(user).currentState(state).build());

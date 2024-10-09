@@ -3,14 +3,14 @@ package ru.urfu.logics.mathmechbot;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.urfu.bots.Bot;
-import ru.urfu.enums.DeletionProcessState;
-import ru.urfu.enums.Process;
-import ru.urfu.enums.RegistrationProcessState;
+import ru.urfu.enums.DeletionState;
+import ru.urfu.enums.RegistrationState;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
 import ru.urfu.logics.State;
-import ru.urfu.models.User;
-import ru.urfu.models.UserEntry;
+import ru.urfu.logics.mathmechbot.enums.MathMechBotProcess;
+import ru.urfu.logics.mathmechbot.models.User;
+import ru.urfu.logics.mathmechbot.models.UserEntry;
 
 
 /**
@@ -79,8 +79,8 @@ public class DefaultState extends MathMechBotState {
         final User user = context.users.getById(chatId);
         if (user == null) {
             context.users.add(new User(chatId, chatId, chatId,
-                    Process.REGISTRATION,
-                    RegistrationProcessState.NAME));
+                    MathMechBotProcess.REGISTRATION,
+                    RegistrationState.NAME));
             final State newState = new RegistrationFullNameState(context);
             newState.onEnter(message, chatId, bot);
             context.changeState(newState);
@@ -128,8 +128,8 @@ public class DefaultState extends MathMechBotState {
     private void deleteCommandHandler(LocalMessage message, long chatId, Bot bot) {
         final User user = context.users.getById(chatId);
         if (user != null) {
-            context.users.changeUserProcess(chatId, Process.DELETION);
-            context.users.changeUserState(chatId, DeletionProcessState.CONFIRMATION);
+            context.users.changeUserProcess(chatId, MathMechBotProcess.DELETION);
+            context.users.changeUserState(chatId, DeletionState.CONFIRMATION);
 
             final State newState = new DeletionConfirmationState(context);
             newState.onEnter(message, chatId, bot);
