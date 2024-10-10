@@ -53,7 +53,7 @@ public final class MathMechBotCore implements LogicCore {
      */
     private @Nullable MathMechBotState getUserState(@NotNull User user) {
         try {
-            return user.currentState().stateClass().getConstructor(MathMechBotCore.class).newInstance(this);
+            return user.currentState().userStateClass().getConstructor(MathMechBotCore.class).newInstance(this);
         } catch (NoSuchMethodException e) {
             LOGGER.error("Constructor of the state {} was not found", user.currentState(), e);
             return null;
@@ -73,10 +73,9 @@ public final class MathMechBotCore implements LogicCore {
         LOGGER.info(user.toString());
 
         final MathMechBotState newState = getUserState(user);
-
         if (newState == null) {
-            LOGGER.error("Couldn't determine state for user.");
-            return;
+            LOGGER.error("Couldn't determine state for user, setting default.");
+            storage.users.changeUserState(chatId, DefaultUserState.DEFAULT);
         }
 
         changeState(newState);

@@ -42,7 +42,7 @@ public final class RegistrationYearState extends MathMechBotState {
     @Override
     public void processMessage(LocalMessage msg, long chatId, Bot bot) {
         switch (msg.text()) {
-            case Constants.BACK_COMMAND -> backCommandHandler(msg, chatId, bot);
+            case Constants.BACK_COMMAND -> backCommandHandler(chatId, bot);
             case null -> {
                 bot.sendMessage(Constants.TRY_AGAIN, chatId);
                 bot.sendMessage(ON_ENTER_MESSAGE, chatId);
@@ -52,20 +52,19 @@ public final class RegistrationYearState extends MathMechBotState {
     }
 
     @Override
-    public void onEnter(LocalMessage msg, long chatId, Bot bot) {
-        bot.sendMessage(ON_ENTER_MESSAGE, chatId);
+    public LocalMessage enterMessage(long userId) {
+        return ON_ENTER_MESSAGE;
     }
 
     /**
      * Возвращаем пользователя на шаг назад, т.е. на запрос ФИО
      *
-     * @param message полученное сообщение
      * @param chatId  идентификатор чата
      * @param bot     бот, принявший сообщение
      */
-    private void backCommandHandler(LocalMessage message, long chatId, Bot bot) {
+    private void backCommandHandler(long chatId, Bot bot) {
         context.storage.users.changeUserState(chatId, RegistrationUserState.NAME);
-        new RegistrationFullNameState(context).onEnter(message, chatId, bot);
+        bot.sendMessage(new RegistrationFullNameState(context).enterMessage(chatId), chatId);
     }
 
     /**
@@ -89,13 +88,11 @@ public final class RegistrationYearState extends MathMechBotState {
             if (year == 1) {
                 context.storage.userEntries.changeUserEntryYear(chatId, year);
                 context.storage.users.changeUserState(chatId, RegistrationUserState.SPECIALTY1);
-
-                new RegistrationFirstYearSpecialtiesState(context).onEnter(message, chatId, bot);
+                bot.sendMessage(new RegistrationFirstYearSpecialtiesState(context).enterMessage(chatId), chatId);
             } else if (year > 1 && year <= maxYear) {
                 context.storage.userEntries.changeUserEntryYear(chatId, year);
                 context.storage.users.changeUserState(chatId, RegistrationUserState.SPECIALTY2);
-
-                new RegistrationLaterYearSpecialitiesState(context).onEnter(message, chatId, bot);
+                bot.sendMessage(new RegistrationLaterYearSpecialitiesState(context).enterMessage(chatId), chatId);
             } else {
                 bot.sendMessage(Constants.TRY_AGAIN, chatId);
                 bot.sendMessage(ON_ENTER_MESSAGE, chatId);

@@ -11,5 +11,5 @@ public interface UserState {
      *
      * @return класс состояния логического ядра.
      */
-    Class<? extends LogicCoreState> stateClass();
+    Class<? extends LogicCoreState> userStateClass();
 }

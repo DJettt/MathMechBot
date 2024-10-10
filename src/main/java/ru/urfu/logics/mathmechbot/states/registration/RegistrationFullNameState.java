@@ -40,34 +40,32 @@ public final class RegistrationFullNameState extends MathMechBotState {
     @Override
     public void processMessage(LocalMessage msg, long chatId, Bot bot) {
         switch (msg.text()) {
-            case Constants.BACK_COMMAND -> backCommandHandler(msg, chatId, bot);
+            case Constants.BACK_COMMAND -> backCommandHandler(chatId, bot);
             case null -> bot.sendMessage(Constants.TRY_AGAIN, chatId);
             default -> textHandler(msg, chatId, bot);
         }
     }
 
     @Override
-    public void onEnter(LocalMessage msg, long chatId, Bot bot) {
-        final LocalMessage message = new LocalMessageBuilder()
+    public LocalMessage enterMessage(long userId) {
+        return new LocalMessageBuilder()
                 .text("""
                         Введите свое ФИО в формате:
                         Иванов Артём Иванович
                         Без дополнительных пробелов и с буквой ё, если нужно.""")
                 .build();
-        bot.sendMessage(message, chatId);
     }
 
     /**
      * Возвращаем пользователя на шаг назад, т.е. в основное состояние
      *
-     * @param message полученное сообщение
      * @param chatId  идентификатор чата
      * @param bot     бот, принявший сообщение
      */
-    private void backCommandHandler(LocalMessage message, long chatId, Bot bot) {
+    private void backCommandHandler(long chatId, Bot bot) {
         context.storage.users.deleteById(chatId);
         context.storage.userEntries.deleteById(chatId);
-        new DefaultState(context).onEnter(message, chatId, bot);
+        bot.sendMessage(new DefaultState(context).enterMessage(chatId), chatId);
     }
 
     /**
@@ -95,6 +93,6 @@ public final class RegistrationFullNameState extends MathMechBotState {
                 chatId, strs.get(0), strs.get(1), (strs.size() == 3) ? strs.get(2) : "",
                 null, null, null, null, chatId));
         context.storage.users.changeUserState(chatId, RegistrationUserState.YEAR);
-        new RegistrationYearState(context).onEnter(message, chatId, bot);
+        bot.sendMessage(new RegistrationYearState(context).enterMessage(chatId), chatId);
     }
 }

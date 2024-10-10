@@ -44,38 +44,35 @@ public sealed class RegistrationSpecialitiesState
     @Override
     public void processMessage(LocalMessage msg, long chatId, Bot bot) {
         switch (msg.text()) {
-            case Constants.BACK_COMMAND -> backCommandHandler(msg, chatId, bot);
+            case Constants.BACK_COMMAND -> backCommandHandler(chatId, bot);
             case null -> {
                 bot.sendMessage(Constants.TRY_AGAIN, chatId);
-                onEnter(msg, chatId, bot);
+                bot.sendMessage(enterMessage(chatId), chatId);
             }
             default -> textHandler(msg, chatId, bot);
         }
     }
 
     @Override
-    public void onEnter(LocalMessage msg, long chatId, Bot bot) {
+    public LocalMessage enterMessage(long userId) {
         List<LocalButton> buttons = new ArrayList<>();
         for (Specialty specialty : allowedSpecialties()) {
             buttons.add(new LocalButton(specialty.getAbbreviation(), specialty.getAbbreviation()));
         }
         buttons.add(Constants.BACK_BUTTON);
 
-        final LocalMessage message = new LocalMessageBuilder().text("На каком направлении?").buttons(buttons).build();
-
-        bot.sendMessage(message, chatId);
+        return new LocalMessageBuilder().text("На каком направлении?").buttons(buttons).build();
     }
 
     /**
      * Возвращаем пользователя на шаг назад, то есть на запрос года обучения.
      *
-     * @param message полученное сообщение
      * @param chatId  идентификатор чата
      * @param bot     бот, принявший сообщение
      */
-    private void backCommandHandler(LocalMessage message, long chatId, Bot bot) {
+    private void backCommandHandler(long chatId, Bot bot) {
         context.storage.users.changeUserState(chatId, RegistrationUserState.YEAR);
-        new RegistrationYearState(context).onEnter(message, chatId, bot);
+        bot.sendMessage(new RegistrationYearState(context).enterMessage(chatId), chatId);
     }
 
 
@@ -93,12 +90,12 @@ public sealed class RegistrationSpecialitiesState
 
         if (!allowedSpecialties().stream().map(Specialty::getAbbreviation).toList().contains(message.text())) {
             bot.sendMessage(Constants.TRY_AGAIN, chatId);
-            onEnter(message, chatId, bot);
+            bot.sendMessage(enterMessage(chatId), chatId);
             return;
         }
 
         context.storage.userEntries.changeUserEntrySpecialty(chatId, message.text());
         context.storage.users.changeUserState(chatId, RegistrationUserState.GROUP);
-        new RegistrationGroupState(context).onEnter(message, chatId, bot);
+        bot.sendMessage(new RegistrationGroupState(context).enterMessage(chatId), chatId);
     }
 }

@@ -31,7 +31,7 @@ public final class RegistrationGroupState extends MathMechBotState {
         switch (msg.text()) {
             case Constants.BACK_COMMAND -> {
                 context.storage.users.changeUserState(chatId, RegistrationUserState.YEAR);
-                new RegistrationYearState(context).onEnter(msg, chatId, bot);
+                bot.sendMessage(new RegistrationYearState(context).enterMessage(chatId), chatId);
             }
 
             case null -> bot.sendMessage(Constants.TRY_AGAIN, chatId);
@@ -43,7 +43,7 @@ public final class RegistrationGroupState extends MathMechBotState {
                     if (group >= 1 && group <= maxYear) {
                         context.storage.userEntries.changeUserEntryGroup(chatId, group);
                         context.storage.users.changeUserState(chatId, RegistrationUserState.MEN);
-                        new RegistrationMenGroupState(context).onEnter(msg, chatId, bot);
+                        bot.sendMessage(new RegistrationMenGroupState(context).enterMessage(chatId), chatId);
                     } else {
                         bot.sendMessage(Constants.TRY_AGAIN, chatId);
                     }
@@ -55,8 +55,8 @@ public final class RegistrationGroupState extends MathMechBotState {
     }
 
     @Override
-    public void onEnter(LocalMessage msg, long chatId, Bot bot) {
-        final LocalMessage message = new LocalMessageBuilder()
+    public LocalMessage enterMessage(long userId) {
+        return new LocalMessageBuilder()
                 .text("На каком курсе Вы обучаетесь?")
                 .buttons(new ArrayList<>(List.of(
                         new LocalButton("1 группа", "1"),
@@ -67,6 +67,5 @@ public final class RegistrationGroupState extends MathMechBotState {
                         Constants.BACK_BUTTON
                 )))
                 .build();
-        bot.sendMessage(message, chatId);
     }
 }

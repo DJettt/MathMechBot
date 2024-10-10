@@ -34,16 +34,23 @@ public final class DefaultState extends MathMechBotState {
     @Override
     public void processMessage(LocalMessage msg, long chatId, Bot bot) {
         switch (msg.text()) {
-            case REGISTER_COMMAND -> registerCommandHandler(msg, chatId, bot);
+            case REGISTER_COMMAND -> registerCommandHandler(chatId, bot);
             case INFO_COMMAND -> infoCommandHandler(chatId, bot);
-            case DELETE_COMMAND -> deleteCommandHandler(msg, chatId, bot);
+            case DELETE_COMMAND -> deleteCommandHandler(chatId, bot);
             case null, default -> helpCommandHandler(chatId, bot);
         }
     }
 
     @Override
-    public void onEnter(LocalMessage msg, long chatId, Bot bot) {
-        helpCommandHandler(chatId, bot);
+    public LocalMessage enterMessage(long userId) {
+        final String HELP_MESSAGE = """
+                %s - начало общения с ботом
+                %s - выводит команды, которые принимает бот
+                %s - регистрация
+                %s - информация о Вас
+                %s - удалить информацию о Вас"""
+                .formatted(START_COMMAND, HELP_COMMAND, REGISTER_COMMAND, INFO_COMMAND, DELETE_COMMAND);
+        return new LocalMessageBuilder().text(HELP_MESSAGE).build();
     }
 
     /**
@@ -53,29 +60,20 @@ public final class DefaultState extends MathMechBotState {
      * @param bot     бот, от которого пришло сообщение
      */
     private void helpCommandHandler(long chatId, Bot bot) {
-        final String HELP_MESSAGE = """
-                %s - начало общения с ботом
-                %s - выводит команды, которые принимает бот
-                %s - регистрация
-                %s - информация о Вас
-                %s - удалить информацию о Вас"""
-                .formatted(START_COMMAND, HELP_COMMAND, REGISTER_COMMAND, INFO_COMMAND, DELETE_COMMAND);
-        final LocalMessage answer = new LocalMessageBuilder().text(HELP_MESSAGE).build();
-        bot.sendMessage(answer, chatId);
+        bot.sendMessage(enterMessage(chatId), chatId);
     }
 
     /**
      * Запускает процесс регистрации.
      *
-     * @param message входящее сообщение
      * @param chatId  идентификатор чата отправителя
      * @param bot     бот, от которого пришло сообщение
      */
-    private void registerCommandHandler(LocalMessage message, long chatId, Bot bot) {
+    private void registerCommandHandler(long chatId, Bot bot) {
         final UserEntry userEntry = context.storage.userEntries.getById(chatId);
         if (userEntry == null) {
             context.storage.users.changeUserState(chatId, RegistrationUserState.NAME);
-            new RegistrationFullNameState(context).onEnter(message, chatId, bot);
+            bot.sendMessage(new RegistrationFullNameState(context).enterMessage(chatId), chatId);
         } else {
             alreadyRegistered(chatId, bot);
         }
@@ -107,15 +105,14 @@ public final class DefaultState extends MathMechBotState {
     /**
      * Запускает процесс удаления.
      *
-     * @param message входящее сообщение
      * @param chatId  идентификатор чата отправителя
      * @param bot     бот, от которого пришло сообщение
      */
-    private void deleteCommandHandler(LocalMessage message, long chatId, Bot bot) {
+    private void deleteCommandHandler(long chatId, Bot bot) {
         final UserEntry userEntry = context.storage.userEntries.getById(chatId);
         if (userEntry != null) {
             context.storage.users.changeUserState(chatId, DeletionUserState.CONFIRMATION);
-            new DeletionConfirmationState(context).onEnter(message, chatId, bot);
+            bot.sendMessage(new DeletionConfirmationState(context).enterMessage(chatId), chatId);
         } else {
             bot.sendMessage(Constants.ASK_FOR_REGISTRATION, chatId);
         }

@@ -11,7 +11,7 @@ public enum DefaultUserState implements MathMechBotUserState {
     DEFAULT;
 
     @Override
-    public Class<? extends ru.urfu.logics.mathmechbot.states.MathMechBotState> stateClass() {
+    public Class<? extends ru.urfu.logics.mathmechbot.states.MathMechBotState> userStateClass() {
         return ru.urfu.logics.mathmechbot.states.DefaultState.class;
     }
 }

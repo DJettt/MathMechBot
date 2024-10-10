@@ -79,7 +79,7 @@ public enum RegistrationUserState implements MathMechBotUserState {
     }
 
     @Override
-    public Class<? extends ru.urfu.logics.mathmechbot.states.MathMechBotState> stateClass() {
+    public Class<? extends ru.urfu.logics.mathmechbot.states.MathMechBotState> userStateClass() {
         return stateClass;
     }
 }

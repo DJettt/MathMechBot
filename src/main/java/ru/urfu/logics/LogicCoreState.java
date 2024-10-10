@@ -1,6 +1,5 @@
 package ru.urfu.logics;
 
-import ru.urfu.bots.Bot;
 import ru.urfu.localobjects.LocalMessage;
 
 /**
@@ -8,12 +7,11 @@ import ru.urfu.localobjects.LocalMessage;
  */
 public interface LogicCoreState extends LogicCore {
     /**
-     * Вызывать этот метод, чтобы отправилось сообщение, которое должно отправлять при входе в состояние.
+     * Вызывать этот метод, чтобы отправилось сообщение, которое должно отправлять при переходе в состояние.
      * TODO: сделать умнее.
      *
-     * @param msg    принятое сообщение.
-     * @param chatId идентификатор чата.
-     * @param bot    бот, который получил сообщение.
+     * @param userId id пользователя, с которым ведётся диалог.
+     * @return сообщение, которое нужно отправить пользователю при переходе в это состояние.
      */
-    void onEnter(LocalMessage msg, long chatId, Bot bot);
+    LocalMessage enterMessage(long userId);
 }

@@ -11,6 +11,7 @@ import ru.urfu.logics.mathmechbot.Constants;
 import ru.urfu.logics.mathmechbot.MathMechBotCore;
 import ru.urfu.logics.mathmechbot.enums.DefaultUserState;
 import ru.urfu.logics.mathmechbot.models.UserEntry;
+import ru.urfu.logics.mathmechbot.states.DefaultState;
 import ru.urfu.logics.mathmechbot.states.MathMechBotState;
 
 
@@ -34,20 +35,20 @@ public final class DeletionConfirmationState extends MathMechBotState {
         switch (msg.text()) {
             case Constants.BACK_COMMAND -> {
                 context.storage.users.changeUserState(chatId, DefaultUserState.DEFAULT);
-                new ru.urfu.logics.mathmechbot.states.DefaultState(context).onEnter(msg, chatId, bot);
+                bot.sendMessage(new DefaultState(context).enterMessage(chatId), chatId);
             }
 
             case Constants.ACCEPT_COMMAND -> {
                 context.storage.userEntries.deleteById(chatId);
                 context.storage.users.changeUserState(chatId, DefaultUserState.DEFAULT);
                 bot.sendMessage(new LocalMessageBuilder().text("Удаляем...").build(), chatId);
-                new ru.urfu.logics.mathmechbot.states.DefaultState(context).onEnter(msg, chatId, bot);
+                bot.sendMessage(new DefaultState(context).enterMessage(chatId), chatId);
             }
 
             case Constants.DECLINE_COMMAND -> {
                 context.storage.users.changeUserState(chatId, DefaultUserState.DEFAULT);
                 bot.sendMessage(new LocalMessageBuilder().text("Отмена...").build(), chatId);
-                new ru.urfu.logics.mathmechbot.states.DefaultState(context).onEnter(msg, chatId, bot);
+                bot.sendMessage(new DefaultState(context).enterMessage(chatId), chatId);
             }
 
             case null, default -> bot.sendMessage(Constants.TRY_AGAIN, chatId);
@@ -55,22 +56,21 @@ public final class DeletionConfirmationState extends MathMechBotState {
     }
 
     @Override
-    public void onEnter(LocalMessage msg, long chatId, Bot bot) {
-        final UserEntry userEntry = context.storage.userEntries.getById(chatId);
+    public LocalMessage enterMessage(long userId) {
+        final UserEntry userEntry = context.storage.userEntries.getById(userId);
 
         if (userEntry == null) {
             LOGGER.error("User without entry reached deletion confirmation state");
-            return;
+            return null;
         }
 
         final String userInfo = Constants.USER_INFO_TEMPLATE.formatted(
                 String.join(" ", userEntry.surname(), userEntry.name(), userEntry.patronym()),
                 userEntry.specialty(), userEntry.year(), userEntry.group(), userEntry.men());
 
-        final LocalMessage message = new LocalMessageBuilder()
+        return new LocalMessageBuilder()
                 .text("Точно удаляем?\n\n" + userInfo)
                 .buttons(new ArrayList<>(List.of(Constants.YES_BUTTON, Constants.NO_BUTTON, Constants.BACK_BUTTON)))
                 .build();
-        bot.sendMessage(message, chatId);
     }
 }
