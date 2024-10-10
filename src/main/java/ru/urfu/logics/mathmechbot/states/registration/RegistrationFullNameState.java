@@ -32,7 +32,7 @@ public enum RegistrationFullNameState implements MathMechBotState {
      */
     public boolean validateFullName(String str) {
         // TODO: Проверить более сложные имена, содержащие дефисы или несколько слов.
-        return str.matches("^[А-Я][а-я]+ [А-Я][а-я]+( [А-Я][а-я]+)?$");
+        return str.matches("^[А-ЯЁ][а-яё]+\\s+[А-ЯЁ][а-яё]+(\\s+[А-ЯЁ][а-яё]+)?$");
     }
 
     @Override
@@ -90,11 +90,11 @@ public enum RegistrationFullNameState implements MathMechBotState {
             return;
         }
 
-        final List<String> strings = List.of(trimmedText.split(" "));
+        final List<String> strings = List.of(trimmedText.split("\\s+"));
         final boolean hasPatronym = strings.size() == NUMBER_OF_WORDS_IN_FULL_NAME_WITH_PATRONYM;
 
         context.storage.userEntries.add(new UserEntry(
-                chatId, strings.get(0), strings.get(1), (hasPatronym) ? strings.get(2) : "",
+                chatId, strings.get(0), strings.get(1), (hasPatronym) ? strings.get(2) : null,
                 null, null, null, null, chatId));
         context.storage.users.changeUserState(chatId, RegistrationUserState.YEAR);
 
