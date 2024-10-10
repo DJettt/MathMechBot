@@ -23,16 +23,6 @@ public final class UserBuilder {
     }
 
     /**
-     * Конструктор, копирующий значений из объекта User.
-     *
-     * @param user объект, у которого скопировать все поля.
-     */
-    public UserBuilder(@NotNull User user) {
-        this.id = user.id();
-        this.currentState = user.currentState();
-    }
-
-    /**
      * Создаёт объект User.
      *
      * @return созданный объект
