@@ -9,7 +9,7 @@ import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
 import ru.urfu.logics.mathmechbot.Constants;
 import ru.urfu.logics.mathmechbot.MathMechBotCore;
-import ru.urfu.logics.mathmechbot.enums.RegistrationStateList;
+import ru.urfu.logics.mathmechbot.enums.RegistrationState;
 import ru.urfu.logics.mathmechbot.states.MathMechBotState;
 
 
@@ -64,7 +64,7 @@ public final class RegistrationYearState extends MathMechBotState {
      * @param bot     бот, принявший сообщение
      */
     private void backCommandHandler(LocalMessage message, long chatId, Bot bot) {
-        context.storage.users.changeUserState(chatId, RegistrationStateList.NAME);
+        context.storage.users.changeUserState(chatId, RegistrationState.NAME);
         new RegistrationFullNameState(context).onEnter(message, chatId, bot);
     }
 
@@ -88,12 +88,12 @@ public final class RegistrationYearState extends MathMechBotState {
             final int year = Integer.parseInt(message.text().trim());
             if (year == 1) {
                 context.storage.userEntries.changeUserEntryYear(chatId, year);
-                context.storage.users.changeUserState(chatId, RegistrationStateList.SPECIALTY1);
+                context.storage.users.changeUserState(chatId, RegistrationState.SPECIALTY1);
 
                 new RegistrationFirstYearSpecialtiesState(context).onEnter(message, chatId, bot);
             } else if (year > 1 && year <= maxYear) {
                 context.storage.userEntries.changeUserEntryYear(chatId, year);
-                context.storage.users.changeUserState(chatId, RegistrationStateList.SPECIALTY2);
+                context.storage.users.changeUserState(chatId, RegistrationState.SPECIALTY2);
 
                 new RegistrationLaterYearSpecialitiesState(context).onEnter(message, chatId, bot);
             } else {

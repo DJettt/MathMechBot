@@ -5,8 +5,8 @@ import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
 import ru.urfu.logics.mathmechbot.Constants;
 import ru.urfu.logics.mathmechbot.MathMechBotCore;
-import ru.urfu.logics.mathmechbot.enums.DeletionStateList;
-import ru.urfu.logics.mathmechbot.enums.RegistrationStateList;
+import ru.urfu.logics.mathmechbot.enums.DeletionState;
+import ru.urfu.logics.mathmechbot.enums.RegistrationState;
 import ru.urfu.logics.mathmechbot.models.UserEntry;
 import ru.urfu.logics.mathmechbot.states.deletion.DeletionConfirmationState;
 import ru.urfu.logics.mathmechbot.states.registration.RegistrationFullNameState;
@@ -74,7 +74,7 @@ public final class DefaultState extends MathMechBotState {
     private void registerCommandHandler(LocalMessage message, long chatId, Bot bot) {
         final UserEntry userEntry = context.storage.userEntries.getById(chatId);
         if (userEntry == null) {
-            context.storage.users.changeUserState(chatId, RegistrationStateList.NAME);
+            context.storage.users.changeUserState(chatId, RegistrationState.NAME);
             new RegistrationFullNameState(context).onEnter(message, chatId, bot);
         } else {
             alreadyRegistered(chatId, bot);
@@ -114,7 +114,7 @@ public final class DefaultState extends MathMechBotState {
     private void deleteCommandHandler(LocalMessage message, long chatId, Bot bot) {
         final UserEntry userEntry = context.storage.userEntries.getById(chatId);
         if (userEntry != null) {
-            context.storage.users.changeUserState(chatId, DeletionStateList.CONFIRMATION);
+            context.storage.users.changeUserState(chatId, DeletionState.CONFIRMATION);
             new DeletionConfirmationState(context).onEnter(message, chatId, bot);
         } else {
             bot.sendMessage(Constants.ASK_FOR_REGISTRATION, chatId);

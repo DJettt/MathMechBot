@@ -1,12 +1,12 @@
 package ru.urfu.logics.mathmechbot.states;
 
-import ru.urfu.logics.State;
+import ru.urfu.logics.LogicCoreState;
 import ru.urfu.logics.mathmechbot.MathMechBotCore;
 
 /**
  * Абстрактное состояние для MathMechBot.
  */
-public abstract class MathMechBotState implements State {
+public abstract class MathMechBotState implements LogicCoreState {
     protected final MathMechBotCore context;
 
     /**

@@ -1,6 +1,5 @@
 package ru.urfu.logics.mathmechbot.enums;
 
-import ru.urfu.logics.mathmechbot.states.MathMechBotState;
 import ru.urfu.logics.mathmechbot.states.registration.RegistrationConfirmationState;
 import ru.urfu.logics.mathmechbot.states.registration.RegistrationFirstYearSpecialtiesState;
 import ru.urfu.logics.mathmechbot.states.registration.RegistrationFullNameState;
@@ -60,7 +59,7 @@ import ru.urfu.logics.mathmechbot.states.registration.RegistrationYearState;
  *     </li>
  * </ol>
  */
-public enum RegistrationStateList implements MathMechBotStateList {
+public enum RegistrationState implements MathMechBotState {
     NAME(RegistrationFullNameState.class),
     YEAR(RegistrationYearState.class),
     SPECIALTY1(RegistrationFirstYearSpecialtiesState.class),
@@ -69,19 +68,19 @@ public enum RegistrationStateList implements MathMechBotStateList {
     MEN(RegistrationMenGroupState.class),
     CONFIRMATION(RegistrationConfirmationState.class);
 
-    private final Class<? extends MathMechBotState> stateClass;
+    private final Class<? extends ru.urfu.logics.mathmechbot.states.MathMechBotState> stateClass;
 
     /**
      * Устанавливает класс для данного состояния.
      *
      * @param stateClass класс состояния.
      */
-    RegistrationStateList(Class<? extends MathMechBotState> stateClass) {
+    RegistrationState(Class<? extends ru.urfu.logics.mathmechbot.states.MathMechBotState> stateClass) {
         this.stateClass = stateClass;
     }
 
     @Override
-    public Class<? extends MathMechBotState> stateClass() {
+    public Class<? extends ru.urfu.logics.mathmechbot.states.MathMechBotState> stateClass() {
         return stateClass;
     }
 }

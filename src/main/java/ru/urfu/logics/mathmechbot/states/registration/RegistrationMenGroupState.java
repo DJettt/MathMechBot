@@ -8,7 +8,7 @@ import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
 import ru.urfu.logics.mathmechbot.Constants;
 import ru.urfu.logics.mathmechbot.MathMechBotCore;
-import ru.urfu.logics.mathmechbot.enums.RegistrationStateList;
+import ru.urfu.logics.mathmechbot.enums.RegistrationState;
 import ru.urfu.logics.mathmechbot.states.MathMechBotState;
 
 
@@ -40,7 +40,7 @@ public final class RegistrationMenGroupState extends MathMechBotState {
     public void processMessage(LocalMessage msg, long chatId, Bot bot) {
         switch (msg.text()) {
             case Constants.BACK_COMMAND -> {
-                context.storage.users.changeUserState(chatId, RegistrationStateList.GROUP);
+                context.storage.users.changeUserState(chatId, RegistrationState.GROUP);
                 new RegistrationGroupState(context).onEnter(msg, chatId, bot);
             }
 
@@ -55,7 +55,7 @@ public final class RegistrationMenGroupState extends MathMechBotState {
                 }
 
                 context.storage.userEntries.changeUserEntryMen(chatId, msg.text());
-                context.storage.users.changeUserState(chatId, RegistrationStateList.CONFIRMATION);
+                context.storage.users.changeUserState(chatId, RegistrationState.CONFIRMATION);
                 new RegistrationConfirmationState(context).onEnter(msg, chatId, bot);
             }
         }

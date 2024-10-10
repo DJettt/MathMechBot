@@ -7,7 +7,7 @@ import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
 import ru.urfu.logics.mathmechbot.Constants;
 import ru.urfu.logics.mathmechbot.MathMechBotCore;
-import ru.urfu.logics.mathmechbot.enums.RegistrationStateList;
+import ru.urfu.logics.mathmechbot.enums.RegistrationState;
 import ru.urfu.logics.mathmechbot.models.UserEntry;
 import ru.urfu.logics.mathmechbot.states.DefaultState;
 import ru.urfu.logics.mathmechbot.states.MathMechBotState;
@@ -94,7 +94,7 @@ public final class RegistrationFullNameState extends MathMechBotState {
         context.storage.userEntries.add(new UserEntry(
                 chatId, strs.get(0), strs.get(1), (strs.size() == 3) ? strs.get(2) : "",
                 null, null, null, null, chatId));
-        context.storage.users.changeUserState(chatId, RegistrationStateList.YEAR);
+        context.storage.users.changeUserState(chatId, RegistrationState.YEAR);
         new RegistrationYearState(context).onEnter(message, chatId, bot);
     }
 }

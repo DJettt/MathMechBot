@@ -9,10 +9,9 @@ import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
 import ru.urfu.logics.mathmechbot.Constants;
 import ru.urfu.logics.mathmechbot.MathMechBotCore;
-import ru.urfu.logics.mathmechbot.enums.DefaultStateList;
-import ru.urfu.logics.mathmechbot.enums.RegistrationStateList;
+import ru.urfu.logics.mathmechbot.enums.DefaultState;
+import ru.urfu.logics.mathmechbot.enums.RegistrationState;
 import ru.urfu.logics.mathmechbot.models.UserEntry;
-import ru.urfu.logics.mathmechbot.states.DefaultState;
 import ru.urfu.logics.mathmechbot.states.MathMechBotState;
 
 
@@ -35,20 +34,20 @@ public final class RegistrationConfirmationState extends MathMechBotState {
     public void processMessage(LocalMessage msg, long chatId, Bot bot) {
         switch (msg.text()) {
             case Constants.BACK_COMMAND -> {
-                context.storage.users.changeUserState(chatId, RegistrationStateList.MEN);
+                context.storage.users.changeUserState(chatId, RegistrationState.MEN);
                 new RegistrationMenGroupState(context).onEnter(msg, chatId, bot);
             }
 
             case Constants.ACCEPT_COMMAND -> {
-                context.storage.users.changeUserState(chatId, DefaultStateList.DEFAULT);
+                context.storage.users.changeUserState(chatId, DefaultState.DEFAULT);
                 bot.sendMessage(new LocalMessageBuilder().text("Сохранил...").build(), chatId);
-                new DefaultState(context).onEnter(msg, chatId, bot);
+                new ru.urfu.logics.mathmechbot.states.DefaultState(context).onEnter(msg, chatId, bot);
             }
 
             case Constants.DECLINE_COMMAND -> {
-                context.storage.users.changeUserState(chatId, DefaultStateList.DEFAULT);
+                context.storage.users.changeUserState(chatId, DefaultState.DEFAULT);
                 bot.sendMessage(new LocalMessageBuilder().text("Отмена...").build(), chatId);
-                new DefaultState(context).onEnter(msg, chatId, bot);
+                new ru.urfu.logics.mathmechbot.states.DefaultState(context).onEnter(msg, chatId, bot);
             }
 
             case null, default -> bot.sendMessage(Constants.TRY_AGAIN, chatId);

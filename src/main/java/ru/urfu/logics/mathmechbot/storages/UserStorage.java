@@ -1,6 +1,6 @@
 package ru.urfu.logics.mathmechbot.storages;
 
-import ru.urfu.logics.mathmechbot.enums.MathMechBotStateList;
+import ru.urfu.logics.mathmechbot.enums.MathMechBotState;
 import ru.urfu.logics.mathmechbot.models.User;
 import ru.urfu.logics.mathmechbot.models.builders.UserBuilder;
 import ru.urfu.storages.Storage;
@@ -15,7 +15,7 @@ public interface UserStorage extends Storage<User, Long> {
      * @param id    идентификатор пользователя в хранилище.
      * @param state новое текущее состояние.
      */
-    default void changeUserState(Long id, MathMechBotStateList state) {
+    default void changeUserState(Long id, MathMechBotState state) {
         final User user = getById(id);
         deleteById(id);
         add(new UserBuilder(user.id(), state).build());
