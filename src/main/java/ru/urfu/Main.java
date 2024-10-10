@@ -7,6 +7,9 @@ import ru.urfu.bots.Bot;
 import ru.urfu.bots.TelegramBot;
 import ru.urfu.logics.LogicCore;
 import ru.urfu.logics.mathmechbot.MathMechBotCore;
+import ru.urfu.logics.mathmechbot.storages.MathMechStorage;
+import ru.urfu.logics.mathmechbot.storages.UserArrayStorage;
+import ru.urfu.logics.mathmechbot.storages.UserEntryArrayStorage;
 
 /**
  * Основной класс для запуска приложения.
@@ -45,7 +48,8 @@ final public class Main {
      * @param args аргументы командной строки
      */
     public static void main(String[] args) {
-        final LogicCore logicCore = new MathMechBotCore();
+        final MathMechStorage storage = new MathMechStorage(new UserArrayStorage(), new UserEntryArrayStorage());
+        final LogicCore logicCore = new MathMechBotCore(storage);
         startBot(logicCore, "TGMATHMECHBOT_TOKEN", TelegramBot.class);
 //        startBot(logicCore, "DISCORDBOT_TOKEN", DiscordBot.class);
     }

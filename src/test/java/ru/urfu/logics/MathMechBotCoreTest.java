@@ -16,6 +16,9 @@ import ru.urfu.localobjects.LocalButton;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
 import ru.urfu.logics.mathmechbot.MathMechBotCore;
+import ru.urfu.logics.mathmechbot.storages.MathMechStorage;
+import ru.urfu.logics.mathmechbot.storages.UserArrayStorage;
+import ru.urfu.logics.mathmechbot.storages.UserEntryArrayStorage;
 
 
 /**
@@ -53,16 +56,18 @@ final class MathMechBotCoreTest {
             BACK_BUTTON
     ));
 
-    private DummyBot bot;
+    private MathMechStorage storage;
     private MathMechBotCore logic;
+    private DummyBot bot;
 
     /**
      * Создаём объект логики и ложного бота для каждого теста.
      */
     @BeforeEach
     void setupTest() {
+        storage = new MathMechStorage(new UserArrayStorage(), new UserEntryArrayStorage());
+        logic = new MathMechBotCore(storage);
         bot = new DummyBot();
-        logic = new MathMechBotCore();
     }
 
     /**

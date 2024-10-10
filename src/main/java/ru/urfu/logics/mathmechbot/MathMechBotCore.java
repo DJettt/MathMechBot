@@ -11,8 +11,6 @@ import ru.urfu.logics.mathmechbot.models.userstates.DefaultUserState;
 import ru.urfu.logics.mathmechbot.states.DefaultState;
 import ru.urfu.logics.mathmechbot.states.MathMechBotState;
 import ru.urfu.logics.mathmechbot.storages.MathMechStorage;
-import ru.urfu.logics.mathmechbot.storages.UserArrayStorage;
-import ru.urfu.logics.mathmechbot.storages.UserEntryArrayStorage;
 
 
 /**
@@ -22,15 +20,15 @@ import ru.urfu.logics.mathmechbot.storages.UserEntryArrayStorage;
 public final class MathMechBotCore implements LogicCore {
     private final static Logger LOGGER = LoggerFactory.getLogger(MathMechBotCore.class);
 
-    private MathMechBotState currentState;
     public final MathMechStorage storage;
+    private MathMechBotState currentState;
 
     /**
      * Конструктор.
      */
-    public MathMechBotCore() {
+    public MathMechBotCore(MathMechStorage storage) {
+        this.storage = storage;
         currentState = DefaultState.INSTANCE;
-        storage = new MathMechStorage(new UserArrayStorage(), new UserEntryArrayStorage());
     }
 
     /**
