@@ -6,10 +6,10 @@ import ru.urfu.localobjects.LocalMessageBuilder;
 import ru.urfu.logics.mathmechbot.Constants;
 import ru.urfu.logics.mathmechbot.MathMechBotCore;
 import ru.urfu.logics.mathmechbot.models.UserEntry;
+import ru.urfu.logics.mathmechbot.models.userstates.DeletionUserState;
+import ru.urfu.logics.mathmechbot.models.userstates.RegistrationUserState;
 import ru.urfu.logics.mathmechbot.states.deletion.DeletionConfirmationState;
 import ru.urfu.logics.mathmechbot.states.registration.RegistrationFullNameState;
-import ru.urfu.logics.mathmechbot.userstates.DeletionUserState;
-import ru.urfu.logics.mathmechbot.userstates.RegistrationUserState;
 
 
 /**

@@ -7,12 +7,12 @@ import ru.urfu.bots.Bot;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.logics.LogicCore;
 import ru.urfu.logics.mathmechbot.models.User;
+import ru.urfu.logics.mathmechbot.models.userstates.DefaultUserState;
 import ru.urfu.logics.mathmechbot.states.DefaultState;
 import ru.urfu.logics.mathmechbot.states.MathMechBotState;
 import ru.urfu.logics.mathmechbot.storages.MathMechStorage;
 import ru.urfu.logics.mathmechbot.storages.UserArrayStorage;
 import ru.urfu.logics.mathmechbot.storages.UserEntryArrayStorage;
-import ru.urfu.logics.mathmechbot.userstates.DefaultUserState;
 
 
 /**

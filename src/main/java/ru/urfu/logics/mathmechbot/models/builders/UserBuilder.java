@@ -2,7 +2,7 @@ package ru.urfu.logics.mathmechbot.models.builders;
 
 import org.jetbrains.annotations.NotNull;
 import ru.urfu.logics.mathmechbot.models.User;
-import ru.urfu.logics.mathmechbot.userstates.MathMechBotUserState;
+import ru.urfu.logics.mathmechbot.models.userstates.MathMechBotUserState;
 
 /**
  * Билдер для рекорда User.

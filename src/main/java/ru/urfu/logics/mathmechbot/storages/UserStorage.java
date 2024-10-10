@@ -2,7 +2,7 @@ package ru.urfu.logics.mathmechbot.storages;
 
 import ru.urfu.logics.mathmechbot.models.User;
 import ru.urfu.logics.mathmechbot.models.builders.UserBuilder;
-import ru.urfu.logics.mathmechbot.userstates.MathMechBotUserState;
+import ru.urfu.logics.mathmechbot.models.userstates.MathMechBotUserState;
 import ru.urfu.storages.Storage;
 
 /**

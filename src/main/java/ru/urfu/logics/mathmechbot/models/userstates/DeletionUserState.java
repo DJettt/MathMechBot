@@ -1,4 +1,4 @@
-package ru.urfu.logics.mathmechbot.userstates;
+package ru.urfu.logics.mathmechbot.models.userstates;
 
 import ru.urfu.logics.mathmechbot.states.MathMechBotState;
 import ru.urfu.logics.mathmechbot.states.deletion.DeletionConfirmationState;

@@ -2,7 +2,7 @@ package ru.urfu.logics.mathmechbot.states.registration;
 
 import java.util.ArrayList;
 import java.util.List;
-import ru.urfu.logics.mathmechbot.userstates.Specialty;
+import ru.urfu.logics.mathmechbot.models.Specialty;
 
 
 /**
