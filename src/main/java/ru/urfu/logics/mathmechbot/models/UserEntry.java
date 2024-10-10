@@ -1,8 +1,7 @@
-package ru.urfu.models;
+package ru.urfu.logics.mathmechbot.models;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import ru.urfu.enums.Specialty;
 
 /**
  * Модель введённых пользователем данных.
@@ -11,18 +10,20 @@ import ru.urfu.enums.Specialty;
  * @param surname фамилия того же.
  * @param patronym отчество того же (если есть).
  * @param specialty направление подготовки того же человека.
+ * @param men академическая группа в формате МЕН.
  * @param year курс.
  * @param group номер группы того же человека;
  * @param userId идентификатор модели User того, указывающий на того, кому пересылать упоминания этого человека.
  */
 public record UserEntry(
-        Long id,
-        @NotNull String name,
+        @NotNull Long id,
         @NotNull String surname,
+        @NotNull String name,
         @Nullable String patronym,
-        @NotNull Specialty specialty,
-        int year,
-        int group,
-        Long userId
+        @Nullable String specialty,
+        @Nullable String men,
+        @Nullable Integer year,
+        @Nullable Integer group,
+        @NotNull Long userId
 ) implements Identifiable<Long> {
 }

@@ -4,10 +4,12 @@ import java.lang.reflect.Constructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.urfu.bots.Bot;
-import ru.urfu.bots.DiscordBot;
 import ru.urfu.bots.TelegramBot;
 import ru.urfu.logics.LogicCore;
-import ru.urfu.logics.MathMechBotCore;
+import ru.urfu.logics.mathmechbot.MathMechBotCore;
+import ru.urfu.logics.mathmechbot.storages.MathMechStorage;
+import ru.urfu.logics.mathmechbot.storages.UserArrayStorage;
+import ru.urfu.logics.mathmechbot.storages.UserEntryArrayStorage;
 
 /**
  * Основной класс для запуска приложения.
@@ -29,7 +31,7 @@ final public class Main {
     private static void startBot(LogicCore logicCore, String env, Class<? extends Bot> botClass) {
         String botToken = System.getenv(env);
         if (botToken == null) {
-            LOGGER.error("Couldn't retrieve bot token from " + env);
+            LOGGER.error("Couldn't retrieve bot token from {}", env);
             return;
         }
         try {
@@ -46,8 +48,11 @@ final public class Main {
      * @param args аргументы командной строки
      */
     public static void main(String[] args) {
-        final LogicCore logicCore = new MathMechBotCore();
+        final MathMechStorage storage = new MathMechStorage(new UserArrayStorage(), new UserEntryArrayStorage());
+        final LogicCore logicCore = new MathMechBotCore(storage);
         startBot(logicCore, "TGMATHMECHBOT_TOKEN", TelegramBot.class);
-        startBot(logicCore, "DISCORDBOT_TOKEN", DiscordBot.class);
+
+//        Выключил, потому что его нормально не запустить из-за блокировки.
+//        startBot(logicCore, "DISCORDBOT_TOKEN", DiscordBot.class);
     }
 }

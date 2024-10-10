@@ -1,5 +1,6 @@
 package ru.urfu.logics;
 
+import org.jetbrains.annotations.NotNull;
 import ru.urfu.bots.Bot;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
@@ -9,7 +10,7 @@ import ru.urfu.localobjects.LocalMessageBuilder;
  * Отправляет назад несколько изменённое сообщение пользователя.
  * Обрабатывает команды /help и /start, отвечая на них справкой.
  */
-public class EchoBotCore implements LogicCore {
+public final class EchoBotCore implements LogicCore {
     final static String START_COMMAND = "/start";
     final static String HELP_COMMAND = "/help";
 
@@ -18,13 +19,13 @@ public class EchoBotCore implements LogicCore {
      * @param msg сообщение, которое нужно обработать
      */
     @Override
-    public void processMessage(LocalMessage msg, long chatId, Bot bot) {
+    public void processMessage(@NotNull LocalMessage msg, long chatId, @NotNull Bot bot) {
         if (msg.text() == null) {
             return;
         }
 
         switch (msg.text()) {
-            case START_COMMAND, HELP_COMMAND -> helpCommandHandler(msg, chatId, bot);
+            case START_COMMAND, HELP_COMMAND -> helpCommandHandler(chatId, bot);
             default -> defaultHandler(msg, chatId, bot);
         }
     }
@@ -44,15 +45,15 @@ public class EchoBotCore implements LogicCore {
 
     /**
      * Выдаёт справку.
-     * @param inputMessage входящее сообщение с командой /help
      * @param chatId идентификатор чата отправителя
      * @param bot бот, от которого пришло сообщение
      */
-    private void helpCommandHandler(LocalMessage inputMessage, Long chatId, Bot bot) {
+    private void helpCommandHandler(Long chatId, Bot bot) {
         final String HELP_MESSAGE = """
                 Привет, я эхо бот! Сейчас я расскажу как ты можешь со мной взаимодействовать.
                 Пассивная способность: Я пишу твое сообщение тебе обратно но добавляю фразу 'Ты написал:' в начало \
-                твоего сообщения!\n
+                твоего сообщения!
+
                 /help - Показать доступные команды.
                 /start - Начинает диалог с начала. (нет)
                 Приятного использования!""";

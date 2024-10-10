@@ -1,24 +1,24 @@
 package ru.urfu.logics;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Assertions;
 import ru.urfu.localobjects.LocalMessage;
-import ru.urfu.bots.DummyBot;
 import ru.urfu.localobjects.LocalMessageBuilder;
 
 /**
- * Тесты логики эхо-бота
+ * Тесты для класса EchoBotCore
  */
-public final class EchoBotCoreTest {
+final class EchoBotCoreTest {
     final static String HELP_MESSAGE_TEXT = """
-                Привет, я эхо бот! Сейчас я расскажу как ты можешь со мной взаимодействовать.
-                Пассивная способность: Я пишу твое сообщение тебе обратно но добавляю фразу 'Ты написал:' в начало \
-                твоего сообщения!\n
-                /help - Показать доступные команды.
-                /start - Начинает диалог с начала. (нет)
-                Приятного использования!""";
+            Привет, я эхо бот! Сейчас я расскажу как ты можешь со мной взаимодействовать.
+            Пассивная способность: Я пишу твое сообщение тебе обратно но добавляю фразу 'Ты написал:' в начало \
+            твоего сообщения!
+
+            /help - Показать доступные команды.
+            /start - Начинает диалог с начала. (нет)
+            Приятного использования!""";
 
     private DummyBot bot;
     private EchoBotCore logic;
@@ -27,7 +27,7 @@ public final class EchoBotCoreTest {
      * Создаём объект логики и ложного бота для каждого теста.
      */
     @BeforeEach
-    public void setupTest() {
+    void setupTest() {
         bot = new DummyBot();
         logic = new EchoBotCore();
     }
