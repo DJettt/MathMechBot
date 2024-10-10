@@ -3,6 +3,7 @@ package ru.urfu.logics.mathmechbot.states.registration;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 import ru.urfu.bots.Bot;
 import ru.urfu.localobjects.LocalButton;
 import ru.urfu.localobjects.LocalMessage;
@@ -33,7 +34,8 @@ public enum RegistrationYearState implements MathMechBotState {
             .build();
 
     @Override
-    public void processMessage(MathMechBotCore context, LocalMessage msg, long chatId, Bot bot) {
+    public void processMessage(@NotNull MathMechBotCore context, @NotNull LocalMessage msg,
+                               long chatId, @NotNull Bot bot) {
         switch (msg.text()) {
             case Constants.BACK_COMMAND -> backCommandHandler(context, chatId, bot);
             case null -> {
@@ -45,7 +47,8 @@ public enum RegistrationYearState implements MathMechBotState {
     }
 
     @Override
-    public LocalMessage enterMessage(MathMechBotCore context, long userId) {
+    @NotNull
+    public LocalMessage enterMessage(@NotNull MathMechBotCore context, long userId) {
         return ON_ENTER_MESSAGE;
     }
 
@@ -83,11 +86,15 @@ public enum RegistrationYearState implements MathMechBotState {
             if (year == 1) {
                 context.storage.userEntries.changeUserEntryYear(chatId, year);
                 context.storage.users.changeUserState(chatId, RegistrationUserState.SPECIALTY1);
-                bot.sendMessage(RegistrationFirstYearSpecialtiesState.INSTANCE.enterMessage(context, chatId), chatId);
+
+                final LocalMessage msg = RegistrationFirstYearSpecialtiesState.INSTANCE.enterMessage(context, chatId);
+                bot.sendMessage(msg, chatId);
             } else if (year > 1 && year <= maxYear) {
                 context.storage.userEntries.changeUserEntryYear(chatId, year);
                 context.storage.users.changeUserState(chatId, RegistrationUserState.SPECIALTY2);
-                bot.sendMessage(RegistrationLaterYearSpecialitiesState.INSTANCE.enterMessage(context, chatId), chatId);
+
+                final LocalMessage msg = RegistrationLaterYearSpecialitiesState.INSTANCE.enterMessage(context, chatId);
+                bot.sendMessage(msg, chatId);
             } else {
                 bot.sendMessage(Constants.TRY_AGAIN, chatId);
                 bot.sendMessage(ON_ENTER_MESSAGE, chatId);

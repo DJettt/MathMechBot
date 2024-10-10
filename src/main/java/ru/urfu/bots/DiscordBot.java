@@ -13,6 +13,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.requests.restaction.MessageCreateAction;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.urfu.localobjects.LocalButton;
@@ -63,13 +64,14 @@ public final class DiscordBot extends ListenerAdapter implements Bot {
     /**
      * Разделяет один большой список кнопок на несколько других размером не больше 5.
      * @param message принимает LocalMessage, откуда берет список кнопок.
-     * @return возвращает ArrayList списков, чтобы бот отправлял их по очерди в каждом сообщении.
+     * @return возвращает список списков, чтобы бот отправлял их по очереди в каждом сообщении.
      */
-    private ArrayList<List<LocalButton>> splitButtons(LocalMessage message) {
+    private List<List<LocalButton>> splitButtons(LocalMessage message) {
         assert message.buttons() != null;
 
         final int maxSize = 5;
-        ArrayList<List<LocalButton>> arrayOfButtons = new ArrayList<>();
+        List<List<LocalButton>> arrayOfButtons = new ArrayList<>();
+
         if (message.buttons().size() <= maxSize) {
             arrayOfButtons.add(message.buttons());
         } else {
@@ -94,7 +96,7 @@ public final class DiscordBot extends ListenerAdapter implements Bot {
      * @param id id чата куда нужно отправить сообщение.
      */
     @Override
-    public void sendMessage(LocalMessage message, Long id) {
+    public void sendMessage(@NotNull LocalMessage message, @NotNull Long id) {
         MessageChannel channel = jda.getTextChannelById(id);
         if (channel == null) {
             channel = jda.getPrivateChannelById(id);
@@ -106,7 +108,7 @@ public final class DiscordBot extends ListenerAdapter implements Bot {
         if (message.text() != null) {
             MessageCreateAction messageCreateAction = channel.sendMessage(message.text());
             if (message.hasButtons()) {
-                ArrayList<List<LocalButton>> splitButtons = splitButtons(message);
+                List<List<LocalButton>> splitButtons = splitButtons(message);
                 boolean first = true;
                 for (List<LocalButton> buttons : splitButtons) {
                     if (first) {
@@ -128,7 +130,7 @@ public final class DiscordBot extends ListenerAdapter implements Bot {
     }
 
     /**
-     * Создаёт объекты класса LocalMessage из дискордоских MessageReceivedEvent.
+     * Создаёт объекты класса LocalMessage из дискордовских Message.
      * @param message полученное сообщение
      * @return то же сообщение в формате LocalMessage для общения с ядром
      */

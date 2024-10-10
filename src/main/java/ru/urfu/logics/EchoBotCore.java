@@ -1,5 +1,6 @@
 package ru.urfu.logics;
 
+import org.jetbrains.annotations.NotNull;
 import ru.urfu.bots.Bot;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
@@ -18,7 +19,7 @@ public final class EchoBotCore implements LogicCore {
      * @param msg сообщение, которое нужно обработать
      */
     @Override
-    public void processMessage(LocalMessage msg, long chatId, Bot bot) {
+    public void processMessage(@NotNull LocalMessage msg, long chatId, @NotNull Bot bot) {
         if (msg.text() == null) {
             return;
         }

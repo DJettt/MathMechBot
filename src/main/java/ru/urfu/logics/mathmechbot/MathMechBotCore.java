@@ -15,8 +15,7 @@ import ru.urfu.logics.mathmechbot.storages.MathMechStorage;
 
 
 /**
- * Логическое ядро бота, парсящего каналы в Telegram на предмет упоминания студентов.
- * На данный момент просто сохраняет информацию о тех пользователях, чьи упоминания надо искать.
+ * Логическое ядро бота, обрабатывающего сообщения Telegram-каналов на предмет упоминания студентов.<br/>
  */
 public final class MathMechBotCore implements LogicCore {
     private final static Logger LOGGER = LoggerFactory.getLogger(MathMechBotCore.class);
@@ -29,14 +28,13 @@ public final class MathMechBotCore implements LogicCore {
      *
      * @param storage хранилище данных для логики.
      */
-    public MathMechBotCore(MathMechStorage storage) {
+    public MathMechBotCore(@NotNull MathMechStorage storage) {
         this.storage = storage;
         currentState = DefaultState.INSTANCE;
     }
 
     /**
-     * Меняет состояние контекста (см. паттерн "State").
-     * Состояния могут вызывать этот метод.
+     * Меняет состояние контекста (паттерн "State").
      *
      * @param state новое состояние контекста.
      */
@@ -45,7 +43,7 @@ public final class MathMechBotCore implements LogicCore {
     }
 
     @Override
-    public void processMessage(LocalMessage msg, long chatId, Bot bot) {
+    public void processMessage(@NotNull LocalMessage msg, long chatId, @NotNull Bot bot) {
         User user;
         Optional<User> userOptional = storage.users.get(chatId);
 

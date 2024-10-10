@@ -3,6 +3,7 @@ package ru.urfu.logics.mathmechbot.states.registration;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 import ru.urfu.bots.Bot;
 import ru.urfu.localobjects.LocalButton;
 import ru.urfu.localobjects.LocalMessage;
@@ -20,11 +21,14 @@ public enum RegistrationGroupState implements MathMechBotState {
     INSTANCE;
 
     @Override
-    public void processMessage(MathMechBotCore context, LocalMessage msg, long chatId, Bot bot) {
+    public void processMessage(@NotNull MathMechBotCore context, @NotNull LocalMessage msg,
+                               long chatId, @NotNull Bot bot) {
         switch (msg.text()) {
             case Constants.BACK_COMMAND -> {
                 context.storage.users.changeUserState(chatId, RegistrationUserState.YEAR);
-                bot.sendMessage(RegistrationYearState.INSTANCE.enterMessage(context, chatId), chatId);
+
+                final LocalMessage message = RegistrationYearState.INSTANCE.enterMessage(context, chatId);
+                bot.sendMessage(message, chatId);
             }
 
             case null -> bot.sendMessage(Constants.TRY_AGAIN, chatId);
@@ -48,7 +52,8 @@ public enum RegistrationGroupState implements MathMechBotState {
     }
 
     @Override
-    public LocalMessage enterMessage(MathMechBotCore context, long userId) {
+    @NotNull
+    public LocalMessage enterMessage(@NotNull MathMechBotCore context, long userId) {
         return new LocalMessageBuilder()
                 .text("На каком курсе Вы обучаетесь?")
                 .buttons(new ArrayList<>(List.of(
@@ -57,8 +62,7 @@ public enum RegistrationGroupState implements MathMechBotState {
                         new LocalButton("3 группа", "3"),
                         new LocalButton("4 группа", "4"),
                         new LocalButton("5 группа", "5"),
-                        Constants.BACK_BUTTON
-                )))
+                        Constants.BACK_BUTTON)))
                 .build();
     }
 }

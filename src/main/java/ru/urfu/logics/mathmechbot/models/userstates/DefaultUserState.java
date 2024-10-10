@@ -1,5 +1,6 @@
 package ru.urfu.logics.mathmechbot.models.userstates;
 
+import org.jetbrains.annotations.NotNull;
 import ru.urfu.logics.mathmechbot.states.DefaultState;
 import ru.urfu.logics.mathmechbot.states.MathMechBotState;
 
@@ -13,6 +14,7 @@ import ru.urfu.logics.mathmechbot.states.MathMechBotState;
 public enum DefaultUserState implements MathMechBotUserState {
     DEFAULT;
 
+    @NotNull
     @Override
     public MathMechBotState stateInstance() {
         return DefaultState.INSTANCE;

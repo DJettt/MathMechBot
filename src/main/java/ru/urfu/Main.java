@@ -31,7 +31,7 @@ final public class Main {
     private static void startBot(LogicCore logicCore, String env, Class<? extends Bot> botClass) {
         String botToken = System.getenv(env);
         if (botToken == null) {
-            LOGGER.error("Couldn't retrieve bot token from " + env);
+            LOGGER.error("Couldn't retrieve bot token from {}", env);
             return;
         }
         try {
@@ -51,6 +51,8 @@ final public class Main {
         final MathMechStorage storage = new MathMechStorage(new UserArrayStorage(), new UserEntryArrayStorage());
         final LogicCore logicCore = new MathMechBotCore(storage);
         startBot(logicCore, "TGMATHMECHBOT_TOKEN", TelegramBot.class);
+
+//        Выключил, потому что его нормально не запустить из-за блокировки.
 //        startBot(logicCore, "DISCORDBOT_TOKEN", DiscordBot.class);
     }
 }

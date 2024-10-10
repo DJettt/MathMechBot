@@ -3,6 +3,7 @@ package ru.urfu.logics.mathmechbot.states.registration;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 import ru.urfu.bots.Bot;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
@@ -30,7 +31,8 @@ public enum RegistrationMenGroupState implements MathMechBotState {
     }
 
     @Override
-    public void processMessage(MathMechBotCore context, LocalMessage msg, long chatId, Bot bot) {
+    public void processMessage(@NotNull MathMechBotCore context, @NotNull LocalMessage msg,
+                               long chatId, @NotNull Bot bot) {
         switch (msg.text()) {
             case Constants.BACK_COMMAND -> {
                 context.storage.users.changeUserState(chatId, RegistrationUserState.GROUP);
@@ -49,13 +51,17 @@ public enum RegistrationMenGroupState implements MathMechBotState {
 
                 context.storage.userEntries.changeUserEntryMen(chatId, msg.text());
                 context.storage.users.changeUserState(chatId, RegistrationUserState.CONFIRMATION);
-                bot.sendMessage(RegistrationConfirmationState.INSTANCE.enterMessage(context, chatId), chatId);
+
+                final LocalMessage message = RegistrationConfirmationState.INSTANCE.enterMessage(context, chatId);
+                if (message != null) {
+                    bot.sendMessage(message, chatId);
+                }
             }
         }
     }
 
     @Override
-    public LocalMessage enterMessage(MathMechBotCore context, long userId) {
+    public LocalMessage enterMessage(@NotNull MathMechBotCore context, long userId) {
         return new LocalMessageBuilder()
                 .text("Введите свою академическую группу в формате:\nМЕН-123456")
                 .buttons(new ArrayList<>(List.of(Constants.BACK_BUTTON)))

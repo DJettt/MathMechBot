@@ -1,5 +1,6 @@
 package ru.urfu.logics.mathmechbot.models.userstates;
 
+import org.jetbrains.annotations.NotNull;
 import ru.urfu.logics.mathmechbot.states.MathMechBotState;
 
 /**
@@ -11,5 +12,6 @@ public interface MathMechBotUserState {
      *
      * @return инстанцию состояния логического ядра MathMechBot.
      */
+    @NotNull
     MathMechBotState stateInstance();
 }

@@ -3,6 +3,8 @@ package ru.urfu.logics.mathmechbot.states.deletion;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.urfu.bots.Bot;
@@ -24,9 +26,9 @@ public enum DeletionConfirmationState implements MathMechBotState {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(DeletionConfirmationState.class);
 
-
     @Override
-    public void processMessage(MathMechBotCore context, LocalMessage msg, long chatId, Bot bot) {
+    public void processMessage(@NotNull MathMechBotCore context, @NotNull LocalMessage msg,
+                               long chatId, @NotNull Bot bot) {
         switch (msg.text()) {
             case Constants.BACK_COMMAND -> {
                 context.storage.users.changeUserState(chatId, DefaultUserState.DEFAULT);
@@ -34,7 +36,9 @@ public enum DeletionConfirmationState implements MathMechBotState {
             }
 
             case Constants.ACCEPT_COMMAND -> {
-                context.storage.userEntries.delete(context.storage.userEntries.get(chatId).get());
+                final Optional<UserEntry> userEntryOptional = context.storage.userEntries.get(chatId);
+                userEntryOptional.ifPresent(context.storage.userEntries::delete);
+
                 context.storage.users.changeUserState(chatId, DefaultUserState.DEFAULT);
                 bot.sendMessage(new LocalMessageBuilder().text("Удаляем...").build(), chatId);
                 bot.sendMessage(DefaultState.INSTANCE.enterMessage(context, chatId), chatId);
@@ -51,7 +55,8 @@ public enum DeletionConfirmationState implements MathMechBotState {
     }
 
     @Override
-    public LocalMessage enterMessage(MathMechBotCore context, long userId) {
+    @Nullable
+    public LocalMessage enterMessage(@NotNull MathMechBotCore context, long userId) {
         final Optional<UserEntry> userEntryOptional = context.storage.userEntries.get(userId);
 
         if (userEntryOptional.isEmpty()) {

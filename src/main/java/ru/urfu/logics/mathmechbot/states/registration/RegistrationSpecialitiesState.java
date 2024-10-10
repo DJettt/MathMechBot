@@ -2,6 +2,7 @@ package ru.urfu.logics.mathmechbot.states.registration;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 import ru.urfu.bots.Bot;
 import ru.urfu.localobjects.LocalButton;
 import ru.urfu.localobjects.LocalMessage;
@@ -28,13 +29,15 @@ public sealed interface RegistrationSpecialitiesState
      *
      * @return список разрешённых специальностей
      */
+    @NotNull
     default List<Specialty> allowedSpecialties() {
         return new ArrayList<>() {
         };
     }
 
     @Override
-    default void processMessage(MathMechBotCore context, LocalMessage msg, long chatId, Bot bot) {
+    default void processMessage(@NotNull MathMechBotCore context, @NotNull LocalMessage msg,
+                                long chatId, @NotNull Bot bot) {
         switch (msg.text()) {
             case Constants.BACK_COMMAND -> backCommandHandler(context, chatId, bot);
             case null -> {
@@ -46,7 +49,8 @@ public sealed interface RegistrationSpecialitiesState
     }
 
     @Override
-    default LocalMessage enterMessage(MathMechBotCore context, long userId) {
+    @NotNull
+    default LocalMessage enterMessage(@NotNull MathMechBotCore context, long userId) {
         List<LocalButton> buttons = new ArrayList<>();
         for (Specialty specialty : allowedSpecialties()) {
             buttons.add(new LocalButton(specialty.getAbbreviation(), specialty.getAbbreviation()));

@@ -1,5 +1,7 @@
 package ru.urfu.logics.mathmechbot.states;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import ru.urfu.bots.Bot;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.logics.mathmechbot.MathMechBotCore;
@@ -17,7 +19,7 @@ public interface MathMechBotState {
      * @param chatId  id чата, от кого пришло сообщение.
      * @param bot     бот, который получил сообщение.
      */
-    void processMessage(MathMechBotCore context, LocalMessage msg, long chatId, Bot bot);
+    void processMessage(@NotNull MathMechBotCore context, @NotNull LocalMessage msg, long chatId, @NotNull Bot bot);
 
     /**
      * Вызывать этот метод, чтобы отправилось сообщение, которое должно отправлять при переходе в состояние.
@@ -27,5 +29,6 @@ public interface MathMechBotState {
      * @param userId id пользователя, с которым ведётся диалог.
      * @return сообщение, которое нужно отправить пользователю при переходе в это состояние.
      */
-    LocalMessage enterMessage(MathMechBotCore context, long userId);
+    @Nullable
+    LocalMessage enterMessage(@NotNull MathMechBotCore context, long userId);
 }

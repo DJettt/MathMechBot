@@ -1,5 +1,6 @@
 package ru.urfu.logics.mathmechbot.storages;
 
+import org.jetbrains.annotations.NotNull;
 import ru.urfu.logics.mathmechbot.models.UserEntry;
 import ru.urfu.logics.mathmechbot.models.builders.UserEntryBuilder;
 import ru.urfu.storages.Storage;
@@ -14,7 +15,7 @@ public interface UserEntryStorage extends Storage<UserEntry, Long> {
      * @param id   идентификатор записи в хранилище.
      * @param year новое значение.
      */
-    default void changeUserEntryYear(Long id, Integer year) {
+    default void changeUserEntryYear(@NotNull Long id, @NotNull Integer year) {
         get(id).ifPresent(userEntry -> update(new UserEntryBuilder(userEntry)
                 .year(year)
                 .build()));
@@ -26,7 +27,7 @@ public interface UserEntryStorage extends Storage<UserEntry, Long> {
      * @param id        идентификатор записи в хранилище.
      * @param specialty новое значение.
      */
-    default void changeUserEntrySpecialty(Long id, String specialty) {
+    default void changeUserEntrySpecialty(@NotNull Long id, @NotNull String specialty) {
         get(id).ifPresent(userEntry -> update(new UserEntryBuilder(userEntry)
                 .specialty(specialty)
                 .build()));
@@ -38,7 +39,7 @@ public interface UserEntryStorage extends Storage<UserEntry, Long> {
      * @param id  идентификатор записи в хранилище.
      * @param men новое значение.
      */
-    default void changeUserEntryMen(Long id, String men) {
+    default void changeUserEntryMen(@NotNull Long id, @NotNull String men) {
         get(id).ifPresent(userEntry -> update(new UserEntryBuilder(userEntry)
                 .men(men)
                 .build()));
@@ -50,7 +51,7 @@ public interface UserEntryStorage extends Storage<UserEntry, Long> {
      * @param id    идентификатор записи в хранилище.
      * @param group новое значение.
      */
-    default void changeUserEntryGroup(Long id, Integer group) {
+    default void changeUserEntryGroup(@NotNull Long id, @NotNull Integer group) {
         get(id).ifPresent(userEntry -> update(new UserEntryBuilder(userEntry)
                 .group(group)
                 .build()));

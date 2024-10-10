@@ -1,5 +1,6 @@
 package ru.urfu.logics;
 
+import org.jetbrains.annotations.NotNull;
 import ru.urfu.bots.Bot;
 import ru.urfu.localobjects.LocalMessage;
 
@@ -14,5 +15,5 @@ public interface LogicCore {
      * @param chatId id чата, от кого пришло сообщение
      * @param bot бот, который получил сообщение
      */
-    void processMessage(LocalMessage msg, long chatId, Bot bot);
+    void processMessage(@NotNull LocalMessage msg, long chatId, @NotNull Bot bot);
 }

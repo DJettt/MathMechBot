@@ -1,5 +1,6 @@
 package ru.urfu.logics.mathmechbot.models.userstates;
 
+import org.jetbrains.annotations.NotNull;
 import ru.urfu.logics.mathmechbot.states.MathMechBotState;
 import ru.urfu.logics.mathmechbot.states.registration.RegistrationConfirmationState;
 import ru.urfu.logics.mathmechbot.states.registration.RegistrationFirstYearSpecialtiesState;
@@ -75,10 +76,11 @@ public enum RegistrationUserState implements MathMechBotUserState {
      *
      * @param stateInstance инстанция состояния.
      */
-    RegistrationUserState(MathMechBotState stateInstance) {
+    RegistrationUserState(@NotNull MathMechBotState stateInstance) {
         this.stateInstance = stateInstance;
     }
 
+    @NotNull
     @Override
     public MathMechBotState stateInstance() {
         return stateInstance;

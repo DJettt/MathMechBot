@@ -1,5 +1,6 @@
 package ru.urfu.logics.mathmechbot.models.userstates;
 
+import org.jetbrains.annotations.NotNull;
 import ru.urfu.logics.mathmechbot.states.MathMechBotState;
 import ru.urfu.logics.mathmechbot.states.deletion.DeletionConfirmationState;
 
@@ -17,21 +18,11 @@ import ru.urfu.logics.mathmechbot.states.deletion.DeletionConfirmationState;
  * </ol>
  */
 public enum DeletionUserState implements MathMechBotUserState {
-    CONFIRMATION(DeletionConfirmationState.INSTANCE);
+    CONFIRMATION;
 
-    private final MathMechBotState stateInstance;
-
-    /**
-     * Устанавливает инстанцию состояния.
-     *
-     * @param stateInstance инстанция состояния.
-     */
-    DeletionUserState(MathMechBotState stateInstance) {
-        this.stateInstance = stateInstance;
-    }
-
+    @NotNull
     @Override
     public MathMechBotState stateInstance() {
-        return stateInstance;
+        return DeletionConfirmationState.INSTANCE;
     }
 }

@@ -1,6 +1,7 @@
 package ru.urfu.logics.mathmechbot.states;
 
 import java.util.Optional;
+import org.jetbrains.annotations.NotNull;
 import ru.urfu.bots.Bot;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
@@ -26,7 +27,8 @@ public enum DefaultState implements MathMechBotState {
     private final static String DELETE_COMMAND = "/delete";
 
     @Override
-    public void processMessage(MathMechBotCore context, LocalMessage msg, long chatId, Bot bot) {
+    public void processMessage(@NotNull MathMechBotCore context, @NotNull LocalMessage msg,
+                               long chatId, @NotNull Bot bot) {
         switch (msg.text()) {
             case REGISTER_COMMAND -> registerCommandHandler(context, chatId, bot);
             case INFO_COMMAND -> infoCommandHandler(context, chatId, bot);
@@ -36,7 +38,8 @@ public enum DefaultState implements MathMechBotState {
     }
 
     @Override
-    public LocalMessage enterMessage(MathMechBotCore context, long userId) {
+    @NotNull
+    public LocalMessage enterMessage(@NotNull MathMechBotCore context, long userId) {
         final String HELP_MESSAGE = """
                 %s - начало общения с ботом
                 %s - выводит команды, которые принимает бот
@@ -111,7 +114,11 @@ public enum DefaultState implements MathMechBotState {
         final Optional<UserEntry> userEntryOptional = context.storage.userEntries.get(chatId);
         if (userEntryOptional.isPresent()) {
             context.storage.users.changeUserState(chatId, DeletionUserState.CONFIRMATION);
-            bot.sendMessage(DeletionConfirmationState.INSTANCE.enterMessage(context, chatId), chatId);
+
+            final LocalMessage msg = DeletionConfirmationState.INSTANCE.enterMessage(context, chatId);
+            if (msg != null) {
+                bot.sendMessage(msg, chatId);
+            }
         } else {
             bot.sendMessage(Constants.ASK_FOR_REGISTRATION, chatId);
         }

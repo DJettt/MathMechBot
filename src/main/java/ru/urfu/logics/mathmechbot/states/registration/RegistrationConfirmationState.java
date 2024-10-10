@@ -3,6 +3,8 @@ package ru.urfu.logics.mathmechbot.states.registration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.urfu.bots.Bot;
@@ -26,7 +28,8 @@ public enum RegistrationConfirmationState implements MathMechBotState {
     private final static Logger LOGGER = LoggerFactory.getLogger(RegistrationConfirmationState.class);
 
     @Override
-    public void processMessage(MathMechBotCore context, LocalMessage msg, long chatId, Bot bot) {
+    public void processMessage(@NotNull MathMechBotCore context, @NotNull LocalMessage msg,
+                               long chatId, @NotNull Bot bot) {
         switch (msg.text()) {
             case Constants.BACK_COMMAND -> {
                 context.storage.users.changeUserState(chatId, RegistrationUserState.MEN);
@@ -50,7 +53,8 @@ public enum RegistrationConfirmationState implements MathMechBotState {
     }
 
     @Override
-    public LocalMessage enterMessage(MathMechBotCore context, long userId) {
+    @Nullable
+    public LocalMessage enterMessage(@NotNull MathMechBotCore context, long userId) {
         final Optional<UserEntry> userEntryOptional = context.storage.userEntries.get(userId);
 
         if (userEntryOptional.isEmpty()) {

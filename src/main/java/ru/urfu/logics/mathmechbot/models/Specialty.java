@@ -32,6 +32,7 @@ public enum Specialty {
      *
      * @return содержимое поля.
      */
+    @NotNull
     public String getAbbreviation() {
         return abbreviation;
     }

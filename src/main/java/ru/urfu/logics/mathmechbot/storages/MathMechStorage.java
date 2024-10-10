@@ -1,5 +1,7 @@
 package ru.urfu.logics.mathmechbot.storages;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Структура, содержащая все хранилища для MathMechBot.
  */
@@ -13,7 +15,7 @@ public class MathMechStorage {
      * @param userStorage      хранилище User.
      * @param userEntryStorage хранилище UserEntry.
      */
-    public MathMechStorage(UserStorage userStorage, UserEntryStorage userEntryStorage) {
+    public MathMechStorage(@NotNull UserStorage userStorage, @NotNull UserEntryStorage userEntryStorage) {
         this.users = userStorage;
         this.userEntries = userEntryStorage;
     }
