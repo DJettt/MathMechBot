@@ -30,24 +30,24 @@ public final class RegistrationConfirmationState extends MathMechBotState {
     @Override
     public void processMessage(LocalMessage msg, long chatId, Bot bot) {
         switch (msg.text()) {
-            case BACK_COMMAND -> {
+            case Constants.BACK_COMMAND -> {
                 context.users.changeUserState(chatId, RegistrationStateList.MEN);
                 new RegistrationMenGroupState(context).onEnter(msg, chatId, bot);
             }
 
-            case ACCEPT_COMMAND -> {
+            case Constants.ACCEPT_COMMAND -> {
                 context.users.changeUserState(chatId, DefaultStateList.DEFAULT);
                 bot.sendMessage(new LocalMessageBuilder().text("Сохранил...").build(), chatId);
                 new DefaultState(context).onEnter(msg, chatId, bot);
             }
 
-            case DECLINE_COMMAND -> {
+            case Constants.DECLINE_COMMAND -> {
                 context.users.changeUserState(chatId, DefaultStateList.DEFAULT);
                 bot.sendMessage(new LocalMessageBuilder().text("Отмена...").build(), chatId);
                 new DefaultState(context).onEnter(msg, chatId, bot);
             }
 
-            case null, default -> bot.sendMessage(TRY_AGAIN, chatId);
+            case null, default -> bot.sendMessage(Constants.TRY_AGAIN, chatId);
         }
     }
 
@@ -60,13 +60,13 @@ public final class RegistrationConfirmationState extends MathMechBotState {
             return;
         }
 
-        final String userInfo = USER_INFO_TEMPLATE.formatted(
+        final String userInfo = Constants.USER_INFO_TEMPLATE.formatted(
                 String.join(" ", userEntry.surname(), userEntry.name(), userEntry.patronym()),
                 userEntry.specialty(), userEntry.year(), userEntry.group(), userEntry.men());
 
         final LocalMessage message = new LocalMessageBuilder()
                 .text(userInfo)
-                .buttons(new ArrayList<>(List.of(YES_BUTTON, NO_BUTTON, BACK_BUTTON)))
+                .buttons(new ArrayList<>(List.of(Constants.YES_BUTTON, Constants.NO_BUTTON, Constants.BACK_BUTTON)))
                 .build();
         bot.sendMessage(message, chatId);
     }

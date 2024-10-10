@@ -26,12 +26,12 @@ public final class RegistrationGroupState extends MathMechBotState {
     @Override
     public void processMessage(LocalMessage msg, long chatId, Bot bot) {
         switch (msg.text()) {
-            case BACK_COMMAND -> {
+            case Constants.BACK_COMMAND -> {
                 context.users.changeUserState(chatId, RegistrationStateList.YEAR);
                 new RegistrationYearState(context).onEnter(msg, chatId, bot);
             }
 
-            case null -> bot.sendMessage(TRY_AGAIN, chatId);
+            case null -> bot.sendMessage(Constants.TRY_AGAIN, chatId);
 
             default -> {
                 final int maxYear = 5;
@@ -42,10 +42,10 @@ public final class RegistrationGroupState extends MathMechBotState {
                         context.users.changeUserState(chatId, RegistrationStateList.MEN);
                         new RegistrationMenGroupState(context).onEnter(msg, chatId, bot);
                     } else {
-                        bot.sendMessage(TRY_AGAIN, chatId);
+                        bot.sendMessage(Constants.TRY_AGAIN, chatId);
                     }
                 } catch (NumberFormatException e) {
-                    bot.sendMessage(TRY_AGAIN, chatId);
+                    bot.sendMessage(Constants.TRY_AGAIN, chatId);
                 }
             }
         }
@@ -61,7 +61,7 @@ public final class RegistrationGroupState extends MathMechBotState {
                         new LocalButton("3 группа", "3"),
                         new LocalButton("4 группа", "4"),
                         new LocalButton("5 группа", "5"),
-                        BACK_BUTTON
+                        Constants.BACK_BUTTON
                 )))
                 .build();
         bot.sendMessage(message, chatId);

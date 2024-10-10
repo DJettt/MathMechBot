@@ -23,7 +23,7 @@ public final class RegistrationYearState extends MathMechBotState {
                     new LocalButton("4 курс", "4"),
                     new LocalButton("5 курс", "5"),
                     new LocalButton("6 курс", "6"),
-                    BACK_BUTTON
+                    Constants.BACK_BUTTON
             )))
             .build();
 
@@ -39,9 +39,9 @@ public final class RegistrationYearState extends MathMechBotState {
     @Override
     public void processMessage(LocalMessage msg, long chatId, Bot bot) {
         switch (msg.text()) {
-            case BACK_COMMAND -> backCommandHandler(msg, chatId, bot);
+            case Constants.BACK_COMMAND -> backCommandHandler(msg, chatId, bot);
             case null -> {
-                bot.sendMessage(TRY_AGAIN, chatId);
+                bot.sendMessage(Constants.TRY_AGAIN, chatId);
                 bot.sendMessage(ON_ENTER_MESSAGE, chatId);
             }
             default -> textHandler(msg, chatId, bot);
@@ -94,11 +94,11 @@ public final class RegistrationYearState extends MathMechBotState {
 
                 new RegistrationLaterYearSpecialitiesState(context).onEnter(message, chatId, bot);
             } else {
-                bot.sendMessage(TRY_AGAIN, chatId);
+                bot.sendMessage(Constants.TRY_AGAIN, chatId);
                 bot.sendMessage(ON_ENTER_MESSAGE, chatId);
             }
         } catch (NumberFormatException e) {
-            bot.sendMessage(TRY_AGAIN, chatId);
+            bot.sendMessage(Constants.TRY_AGAIN, chatId);
             bot.sendMessage(ON_ENTER_MESSAGE, chatId);
         }
     }

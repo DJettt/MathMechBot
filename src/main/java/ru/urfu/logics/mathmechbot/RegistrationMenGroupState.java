@@ -36,18 +36,18 @@ public final class RegistrationMenGroupState extends MathMechBotState {
     @Override
     public void processMessage(LocalMessage msg, long chatId, Bot bot) {
         switch (msg.text()) {
-            case BACK_COMMAND -> {
+            case Constants.BACK_COMMAND -> {
                 context.users.changeUserState(chatId, RegistrationStateList.GROUP);
                 new RegistrationGroupState(context).onEnter(msg, chatId, bot);
             }
 
-            case null -> bot.sendMessage(TRY_AGAIN, chatId);
+            case null -> bot.sendMessage(Constants.TRY_AGAIN, chatId);
 
             default -> {
                 final String trimmedText = msg.text().trim();
 
                 if (!validateGroup(trimmedText)) {
-                    bot.sendMessage(TRY_AGAIN, chatId);
+                    bot.sendMessage(Constants.TRY_AGAIN, chatId);
                     return;
                 }
 
@@ -62,7 +62,7 @@ public final class RegistrationMenGroupState extends MathMechBotState {
     public void onEnter(LocalMessage msg, long chatId, Bot bot) {
         final LocalMessage message = new LocalMessageBuilder()
                 .text("Введите свою академическую группу в формате:\nМЕН-123456")
-                .buttons(new ArrayList<>(List.of(BACK_BUTTON)))
+                .buttons(new ArrayList<>(List.of(Constants.BACK_BUTTON)))
                 .build();
         bot.sendMessage(message, chatId);
     }

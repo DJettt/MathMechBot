@@ -24,7 +24,7 @@ public final class EchoBotCore implements LogicCore {
         }
 
         switch (msg.text()) {
-            case START_COMMAND, HELP_COMMAND -> helpCommandHandler(msg, chatId, bot);
+            case START_COMMAND, HELP_COMMAND -> helpCommandHandler(chatId, bot);
             default -> defaultHandler(msg, chatId, bot);
         }
     }
@@ -44,11 +44,10 @@ public final class EchoBotCore implements LogicCore {
 
     /**
      * Выдаёт справку.
-     * @param inputMessage входящее сообщение с командой /help
      * @param chatId идентификатор чата отправителя
      * @param bot бот, от которого пришло сообщение
      */
-    private void helpCommandHandler(LocalMessage inputMessage, Long chatId, Bot bot) {
+    private void helpCommandHandler(Long chatId, Bot bot) {
         final String HELP_MESSAGE = """
                 Привет, я эхо бот! Сейчас я расскажу как ты можешь со мной взаимодействовать.
                 Пассивная способность: Я пишу твое сообщение тебе обратно но добавляю фразу 'Ты написал:' в начало \

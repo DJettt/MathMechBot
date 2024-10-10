@@ -36,8 +36,8 @@ public final class RegistrationFullNameState extends MathMechBotState {
     @Override
     public void processMessage(LocalMessage msg, long chatId, Bot bot) {
         switch (msg.text()) {
-            case BACK_COMMAND -> backCommandHandler(msg, chatId, bot);
-            case null -> bot.sendMessage(TRY_AGAIN, chatId);
+            case Constants.BACK_COMMAND -> backCommandHandler(msg, chatId, bot);
+            case null -> bot.sendMessage(Constants.TRY_AGAIN, chatId);
             default -> textHandler(msg, chatId, bot);
         }
     }
@@ -81,7 +81,7 @@ public final class RegistrationFullNameState extends MathMechBotState {
         final String trimmedText = message.text().trim();
 
         if (!validateFullName(trimmedText)) {
-            bot.sendMessage(TRY_AGAIN, chatId);
+            bot.sendMessage(Constants.TRY_AGAIN, chatId);
             return;
         }
 

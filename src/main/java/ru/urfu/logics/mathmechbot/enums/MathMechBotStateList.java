@@ -1,6 +1,6 @@
 package ru.urfu.logics.mathmechbot.enums;
 
-import ru.urfu.enums.StateList;
+import ru.urfu.logics.StateList;
 import ru.urfu.logics.mathmechbot.MathMechBotState;
 
 /**

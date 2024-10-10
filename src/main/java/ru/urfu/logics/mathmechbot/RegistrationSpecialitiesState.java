@@ -41,9 +41,9 @@ public sealed class RegistrationSpecialitiesState
     @Override
     public void processMessage(LocalMessage msg, long chatId, Bot bot) {
         switch (msg.text()) {
-            case BACK_COMMAND -> backCommandHandler(msg, chatId, bot);
+            case Constants.BACK_COMMAND -> backCommandHandler(msg, chatId, bot);
             case null -> {
-                bot.sendMessage(TRY_AGAIN, chatId);
+                bot.sendMessage(Constants.TRY_AGAIN, chatId);
                 onEnter(msg, chatId, bot);
             }
             default -> textHandler(msg, chatId, bot);
@@ -56,7 +56,7 @@ public sealed class RegistrationSpecialitiesState
         for (Specialty specialty : allowedSpecialties()) {
             buttons.add(new LocalButton(specialty.getAbbreviation(), specialty.getAbbreviation()));
         }
-        buttons.add(BACK_BUTTON);
+        buttons.add(Constants.BACK_BUTTON);
 
         final LocalMessage message = new LocalMessageBuilder().text("На каком направлении?").buttons(buttons).build();
 
@@ -89,7 +89,7 @@ public sealed class RegistrationSpecialitiesState
         assert message.text() != null;
 
         if (!allowedSpecialties().stream().map(Specialty::getAbbreviation).toList().contains(message.text())) {
-            bot.sendMessage(TRY_AGAIN, chatId);
+            bot.sendMessage(Constants.TRY_AGAIN, chatId);
             onEnter(message, chatId, bot);
             return;
         }

@@ -31,25 +31,24 @@ public final class DefaultState extends MathMechBotState {
     public void processMessage(LocalMessage msg, long chatId, Bot bot) {
         switch (msg.text()) {
             case REGISTER_COMMAND -> registerCommandHandler(msg, chatId, bot);
-            case INFO_COMMAND -> infoCommandHandler(msg, chatId, bot);
+            case INFO_COMMAND -> infoCommandHandler(chatId, bot);
             case DELETE_COMMAND -> deleteCommandHandler(msg, chatId, bot);
-            case null, default -> helpCommandHandler(msg, chatId, bot);
+            case null, default -> helpCommandHandler(chatId, bot);
         }
     }
 
     @Override
     public void onEnter(LocalMessage msg, long chatId, Bot bot) {
-        helpCommandHandler(msg, chatId, bot);
+        helpCommandHandler(chatId, bot);
     }
 
     /**
      * Выдаёт справку.
      *
-     * @param message входящее сообщение
      * @param chatId  идентификатор чата отправителя
      * @param bot     бот, от которого пришло сообщение
      */
-    private void helpCommandHandler(LocalMessage message, long chatId, Bot bot) {
+    private void helpCommandHandler(long chatId, Bot bot) {
         final String HELP_MESSAGE = """
                 %s - начало общения с ботом
                 %s - выводит команды, которые принимает бот
@@ -74,24 +73,24 @@ public final class DefaultState extends MathMechBotState {
             context.users.changeUserState(chatId, RegistrationStateList.NAME);
             new RegistrationFullNameState(context).onEnter(message, chatId, bot);
         } else {
-            alreadyRegistered(message, chatId, bot);
+            alreadyRegistered(chatId, bot);
         }
     }
 
     /**
      * Выдаёт информацию о пользователе.
-     * @param message входящее сообщение
+     *
      * @param chatId  идентификатор чата отправителя
      * @param bot     бот, от которого пришло сообщение
      */
-    private void infoCommandHandler(LocalMessage message, long chatId, Bot bot) {
+    private void infoCommandHandler(long chatId, Bot bot) {
         final UserEntry userEntry = context.userEntries.getById(chatId);
         if (userEntry == null) {
-            bot.sendMessage(ASK_FOR_REGISTRATION, chatId);
+            bot.sendMessage(Constants.ASK_FOR_REGISTRATION, chatId);
             return;
         }
 
-        final String userInfo = USER_INFO_TEMPLATE.formatted(
+        final String userInfo = Constants.USER_INFO_TEMPLATE.formatted(
                 String.join(" ", userEntry.surname(), userEntry.name(), userEntry.patronym()),
                 userEntry.specialty(), userEntry.year(), userEntry.group(), userEntry.men());
 
@@ -114,18 +113,17 @@ public final class DefaultState extends MathMechBotState {
             context.users.changeUserState(chatId, DeletionStateList.CONFIRMATION);
             new DeletionConfirmationState(context).onEnter(message, chatId, bot);
         } else {
-            bot.sendMessage(ASK_FOR_REGISTRATION, chatId);
+            bot.sendMessage(Constants.ASK_FOR_REGISTRATION, chatId);
         }
     }
 
     /**
      * Говорит пользователю, что тот уже зарегистрировался.
      *
-     * @param message входящее сообщение
      * @param chatId  идентификатор чата отправителя
      * @param bot     бот, от которого пришло сообщение
      */
-    private void alreadyRegistered(LocalMessage message, long chatId, Bot bot) {
+    private void alreadyRegistered(long chatId, Bot bot) {
         final LocalMessage answer = new LocalMessageBuilder()
                 .text("Вы уже зарегистрированы. Пока что регистрировать можно только одного человека.")
                 .build();

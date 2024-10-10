@@ -1,4 +1,4 @@
-package ru.urfu.enums;
+package ru.urfu.logics;
 
 /**
  * Описывает состояния, которые есть у отдельных процессов.
@@ -9,5 +9,5 @@ public interface StateList {
      *
      * @return класс состояния.
      */
-    Class<? extends ru.urfu.logics.State> stateClass();
+    Class<? extends State> stateClass();
 }
