@@ -7,7 +7,7 @@ import ru.urfu.localobjects.LocalMessageBuilder;
 /**
  * Ряд констант, используемый во всех состояниях MathMechBot.
  */
-final class Constants {
+public final class Constants {
     /**
      * Приватный конструктор для класса-утилит.
      */

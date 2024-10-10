@@ -1,4 +1,4 @@
-package ru.urfu.logics.mathmechbot;
+package ru.urfu.logics.mathmechbot.states.registration;
 
 
 import java.util.ArrayList;
@@ -6,7 +6,10 @@ import java.util.List;
 import ru.urfu.bots.Bot;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
+import ru.urfu.logics.mathmechbot.Constants;
+import ru.urfu.logics.mathmechbot.MathMechBotCore;
 import ru.urfu.logics.mathmechbot.enums.RegistrationStateList;
+import ru.urfu.logics.mathmechbot.states.MathMechBotState;
 
 
 /**
@@ -37,7 +40,7 @@ public final class RegistrationMenGroupState extends MathMechBotState {
     public void processMessage(LocalMessage msg, long chatId, Bot bot) {
         switch (msg.text()) {
             case Constants.BACK_COMMAND -> {
-                context.users.changeUserState(chatId, RegistrationStateList.GROUP);
+                context.storage.users.changeUserState(chatId, RegistrationStateList.GROUP);
                 new RegistrationGroupState(context).onEnter(msg, chatId, bot);
             }
 
@@ -51,8 +54,8 @@ public final class RegistrationMenGroupState extends MathMechBotState {
                     return;
                 }
 
-                context.userEntries.changeUserEntryMen(chatId, msg.text());
-                context.users.changeUserState(chatId, RegistrationStateList.CONFIRMATION);
+                context.storage.userEntries.changeUserEntryMen(chatId, msg.text());
+                context.storage.users.changeUserState(chatId, RegistrationStateList.CONFIRMATION);
                 new RegistrationConfirmationState(context).onEnter(msg, chatId, bot);
             }
         }

@@ -1,4 +1,4 @@
-package ru.urfu.logics.mathmechbot;
+package ru.urfu.logics.mathmechbot.states.registration;
 
 
 import java.util.ArrayList;
@@ -7,7 +7,10 @@ import ru.urfu.bots.Bot;
 import ru.urfu.localobjects.LocalButton;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
+import ru.urfu.logics.mathmechbot.Constants;
+import ru.urfu.logics.mathmechbot.MathMechBotCore;
 import ru.urfu.logics.mathmechbot.enums.RegistrationStateList;
+import ru.urfu.logics.mathmechbot.states.MathMechBotState;
 
 
 /**
@@ -27,7 +30,7 @@ public final class RegistrationGroupState extends MathMechBotState {
     public void processMessage(LocalMessage msg, long chatId, Bot bot) {
         switch (msg.text()) {
             case Constants.BACK_COMMAND -> {
-                context.users.changeUserState(chatId, RegistrationStateList.YEAR);
+                context.storage.users.changeUserState(chatId, RegistrationStateList.YEAR);
                 new RegistrationYearState(context).onEnter(msg, chatId, bot);
             }
 
@@ -38,8 +41,8 @@ public final class RegistrationGroupState extends MathMechBotState {
                 try {
                     final int group = Integer.parseInt(msg.text().trim());
                     if (group >= 1 && group <= maxYear) {
-                        context.userEntries.changeUserEntryGroup(chatId, group);
-                        context.users.changeUserState(chatId, RegistrationStateList.MEN);
+                        context.storage.userEntries.changeUserEntryGroup(chatId, group);
+                        context.storage.users.changeUserState(chatId, RegistrationStateList.MEN);
                         new RegistrationMenGroupState(context).onEnter(msg, chatId, bot);
                     } else {
                         bot.sendMessage(Constants.TRY_AGAIN, chatId);

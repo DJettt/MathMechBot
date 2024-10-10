@@ -1,4 +1,4 @@
-package ru.urfu.logics.mathmechbot;
+package ru.urfu.logics.mathmechbot.states.registration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,8 +6,11 @@ import ru.urfu.bots.Bot;
 import ru.urfu.localobjects.LocalButton;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
+import ru.urfu.logics.mathmechbot.Constants;
+import ru.urfu.logics.mathmechbot.MathMechBotCore;
 import ru.urfu.logics.mathmechbot.enums.RegistrationStateList;
 import ru.urfu.logics.mathmechbot.enums.Specialty;
+import ru.urfu.logics.mathmechbot.states.MathMechBotState;
 
 
 /**
@@ -71,7 +74,7 @@ public sealed class RegistrationSpecialitiesState
      * @param bot     бот, принявший сообщение
      */
     private void backCommandHandler(LocalMessage message, long chatId, Bot bot) {
-        context.users.changeUserState(chatId, RegistrationStateList.YEAR);
+        context.storage.users.changeUserState(chatId, RegistrationStateList.YEAR);
         new RegistrationYearState(context).onEnter(message, chatId, bot);
     }
 
@@ -94,8 +97,8 @@ public sealed class RegistrationSpecialitiesState
             return;
         }
 
-        context.userEntries.changeUserEntrySpecialty(chatId, message.text());
-        context.users.changeUserState(chatId, RegistrationStateList.GROUP);
+        context.storage.userEntries.changeUserEntrySpecialty(chatId, message.text());
+        context.storage.users.changeUserState(chatId, RegistrationStateList.GROUP);
         new RegistrationGroupState(context).onEnter(message, chatId, bot);
     }
 }

@@ -1,12 +1,16 @@
-package ru.urfu.logics.mathmechbot;
+package ru.urfu.logics.mathmechbot.states.registration;
 
 
 import java.util.List;
 import ru.urfu.bots.Bot;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
+import ru.urfu.logics.mathmechbot.Constants;
+import ru.urfu.logics.mathmechbot.MathMechBotCore;
 import ru.urfu.logics.mathmechbot.enums.RegistrationStateList;
 import ru.urfu.logics.mathmechbot.models.UserEntry;
+import ru.urfu.logics.mathmechbot.states.DefaultState;
+import ru.urfu.logics.mathmechbot.states.MathMechBotState;
 
 
 /**
@@ -61,8 +65,8 @@ public final class RegistrationFullNameState extends MathMechBotState {
      * @param bot     бот, принявший сообщение
      */
     private void backCommandHandler(LocalMessage message, long chatId, Bot bot) {
-        context.users.deleteById(chatId);
-        context.userEntries.deleteById(chatId);
+        context.storage.users.deleteById(chatId);
+        context.storage.userEntries.deleteById(chatId);
         new DefaultState(context).onEnter(message, chatId, bot);
     }
 
@@ -87,10 +91,10 @@ public final class RegistrationFullNameState extends MathMechBotState {
 
         final List<String> strs = List.of(trimmedText.split(" "));
 
-        context.userEntries.add(new UserEntry(
+        context.storage.userEntries.add(new UserEntry(
                 chatId, strs.get(0), strs.get(1), (strs.size() == 3) ? strs.get(2) : "",
                 null, null, null, null, chatId));
-        context.users.changeUserState(chatId, RegistrationStateList.YEAR);
+        context.storage.users.changeUserState(chatId, RegistrationStateList.YEAR);
         new RegistrationYearState(context).onEnter(message, chatId, bot);
     }
 }

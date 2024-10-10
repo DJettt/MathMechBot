@@ -1,13 +1,13 @@
 package ru.urfu.logics.mathmechbot.enums;
 
-import ru.urfu.logics.mathmechbot.MathMechBotState;
-import ru.urfu.logics.mathmechbot.RegistrationConfirmationState;
-import ru.urfu.logics.mathmechbot.RegistrationFirstYearSpecialtiesState;
-import ru.urfu.logics.mathmechbot.RegistrationFullNameState;
-import ru.urfu.logics.mathmechbot.RegistrationGroupState;
-import ru.urfu.logics.mathmechbot.RegistrationLaterYearSpecialitiesState;
-import ru.urfu.logics.mathmechbot.RegistrationMenGroupState;
-import ru.urfu.logics.mathmechbot.RegistrationYearState;
+import ru.urfu.logics.mathmechbot.states.MathMechBotState;
+import ru.urfu.logics.mathmechbot.states.registration.RegistrationConfirmationState;
+import ru.urfu.logics.mathmechbot.states.registration.RegistrationFirstYearSpecialtiesState;
+import ru.urfu.logics.mathmechbot.states.registration.RegistrationFullNameState;
+import ru.urfu.logics.mathmechbot.states.registration.RegistrationGroupState;
+import ru.urfu.logics.mathmechbot.states.registration.RegistrationLaterYearSpecialitiesState;
+import ru.urfu.logics.mathmechbot.states.registration.RegistrationMenGroupState;
+import ru.urfu.logics.mathmechbot.states.registration.RegistrationYearState;
 
 /**
  * Список состояний в процессе регистрации.

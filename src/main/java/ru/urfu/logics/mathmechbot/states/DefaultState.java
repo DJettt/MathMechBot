@@ -1,11 +1,15 @@
-package ru.urfu.logics.mathmechbot;
+package ru.urfu.logics.mathmechbot.states;
 
 import ru.urfu.bots.Bot;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
+import ru.urfu.logics.mathmechbot.Constants;
+import ru.urfu.logics.mathmechbot.MathMechBotCore;
 import ru.urfu.logics.mathmechbot.enums.DeletionStateList;
 import ru.urfu.logics.mathmechbot.enums.RegistrationStateList;
 import ru.urfu.logics.mathmechbot.models.UserEntry;
+import ru.urfu.logics.mathmechbot.states.deletion.DeletionConfirmationState;
+import ru.urfu.logics.mathmechbot.states.registration.RegistrationFullNameState;
 
 
 /**
@@ -68,9 +72,9 @@ public final class DefaultState extends MathMechBotState {
      * @param bot     бот, от которого пришло сообщение
      */
     private void registerCommandHandler(LocalMessage message, long chatId, Bot bot) {
-        final UserEntry userEntry = context.userEntries.getById(chatId);
+        final UserEntry userEntry = context.storage.userEntries.getById(chatId);
         if (userEntry == null) {
-            context.users.changeUserState(chatId, RegistrationStateList.NAME);
+            context.storage.users.changeUserState(chatId, RegistrationStateList.NAME);
             new RegistrationFullNameState(context).onEnter(message, chatId, bot);
         } else {
             alreadyRegistered(chatId, bot);
@@ -84,7 +88,7 @@ public final class DefaultState extends MathMechBotState {
      * @param bot     бот, от которого пришло сообщение
      */
     private void infoCommandHandler(long chatId, Bot bot) {
-        final UserEntry userEntry = context.userEntries.getById(chatId);
+        final UserEntry userEntry = context.storage.userEntries.getById(chatId);
         if (userEntry == null) {
             bot.sendMessage(Constants.ASK_FOR_REGISTRATION, chatId);
             return;
@@ -108,9 +112,9 @@ public final class DefaultState extends MathMechBotState {
      * @param bot     бот, от которого пришло сообщение
      */
     private void deleteCommandHandler(LocalMessage message, long chatId, Bot bot) {
-        final UserEntry userEntry = context.userEntries.getById(chatId);
+        final UserEntry userEntry = context.storage.userEntries.getById(chatId);
         if (userEntry != null) {
-            context.users.changeUserState(chatId, DeletionStateList.CONFIRMATION);
+            context.storage.users.changeUserState(chatId, DeletionStateList.CONFIRMATION);
             new DeletionConfirmationState(context).onEnter(message, chatId, bot);
         } else {
             bot.sendMessage(Constants.ASK_FOR_REGISTRATION, chatId);

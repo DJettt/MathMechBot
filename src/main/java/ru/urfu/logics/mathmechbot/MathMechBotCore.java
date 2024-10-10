@@ -11,10 +11,11 @@ import ru.urfu.logics.LogicCore;
 import ru.urfu.logics.State;
 import ru.urfu.logics.mathmechbot.enums.DefaultStateList;
 import ru.urfu.logics.mathmechbot.models.User;
+import ru.urfu.logics.mathmechbot.states.DefaultState;
+import ru.urfu.logics.mathmechbot.states.MathMechBotState;
+import ru.urfu.logics.mathmechbot.storages.MathMechStorage;
 import ru.urfu.logics.mathmechbot.storages.UserArrayStorage;
 import ru.urfu.logics.mathmechbot.storages.UserEntryArrayStorage;
-import ru.urfu.logics.mathmechbot.storages.UserEntryStorage;
-import ru.urfu.logics.mathmechbot.storages.UserStorage;
 
 
 /**
@@ -23,18 +24,16 @@ import ru.urfu.logics.mathmechbot.storages.UserStorage;
  */
 public final class MathMechBotCore implements LogicCore {
     private final static Logger LOGGER = LoggerFactory.getLogger(MathMechBotCore.class);
-    private State currentState;
 
-    final UserStorage users;
-    final UserEntryStorage userEntries;
+    private State currentState;
+    public final MathMechStorage storage;
 
     /**
      * Конструктор.
      */
     public MathMechBotCore() {
         currentState = new DefaultState(this);
-        users = new UserArrayStorage();
-        userEntries = new UserEntryArrayStorage();
+        storage = new MathMechStorage(new UserArrayStorage(), new UserEntryArrayStorage());
     }
 
     /**
@@ -67,10 +66,10 @@ public final class MathMechBotCore implements LogicCore {
 
     @Override
     public void processMessage(LocalMessage msg, long chatId, Bot bot) {
-        User user = users.getById(chatId);
+        User user = storage.users.getById(chatId);
         if (user == null) {
-            users.add(new User(chatId, DefaultStateList.DEFAULT));
-            user = users.getById(chatId);
+            storage.users.add(new User(chatId, DefaultStateList.DEFAULT));
+            user = storage.users.getById(chatId);
         }
         LOGGER.info(user.toString());
 

@@ -1,7 +1,7 @@
 package ru.urfu.logics.mathmechbot.enums;
 
-import ru.urfu.logics.mathmechbot.DeletionConfirmationState;
-import ru.urfu.logics.mathmechbot.MathMechBotState;
+import ru.urfu.logics.mathmechbot.states.MathMechBotState;
+import ru.urfu.logics.mathmechbot.states.deletion.DeletionConfirmationState;
 
 /**
  * Состояния в процессе удаления.

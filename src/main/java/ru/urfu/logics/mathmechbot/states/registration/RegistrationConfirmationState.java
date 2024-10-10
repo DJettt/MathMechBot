@@ -1,4 +1,4 @@
-package ru.urfu.logics.mathmechbot;
+package ru.urfu.logics.mathmechbot.states.registration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,9 +7,13 @@ import org.slf4j.LoggerFactory;
 import ru.urfu.bots.Bot;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
+import ru.urfu.logics.mathmechbot.Constants;
+import ru.urfu.logics.mathmechbot.MathMechBotCore;
 import ru.urfu.logics.mathmechbot.enums.DefaultStateList;
 import ru.urfu.logics.mathmechbot.enums.RegistrationStateList;
 import ru.urfu.logics.mathmechbot.models.UserEntry;
+import ru.urfu.logics.mathmechbot.states.DefaultState;
+import ru.urfu.logics.mathmechbot.states.MathMechBotState;
 
 
 /**
@@ -31,18 +35,18 @@ public final class RegistrationConfirmationState extends MathMechBotState {
     public void processMessage(LocalMessage msg, long chatId, Bot bot) {
         switch (msg.text()) {
             case Constants.BACK_COMMAND -> {
-                context.users.changeUserState(chatId, RegistrationStateList.MEN);
+                context.storage.users.changeUserState(chatId, RegistrationStateList.MEN);
                 new RegistrationMenGroupState(context).onEnter(msg, chatId, bot);
             }
 
             case Constants.ACCEPT_COMMAND -> {
-                context.users.changeUserState(chatId, DefaultStateList.DEFAULT);
+                context.storage.users.changeUserState(chatId, DefaultStateList.DEFAULT);
                 bot.sendMessage(new LocalMessageBuilder().text("Сохранил...").build(), chatId);
                 new DefaultState(context).onEnter(msg, chatId, bot);
             }
 
             case Constants.DECLINE_COMMAND -> {
-                context.users.changeUserState(chatId, DefaultStateList.DEFAULT);
+                context.storage.users.changeUserState(chatId, DefaultStateList.DEFAULT);
                 bot.sendMessage(new LocalMessageBuilder().text("Отмена...").build(), chatId);
                 new DefaultState(context).onEnter(msg, chatId, bot);
             }
@@ -53,7 +57,7 @@ public final class RegistrationConfirmationState extends MathMechBotState {
 
     @Override
     public void onEnter(LocalMessage msg, long chatId, Bot bot) {
-        final UserEntry userEntry = context.userEntries.getById(chatId);
+        final UserEntry userEntry = context.storage.userEntries.getById(chatId);
 
         if (userEntry == null) {
             LOGGER.error("User without entry reached registration end");

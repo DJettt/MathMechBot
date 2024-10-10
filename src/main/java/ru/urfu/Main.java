@@ -4,7 +4,6 @@ import java.lang.reflect.Constructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.urfu.bots.Bot;
-import ru.urfu.bots.DiscordBot;
 import ru.urfu.bots.TelegramBot;
 import ru.urfu.logics.LogicCore;
 import ru.urfu.logics.mathmechbot.MathMechBotCore;
@@ -48,6 +47,6 @@ final public class Main {
     public static void main(String[] args) {
         final LogicCore logicCore = new MathMechBotCore();
         startBot(logicCore, "TGMATHMECHBOT_TOKEN", TelegramBot.class);
-        startBot(logicCore, "DISCORDBOT_TOKEN", DiscordBot.class);
+//        startBot(logicCore, "DISCORDBOT_TOKEN", DiscordBot.class);
     }
 }
