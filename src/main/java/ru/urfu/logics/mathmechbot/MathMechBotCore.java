@@ -1,5 +1,6 @@
 package ru.urfu.logics.mathmechbot;
 
+import java.util.Optional;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +26,8 @@ public final class MathMechBotCore implements LogicCore {
 
     /**
      * Конструктор.
+     *
+     * @param storage хранилище данных для логики.
      */
     public MathMechBotCore(MathMechStorage storage) {
         this.storage = storage;
@@ -43,11 +46,15 @@ public final class MathMechBotCore implements LogicCore {
 
     @Override
     public void processMessage(LocalMessage msg, long chatId, Bot bot) {
-        User user = storage.users.getById(chatId);
-        if (user == null) {
+        User user;
+        Optional<User> userOptional = storage.users.get(chatId);
+
+        if (userOptional.isEmpty()) {
             storage.users.add(new User(chatId, DefaultUserState.DEFAULT));
-            user = storage.users.getById(chatId);
+            assert storage.users.get(chatId).isPresent();
         }
+        user = storage.users.get(chatId).get();
+
         LOGGER.info(user.toString());
 
         changeState(user.currentState().stateInstance());

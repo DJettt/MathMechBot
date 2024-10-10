@@ -2,12 +2,14 @@ package ru.urfu.logics.mathmechbot.states.registration;
 
 
 import java.util.List;
+import java.util.Optional;
 import ru.urfu.bots.Bot;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
 import ru.urfu.logics.mathmechbot.Constants;
 import ru.urfu.logics.mathmechbot.MathMechBotCore;
 import ru.urfu.logics.mathmechbot.models.UserEntry;
+import ru.urfu.logics.mathmechbot.models.userstates.DefaultUserState;
 import ru.urfu.logics.mathmechbot.models.userstates.RegistrationUserState;
 import ru.urfu.logics.mathmechbot.states.DefaultState;
 import ru.urfu.logics.mathmechbot.states.MathMechBotState;
@@ -57,8 +59,9 @@ public enum RegistrationFullNameState implements MathMechBotState {
      * @param bot     бот, принявший сообщение
      */
     private void backCommandHandler(MathMechBotCore context, long chatId, Bot bot) {
-        context.storage.users.deleteById(chatId);
-        context.storage.userEntries.deleteById(chatId);
+        final Optional<UserEntry> userEntryOptional = context.storage.userEntries.get(chatId);
+        context.storage.users.changeUserState(chatId, DefaultUserState.DEFAULT);
+        userEntryOptional.ifPresent(context.storage.userEntries::delete);
         bot.sendMessage(DefaultState.INSTANCE.enterMessage(context, chatId), chatId);
     }
 

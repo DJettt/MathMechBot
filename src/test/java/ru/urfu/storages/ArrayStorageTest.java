@@ -1,5 +1,7 @@
 package ru.urfu.storages;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -32,8 +34,8 @@ final class ArrayStorageTest {
     void testAddAndGetElement() {
         storage.add(new StringWithId(6, "String"));
         storage.add(new StringWithId(2, "String 2"));
-        Assertions.assertEquals("String", storage.getById(6).str());
-        Assertions.assertEquals("String 2", storage.getById(2).str());
+        Assertions.assertEquals("String", storage.get(6).get().str());
+        Assertions.assertEquals("String 2", storage.get(2).get().str());
     }
 
     /**
@@ -48,8 +50,7 @@ final class ArrayStorageTest {
     @DisplayName("Попытка найти несуществующий элемент")
     void testNoElement() {
         storage.add(new StringWithId(1, "String"));
-        final StringWithId found = storage.getById(2);
-        Assertions.assertNull(found);
+        Assertions.assertTrue(storage.get(2).isEmpty());
     }
 
     /**
@@ -62,31 +63,39 @@ final class ArrayStorageTest {
      * </ol>
      */
     @Test
-    @DisplayName("Удаление элемента")
+    @DisplayName("Удаление существующего элемента")
     void testDeleteElement() {
         storage.add(new StringWithId(1, "String"));
-        Assertions.assertEquals("String", storage.getById(1).str());
+        Assertions.assertEquals("String", storage.get(1).get().str());
 
-        storage.deleteById(1);
-        Assertions.assertNull(storage.getById(1));
+        storage.delete(new StringWithId(1, "Modified String"));
+        Assertions.assertTrue(storage.get(1).isEmpty());
     }
 
     /**
-     * Тестируем добавление элемента в хранилище и удаление элемента
+     * Тестируем удаление несуществующего элемента.
      * <ol>
-     *     <li>Добавляем в хранилище элемент с одним id.</li>
-     *     <li>Проверяем, что он добавился.</li>
-     *     <li>Пробуем удалить.</li>
-     *     <li>Проверяем, что он удалился.</li>
+     *     <li>Добавляем элемент.</>
+     *     <li>Пробуем удалить того, чего нет.</li>
+     *     <li>Проверяем, что первый элемент не удалился.</li>
+     *     <li>Проверяем, что удаляемый элемент не появился.</li>
      * </ol>
      */
     @Test
-    @DisplayName("Удаление элемента")
-    void testDeleteElementThatDontExist() {
+    @DisplayName("Удаление несуществующего элемента")
+    void testDeleteNonexistent() {
         storage.add(new StringWithId(1, "String"));
-        Assertions.assertEquals("String", storage.getById(1).str());
+        Assertions.assertEquals("String", storage.get(1).get().str());
 
-        storage.deleteById(2);
-        Assertions.assertEquals("String", storage.getById(1).str());
+        storage.delete(new StringWithId(2, "String"));
+        Assertions.assertEquals(new ArrayList<>(
+                List.of(new StringWithId(1, "String"))
+        ), storage.getAll());
+    }
+
+    @Test
+    @DisplayName("Обновление существующего элемента")
+    void testUpdateExisting() {
+
     }
 }

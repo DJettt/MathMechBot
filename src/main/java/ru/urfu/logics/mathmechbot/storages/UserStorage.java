@@ -16,8 +16,6 @@ public interface UserStorage extends Storage<User, Long> {
      * @param state новое текущее состояние.
      */
     default void changeUserState(Long id, MathMechBotUserState state) {
-        final User user = getById(id);
-        deleteById(id);
-        add(new UserBuilder(user.id(), state).build());
+        update(new UserBuilder(id, state).build());
     }
 }

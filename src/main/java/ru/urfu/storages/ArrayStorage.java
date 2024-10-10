@@ -1,6 +1,8 @@
 package ru.urfu.storages;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import ru.urfu.logics.mathmechbot.models.Identifiable;
 
 /**
@@ -19,32 +21,55 @@ public class ArrayStorage<T extends Identifiable<I>, I> implements Storage<T, I>
     }
 
     @Override
-    public void add(T member) {
+    public Optional<T> get(I id) {
+        for (final T t : array) {
+            if (t.id().equals(id)) {
+                return Optional.of(t);
+            }
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public List<T> getAll() {
+        final List<T> newList = new ArrayList<>(array.size());
+        newList.addAll(array);
+        return newList;
+    }
+
+    @Override
+    public void add(T member) throws IllegalArgumentException {
+        if (get(member.id()).isPresent()) {
+            throw new IllegalArgumentException("Storage already has this element.");
+        }
         array.add(member);
     }
 
     @Override
-    public T getById(I id) {
-        for (T t : array) {
-            if (t.id().equals(id)) {
-                return t;
+    public void update(T member) {
+        int index = 0;
+        for (final T t : array) {
+            if (t.id().equals(member.id())) {
+                array.set(index, member);
             }
+            ++index;
         }
-        return null;
     }
 
     @Override
-    public void deleteById(I id) {
-        boolean changed = false;
+    public void delete(T member) {
+        boolean found = false;
+
         int index = 0;
-        for (T t : array) {
-            changed = t.id().equals(id);
-            if (changed) {
+        for (final T t : array) {
+            found = t.id().equals(member.id());
+            if (found) {
                 break;
             }
             ++index;
         }
-        if (changed) {
+
+        if (found) {
             array.remove(index);
         }
     }

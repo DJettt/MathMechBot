@@ -1,5 +1,6 @@
 package ru.urfu.logics.mathmechbot.states;
 
+import java.util.Optional;
 import ru.urfu.bots.Bot;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
@@ -65,8 +66,8 @@ public enum DefaultState implements MathMechBotState {
      * @param bot     бот, от которого пришло сообщение
      */
     private void registerCommandHandler(MathMechBotCore context, long chatId, Bot bot) {
-        final UserEntry userEntry = context.storage.userEntries.getById(chatId);
-        if (userEntry == null) {
+        final Optional<UserEntry> userEntryOptional = context.storage.userEntries.get(chatId);
+        if (userEntryOptional.isEmpty()) {
             context.storage.users.changeUserState(chatId, RegistrationUserState.NAME);
             bot.sendMessage(RegistrationFullNameState.INSTANCE.enterMessage(context, chatId), chatId);
         } else {
@@ -82,11 +83,12 @@ public enum DefaultState implements MathMechBotState {
      * @param bot     бот, от которого пришло сообщение
      */
     private void infoCommandHandler(MathMechBotCore context, long chatId, Bot bot) {
-        final UserEntry userEntry = context.storage.userEntries.getById(chatId);
-        if (userEntry == null) {
+        final Optional<UserEntry> userEntryOptional = context.storage.userEntries.get(chatId);
+        if (userEntryOptional.isEmpty()) {
             bot.sendMessage(Constants.ASK_FOR_REGISTRATION, chatId);
             return;
         }
+        final UserEntry userEntry = userEntryOptional.get();
 
         final String userInfo = Constants.USER_INFO_TEMPLATE.formatted(
                 String.join(" ", userEntry.surname(), userEntry.name(), userEntry.patronym()),
@@ -106,8 +108,8 @@ public enum DefaultState implements MathMechBotState {
      * @param bot     бот, от которого пришло сообщение
      */
     private void deleteCommandHandler(MathMechBotCore context, long chatId, Bot bot) {
-        final UserEntry userEntry = context.storage.userEntries.getById(chatId);
-        if (userEntry != null) {
+        final Optional<UserEntry> userEntryOptional = context.storage.userEntries.get(chatId);
+        if (userEntryOptional.isPresent()) {
             context.storage.users.changeUserState(chatId, DeletionUserState.CONFIRMATION);
             bot.sendMessage(DeletionConfirmationState.INSTANCE.enterMessage(context, chatId), chatId);
         } else {

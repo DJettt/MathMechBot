@@ -2,6 +2,7 @@ package ru.urfu.logics.mathmechbot.states.registration;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.urfu.bots.Bot;
@@ -50,12 +51,13 @@ public enum RegistrationConfirmationState implements MathMechBotState {
 
     @Override
     public LocalMessage enterMessage(MathMechBotCore context, long userId) {
-        final UserEntry userEntry = context.storage.userEntries.getById(userId);
+        final Optional<UserEntry> userEntryOptional = context.storage.userEntries.get(userId);
 
-        if (userEntry == null) {
+        if (userEntryOptional.isEmpty()) {
             LOGGER.error("User without entry reached registration end");
             return null;
         }
+        final UserEntry userEntry = userEntryOptional.get();
 
         final String userInfo = Constants.USER_INFO_TEMPLATE.formatted(
                 String.join(" ", userEntry.surname(), userEntry.name(), userEntry.patronym()),

@@ -2,6 +2,7 @@ package ru.urfu.logics.mathmechbot.states.deletion;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.urfu.bots.Bot;
@@ -33,7 +34,7 @@ public enum DeletionConfirmationState implements MathMechBotState {
             }
 
             case Constants.ACCEPT_COMMAND -> {
-                context.storage.userEntries.deleteById(chatId);
+                context.storage.userEntries.delete(context.storage.userEntries.get(chatId).get());
                 context.storage.users.changeUserState(chatId, DefaultUserState.DEFAULT);
                 bot.sendMessage(new LocalMessageBuilder().text("Удаляем...").build(), chatId);
                 bot.sendMessage(DefaultState.INSTANCE.enterMessage(context, chatId), chatId);
@@ -51,12 +52,13 @@ public enum DeletionConfirmationState implements MathMechBotState {
 
     @Override
     public LocalMessage enterMessage(MathMechBotCore context, long userId) {
-        final UserEntry userEntry = context.storage.userEntries.getById(userId);
+        final Optional<UserEntry> userEntryOptional = context.storage.userEntries.get(userId);
 
-        if (userEntry == null) {
+        if (userEntryOptional.isEmpty()) {
             LOGGER.error("User without entry reached deletion confirmation state");
             return null;
         }
+        final UserEntry userEntry = userEntryOptional.get();
 
         final String userInfo = Constants.USER_INFO_TEMPLATE.formatted(
                 String.join(" ", userEntry.surname(), userEntry.name(), userEntry.patronym()),

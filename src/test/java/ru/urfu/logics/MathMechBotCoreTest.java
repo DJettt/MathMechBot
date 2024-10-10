@@ -249,10 +249,10 @@ final class MathMechBotCoreTest {
             void testBackCommand() {
                 logic.processMessage(REGISTER_MESSAGE, 0L, bot);
                 logic.processMessage(BACK_MESSAGE, 0L, bot);
-                Assertions.assertEquals(HELP, bot.getOutcomingMessageList().getLast());
+                Assertions.assertEquals(HELP, bot.getOutcomingMessageList().get(1));
 
                 logic.processMessage(INFO_MESSAGE, 0L, bot);
-                Assertions.assertEquals(ASK_FOR_REGISTRATION_MESSAGE, bot.getOutcomingMessageList().getLast());
+                Assertions.assertEquals(ASK_FOR_REGISTRATION_MESSAGE, bot.getOutcomingMessageList().get(2));
             }
         }
 

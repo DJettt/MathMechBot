@@ -15,11 +15,9 @@ public interface UserEntryStorage extends Storage<UserEntry, Long> {
      * @param year новое значение.
      */
     default void changeUserEntryYear(Long id, Integer year) {
-        final UserEntry userEntry = getById(id);
-        deleteById(id);
-        add(new UserEntryBuilder(userEntry)
+        get(id).ifPresent(userEntry -> update(new UserEntryBuilder(userEntry)
                 .year(year)
-                .build());
+                .build()));
     }
 
     /**
@@ -29,11 +27,9 @@ public interface UserEntryStorage extends Storage<UserEntry, Long> {
      * @param specialty новое значение.
      */
     default void changeUserEntrySpecialty(Long id, String specialty) {
-        final UserEntry userEntry = getById(id);
-        deleteById(id);
-        add(new UserEntryBuilder(userEntry)
+        get(id).ifPresent(userEntry -> update(new UserEntryBuilder(userEntry)
                 .specialty(specialty)
-                .build());
+                .build()));
     }
 
     /**
@@ -43,11 +39,9 @@ public interface UserEntryStorage extends Storage<UserEntry, Long> {
      * @param men новое значение.
      */
     default void changeUserEntryMen(Long id, String men) {
-        final UserEntry userEntry = getById(id);
-        deleteById(id);
-        add(new UserEntryBuilder(userEntry)
+        get(id).ifPresent(userEntry -> update(new UserEntryBuilder(userEntry)
                 .men(men)
-                .build());
+                .build()));
     }
 
     /**
@@ -57,10 +51,8 @@ public interface UserEntryStorage extends Storage<UserEntry, Long> {
      * @param group новое значение.
      */
     default void changeUserEntryGroup(Long id, Integer group) {
-        final UserEntry userEntry = getById(id);
-        deleteById(id);
-        add(new UserEntryBuilder(userEntry)
+        get(id).ifPresent(userEntry -> update(new UserEntryBuilder(userEntry)
                 .group(group)
-                .build());
+                .build()));
     }
 }
