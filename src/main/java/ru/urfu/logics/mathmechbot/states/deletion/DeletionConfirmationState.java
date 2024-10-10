@@ -9,7 +9,7 @@ import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
 import ru.urfu.logics.mathmechbot.Constants;
 import ru.urfu.logics.mathmechbot.MathMechBotCore;
-import ru.urfu.logics.mathmechbot.enums.DefaultState;
+import ru.urfu.logics.mathmechbot.enums.DefaultUserState;
 import ru.urfu.logics.mathmechbot.models.UserEntry;
 import ru.urfu.logics.mathmechbot.states.MathMechBotState;
 
@@ -33,19 +33,19 @@ public final class DeletionConfirmationState extends MathMechBotState {
     public void processMessage(LocalMessage msg, long chatId, Bot bot) {
         switch (msg.text()) {
             case Constants.BACK_COMMAND -> {
-                context.storage.users.changeUserState(chatId, DefaultState.DEFAULT);
+                context.storage.users.changeUserState(chatId, DefaultUserState.DEFAULT);
                 new ru.urfu.logics.mathmechbot.states.DefaultState(context).onEnter(msg, chatId, bot);
             }
 
             case Constants.ACCEPT_COMMAND -> {
                 context.storage.userEntries.deleteById(chatId);
-                context.storage.users.changeUserState(chatId, DefaultState.DEFAULT);
+                context.storage.users.changeUserState(chatId, DefaultUserState.DEFAULT);
                 bot.sendMessage(new LocalMessageBuilder().text("Удаляем...").build(), chatId);
                 new ru.urfu.logics.mathmechbot.states.DefaultState(context).onEnter(msg, chatId, bot);
             }
 
             case Constants.DECLINE_COMMAND -> {
-                context.storage.users.changeUserState(chatId, DefaultState.DEFAULT);
+                context.storage.users.changeUserState(chatId, DefaultUserState.DEFAULT);
                 bot.sendMessage(new LocalMessageBuilder().text("Отмена...").build(), chatId);
                 new ru.urfu.logics.mathmechbot.states.DefaultState(context).onEnter(msg, chatId, bot);
             }

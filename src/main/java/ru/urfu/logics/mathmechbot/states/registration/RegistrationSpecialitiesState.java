@@ -8,7 +8,7 @@ import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
 import ru.urfu.logics.mathmechbot.Constants;
 import ru.urfu.logics.mathmechbot.MathMechBotCore;
-import ru.urfu.logics.mathmechbot.enums.RegistrationState;
+import ru.urfu.logics.mathmechbot.enums.RegistrationUserState;
 import ru.urfu.logics.mathmechbot.enums.Specialty;
 import ru.urfu.logics.mathmechbot.states.MathMechBotState;
 
@@ -74,7 +74,7 @@ public sealed class RegistrationSpecialitiesState
      * @param bot     бот, принявший сообщение
      */
     private void backCommandHandler(LocalMessage message, long chatId, Bot bot) {
-        context.storage.users.changeUserState(chatId, RegistrationState.YEAR);
+        context.storage.users.changeUserState(chatId, RegistrationUserState.YEAR);
         new RegistrationYearState(context).onEnter(message, chatId, bot);
     }
 
@@ -98,7 +98,7 @@ public sealed class RegistrationSpecialitiesState
         }
 
         context.storage.userEntries.changeUserEntrySpecialty(chatId, message.text());
-        context.storage.users.changeUserState(chatId, RegistrationState.GROUP);
+        context.storage.users.changeUserState(chatId, RegistrationUserState.GROUP);
         new RegistrationGroupState(context).onEnter(message, chatId, bot);
     }
 }

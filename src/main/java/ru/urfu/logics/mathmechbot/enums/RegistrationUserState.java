@@ -9,8 +9,7 @@ import ru.urfu.logics.mathmechbot.states.registration.RegistrationMenGroupState;
 import ru.urfu.logics.mathmechbot.states.registration.RegistrationYearState;
 
 /**
- * Список состояний в процессе регистрации.
- * Пользователь попадает в процесс, отправив команду регистрации.
+ * Состояния пользователя в процессе регистрации.
  * <ol>
  *     <li>Первое состояние внутри этого процесса - <code>NAME</code>.<br/>
  *     Возможны следующие переходы:
@@ -59,7 +58,7 @@ import ru.urfu.logics.mathmechbot.states.registration.RegistrationYearState;
  *     </li>
  * </ol>
  */
-public enum RegistrationState implements MathMechBotState {
+public enum RegistrationUserState implements MathMechBotUserState {
     NAME(RegistrationFullNameState.class),
     YEAR(RegistrationYearState.class),
     SPECIALTY1(RegistrationFirstYearSpecialtiesState.class),
@@ -75,7 +74,7 @@ public enum RegistrationState implements MathMechBotState {
      *
      * @param stateClass класс состояния.
      */
-    RegistrationState(Class<? extends ru.urfu.logics.mathmechbot.states.MathMechBotState> stateClass) {
+    RegistrationUserState(Class<? extends ru.urfu.logics.mathmechbot.states.MathMechBotState> stateClass) {
         this.stateClass = stateClass;
     }
 

@@ -3,8 +3,7 @@ package ru.urfu.logics.mathmechbot.enums;
 import ru.urfu.logics.mathmechbot.states.deletion.DeletionConfirmationState;
 
 /**
- * Состояния в процессе удаления.
- * Пользователь попадает в процесс, отправив команду удаления.
+ * Состояния пользователя в процессе удаления.
  * <ol>
  *     <li>Первое состояние внутри этого процесса - <code>CONFIRMATION</code>.<br/>
  *     Возможны следующие переходы:
@@ -16,7 +15,7 @@ import ru.urfu.logics.mathmechbot.states.deletion.DeletionConfirmationState;
  *     </li>
  * </ol>
  */
-public enum DeletionState implements MathMechBotState {
+public enum DeletionUserState implements MathMechBotUserState {
     CONFIRMATION(DeletionConfirmationState.class);
 
     private final Class<? extends ru.urfu.logics.mathmechbot.states.MathMechBotState> stateClass;
@@ -26,7 +25,7 @@ public enum DeletionState implements MathMechBotState {
      *
      * @param stateClass класс состояния.
      */
-    DeletionState(Class<? extends ru.urfu.logics.mathmechbot.states.MathMechBotState> stateClass) {
+    DeletionUserState(Class<? extends ru.urfu.logics.mathmechbot.states.MathMechBotState> stateClass) {
         this.stateClass = stateClass;
     }
 

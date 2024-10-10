@@ -1,7 +1,7 @@
 package ru.urfu.logics.mathmechbot.models.builders;
 
 import org.jetbrains.annotations.NotNull;
-import ru.urfu.logics.mathmechbot.enums.MathMechBotState;
+import ru.urfu.logics.mathmechbot.enums.MathMechBotUserState;
 import ru.urfu.logics.mathmechbot.models.User;
 
 /**
@@ -9,7 +9,7 @@ import ru.urfu.logics.mathmechbot.models.User;
  */
 public final class UserBuilder {
     private final Long id;
-    private final MathMechBotState currentState;
+    private final MathMechBotUserState currentState;
 
     /**
      * Конструктор, устанавливающий дефолтные значения для полей.
@@ -17,7 +17,7 @@ public final class UserBuilder {
      * @param id идентификатор пользователя.
      * @param currentState состояние пользователя.
      */
-    public UserBuilder(@NotNull Long id, @NotNull MathMechBotState currentState) {
+    public UserBuilder(@NotNull Long id, @NotNull MathMechBotUserState currentState) {
         this.id = id;
         this.currentState = currentState;
     }

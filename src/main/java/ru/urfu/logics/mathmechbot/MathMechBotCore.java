@@ -9,7 +9,7 @@ import ru.urfu.bots.Bot;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.logics.LogicCore;
 import ru.urfu.logics.LogicCoreState;
-import ru.urfu.logics.mathmechbot.enums.DefaultState;
+import ru.urfu.logics.mathmechbot.enums.DefaultUserState;
 import ru.urfu.logics.mathmechbot.models.User;
 import ru.urfu.logics.mathmechbot.states.MathMechBotState;
 import ru.urfu.logics.mathmechbot.storages.MathMechStorage;
@@ -51,7 +51,7 @@ public final class MathMechBotCore implements LogicCore {
      * @param user пользователь.
      * @return состояние, в котором должен пребывать данный пользователь.
      */
-    private @Nullable MathMechBotState getStateBasedOnUser(@NotNull User user) {
+    private @Nullable MathMechBotState getUserState(@NotNull User user) {
         try {
             return user.currentState().stateClass().getConstructor(MathMechBotCore.class).newInstance(this);
         } catch (NoSuchMethodException e) {
@@ -67,12 +67,12 @@ public final class MathMechBotCore implements LogicCore {
     public void processMessage(LocalMessage msg, long chatId, Bot bot) {
         User user = storage.users.getById(chatId);
         if (user == null) {
-            storage.users.add(new User(chatId, DefaultState.DEFAULT));
+            storage.users.add(new User(chatId, DefaultUserState.DEFAULT));
             user = storage.users.getById(chatId);
         }
         LOGGER.info(user.toString());
 
-        final MathMechBotState newState = getStateBasedOnUser(user);
+        final MathMechBotState newState = getUserState(user);
 
         if (newState == null) {
             LOGGER.error("Couldn't determine state for user.");

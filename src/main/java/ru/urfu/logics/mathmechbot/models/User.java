@@ -1,7 +1,7 @@
 package ru.urfu.logics.mathmechbot.models;
 
 import org.jetbrains.annotations.NotNull;
-import ru.urfu.logics.mathmechbot.enums.MathMechBotState;
+import ru.urfu.logics.mathmechbot.enums.MathMechBotUserState;
 
 /**
  * Модель пользователя, подписавшегося на пересылку информации.
@@ -10,6 +10,6 @@ import ru.urfu.logics.mathmechbot.enums.MathMechBotState;
  */
 public record User(
         @NotNull Long id,
-        @NotNull MathMechBotState currentState
+        @NotNull MathMechBotUserState currentState
 ) implements Identifiable<Long> {
 }
