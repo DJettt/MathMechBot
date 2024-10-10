@@ -1,8 +1,8 @@
 package ru.urfu.logics.mathmechbot.models.builders;
 
 import org.jetbrains.annotations.NotNull;
-import ru.urfu.logics.mathmechbot.enums.MathMechBotUserState;
 import ru.urfu.logics.mathmechbot.models.User;
+import ru.urfu.logics.mathmechbot.userstates.MathMechBotUserState;
 
 /**
  * Билдер для рекорда User.

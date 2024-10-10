@@ -5,11 +5,11 @@ import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
 import ru.urfu.logics.mathmechbot.Constants;
 import ru.urfu.logics.mathmechbot.MathMechBotCore;
-import ru.urfu.logics.mathmechbot.enums.DeletionUserState;
-import ru.urfu.logics.mathmechbot.enums.RegistrationUserState;
 import ru.urfu.logics.mathmechbot.models.UserEntry;
 import ru.urfu.logics.mathmechbot.states.deletion.DeletionConfirmationState;
 import ru.urfu.logics.mathmechbot.states.registration.RegistrationFullNameState;
+import ru.urfu.logics.mathmechbot.userstates.DeletionUserState;
+import ru.urfu.logics.mathmechbot.userstates.RegistrationUserState;
 
 
 /**
@@ -49,6 +49,7 @@ public enum DefaultState implements MathMechBotState {
     /**
      * Выдаёт справку.
      *
+     * @param context логического ядро (контекст для состояния).
      * @param chatId  идентификатор чата отправителя
      * @param bot     бот, от которого пришло сообщение
      */
@@ -59,6 +60,7 @@ public enum DefaultState implements MathMechBotState {
     /**
      * Запускает процесс регистрации.
      *
+     * @param context логического ядро (контекст для состояния).
      * @param chatId  идентификатор чата отправителя
      * @param bot     бот, от которого пришло сообщение
      */
@@ -75,6 +77,7 @@ public enum DefaultState implements MathMechBotState {
     /**
      * Выдаёт информацию о пользователе.
      *
+     * @param context логического ядро (контекст для состояния).
      * @param chatId  идентификатор чата отправителя
      * @param bot     бот, от которого пришло сообщение
      */
@@ -98,6 +101,7 @@ public enum DefaultState implements MathMechBotState {
     /**
      * Запускает процесс удаления.
      *
+     * @param context логического ядро (контекст для состояния).
      * @param chatId  идентификатор чата отправителя
      * @param bot     бот, от которого пришло сообщение
      */

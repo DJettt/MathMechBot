@@ -6,13 +6,13 @@ import org.slf4j.LoggerFactory;
 import ru.urfu.bots.Bot;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.logics.LogicCore;
-import ru.urfu.logics.mathmechbot.enums.DefaultUserState;
 import ru.urfu.logics.mathmechbot.models.User;
 import ru.urfu.logics.mathmechbot.states.DefaultState;
 import ru.urfu.logics.mathmechbot.states.MathMechBotState;
 import ru.urfu.logics.mathmechbot.storages.MathMechStorage;
 import ru.urfu.logics.mathmechbot.storages.UserArrayStorage;
 import ru.urfu.logics.mathmechbot.storages.UserEntryArrayStorage;
+import ru.urfu.logics.mathmechbot.userstates.DefaultUserState;
 
 
 /**
@@ -43,7 +43,6 @@ public final class MathMechBotCore implements LogicCore {
         currentState = state;
     }
 
-
     @Override
     public void processMessage(LocalMessage msg, long chatId, Bot bot) {
         User user = storage.users.getById(chatId);
@@ -53,8 +52,7 @@ public final class MathMechBotCore implements LogicCore {
         }
         LOGGER.info(user.toString());
 
-        final MathMechBotState newState = user.currentState().stateInstance();
-        changeState(newState);
+        changeState(user.currentState().stateInstance());
         currentState.processMessage(this, msg, chatId, bot);
     }
 }

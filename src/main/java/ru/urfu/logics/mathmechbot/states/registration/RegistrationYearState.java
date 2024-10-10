@@ -9,8 +9,8 @@ import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
 import ru.urfu.logics.mathmechbot.Constants;
 import ru.urfu.logics.mathmechbot.MathMechBotCore;
-import ru.urfu.logics.mathmechbot.enums.RegistrationUserState;
 import ru.urfu.logics.mathmechbot.states.MathMechBotState;
+import ru.urfu.logics.mathmechbot.userstates.RegistrationUserState;
 
 
 /**
@@ -50,8 +50,9 @@ public enum RegistrationYearState implements MathMechBotState {
     }
 
     /**
-     * Возвращаем пользователя на шаг назад, т.е. на запрос ФИО
+     * Возвращаем пользователя на шаг назад, то есть на запрос ФИО.
      *
+     * @param context логического ядро (контекст для состояния).
      * @param chatId идентификатор чата
      * @param bot    бот, принявший сообщение
      */
@@ -68,6 +69,7 @@ public enum RegistrationYearState implements MathMechBotState {
      * Если год обучения иной, отправляем в запрос специальности поздних курсов.
      * В противном случае просим пользователя повторить ввод.
      *
+     * @param context логического ядро (контекст для состояния).
      * @param message полученное сообщение
      * @param chatId  идентификатор чата
      * @param bot     бот, принявший сообщение

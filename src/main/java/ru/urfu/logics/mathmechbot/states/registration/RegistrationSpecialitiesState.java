@@ -8,9 +8,9 @@ import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
 import ru.urfu.logics.mathmechbot.Constants;
 import ru.urfu.logics.mathmechbot.MathMechBotCore;
-import ru.urfu.logics.mathmechbot.enums.RegistrationUserState;
-import ru.urfu.logics.mathmechbot.enums.Specialty;
 import ru.urfu.logics.mathmechbot.states.MathMechBotState;
+import ru.urfu.logics.mathmechbot.userstates.RegistrationUserState;
+import ru.urfu.logics.mathmechbot.userstates.Specialty;
 
 
 /**
@@ -59,8 +59,9 @@ public sealed interface RegistrationSpecialitiesState
     /**
      * Возвращаем пользователя на шаг назад, то есть на запрос года обучения.
      *
-     * @param chatId  идентификатор чата
-     * @param bot     бот, принявший сообщение
+     * @param context логического ядро (контекст для состояния).
+     * @param chatId  идентификатор чата.
+     * @param bot     бот, принявший сообщение.
      */
     private void backCommandHandler(MathMechBotCore context, long chatId, Bot bot) {
         context.storage.users.changeUserState(chatId, RegistrationUserState.YEAR);
@@ -73,6 +74,7 @@ public sealed interface RegistrationSpecialitiesState
      * В частности, проверяем, что пользователь отправил аббревиатуру одной из разрешённых специальностей.
      * В противном случае просим пользователя повторить ввод.
      *
+     * @param context логического ядро (контекст для состояния).
      * @param message полученное сообщение
      * @param chatId  идентификатор чата
      * @param bot     бот, принявший сообщение

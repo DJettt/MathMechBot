@@ -1,4 +1,4 @@
-package ru.urfu.logics.mathmechbot.enums;
+package ru.urfu.logics.mathmechbot.userstates;
 
 import ru.urfu.logics.mathmechbot.states.MathMechBotState;
 import ru.urfu.logics.mathmechbot.states.registration.RegistrationConfirmationState;

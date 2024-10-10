@@ -7,10 +7,10 @@ import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
 import ru.urfu.logics.mathmechbot.Constants;
 import ru.urfu.logics.mathmechbot.MathMechBotCore;
-import ru.urfu.logics.mathmechbot.enums.RegistrationUserState;
 import ru.urfu.logics.mathmechbot.models.UserEntry;
 import ru.urfu.logics.mathmechbot.states.DefaultState;
 import ru.urfu.logics.mathmechbot.states.MathMechBotState;
+import ru.urfu.logics.mathmechbot.userstates.RegistrationUserState;
 
 
 /**
@@ -52,6 +52,7 @@ public enum RegistrationFullNameState implements MathMechBotState {
     /**
      * Возвращаем пользователя на шаг назад, т.е. в основное состояние
      *
+     * @param context логического ядро (контекст для состояния).
      * @param chatId  идентификатор чата
      * @param bot     бот, принявший сообщение
      */
@@ -66,6 +67,8 @@ public enum RegistrationFullNameState implements MathMechBotState {
      * Если текстовое сообщение является ФИО или ФИ (проходит валидацию),
      * пользователь перемещается на следующее состояние, то есть запрос года обучения.
      * В противном случае просим пользователя повторить ввод.
+     *
+     * @param context логического ядро (контекст для состояния).
      * @param message полученное сообщение
      * @param chatId идентификатор чата
      * @param bot бот, принявший сообщение
