@@ -1,11 +1,10 @@
 package ru.urfu.logics.mathmechbot.enums;
 
-import ru.urfu.logics.UserState;
+import ru.urfu.logics.mathmechbot.states.MathMechBotState;
 
 /**
  * Cостояние пользователя в MathMechBot.
  */
-public interface MathMechBotUserState extends UserState {
-    @Override
-    Class<? extends ru.urfu.logics.mathmechbot.states.MathMechBotState> userStateClass();
+public interface MathMechBotUserState {
+    MathMechBotState stateInstance();
 }

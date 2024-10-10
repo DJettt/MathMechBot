@@ -16,7 +16,9 @@ import ru.urfu.logics.mathmechbot.states.MathMechBotState;
 /**
  * Состояние ожидания ответа на запрос года обучения во время регистрации.
  */
-public final class RegistrationYearState extends MathMechBotState {
+public enum RegistrationYearState implements MathMechBotState {
+    INSTANCE;
+
     private final static LocalMessage ON_ENTER_MESSAGE = new LocalMessageBuilder()
             .text("На каком курсе Вы обучаетесь?")
             .buttons(new ArrayList<>(List.of(
@@ -30,41 +32,32 @@ public final class RegistrationYearState extends MathMechBotState {
             )))
             .build();
 
-    /**
-     * Конструктор состояния.
-     *
-     * @param context контекст (в том же смысле, что и в паттерне "State").
-     */
-    public RegistrationYearState(MathMechBotCore context) {
-        super(context);
-    }
-
     @Override
-    public void processMessage(LocalMessage msg, long chatId, Bot bot) {
+    public void processMessage(MathMechBotCore context, LocalMessage msg, long chatId, Bot bot) {
         switch (msg.text()) {
-            case Constants.BACK_COMMAND -> backCommandHandler(chatId, bot);
+            case Constants.BACK_COMMAND -> backCommandHandler(context, chatId, bot);
             case null -> {
                 bot.sendMessage(Constants.TRY_AGAIN, chatId);
                 bot.sendMessage(ON_ENTER_MESSAGE, chatId);
             }
-            default -> textHandler(msg, chatId, bot);
+            default -> textHandler(context, msg, chatId, bot);
         }
     }
 
     @Override
-    public LocalMessage enterMessage(long userId) {
+    public LocalMessage enterMessage(MathMechBotCore context, long userId) {
         return ON_ENTER_MESSAGE;
     }
 
     /**
      * Возвращаем пользователя на шаг назад, т.е. на запрос ФИО
      *
-     * @param chatId  идентификатор чата
-     * @param bot     бот, принявший сообщение
+     * @param chatId идентификатор чата
+     * @param bot    бот, принявший сообщение
      */
-    private void backCommandHandler(long chatId, Bot bot) {
+    private void backCommandHandler(MathMechBotCore context, long chatId, Bot bot) {
         context.storage.users.changeUserState(chatId, RegistrationUserState.NAME);
-        bot.sendMessage(new RegistrationFullNameState(context).enterMessage(chatId), chatId);
+        bot.sendMessage(RegistrationFullNameState.INSTANCE.enterMessage(context, chatId), chatId);
     }
 
     /**
@@ -79,7 +72,7 @@ public final class RegistrationYearState extends MathMechBotState {
      * @param chatId  идентификатор чата
      * @param bot     бот, принявший сообщение
      */
-    public void textHandler(LocalMessage message, long chatId, Bot bot) {
+    public void textHandler(MathMechBotCore context, LocalMessage message, long chatId, Bot bot) {
         assert message.text() != null;
 
         try {
@@ -88,11 +81,11 @@ public final class RegistrationYearState extends MathMechBotState {
             if (year == 1) {
                 context.storage.userEntries.changeUserEntryYear(chatId, year);
                 context.storage.users.changeUserState(chatId, RegistrationUserState.SPECIALTY1);
-                bot.sendMessage(new RegistrationFirstYearSpecialtiesState(context).enterMessage(chatId), chatId);
+                bot.sendMessage(RegistrationFirstYearSpecialtiesState.INSTANCE.enterMessage(context, chatId), chatId);
             } else if (year > 1 && year <= maxYear) {
                 context.storage.userEntries.changeUserEntryYear(chatId, year);
                 context.storage.users.changeUserState(chatId, RegistrationUserState.SPECIALTY2);
-                bot.sendMessage(new RegistrationLaterYearSpecialitiesState(context).enterMessage(chatId), chatId);
+                bot.sendMessage(RegistrationLaterYearSpecialitiesState.INSTANCE.enterMessage(context, chatId), chatId);
             } else {
                 bot.sendMessage(Constants.TRY_AGAIN, chatId);
                 bot.sendMessage(ON_ENTER_MESSAGE, chatId);

@@ -1,5 +1,8 @@
 package ru.urfu.logics.mathmechbot.enums;
 
+import ru.urfu.logics.mathmechbot.states.DefaultState;
+import ru.urfu.logics.mathmechbot.states.MathMechBotState;
+
 /**
  * Состояние, в котором пользователь находится по умолчанию. Из него пользователь может попасть в:
  * <ul>
@@ -11,7 +14,7 @@ public enum DefaultUserState implements MathMechBotUserState {
     DEFAULT;
 
     @Override
-    public Class<? extends ru.urfu.logics.mathmechbot.states.MathMechBotState> userStateClass() {
-        return ru.urfu.logics.mathmechbot.states.DefaultState.class;
+    public MathMechBotState stateInstance() {
+        return DefaultState.INSTANCE;
     }
 }

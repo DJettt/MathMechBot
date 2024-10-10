@@ -16,22 +16,15 @@ import ru.urfu.logics.mathmechbot.states.MathMechBotState;
 /**
  * Состояние запроса номера группы во время регистрации.
  */
-public final class RegistrationGroupState extends MathMechBotState {
-    /**
-     * Конструктор состояния.
-     *
-     * @param context контекст (в том же смысле, что и в паттерне "State").
-     */
-    public RegistrationGroupState(MathMechBotCore context) {
-        super(context);
-    }
+public enum RegistrationGroupState implements MathMechBotState {
+    INSTANCE;
 
     @Override
-    public void processMessage(LocalMessage msg, long chatId, Bot bot) {
+    public void processMessage(MathMechBotCore context, LocalMessage msg, long chatId, Bot bot) {
         switch (msg.text()) {
             case Constants.BACK_COMMAND -> {
                 context.storage.users.changeUserState(chatId, RegistrationUserState.YEAR);
-                bot.sendMessage(new RegistrationYearState(context).enterMessage(chatId), chatId);
+                bot.sendMessage(RegistrationYearState.INSTANCE.enterMessage(context, chatId), chatId);
             }
 
             case null -> bot.sendMessage(Constants.TRY_AGAIN, chatId);
@@ -43,7 +36,7 @@ public final class RegistrationGroupState extends MathMechBotState {
                     if (group >= 1 && group <= maxYear) {
                         context.storage.userEntries.changeUserEntryGroup(chatId, group);
                         context.storage.users.changeUserState(chatId, RegistrationUserState.MEN);
-                        bot.sendMessage(new RegistrationMenGroupState(context).enterMessage(chatId), chatId);
+                        bot.sendMessage(RegistrationMenGroupState.INSTANCE.enterMessage(context, chatId), chatId);
                     } else {
                         bot.sendMessage(Constants.TRY_AGAIN, chatId);
                     }
@@ -55,7 +48,7 @@ public final class RegistrationGroupState extends MathMechBotState {
     }
 
     @Override
-    public LocalMessage enterMessage(long userId) {
+    public LocalMessage enterMessage(MathMechBotCore context, long userId) {
         return new LocalMessageBuilder()
                 .text("На каком курсе Вы обучаетесь?")
                 .buttons(new ArrayList<>(List.of(

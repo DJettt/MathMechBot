@@ -19,36 +19,29 @@ import ru.urfu.logics.mathmechbot.states.MathMechBotState;
 /**
  * Состояние подтверждения введённых данных во время регистрации.
  */
-public final class RegistrationConfirmationState extends MathMechBotState {
+public enum RegistrationConfirmationState implements MathMechBotState {
+    INSTANCE;
+
     private final static Logger LOGGER = LoggerFactory.getLogger(RegistrationConfirmationState.class);
 
-    /**
-     * Конструктор состояния.
-     *
-     * @param context контекст (в том же смысле, что и в паттерне "State").
-     */
-    public RegistrationConfirmationState(MathMechBotCore context) {
-        super(context);
-    }
-
     @Override
-    public void processMessage(LocalMessage msg, long chatId, Bot bot) {
+    public void processMessage(MathMechBotCore context, LocalMessage msg, long chatId, Bot bot) {
         switch (msg.text()) {
             case Constants.BACK_COMMAND -> {
                 context.storage.users.changeUserState(chatId, RegistrationUserState.MEN);
-                bot.sendMessage(new RegistrationMenGroupState(context).enterMessage(chatId), chatId);
+                bot.sendMessage(RegistrationMenGroupState.INSTANCE.enterMessage(context, chatId), chatId);
             }
 
             case Constants.ACCEPT_COMMAND -> {
                 context.storage.users.changeUserState(chatId, DefaultUserState.DEFAULT);
                 bot.sendMessage(new LocalMessageBuilder().text("Сохранил...").build(), chatId);
-                bot.sendMessage(new DefaultState(context).enterMessage(chatId), chatId);
+                bot.sendMessage(DefaultState.INSTANCE.enterMessage(context, chatId), chatId);
             }
 
             case Constants.DECLINE_COMMAND -> {
                 context.storage.users.changeUserState(chatId, DefaultUserState.DEFAULT);
                 bot.sendMessage(new LocalMessageBuilder().text("Отмена...").build(), chatId);
-                bot.sendMessage(new DefaultState(context).enterMessage(chatId), chatId);
+                bot.sendMessage(DefaultState.INSTANCE.enterMessage(context, chatId), chatId);
             }
 
             case null, default -> bot.sendMessage(Constants.TRY_AGAIN, chatId);
@@ -56,7 +49,7 @@ public final class RegistrationConfirmationState extends MathMechBotState {
     }
 
     @Override
-    public LocalMessage enterMessage(long userId) {
+    public LocalMessage enterMessage(MathMechBotCore context, long userId) {
         final UserEntry userEntry = context.storage.userEntries.getById(userId);
 
         if (userEntry == null) {

@@ -18,17 +18,9 @@ import ru.urfu.logics.mathmechbot.states.MathMechBotState;
  * Предлагает пользователю направление подготовки
  * из списка, который возвращает метод allowedSpecialties.
  */
-public sealed class RegistrationSpecialitiesState
+public sealed interface RegistrationSpecialitiesState
         extends MathMechBotState
         permits RegistrationFirstYearSpecialtiesState, RegistrationLaterYearSpecialitiesState {
-    /**
-     * Конструктор состояния.
-     *
-     * @param context контекст (в том же смысле, что и в паттерне "State").
-     */
-    public RegistrationSpecialitiesState(MathMechBotCore context) {
-        super(context);
-    }
 
     /**
      * Возвращает список разрешённых специальностей.
@@ -36,25 +28,25 @@ public sealed class RegistrationSpecialitiesState
      *
      * @return список разрешённых специальностей
      */
-    protected List<Specialty> allowedSpecialties() {
+    default List<Specialty> allowedSpecialties() {
         return new ArrayList<>() {
         };
     }
 
     @Override
-    public void processMessage(LocalMessage msg, long chatId, Bot bot) {
+    default void processMessage(MathMechBotCore context, LocalMessage msg, long chatId, Bot bot) {
         switch (msg.text()) {
-            case Constants.BACK_COMMAND -> backCommandHandler(chatId, bot);
+            case Constants.BACK_COMMAND -> backCommandHandler(context, chatId, bot);
             case null -> {
                 bot.sendMessage(Constants.TRY_AGAIN, chatId);
-                bot.sendMessage(enterMessage(chatId), chatId);
+                bot.sendMessage(enterMessage(context, chatId), chatId);
             }
-            default -> textHandler(msg, chatId, bot);
+            default -> textHandler(context, msg, chatId, bot);
         }
     }
 
     @Override
-    public LocalMessage enterMessage(long userId) {
+    default LocalMessage enterMessage(MathMechBotCore context, long userId) {
         List<LocalButton> buttons = new ArrayList<>();
         for (Specialty specialty : allowedSpecialties()) {
             buttons.add(new LocalButton(specialty.getAbbreviation(), specialty.getAbbreviation()));
@@ -70,9 +62,9 @@ public sealed class RegistrationSpecialitiesState
      * @param chatId  идентификатор чата
      * @param bot     бот, принявший сообщение
      */
-    private void backCommandHandler(long chatId, Bot bot) {
+    private void backCommandHandler(MathMechBotCore context, long chatId, Bot bot) {
         context.storage.users.changeUserState(chatId, RegistrationUserState.YEAR);
-        bot.sendMessage(new RegistrationYearState(context).enterMessage(chatId), chatId);
+        bot.sendMessage(RegistrationYearState.INSTANCE.enterMessage(context, chatId), chatId);
     }
 
 
@@ -85,17 +77,17 @@ public sealed class RegistrationSpecialitiesState
      * @param chatId  идентификатор чата
      * @param bot     бот, принявший сообщение
      */
-    public void textHandler(LocalMessage message, long chatId, Bot bot) {
+    default void textHandler(MathMechBotCore context, LocalMessage message, long chatId, Bot bot) {
         assert message.text() != null;
 
         if (!allowedSpecialties().stream().map(Specialty::getAbbreviation).toList().contains(message.text())) {
             bot.sendMessage(Constants.TRY_AGAIN, chatId);
-            bot.sendMessage(enterMessage(chatId), chatId);
+            bot.sendMessage(enterMessage(context, chatId), chatId);
             return;
         }
 
         context.storage.userEntries.changeUserEntrySpecialty(chatId, message.text());
         context.storage.users.changeUserState(chatId, RegistrationUserState.GROUP);
-        bot.sendMessage(new RegistrationGroupState(context).enterMessage(chatId), chatId);
+        bot.sendMessage(RegistrationGroupState.INSTANCE.enterMessage(context, chatId), chatId);
     }
 }

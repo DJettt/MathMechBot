@@ -16,15 +16,8 @@ import ru.urfu.logics.mathmechbot.states.MathMechBotState;
 /**
  * Состояние ожидания ввода ФИО во время регистрации.
  */
-public final class RegistrationFullNameState extends MathMechBotState {
-    /**
-     * Конструктор состояния.
-     *
-     * @param context контекст (в том же смысле, что и в паттерне "State").
-     */
-    public RegistrationFullNameState(MathMechBotCore context) {
-        super(context);
-    }
+public enum RegistrationFullNameState implements MathMechBotState {
+    INSTANCE;
 
     /**
      * Проверяет корректность введенного ФИО.
@@ -38,16 +31,16 @@ public final class RegistrationFullNameState extends MathMechBotState {
     }
 
     @Override
-    public void processMessage(LocalMessage msg, long chatId, Bot bot) {
+    public void processMessage(MathMechBotCore context, LocalMessage msg, long chatId, Bot bot) {
         switch (msg.text()) {
-            case Constants.BACK_COMMAND -> backCommandHandler(chatId, bot);
+            case Constants.BACK_COMMAND -> backCommandHandler(context, chatId, bot);
             case null -> bot.sendMessage(Constants.TRY_AGAIN, chatId);
-            default -> textHandler(msg, chatId, bot);
+            default -> textHandler(context, msg, chatId, bot);
         }
     }
 
     @Override
-    public LocalMessage enterMessage(long userId) {
+    public LocalMessage enterMessage(MathMechBotCore context, long userId) {
         return new LocalMessageBuilder()
                 .text("""
                         Введите свое ФИО в формате:
@@ -62,10 +55,10 @@ public final class RegistrationFullNameState extends MathMechBotState {
      * @param chatId  идентификатор чата
      * @param bot     бот, принявший сообщение
      */
-    private void backCommandHandler(long chatId, Bot bot) {
+    private void backCommandHandler(MathMechBotCore context, long chatId, Bot bot) {
         context.storage.users.deleteById(chatId);
         context.storage.userEntries.deleteById(chatId);
-        bot.sendMessage(new DefaultState(context).enterMessage(chatId), chatId);
+        bot.sendMessage(DefaultState.INSTANCE.enterMessage(context, chatId), chatId);
     }
 
     /**
@@ -78,7 +71,7 @@ public final class RegistrationFullNameState extends MathMechBotState {
      * @param bot бот, принявший сообщение
      */
     @SuppressWarnings("MagicNumber")
-    public void textHandler(LocalMessage message, long chatId, Bot bot) {
+    public void textHandler(MathMechBotCore context, LocalMessage message, long chatId, Bot bot) {
         assert message.text() != null;
         final String trimmedText = message.text().trim();
 
@@ -93,6 +86,6 @@ public final class RegistrationFullNameState extends MathMechBotState {
                 chatId, strs.get(0), strs.get(1), (strs.size() == 3) ? strs.get(2) : "",
                 null, null, null, null, chatId));
         context.storage.users.changeUserState(chatId, RegistrationUserState.YEAR);
-        bot.sendMessage(new RegistrationYearState(context).enterMessage(chatId), chatId);
+        bot.sendMessage(RegistrationYearState.INSTANCE.enterMessage(context, chatId), chatId);
     }
 }

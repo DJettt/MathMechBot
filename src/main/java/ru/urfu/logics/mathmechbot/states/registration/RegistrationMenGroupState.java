@@ -15,15 +15,8 @@ import ru.urfu.logics.mathmechbot.states.MathMechBotState;
 /**
  * Состояние ожидания ввода академической группы в формате МЕН во время регистрации.
  */
-public final class RegistrationMenGroupState extends MathMechBotState {
-    /**
-     * Конструктор состояния.
-     *
-     * @param context контекст (в том же смысле, что и в паттерне "State").
-     */
-    public RegistrationMenGroupState(MathMechBotCore context) {
-        super(context);
-    }
+public enum RegistrationMenGroupState implements MathMechBotState {
+    INSTANCE;
 
     /**
      * Проверяет корректность введённой академической группы.
@@ -37,11 +30,11 @@ public final class RegistrationMenGroupState extends MathMechBotState {
     }
 
     @Override
-    public void processMessage(LocalMessage msg, long chatId, Bot bot) {
+    public void processMessage(MathMechBotCore context, LocalMessage msg, long chatId, Bot bot) {
         switch (msg.text()) {
             case Constants.BACK_COMMAND -> {
                 context.storage.users.changeUserState(chatId, RegistrationUserState.GROUP);
-                bot.sendMessage(new RegistrationGroupState(context).enterMessage(chatId), chatId);
+                bot.sendMessage(RegistrationGroupState.INSTANCE.enterMessage(context, chatId), chatId);
             }
 
             case null -> bot.sendMessage(Constants.TRY_AGAIN, chatId);
@@ -56,13 +49,13 @@ public final class RegistrationMenGroupState extends MathMechBotState {
 
                 context.storage.userEntries.changeUserEntryMen(chatId, msg.text());
                 context.storage.users.changeUserState(chatId, RegistrationUserState.CONFIRMATION);
-                bot.sendMessage(new RegistrationConfirmationState(context).enterMessage(chatId), chatId);
+                bot.sendMessage(RegistrationConfirmationState.INSTANCE.enterMessage(context, chatId), chatId);
             }
         }
     }
 
     @Override
-    public LocalMessage enterMessage(long userId) {
+    public LocalMessage enterMessage(MathMechBotCore context, long userId) {
         return new LocalMessageBuilder()
                 .text("Введите свою академическую группу в формате:\nМЕН-123456")
                 .buttons(new ArrayList<>(List.of(Constants.BACK_BUTTON)))

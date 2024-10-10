@@ -15,34 +15,27 @@ import ru.urfu.logics.mathmechbot.states.registration.RegistrationFullNameState;
 /**
  * Состояние, в котором изначально пребывает пользователь.
  */
-public final class DefaultState extends MathMechBotState {
+public enum DefaultState implements MathMechBotState {
+    INSTANCE;
+
     private final static String START_COMMAND = "/start";
     private final static String HELP_COMMAND = "/help";
     private final static String REGISTER_COMMAND = "/register";
     private final static String INFO_COMMAND = "/info";
     private final static String DELETE_COMMAND = "/delete";
 
-    /**
-     * Конструктор состояния.
-     *
-     * @param context контекст (в том же смысле, что и в паттерне "State").
-     */
-    public DefaultState(MathMechBotCore context) {
-        super(context);
-    }
-
     @Override
-    public void processMessage(LocalMessage msg, long chatId, Bot bot) {
+    public void processMessage(MathMechBotCore context, LocalMessage msg, long chatId, Bot bot) {
         switch (msg.text()) {
-            case REGISTER_COMMAND -> registerCommandHandler(chatId, bot);
-            case INFO_COMMAND -> infoCommandHandler(chatId, bot);
-            case DELETE_COMMAND -> deleteCommandHandler(chatId, bot);
-            case null, default -> helpCommandHandler(chatId, bot);
+            case REGISTER_COMMAND -> registerCommandHandler(context, chatId, bot);
+            case INFO_COMMAND -> infoCommandHandler(context, chatId, bot);
+            case DELETE_COMMAND -> deleteCommandHandler(context, chatId, bot);
+            case null, default -> helpCommandHandler(context, chatId, bot);
         }
     }
 
     @Override
-    public LocalMessage enterMessage(long userId) {
+    public LocalMessage enterMessage(MathMechBotCore context, long userId) {
         final String HELP_MESSAGE = """
                 %s - начало общения с ботом
                 %s - выводит команды, которые принимает бот
@@ -59,8 +52,8 @@ public final class DefaultState extends MathMechBotState {
      * @param chatId  идентификатор чата отправителя
      * @param bot     бот, от которого пришло сообщение
      */
-    private void helpCommandHandler(long chatId, Bot bot) {
-        bot.sendMessage(enterMessage(chatId), chatId);
+    private void helpCommandHandler(MathMechBotCore context, long chatId, Bot bot) {
+        bot.sendMessage(enterMessage(context, chatId), chatId);
     }
 
     /**
@@ -69,11 +62,11 @@ public final class DefaultState extends MathMechBotState {
      * @param chatId  идентификатор чата отправителя
      * @param bot     бот, от которого пришло сообщение
      */
-    private void registerCommandHandler(long chatId, Bot bot) {
+    private void registerCommandHandler(MathMechBotCore context, long chatId, Bot bot) {
         final UserEntry userEntry = context.storage.userEntries.getById(chatId);
         if (userEntry == null) {
             context.storage.users.changeUserState(chatId, RegistrationUserState.NAME);
-            bot.sendMessage(new RegistrationFullNameState(context).enterMessage(chatId), chatId);
+            bot.sendMessage(RegistrationFullNameState.INSTANCE.enterMessage(context, chatId), chatId);
         } else {
             alreadyRegistered(chatId, bot);
         }
@@ -85,7 +78,7 @@ public final class DefaultState extends MathMechBotState {
      * @param chatId  идентификатор чата отправителя
      * @param bot     бот, от которого пришло сообщение
      */
-    private void infoCommandHandler(long chatId, Bot bot) {
+    private void infoCommandHandler(MathMechBotCore context, long chatId, Bot bot) {
         final UserEntry userEntry = context.storage.userEntries.getById(chatId);
         if (userEntry == null) {
             bot.sendMessage(Constants.ASK_FOR_REGISTRATION, chatId);
@@ -108,11 +101,11 @@ public final class DefaultState extends MathMechBotState {
      * @param chatId  идентификатор чата отправителя
      * @param bot     бот, от которого пришло сообщение
      */
-    private void deleteCommandHandler(long chatId, Bot bot) {
+    private void deleteCommandHandler(MathMechBotCore context, long chatId, Bot bot) {
         final UserEntry userEntry = context.storage.userEntries.getById(chatId);
         if (userEntry != null) {
             context.storage.users.changeUserState(chatId, DeletionUserState.CONFIRMATION);
-            bot.sendMessage(new DeletionConfirmationState(context).enterMessage(chatId), chatId);
+            bot.sendMessage(DeletionConfirmationState.INSTANCE.enterMessage(context, chatId), chatId);
         } else {
             bot.sendMessage(Constants.ASK_FOR_REGISTRATION, chatId);
         }

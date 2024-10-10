@@ -1,5 +1,6 @@
 package ru.urfu.logics.mathmechbot.enums;
 
+import ru.urfu.logics.mathmechbot.states.MathMechBotState;
 import ru.urfu.logics.mathmechbot.states.registration.RegistrationConfirmationState;
 import ru.urfu.logics.mathmechbot.states.registration.RegistrationFirstYearSpecialtiesState;
 import ru.urfu.logics.mathmechbot.states.registration.RegistrationFullNameState;
@@ -59,27 +60,27 @@ import ru.urfu.logics.mathmechbot.states.registration.RegistrationYearState;
  * </ol>
  */
 public enum RegistrationUserState implements MathMechBotUserState {
-    NAME(RegistrationFullNameState.class),
-    YEAR(RegistrationYearState.class),
-    SPECIALTY1(RegistrationFirstYearSpecialtiesState.class),
-    SPECIALTY2(RegistrationLaterYearSpecialitiesState.class),
-    GROUP(RegistrationGroupState.class),
-    MEN(RegistrationMenGroupState.class),
-    CONFIRMATION(RegistrationConfirmationState.class);
+    NAME(RegistrationFullNameState.INSTANCE),
+    YEAR(RegistrationYearState.INSTANCE),
+    SPECIALTY1(RegistrationFirstYearSpecialtiesState.INSTANCE),
+    SPECIALTY2(RegistrationLaterYearSpecialitiesState.INSTANCE),
+    GROUP(RegistrationGroupState.INSTANCE),
+    MEN(RegistrationMenGroupState.INSTANCE),
+    CONFIRMATION(RegistrationConfirmationState.INSTANCE);
 
-    private final Class<? extends ru.urfu.logics.mathmechbot.states.MathMechBotState> stateClass;
+    private final MathMechBotState stateInstance;
 
     /**
-     * Устанавливает класс для данного состояния.
+     * Устанавливает инстанцию данного состояния.
      *
-     * @param stateClass класс состояния.
+     * @param stateInstance инстанция состояния.
      */
-    RegistrationUserState(Class<? extends ru.urfu.logics.mathmechbot.states.MathMechBotState> stateClass) {
-        this.stateClass = stateClass;
+    RegistrationUserState(MathMechBotState stateInstance) {
+        this.stateInstance = stateInstance;
     }
 
     @Override
-    public Class<? extends ru.urfu.logics.mathmechbot.states.MathMechBotState> userStateClass() {
-        return stateClass;
+    public MathMechBotState stateInstance() {
+        return stateInstance;
     }
 }

@@ -1,5 +1,6 @@
 package ru.urfu.logics.mathmechbot.enums;
 
+import ru.urfu.logics.mathmechbot.states.MathMechBotState;
 import ru.urfu.logics.mathmechbot.states.deletion.DeletionConfirmationState;
 
 /**
@@ -16,21 +17,21 @@ import ru.urfu.logics.mathmechbot.states.deletion.DeletionConfirmationState;
  * </ol>
  */
 public enum DeletionUserState implements MathMechBotUserState {
-    CONFIRMATION(DeletionConfirmationState.class);
+    CONFIRMATION(DeletionConfirmationState.INSTANCE);
 
-    private final Class<? extends ru.urfu.logics.mathmechbot.states.MathMechBotState> stateClass;
+    private final MathMechBotState stateInstance;
 
     /**
-     * Устанавливает класс для данного состояния.
+     * Устанавливает инстанцию состояния.
      *
-     * @param stateClass класс состояния.
+     * @param stateInstance инстанция состояния.
      */
-    DeletionUserState(Class<? extends ru.urfu.logics.mathmechbot.states.MathMechBotState> stateClass) {
-        this.stateClass = stateClass;
+    DeletionUserState(MathMechBotState stateInstance) {
+        this.stateInstance = stateInstance;
     }
 
     @Override
-    public Class<? extends ru.urfu.logics.mathmechbot.states.MathMechBotState> userStateClass() {
-        return stateClass;
+    public MathMechBotState stateInstance() {
+        return stateInstance;
     }
 }
