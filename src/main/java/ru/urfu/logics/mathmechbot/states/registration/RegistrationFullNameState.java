@@ -3,6 +3,7 @@ package ru.urfu.logics.mathmechbot.states.registration;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
 import org.jetbrains.annotations.NotNull;
 import ru.urfu.bots.Bot;
 import ru.urfu.localobjects.LocalMessage;
@@ -23,6 +24,8 @@ public enum RegistrationFullNameState implements MathMechBotState {
     INSTANCE;
 
     private final static int NUMBER_OF_WORDS_IN_FULL_NAME_WITH_PATRONYM = 3;
+    private final static Pattern VALID_FULL_NAME_PATTERN =
+            Pattern.compile("^[А-ЯЁ][а-яё]+\\s+[А-ЯЁ][а-яё]+(\\s+[А-ЯЁ][а-яё]+)?$");
 
     /**
      * Проверяет корректность введенного ФИО.
@@ -32,7 +35,7 @@ public enum RegistrationFullNameState implements MathMechBotState {
      */
     public boolean validateFullName(String str) {
         // TODO: Проверить более сложные имена, содержащие дефисы или несколько слов.
-        return str.matches("^[А-ЯЁ][а-яё]+\\s+[А-ЯЁ][а-яё]+(\\s+[А-ЯЁ][а-яё]+)?$");
+        return VALID_FULL_NAME_PATTERN.matcher(str).matches();
     }
 
     @Override

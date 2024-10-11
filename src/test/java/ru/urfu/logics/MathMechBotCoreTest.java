@@ -13,12 +13,15 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.EmptySource;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import ru.urfu.localobjects.LocalButton;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
 import ru.urfu.logics.mathmechbot.MathMechBotCore;
+import ru.urfu.logics.mathmechbot.models.User;
+import ru.urfu.logics.mathmechbot.models.UserEntry;
 import ru.urfu.logics.mathmechbot.models.builders.UserBuilder;
 import ru.urfu.logics.mathmechbot.models.builders.UserEntryBuilder;
 import ru.urfu.logics.mathmechbot.models.userstates.DefaultUserState;
@@ -182,7 +185,7 @@ final class MathMechBotCoreTest {
                 .build();
 
         final static LocalMessage ASK_GROUP_NUMBER = new LocalMessageBuilder()
-                .text("На каком курсе Вы обучаетесь?")
+                .text("Какая у Вас группа?")
                 .buttons(new ArrayList<>(List.of(
                         new LocalButton("1 группа", "1"),
                         new LocalButton("2 группа", "2"),
@@ -266,8 +269,7 @@ final class MathMechBotCoreTest {
              * @param fullName некорректные ФИО или ФИ.
              */
             @ParameterizedTest(name = "\"{0}\" - сообщение, содержащее некорректное ФИО")
-            @EmptySource
-            @NullSource
+            @NullAndEmptySource
             @ValueSource(strings = {
                     "И", "И И", "И И", "Иванов", "Иванов И", "И Иванов",
                     "И Иванов Иванов", "Иванов Иванов И", "Иванов И Иванов",
@@ -318,6 +320,9 @@ final class MathMechBotCoreTest {
         @Nested
         @DisplayName("Состояние: запрос года обучения")
         class YearState {
+            User currentUser;
+            UserEntry currentUserEntry;
+
             /**
              * До тестов запускаем команду <code>/register</code>
              * и отправляем корректное ФИО, так как это уже протестировано.
@@ -326,15 +331,27 @@ final class MathMechBotCoreTest {
             @BeforeEach
             void setupTest() {
                 logic.processMessage(REGISTER_MESSAGE, 0L, bot);
-                logic.processMessage(new LocalMessageBuilder().text("Иванов Иван Иванович").build(), 0L, bot);
+                logic.processMessage(new LocalMessageBuilder().text("Иванов Артём Иванович").build(), 0L, bot);
+
+                currentUser = storage.users.get(0L).get();
+                currentUserEntry = storage.userEntries.get(0L).get();
+
                 bot.getOutcomingMessageList().clear();
             }
 
             /**
-             * Проверяем, что бот принимает годы обучения.
+             * <p>Проверяем, что бот принимает годы обучения.</p>
+             *
              * <ol>
              *     <li>Отправляем корректное корректный год обучения.</li>
-             *     <li>Проверяем, что бот принял их.</li>
+             *     <li>Проверяем, что пользователь перешёл в нужное состояние:
+             *          <ul>
+             *              <li>Если год первый, то в состояние выбора направления первого курса.</li>
+             *              <li>Если иной, то в состояние выбора направления старших курсов.</li>
+             *          </ul>
+             *     </li>
+             *     <li>Проверяем, что бот отправил нужное сообщение.</li>
+             *     <li>Проверяем, что пользовательские данные теперь содержат год обучения.</li>
              * </ol>
              *
              * @param year корректный год обучения.
@@ -345,45 +362,62 @@ final class MathMechBotCoreTest {
             void testCorrectData(String year) {
                 logic.processMessage(new LocalMessageBuilder().text(year).build(), 0L, bot);
                 if (Objects.equals(year, "1")) {
+                    Assertions.assertEquals(
+                            new UserBuilder(0L, RegistrationUserState.SPECIALTY1).build(),
+                            storage.users.get(0L).get());
                     Assertions.assertEquals(ASK_FIRST_YEAR_SPECIALTY, bot.getOutcomingMessageList().getLast());
                 } else {
+                    Assertions.assertEquals(
+                            new UserBuilder(0L, RegistrationUserState.SPECIALTY2).build(),
+                            storage.users.get(0L).get());
                     Assertions.assertEquals(ASK_LATER_YEAR_SPECIALTY, bot.getOutcomingMessageList().getLast());
                 }
+                Assertions.assertEquals(
+                        new UserEntryBuilder(currentUserEntry).year(Integer.parseInt(year)).build(),
+                        storage.userEntries.get(0L).get());
             }
 
             /**
-             * Проверяем, что бот не принимает иных.
+             * <p>Проверяем, что бот не принимает иных.</p>
+             *
              * <ol>
              *     <li>Отправляем некорректные данные.</li>
-             *     <li>Проверяем, что бот не принял их.</li>
+             *     <li>Проверяем, что состояние пользователя не изменилось.</li>
+             *     <li>Проверяем, что запись пользователя не изменилась.</li>
+             *     <li>Проверяем, что запросил повторный ввод.</li>
              * </ol>
              *
              * @param text некорректное сообщение.
              */
             @ParameterizedTest(name = "\"{0}\" не является годом обучения")
-            @EmptySource
-            @NullSource
-            @ValueSource(strings = {"0", "7", "10", "a", "((("})
+            @NullAndEmptySource
+            @ValueSource(strings = {"0", "01", " 1", "2 ", " 3 ", "7", "10", "a", "((("})
             @DisplayName("Некорректный ввод")
             void testIncorrectData(String text) {
                 logic.processMessage(new LocalMessageBuilder().text(text).build(), 0L, bot);
+
+                Assertions.assertEquals(currentUser, storage.users.get(0L).get());
+                Assertions.assertEquals(currentUserEntry, storage.userEntries.get(0L).get());
+
                 Assertions.assertEquals(TRY_AGAIN, bot.getOutcomingMessageList().getFirst());
                 Assertions.assertEquals(ASK_YEAR, bot.getOutcomingMessageList().getLast());
             }
 
             /**
-             * Проверяем, что бот корректно возвращает на шаг назад, то есть в состояние запроса ФИО.
+             * <p>Проверяем, что бот корректно возвращает на шаг назад, то есть в состояние запроса ФИО.</p>
+             *
              * <ol>
-             *     <li>Нажимаем кнопку "Назад"</li>
+             *     <li>Нажимаем кнопку "Назад".</li>
              *     <li>Проверяем, что бот в вернулся в состояние запроса ФИО (запросил ФИО снова).</li>
-             *     <li>Проверяем, что пользователь всё так же не зарегистрирован.</li>
              * </ol>
              */
             @Test
             @DisplayName("Нажата кнопка 'Назад'")
             void testBackCommand() {
                 logic.processMessage(BACK_MESSAGE, 0L, bot);
-                Assertions.assertEquals(ASK_FULL_NAME, bot.getOutcomingMessageList().getLast());
+                Assertions.assertEquals(
+                        new UserBuilder(0L, RegistrationUserState.NAME).build(),
+                        storage.users.get(0L).get());
             }
         }
 

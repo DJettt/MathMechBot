@@ -55,7 +55,7 @@ public enum RegistrationGroupState implements MathMechBotState {
     @NotNull
     public LocalMessage enterMessage(@NotNull MathMechBotCore context, long userId) {
         return new LocalMessageBuilder()
-                .text("На каком курсе Вы обучаетесь?")
+                .text("Какая у Вас группа?")
                 .buttons(new ArrayList<>(List.of(
                         new LocalButton("1 группа", "1"),
                         new LocalButton("2 группа", "2"),

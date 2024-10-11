@@ -3,6 +3,7 @@ package ru.urfu.logics.mathmechbot.states.registration;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 import org.jetbrains.annotations.NotNull;
 import ru.urfu.bots.Bot;
 import ru.urfu.localobjects.LocalButton;
@@ -20,6 +21,7 @@ import ru.urfu.logics.mathmechbot.states.MathMechBotState;
 public enum RegistrationYearState implements MathMechBotState {
     INSTANCE;
 
+    private final static Pattern VALID_YEAR_STRING_PATTERN = Pattern.compile("^[1-6]$");
     private final static LocalMessage ON_ENTER_MESSAGE = new LocalMessageBuilder()
             .text("На каком курсе Вы обучаетесь?")
             .buttons(new ArrayList<>(List.of(
@@ -80,26 +82,28 @@ public enum RegistrationYearState implements MathMechBotState {
     public void textHandler(MathMechBotCore context, LocalMessage message, long chatId, Bot bot) {
         assert message.text() != null;
 
+        int year;
         try {
-            final int maxYear = 6;
-            final int year = Integer.parseInt(message.text().trim());
-            if (year == 1) {
-                context.storage.userEntries.changeUserEntryYear(chatId, year);
-                context.storage.users.changeUserState(chatId, RegistrationUserState.SPECIALTY1);
-
-                final LocalMessage msg = RegistrationFirstYearSpecialtiesState.INSTANCE.enterMessage(context, chatId);
-                bot.sendMessage(msg, chatId);
-            } else if (year > 1 && year <= maxYear) {
-                context.storage.userEntries.changeUserEntryYear(chatId, year);
-                context.storage.users.changeUserState(chatId, RegistrationUserState.SPECIALTY2);
-
-                final LocalMessage msg = RegistrationLaterYearSpecialitiesState.INSTANCE.enterMessage(context, chatId);
-                bot.sendMessage(msg, chatId);
-            } else {
-                bot.sendMessage(Constants.TRY_AGAIN, chatId);
-                bot.sendMessage(ON_ENTER_MESSAGE, chatId);
-            }
+            year = Integer.parseInt(message.text().trim());
         } catch (NumberFormatException e) {
+            bot.sendMessage(Constants.TRY_AGAIN, chatId);
+            bot.sendMessage(ON_ENTER_MESSAGE, chatId);
+            return;
+        }
+
+        if (message.text().equals("1")) {
+            context.storage.userEntries.changeUserEntryYear(chatId, year);
+            context.storage.users.changeUserState(chatId, RegistrationUserState.SPECIALTY1);
+
+            final LocalMessage msg = RegistrationFirstYearSpecialtiesState.INSTANCE.enterMessage(context, chatId);
+            bot.sendMessage(msg, chatId);
+        } else if (VALID_YEAR_STRING_PATTERN.matcher(message.text()).matches()) {
+            context.storage.userEntries.changeUserEntryYear(chatId, year);
+            context.storage.users.changeUserState(chatId, RegistrationUserState.SPECIALTY2);
+
+            final LocalMessage msg = RegistrationLaterYearSpecialitiesState.INSTANCE.enterMessage(context, chatId);
+            bot.sendMessage(msg, chatId);
+        } else {
             bot.sendMessage(Constants.TRY_AGAIN, chatId);
             bot.sendMessage(ON_ENTER_MESSAGE, chatId);
         }
