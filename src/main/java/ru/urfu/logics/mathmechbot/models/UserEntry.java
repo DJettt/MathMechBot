@@ -2,6 +2,7 @@ package ru.urfu.logics.mathmechbot.models;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import ru.urfu.storages.Identifiable;
 
 /**
  * Модель введённых пользователем данных.

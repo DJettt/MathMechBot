@@ -2,7 +2,6 @@ package ru.urfu.storages;
 
 import java.util.List;
 import java.util.Optional;
-import ru.urfu.logics.mathmechbot.models.Identifiable;
 
 /**
  * Интерфейс хранилища, некоторой абстракции над данными.

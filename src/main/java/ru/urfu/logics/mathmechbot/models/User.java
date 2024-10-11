@@ -2,6 +2,7 @@ package ru.urfu.logics.mathmechbot.models;
 
 import org.jetbrains.annotations.NotNull;
 import ru.urfu.logics.mathmechbot.models.userstates.MathMechBotUserState;
+import ru.urfu.storages.Identifiable;
 
 /**
  * Модель пользователя, подписавшегося на пересылку информации.

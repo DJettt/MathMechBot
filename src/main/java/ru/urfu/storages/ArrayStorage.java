@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import ru.urfu.logics.mathmechbot.models.Identifiable;
 
 /**
  * Хранилище данных, реализованное на простом массиве.
