@@ -2,6 +2,7 @@ package ru.urfu.storages;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import ru.urfu.logics.mathmechbot.models.Identifiable;
 
@@ -58,19 +59,6 @@ public class ArrayStorage<T extends Identifiable<I>, I> implements Storage<T, I>
 
     @Override
     public void delete(T member) {
-        boolean found = false;
-
-        int index = 0;
-        for (final T t : array) {
-            found = t.id().equals(member.id());
-            if (found) {
-                break;
-            }
-            ++index;
-        }
-
-        if (found) {
-            array.remove(index);
-        }
+        array.removeIf(storedMnember -> Objects.equals(storedMnember.id(), member.id()));
     }
 }
