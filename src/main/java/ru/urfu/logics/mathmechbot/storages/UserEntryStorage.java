@@ -2,7 +2,7 @@ package ru.urfu.logics.mathmechbot.storages;
 
 import org.jetbrains.annotations.NotNull;
 import ru.urfu.logics.mathmechbot.models.UserEntry;
-import ru.urfu.logics.mathmechbot.models.builders.UserEntryBuilder;
+import ru.urfu.logics.mathmechbot.models.UserEntryBuilder;
 import ru.urfu.storages.Storage;
 
 /**

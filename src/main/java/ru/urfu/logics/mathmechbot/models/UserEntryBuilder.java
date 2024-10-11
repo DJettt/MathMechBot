@@ -1,8 +1,7 @@
-package ru.urfu.logics.mathmechbot.models.builders;
+package ru.urfu.logics.mathmechbot.models;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import ru.urfu.logics.mathmechbot.models.UserEntry;
 
 /**
  * Билдер для рекорда UserEntry.

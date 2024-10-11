@@ -1,7 +1,6 @@
-package ru.urfu.logics.mathmechbot.models.builders;
+package ru.urfu.logics.mathmechbot.models;
 
 import org.jetbrains.annotations.NotNull;
-import ru.urfu.logics.mathmechbot.models.User;
 import ru.urfu.logics.mathmechbot.models.userstates.MathMechBotUserState;
 
 /**
