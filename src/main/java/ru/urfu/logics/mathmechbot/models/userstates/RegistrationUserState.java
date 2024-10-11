@@ -63,8 +63,11 @@ import ru.urfu.logics.mathmechbot.states.registration.RegistrationYearState;
 public enum RegistrationUserState implements MathMechBotUserState {
     NAME(RegistrationFullNameState.INSTANCE),
     YEAR(RegistrationYearState.INSTANCE),
+
+    // TODO: сменить названия на более осмысленные. Не делаю этого, чтобы не вносить координальных изменений в код.
     SPECIALTY1(RegistrationFirstYearSpecialtiesState.INSTANCE),
     SPECIALTY2(RegistrationLaterYearSpecialitiesState.INSTANCE),
+
     GROUP(RegistrationGroupState.INSTANCE),
     MEN(RegistrationMenGroupState.INSTANCE),
     CONFIRMATION(RegistrationConfirmationState.INSTANCE);
