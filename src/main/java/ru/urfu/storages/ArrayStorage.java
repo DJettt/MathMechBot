@@ -58,6 +58,6 @@ public class ArrayStorage<T extends Identifiable<I>, I> implements Storage<T, I>
 
     @Override
     public void delete(T member) {
-        array.removeIf(storedMnember -> Objects.equals(storedMnember.id(), member.id()));
+        array.removeIf(storedMember -> Objects.equals(storedMember.id(), member.id()));
     }
 }
