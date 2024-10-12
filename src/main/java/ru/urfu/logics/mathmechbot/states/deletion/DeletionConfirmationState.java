@@ -7,9 +7,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.urfu.bots.Bot;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
+import ru.urfu.localobjects.Request;
 import ru.urfu.logics.mathmechbot.Constants;
 import ru.urfu.logics.mathmechbot.MathMechBotCore;
 import ru.urfu.logics.mathmechbot.models.MathMechBotUserState;
@@ -27,23 +27,22 @@ public enum DeletionConfirmationState implements MathMechBotState {
     private final static Logger LOGGER = LoggerFactory.getLogger(DeletionConfirmationState.class);
 
     @Override
-    public void processMessage(@NotNull MathMechBotCore context, @NotNull LocalMessage msg,
-                               long chatId, @NotNull Bot bot) {
-        switch (msg.text()) {
-            case Constants.BACK_COMMAND -> backCommandHandler(context, chatId, bot);
-            case Constants.ACCEPT_COMMAND -> acceptCommandHandler(context, chatId, bot);
-            case Constants.DECLINE_COMMAND -> declineCommandHandler(context, chatId, bot);
+    public void processMessage(@NotNull MathMechBotCore context, @NotNull Request request) {
+        switch (request.message().text()) {
+            case Constants.BACK_COMMAND -> backCommandHandler(context, request);
+            case Constants.ACCEPT_COMMAND -> acceptCommandHandler(context, request);
+            case Constants.DECLINE_COMMAND -> declineCommandHandler(context, request);
             case null, default -> {
-                bot.sendMessage(Constants.TRY_AGAIN, chatId);
-                bot.sendMessage(enterMessage(context, chatId), chatId);
+                request.bot().sendMessage(Constants.TRY_AGAIN, request.id());
+                request.bot().sendMessage(enterMessage(context, request), request.id());
             }
         }
     }
 
     @Override
     @Nullable
-    public LocalMessage enterMessage(@NotNull MathMechBotCore context, long userId) {
-        final Optional<UserEntry> userEntryOptional = context.storage.userEntries.get(userId);
+    public LocalMessage enterMessage(@NotNull MathMechBotCore context, @NotNull Request request) {
+        final Optional<UserEntry> userEntryOptional = context.storage.userEntries.get(request.id());
 
         if (userEntryOptional.isEmpty()) {
             LOGGER.error("User without entry reached deletion confirmation state");
@@ -65,40 +64,37 @@ public enum DeletionConfirmationState implements MathMechBotState {
      * Возвращаем пользователя на шаг назад, то есть в основное состояние.
      *
      * @param context логического ядро (контекст для состояния).
-     * @param chatId  идентификатор чата
-     * @param bot     бот, принявший сообщение
+     * @param request запрос.
      */
-    private void backCommandHandler(MathMechBotCore context, long chatId, Bot bot) {
-        context.storage.users.changeUserState(chatId, MathMechBotUserState.DEFAULT);
-        bot.sendMessage(DefaultState.INSTANCE.enterMessage(context, chatId), chatId);
+    private void backCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
+        context.storage.users.changeUserState(request.id(), MathMechBotUserState.DEFAULT);
+        request.bot().sendMessage(DefaultState.INSTANCE.enterMessage(context, request), request.id());
     }
 
     /**
      * Обрабатывает команду согласия: удаляет данные пользователя, переносит в дефолтное состояние.
      *
      * @param context логического ядро (контекст для состояния).
-     * @param chatId  идентификатор чата
-     * @param bot     бот, принявший сообщение
+     * @param request запрос.
      */
-    private void acceptCommandHandler(MathMechBotCore context, long chatId, Bot bot) {
-        final Optional<UserEntry> userEntryOptional = context.storage.userEntries.get(chatId);
+    private void acceptCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
+        final Optional<UserEntry> userEntryOptional = context.storage.userEntries.get(request.id());
         userEntryOptional.ifPresent(context.storage.userEntries::delete);
 
-        context.storage.users.changeUserState(chatId, MathMechBotUserState.DEFAULT);
-        bot.sendMessage(new LocalMessageBuilder().text("Удаляем...").build(), chatId);
-        bot.sendMessage(DefaultState.INSTANCE.enterMessage(context, chatId), chatId);
+        context.storage.users.changeUserState(request.id(), MathMechBotUserState.DEFAULT);
+        request.bot().sendMessage(new LocalMessageBuilder().text("Удаляем...").build(), request.id());
+        request.bot().sendMessage(DefaultState.INSTANCE.enterMessage(context, request), request.id());
     }
 
     /**
      * Обрабатывает команду несогласия: переносит в дефолтное состояние.
      *
      * @param context логического ядро (контекст для состояния).
-     * @param chatId  идентификатор чата
-     * @param bot     бот, принявший сообщение
+     * @param request запрос.
      */
-    private void declineCommandHandler(MathMechBotCore context, long chatId, Bot bot) {
-        context.storage.users.changeUserState(chatId, MathMechBotUserState.DEFAULT);
-        bot.sendMessage(new LocalMessageBuilder().text("Отмена...").build(), chatId);
-        bot.sendMessage(DefaultState.INSTANCE.enterMessage(context, chatId), chatId);
+    private void declineCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
+        context.storage.users.changeUserState(request.id(), MathMechBotUserState.DEFAULT);
+        request.bot().sendMessage(new LocalMessageBuilder().text("Отмена...").build(), request.id());
+        request.bot().sendMessage(DefaultState.INSTANCE.enterMessage(context, request), request.id());
     }
 }

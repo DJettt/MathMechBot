@@ -3,10 +3,10 @@ package ru.urfu.logics.mathmechbot.states.registration;
 import java.util.ArrayList;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
-import ru.urfu.bots.Bot;
 import ru.urfu.localobjects.LocalButton;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
+import ru.urfu.localobjects.Request;
 import ru.urfu.logics.mathmechbot.Constants;
 import ru.urfu.logics.mathmechbot.MathMechBotCore;
 import ru.urfu.logics.mathmechbot.models.MathMechBotUserState;
@@ -36,21 +36,20 @@ public sealed interface RegistrationSpecialitiesState
     }
 
     @Override
-    default void processMessage(@NotNull MathMechBotCore context, @NotNull LocalMessage msg,
-                                long chatId, @NotNull Bot bot) {
-        switch (msg.text()) {
-            case Constants.BACK_COMMAND -> backCommandHandler(context, chatId, bot);
+    default void processMessage(@NotNull MathMechBotCore context, @NotNull Request request) {
+        switch (request.message().text()) {
+            case Constants.BACK_COMMAND -> backCommandHandler(context, request);
             case null -> {
-                bot.sendMessage(Constants.TRY_AGAIN, chatId);
-                bot.sendMessage(enterMessage(context, chatId), chatId);
+                request.bot().sendMessage(Constants.TRY_AGAIN, request.id());
+                request.bot().sendMessage(enterMessage(context, request), request.id());
             }
-            default -> textHandler(context, msg, chatId, bot);
+            default -> textHandler(context, request);
         }
     }
 
     @Override
     @NotNull
-    default LocalMessage enterMessage(@NotNull MathMechBotCore context, long userId) {
+    default LocalMessage enterMessage(@NotNull MathMechBotCore context, @NotNull Request request) {
         List<LocalButton> buttons = new ArrayList<>();
         for (Specialty specialty : allowedSpecialties()) {
             buttons.add(new LocalButton(specialty.getAbbreviation(), specialty.getAbbreviation()));
@@ -64,12 +63,11 @@ public sealed interface RegistrationSpecialitiesState
      * Возвращаем пользователя на шаг назад, то есть на запрос года обучения.
      *
      * @param context логического ядро (контекст для состояния).
-     * @param chatId  идентификатор чата.
-     * @param bot     бот, принявший сообщение.
+     * @param request запрос.
      */
-    private void backCommandHandler(MathMechBotCore context, long chatId, Bot bot) {
-        context.storage.users.changeUserState(chatId, MathMechBotUserState.REGISTRATION_YEAR);
-        bot.sendMessage(RegistrationYearState.INSTANCE.enterMessage(context, chatId), chatId);
+    private void backCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
+        context.storage.users.changeUserState(request.id(), MathMechBotUserState.REGISTRATION_YEAR);
+        request.bot().sendMessage(RegistrationYearState.INSTANCE.enterMessage(context, request), request.id());
     }
 
 
@@ -79,21 +77,23 @@ public sealed interface RegistrationSpecialitiesState
      * В противном случае просим пользователя повторить ввод.
      *
      * @param context логического ядро (контекст для состояния).
-     * @param message полученное сообщение
-     * @param chatId  идентификатор чата
-     * @param bot     бот, принявший сообщение
+     * @param request запрос.
      */
-    default void textHandler(MathMechBotCore context, LocalMessage message, long chatId, Bot bot) {
-        assert message.text() != null;
+    default void textHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
+        assert request.message().text() != null;
 
-        if (!allowedSpecialties().stream().map(Specialty::getAbbreviation).toList().contains(message.text())) {
-            bot.sendMessage(Constants.TRY_AGAIN, chatId);
-            bot.sendMessage(enterMessage(context, chatId), chatId);
+        if (!allowedSpecialties()
+                .stream()
+                .map(Specialty::getAbbreviation)
+                .toList()
+                .contains(request.message().text())) {
+            request.bot().sendMessage(Constants.TRY_AGAIN, request.id());
+            request.bot().sendMessage(enterMessage(context, request), request.id());
             return;
         }
 
-        context.storage.userEntries.changeUserEntrySpecialty(chatId, message.text());
-        context.storage.users.changeUserState(chatId, MathMechBotUserState.REGISTRATION_GROUP);
-        bot.sendMessage(RegistrationGroupState.INSTANCE.enterMessage(context, chatId), chatId);
+        context.storage.userEntries.changeUserEntrySpecialty(request.id(), request.message().text());
+        context.storage.users.changeUserState(request.id(), MathMechBotUserState.REGISTRATION_GROUP);
+        request.bot().sendMessage(RegistrationGroupState.INSTANCE.enterMessage(context, request), request.id());
     }
 }

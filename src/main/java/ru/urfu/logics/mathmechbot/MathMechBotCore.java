@@ -4,8 +4,7 @@ import java.util.Optional;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.urfu.bots.Bot;
-import ru.urfu.localobjects.LocalMessage;
+import ru.urfu.localobjects.Request;
 import ru.urfu.logics.LogicCore;
 import ru.urfu.logics.mathmechbot.models.MathMechBotUserState;
 import ru.urfu.logics.mathmechbot.models.User;
@@ -33,29 +32,20 @@ public final class MathMechBotCore implements LogicCore {
         currentState = DefaultState.INSTANCE;
     }
 
-    /**
-     * Меняет состояние контекста (паттерн "State").
-     *
-     * @param state новое состояние контекста.
-     */
-    private void changeState(@NotNull MathMechBotState state) {
-        currentState = state;
-    }
-
     @Override
-    public void processMessage(@NotNull LocalMessage msg, long chatId, @NotNull Bot bot) {
+    public void processMessage(@NotNull Request request) {
         User user;
-        Optional<User> userOptional = storage.users.get(chatId);
+        Optional<User> userOptional = storage.users.get(request.id());
 
         if (userOptional.isEmpty()) {
-            storage.users.add(new User(chatId, MathMechBotUserState.DEFAULT));
-            assert storage.users.get(chatId).isPresent();
+            storage.users.add(new User(request.id(), MathMechBotUserState.DEFAULT));
+            assert storage.users.get(request.id()).isPresent();
         }
-        user = storage.users.get(chatId).get();
+        user = storage.users.get(request.id()).get();
 
         LOGGER.info(user.toString());
 
-        changeState(user.currentState().stateInstance());
-        currentState.processMessage(this, msg, chatId, bot);
+        currentState = user.currentState().stateInstance();
+        currentState.processMessage(this, request);
     }
 }

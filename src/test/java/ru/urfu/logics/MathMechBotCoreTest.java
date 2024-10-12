@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -11,14 +12,13 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.EmptySource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
-import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import ru.urfu.localobjects.LocalButton;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
+import ru.urfu.localobjects.Request;
 import ru.urfu.logics.mathmechbot.MathMechBotCore;
 import ru.urfu.logics.mathmechbot.models.MathMechBotUserState;
 import ru.urfu.logics.mathmechbot.models.User;
@@ -79,6 +79,14 @@ final class MathMechBotCoreTest {
         bot = new DummyBot();
     }
 
+    private Request makeRequestFromMessage(@NotNull LocalMessage message) {
+        return makeRequestFromMessage(message, 0L);
+    }
+
+    private Request makeRequestFromMessage(@NotNull LocalMessage message, long id) {
+        return new Request(id, message, bot);
+    }
+
     /**
      * Регистрирует человека со следующими данными.
      * Нужна для быстрых тестов команд, где требуется зарегистрированный пользователь.
@@ -102,7 +110,7 @@ final class MathMechBotCoreTest {
         ));
 
         for (final LocalMessage message : messages) {
-            logic.processMessage(message, id, bot);
+            logic.processMessage(makeRequestFromMessage(message, id));
         }
         bot.getOutcomingMessageList().clear();
     }
@@ -110,11 +118,11 @@ final class MathMechBotCoreTest {
     @Test
     @DisplayName("Тестирование команды /info")
     void testInfoExist() {
-        logic.processMessage(INFO_MESSAGE, 0L, bot);
+        logic.processMessage(makeRequestFromMessage(INFO_MESSAGE));
         Assertions.assertEquals(ASK_FOR_REGISTRATION_MESSAGE, bot.getOutcomingMessageList().getFirst());
 
         registerUser(0L, "Ильин Илья Ильич", 2, "КН", 3, "МЕН-654321");
-        logic.processMessage(INFO_MESSAGE, 0L, bot);
+        logic.processMessage(makeRequestFromMessage(INFO_MESSAGE));
         Assertions.assertEquals(new LocalMessageBuilder()
                         .text("""
                                 Данные о Вас:
@@ -241,10 +249,11 @@ final class MathMechBotCoreTest {
             @MethodSource
             @DisplayName("Различные корректные ФИО или ФИ")
             void testCorrectData(String incomingMessageText, String surname, String name, String patronym) {
-                logic.processMessage(REGISTER_MESSAGE, 0L, bot);
+                logic.processMessage(makeRequestFromMessage(REGISTER_MESSAGE));
                 Assertions.assertEquals(ASK_FULL_NAME, bot.getOutcomingMessageList().getFirst());
 
-                logic.processMessage(new LocalMessageBuilder().text(incomingMessageText).build(), 0L, bot);
+                logic.processMessage(
+                        makeRequestFromMessage(new LocalMessageBuilder().text(incomingMessageText).build()));
 
                 Assertions.assertEquals(
                         new UserEntryBuilder(0L, surname, name, 0L).patronym(patronym).build(),
@@ -279,8 +288,9 @@ final class MathMechBotCoreTest {
             })
             @DisplayName("Различные некорректные ФИО или ФИ")
             void testIncorrectData(String fullName) {
-                logic.processMessage(REGISTER_MESSAGE, 0L, bot);
-                logic.processMessage(new LocalMessageBuilder().text(fullName).build(), 0L, bot);
+                logic.processMessage(makeRequestFromMessage(REGISTER_MESSAGE));
+                logic.processMessage(
+                        makeRequestFromMessage(new LocalMessageBuilder().text(fullName).build()));
 
                 Assertions.assertTrue(storage.userEntries.get(0L).isEmpty());
                 Assertions.assertEquals(
@@ -304,8 +314,8 @@ final class MathMechBotCoreTest {
             @Test
             @DisplayName("Нажата кнопка 'Назад'")
             void testBackCommand() {
-                logic.processMessage(REGISTER_MESSAGE, 0L, bot);
-                logic.processMessage(BACK_MESSAGE, 0L, bot);
+                logic.processMessage(makeRequestFromMessage(REGISTER_MESSAGE));
+                logic.processMessage(makeRequestFromMessage(BACK_MESSAGE));
 
                 Assertions.assertTrue(storage.userEntries.get(0L).isEmpty());
                 Assertions.assertEquals(
@@ -332,8 +342,9 @@ final class MathMechBotCoreTest {
              */
             @BeforeEach
             void setupTest() {
-                logic.processMessage(REGISTER_MESSAGE, 0L, bot);
-                logic.processMessage(new LocalMessageBuilder().text("Иванов Артём Иванович").build(), 0L, bot);
+                logic.processMessage(makeRequestFromMessage(REGISTER_MESSAGE));
+                logic.processMessage(
+                        makeRequestFromMessage(new LocalMessageBuilder().text("Иванов Артём Иванович").build()));
 
                 currentUser = storage.users.get(0L).orElseThrow();
                 currentUserEntry = storage.userEntries.get(0L).orElseThrow();
@@ -362,7 +373,9 @@ final class MathMechBotCoreTest {
             @ValueSource(strings = {"1", "2", "3", "4", "5", "6"})
             @DisplayName("Все возможные корректные годы обучения")
             void testCorrectData(String year) {
-                logic.processMessage(new LocalMessageBuilder().text(year).build(), 0L, bot);
+                logic.processMessage(
+                        makeRequestFromMessage(new LocalMessageBuilder().text(year).build()));
+
                 if (Objects.equals(year, "1")) {
                     Assertions.assertEquals(
                             new UserBuilder(0L, MathMechBotUserState.REGISTRATION_SPECIALTY1).build(),
@@ -396,7 +409,7 @@ final class MathMechBotCoreTest {
             @ValueSource(strings = {"0", "01", " 1", "2 ", " 3 ", "7", "10", "a", "((("})
             @DisplayName("Некорректный ввод")
             void testIncorrectData(String text) {
-                logic.processMessage(new LocalMessageBuilder().text(text).build(), 0L, bot);
+                logic.processMessage(makeRequestFromMessage(new LocalMessageBuilder().text(text).build()));
 
                 Assertions.assertEquals(currentUser, storage.users.get(0L).orElseThrow());
                 Assertions.assertEquals(currentUserEntry, storage.userEntries.get(0L).orElseThrow());
@@ -416,7 +429,7 @@ final class MathMechBotCoreTest {
             @Test
             @DisplayName("Нажата кнопка 'Назад'")
             void testBackCommand() {
-                logic.processMessage(BACK_MESSAGE, 0L, bot);
+                logic.processMessage(makeRequestFromMessage(BACK_MESSAGE));
                 Assertions.assertEquals(
                         new UserBuilder(0L, MathMechBotUserState.REGISTRATION_NAME).build(),
                         storage.users.get(0L).orElseThrow());
@@ -439,15 +452,17 @@ final class MathMechBotCoreTest {
              */
             @BeforeEach
             void setupTest() {
-                logic.processMessage(REGISTER_MESSAGE, 0L, bot);
-                logic.processMessage(new LocalMessageBuilder().text("Иванов Иван Иванович").build(), 0L, bot);
-                logic.processMessage(new LocalMessageBuilder().text("1").build(), 0L, bot);
+                logic.processMessage(makeRequestFromMessage(REGISTER_MESSAGE));
+                logic.processMessage(
+                        makeRequestFromMessage(new LocalMessageBuilder().text("Иванов Иван Иванович").build()));
+                logic.processMessage(makeRequestFromMessage(new LocalMessageBuilder().text("1").build()));
                 currentFirstYearUser = storage.users.get(0L).orElseThrow();
                 currentFirstYearUserEntry = storage.userEntries.get(0L).orElseThrow();
 
-                logic.processMessage(REGISTER_MESSAGE, 1L, bot);
-                logic.processMessage(new LocalMessageBuilder().text("Ильин Илья Ильич").build(), 1L, bot);
-                logic.processMessage(new LocalMessageBuilder().text("2").build(), 1L, bot);
+                logic.processMessage(makeRequestFromMessage(REGISTER_MESSAGE, 1));
+                logic.processMessage(
+                        makeRequestFromMessage(new LocalMessageBuilder().text("Ильин Илья Ильич").build(), 1));
+                logic.processMessage(makeRequestFromMessage(new LocalMessageBuilder().text("2").build(), 1));
                 currentSecondYearUser = storage.users.get(1L).orElseThrow();
                 currentSecondYearUserEntry = storage.userEntries.get(1L).orElseThrow();
 
@@ -467,12 +482,13 @@ final class MathMechBotCoreTest {
              *
              * @param specialtyAbbreviation корректная аббревиатура направления подготовки, общего для всех курсов.
              */
+            @DisplayName("Корректные направления подготовки, общие для всех курсов")
             @ParameterizedTest(name = "\"{0}\" - корректное направление подготовки для обоих курсов")
             @ValueSource(strings = {"КБ", "ФТ"})
-            @DisplayName("Все возможные корректные направления подготовки, общие для всех курсов")
             void testCommonData(String specialtyAbbreviation) {
                 // Первокурсник
-                logic.processMessage(new LocalMessageBuilder().text(specialtyAbbreviation).build(), 0L, bot);
+                logic.processMessage(
+                        makeRequestFromMessage(new LocalMessageBuilder().text(specialtyAbbreviation).build()));
                 Assertions.assertEquals(
                         new UserBuilder(0L, MathMechBotUserState.REGISTRATION_GROUP).build(),
                         storage.users.get(0L).orElseThrow());
@@ -482,7 +498,8 @@ final class MathMechBotCoreTest {
                 Assertions.assertEquals(ASK_GROUP_NUMBER, bot.getOutcomingMessageList().getFirst());
 
                 // Второкурсник
-                logic.processMessage(new LocalMessageBuilder().text(specialtyAbbreviation).build(), 1L, bot);
+                logic.processMessage(makeRequestFromMessage(
+                        new LocalMessageBuilder().text(specialtyAbbreviation).build(), 1));
                 Assertions.assertEquals(
                         new UserBuilder(1L, MathMechBotUserState.REGISTRATION_GROUP).build(),
                         storage.users.get(1L).orElseThrow());
@@ -509,12 +526,13 @@ final class MathMechBotCoreTest {
              *
              * @param specialtyAbbreviation корректная аббревиатура направления подготовки только первого курса.
              */
+            @DisplayName("Корректные направления подготовки первого курса")
             @ParameterizedTest(name = "\"{0}\" - корректное направление подготовки только для первого курса")
             @ValueSource(strings = {"КНМО", "ММП"})
-            @DisplayName("Все возможные корректные направления подготовки первого курса")
             void testFirstYearOnlyData(String specialtyAbbreviation) {
                 // Первокурсник
-                logic.processMessage(new LocalMessageBuilder().text(specialtyAbbreviation).build(), 0L, bot);
+                logic.processMessage(
+                        makeRequestFromMessage(new LocalMessageBuilder().text(specialtyAbbreviation).build(), 0L));
                 Assertions.assertEquals(
                         new UserBuilder(0L, MathMechBotUserState.REGISTRATION_GROUP).build(),
                         storage.users.get(0L).orElseThrow());
@@ -525,7 +543,8 @@ final class MathMechBotCoreTest {
                 bot.getOutcomingMessageList().clear();
 
                 // Второкурсник
-                logic.processMessage(new LocalMessageBuilder().text(specialtyAbbreviation).build(), 1L, bot);
+                logic.processMessage(
+                        makeRequestFromMessage(new LocalMessageBuilder().text(specialtyAbbreviation).build(), 1));
                 Assertions.assertEquals(currentSecondYearUser, storage.users.get(1L).orElseThrow());
                 Assertions.assertEquals(currentSecondYearUserEntry, storage.userEntries.get(1L).orElseThrow());
                 Assertions.assertEquals(TRY_AGAIN, bot.getOutcomingMessageList().getFirst());
@@ -549,12 +568,13 @@ final class MathMechBotCoreTest {
              *
              * @param specialtyAbbreviation корректная аббревиатура направления подготовки только старших курсов.
              */
+            @DisplayName("Корректные направления подготовки поздних курса")
             @ParameterizedTest(name = "\"{0}\" - корректное направление подготовки только для поздних курса")
             @ValueSource(strings = {"КН", "МО", "МХ", "ПМ"})
-            @DisplayName("Все возможные корректные направления подготовки поздних курса")
             void testLaterYearsOnlyData(String specialtyAbbreviation) {
                 // Первокурсник
-                logic.processMessage(new LocalMessageBuilder().text(specialtyAbbreviation).build(), 0L, bot);
+                logic.processMessage(
+                        makeRequestFromMessage(new LocalMessageBuilder().text(specialtyAbbreviation).build()));
                 Assertions.assertEquals(currentFirstYearUser, storage.users.get(0L).orElseThrow());
                 Assertions.assertEquals(currentFirstYearUserEntry, storage.userEntries.get(0L).orElseThrow());
                 Assertions.assertEquals(TRY_AGAIN, bot.getOutcomingMessageList().getFirst());
@@ -562,7 +582,8 @@ final class MathMechBotCoreTest {
                 bot.getOutcomingMessageList().clear();
 
                 // Второкурсник
-                logic.processMessage(new LocalMessageBuilder().text(specialtyAbbreviation).build(), 1L, bot);
+                logic.processMessage(
+                        makeRequestFromMessage(new LocalMessageBuilder().text(specialtyAbbreviation).build(), 1));
                 Assertions.assertEquals(
                         new UserBuilder(1L, MathMechBotUserState.REGISTRATION_GROUP).build(),
                         storage.users.get(1L).orElseThrow());
@@ -585,14 +606,14 @@ final class MathMechBotCoreTest {
              *
              * @param incorrectMessageText не разрешённое направление подготовки.
              */
-            @ParameterizedTest(name = "\"{0}\" не является разрешённым направление подготовки")
-            @EmptySource
-            @NullSource
-            @ValueSource(strings = {" КН", "КН ", " КН ", "кн", "string", "0"})
             @DisplayName("Некорректный ввод")
+            @ParameterizedTest(name = "\"{0}\" не является разрешённым направление подготовки")
+            @NullAndEmptySource
+            @ValueSource(strings = {" КН", "КН ", " КН ", "кн", "string", "0"})
             void testIncorrectData(String incorrectMessageText) {
                 // Первокурсник
-                logic.processMessage(new LocalMessageBuilder().text(incorrectMessageText).build(), 0L, bot);
+                logic.processMessage(
+                        makeRequestFromMessage(new LocalMessageBuilder().text(incorrectMessageText).build()));
                 Assertions.assertEquals(currentFirstYearUser, storage.users.get(0L).orElseThrow());
                 Assertions.assertEquals(currentFirstYearUserEntry, storage.userEntries.get(0L).orElseThrow());
                 Assertions.assertEquals(TRY_AGAIN, bot.getOutcomingMessageList().getFirst());
@@ -600,7 +621,8 @@ final class MathMechBotCoreTest {
                 bot.getOutcomingMessageList().clear();
 
                 // Второкурсник
-                logic.processMessage(new LocalMessageBuilder().text(incorrectMessageText).build(), 1L, bot);
+                logic.processMessage(
+                        makeRequestFromMessage(new LocalMessageBuilder().text(incorrectMessageText).build(), 1));
                 Assertions.assertEquals(currentSecondYearUser, storage.users.get(1L).orElseThrow());
                 Assertions.assertEquals(currentSecondYearUserEntry, storage.userEntries.get(1L).orElseThrow());
                 Assertions.assertEquals(TRY_AGAIN, bot.getOutcomingMessageList().getFirst());
@@ -619,8 +641,8 @@ final class MathMechBotCoreTest {
             @Test
             @DisplayName("Нажата кнопка 'Назад'")
             void testBackCommand() {
-                logic.processMessage(BACK_MESSAGE, 0L, bot);
-                logic.processMessage(BACK_MESSAGE, 1L, bot);
+                logic.processMessage(makeRequestFromMessage(BACK_MESSAGE));
+                logic.processMessage(makeRequestFromMessage(BACK_MESSAGE, 1));
 
                 Assertions.assertEquals(
                         new UserBuilder(0L, MathMechBotUserState.REGISTRATION_YEAR).build(),
@@ -645,10 +667,13 @@ final class MathMechBotCoreTest {
 
             @BeforeEach
             void setupTest() {
-                logic.processMessage(REGISTER_MESSAGE, 0L, bot);
-                logic.processMessage(new LocalMessageBuilder().text("Максимов Андрей").build(), 0L, bot);
-                logic.processMessage(new LocalMessageBuilder().text("2").build(), 0L, bot);
-                logic.processMessage(new LocalMessageBuilder().text("ФТ").build(), 0L, bot);
+                logic.processMessage(makeRequestFromMessage(REGISTER_MESSAGE));
+                logic.processMessage(
+                        makeRequestFromMessage(new LocalMessageBuilder().text("Максимов Андрей").build()));
+                logic.processMessage(
+                        makeRequestFromMessage(new LocalMessageBuilder().text("2").build()));
+                logic.processMessage(
+                        makeRequestFromMessage(new LocalMessageBuilder().text("ФТ").build()));
                 currentUser = storage.users.get(0L).orElseThrow();
                 currentUserEntry = storage.userEntries.get(0L).orElseThrow();
                 bot.getOutcomingMessageList().clear();
@@ -668,9 +693,10 @@ final class MathMechBotCoreTest {
              */
             @DisplayName("Все возможные корректные номера группы")
             @ParameterizedTest(name = "\"{0}\" - корректный номер группы")
-            @ValueSource(strings = {"1", "2", "3", "4", "5", "6"})
+            @ValueSource(strings = {"1", "2", "3", "4", "5"})
             void testCorrectData(String group) {
-                logic.processMessage(new LocalMessageBuilder().text(group).build(), 0L, bot);
+                logic.processMessage(
+                        makeRequestFromMessage(new LocalMessageBuilder().text(group).build()));
 
                 Assertions.assertEquals(
                         new UserBuilder(0L, MathMechBotUserState.REGISTRATION_MEN).build(),
@@ -698,7 +724,8 @@ final class MathMechBotCoreTest {
             @NullAndEmptySource
             @ValueSource(strings = {"0", "01", " 1", "2 ", " 3 ", "7", "10", "a", "((("})
             void testIncorrectData(String text) {
-                logic.processMessage(new LocalMessageBuilder().text(text).build(), 0L, bot);
+                logic.processMessage(
+                        makeRequestFromMessage(new LocalMessageBuilder().text(text).build()));
 
                 Assertions.assertEquals(currentUser, storage.users.get(0L).orElseThrow());
                 Assertions.assertEquals(currentUserEntry, storage.userEntries.get(0L).orElseThrow());
@@ -717,7 +744,7 @@ final class MathMechBotCoreTest {
             @Test
             @DisplayName("Нажата кнопка 'Назад'")
             void testBackCommand() {
-                logic.processMessage(BACK_MESSAGE, 0L, bot);
+                logic.processMessage(makeRequestFromMessage(BACK_MESSAGE));
                 Assertions.assertEquals(
                         new UserBuilder(0L, MathMechBotUserState.REGISTRATION_YEAR).build(),
                         storage.users.get(0L).orElseThrow());
@@ -738,7 +765,7 @@ final class MathMechBotCoreTest {
         @Test
         @DisplayName("Незарегистрированный пользователь пытается удалить свои данные")
         void testUnregisteredUser() {
-            logic.processMessage(DELETE_MESSAGE, 0L, bot);
+            logic.processMessage(makeRequestFromMessage(DELETE_MESSAGE));
             Assertions.assertEquals(ASK_FOR_REGISTRATION_MESSAGE, bot.getOutcomingMessageList().getLast());
         }
 
@@ -762,7 +789,7 @@ final class MathMechBotCoreTest {
         void testRegisteredUserSaysYes() {
             registerUser(0L, "Иванов Иван Иванович", 1, "ММП", 2, "МЕН-123456");
 
-            logic.processMessage(DELETE_MESSAGE, 0L, bot);
+            logic.processMessage(makeRequestFromMessage(DELETE_MESSAGE));
             Assertions.assertEquals(
                     new LocalMessageBuilder().text("""
                                     Точно удаляем?
@@ -773,7 +800,7 @@ final class MathMechBotCoreTest {
                             .build(),
                     bot.getOutcomingMessageList().getFirst());
 
-            logic.processMessage(ACCEPT_MESSAGE, 0L, bot);
+            logic.processMessage(makeRequestFromMessage(ACCEPT_MESSAGE));
             Assertions.assertEquals(
                     new LocalMessageBuilder().text("Удаляем...").build(),
                     bot.getOutcomingMessageList().get(1));
@@ -805,8 +832,8 @@ final class MathMechBotCoreTest {
             registerUser(0L, "Иванов Иван Иванович", 1, "ММП", 2, "МЕН-123456");
             final UserEntry userEntryBeforeDelete = storage.userEntries.get(0L).orElseThrow();
 
-            logic.processMessage(DELETE_MESSAGE, 0L, bot);
-            logic.processMessage(DECLINE_MESSAGE, 0L, bot);
+            logic.processMessage(makeRequestFromMessage(DELETE_MESSAGE));
+            logic.processMessage(makeRequestFromMessage(DECLINE_MESSAGE));
             Assertions.assertEquals(
                     new LocalMessageBuilder().text("Отмена...").build(),
                     bot.getOutcomingMessageList().get(1));
@@ -839,8 +866,8 @@ final class MathMechBotCoreTest {
             registerUser(0L, "Иванов Иван Иванович", 1, "ММП", 2, "МЕН-123456");
             final UserEntry userEntryBeforeDelete = storage.userEntries.get(0L).orElseThrow();
 
-            logic.processMessage(DELETE_MESSAGE, 0L, bot);
-            logic.processMessage(BACK_MESSAGE, 0L, bot);
+            logic.processMessage(makeRequestFromMessage(DELETE_MESSAGE));
+            logic.processMessage(makeRequestFromMessage(BACK_MESSAGE));
 
             Assertions.assertEquals(
                     new UserBuilder(0L, MathMechBotUserState.DEFAULT).build(),
@@ -871,8 +898,9 @@ final class MathMechBotCoreTest {
             registerUser(0L, "Иванов Иван Иванович", 1, "ММП", 2, "МЕН-123456");
             final UserEntry userEntryBeforeDelete = storage.userEntries.get(0L).orElseThrow();
 
-            logic.processMessage(DELETE_MESSAGE, 0L, bot);
-            logic.processMessage(new LocalMessageBuilder().text("Some string").build(), 0L, bot);
+            logic.processMessage(makeRequestFromMessage(DELETE_MESSAGE));
+            logic.processMessage(
+                    makeRequestFromMessage(new LocalMessageBuilder().text("Some string").build()));
 
             Assertions.assertEquals(
                     new UserBuilder(0L, MathMechBotUserState.DELETION_CONFIRMATION).build(),

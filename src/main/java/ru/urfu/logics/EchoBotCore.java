@@ -1,9 +1,9 @@
 package ru.urfu.logics;
 
 import org.jetbrains.annotations.NotNull;
-import ru.urfu.bots.Bot;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
+import ru.urfu.localobjects.Request;
 
 /**
  * Логическое ядро эхо-бота.
@@ -16,39 +16,36 @@ public final class EchoBotCore implements LogicCore {
 
     /**
      * Обрабатывает всю информацию, полученную с ботов.
-     * @param msg сообщение, которое нужно обработать
+     * @param request сообщение, которое нужно обработать
      */
     @Override
-    public void processMessage(@NotNull LocalMessage msg, long chatId, @NotNull Bot bot) {
-        if (msg.text() == null) {
+    public void processMessage(@NotNull Request request) {
+        if (request.message().text() == null) {
             return;
         }
 
-        switch (msg.text()) {
-            case START_COMMAND, HELP_COMMAND -> helpCommandHandler(chatId, bot);
-            default -> defaultHandler(msg, chatId, bot);
+        switch (request.message().text()) {
+            case START_COMMAND, HELP_COMMAND -> helpCommandHandler(request);
+            default -> defaultHandler(request);
         }
     }
 
     /**
      * Обрабатывает сообщения, не распознанные как заявленные команды.
-     * @param inputMessage входящее сообщение
-     * @param chatId идентификатор чата отправителя
-     * @param bot бот, от которого пришло сообщение
+     * @param request запрос.
      */
-    private void defaultHandler(LocalMessage inputMessage, long chatId, Bot bot) {
+    private void defaultHandler(@NotNull Request request) {
         final LocalMessage answer = new LocalMessageBuilder()
-                .text("Ты написал: " + inputMessage.text())
+                .text("Ты написал: " + request.message().text())
                 .build();
-        bot.sendMessage(answer, chatId);
+        request.bot().sendMessage(answer, request.id());
     }
 
     /**
      * Выдаёт справку.
-     * @param chatId идентификатор чата отправителя
-     * @param bot бот, от которого пришло сообщение
+     * @param request запрос.
      */
-    private void helpCommandHandler(Long chatId, Bot bot) {
+    private void helpCommandHandler(@NotNull Request request) {
         final String HELP_MESSAGE = """
                 Привет, я эхо бот! Сейчас я расскажу как ты можешь со мной взаимодействовать.
                 Пассивная способность: Я пишу твое сообщение тебе обратно но добавляю фразу 'Ты написал:' в начало \
@@ -61,6 +58,6 @@ public final class EchoBotCore implements LogicCore {
         final LocalMessage answer = new LocalMessageBuilder()
                 .text(HELP_MESSAGE)
                 .build();
-        bot.sendMessage(answer, chatId);
+        request.bot().sendMessage(answer, request.id());
     }
 }

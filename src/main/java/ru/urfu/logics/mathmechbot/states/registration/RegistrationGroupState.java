@@ -5,10 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 import org.jetbrains.annotations.NotNull;
-import ru.urfu.bots.Bot;
 import ru.urfu.localobjects.LocalButton;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
+import ru.urfu.localobjects.Request;
 import ru.urfu.logics.mathmechbot.Constants;
 import ru.urfu.logics.mathmechbot.MathMechBotCore;
 import ru.urfu.logics.mathmechbot.models.MathMechBotUserState;
@@ -21,7 +21,7 @@ import ru.urfu.logics.mathmechbot.states.MathMechBotState;
 public enum RegistrationGroupState implements MathMechBotState {
     INSTANCE;
 
-    private final static Pattern VALID_GROUP_STRING_PATTERN = Pattern.compile("^[1-6]$");
+    private final static Pattern VALID_GROUP_STRING_PATTERN = Pattern.compile("^[1-5]$");
     private final static LocalMessage ON_ENTER_MESSAGE = new LocalMessageBuilder()
             .text("Какая у Вас группа?")
             .buttons(new ArrayList<>(List.of(
@@ -34,18 +34,17 @@ public enum RegistrationGroupState implements MathMechBotState {
             .build();
 
     @Override
-    public void processMessage(@NotNull MathMechBotCore context, @NotNull LocalMessage msg,
-                               long chatId, @NotNull Bot bot) {
-        switch (msg.text()) {
-            case Constants.BACK_COMMAND -> backCommandHandler(context, chatId, bot);
-            case null -> bot.sendMessage(Constants.TRY_AGAIN, chatId);
-            default -> textCommandHandler(context, msg, chatId, bot);
+    public void processMessage(@NotNull MathMechBotCore context, @NotNull Request request) {
+        switch (request.message().text()) {
+            case Constants.BACK_COMMAND -> backCommandHandler(context, request);
+            case null -> request.bot().sendMessage(Constants.TRY_AGAIN, request.id());
+            default -> textCommandHandler(context, request);
         }
     }
 
     @Override
     @NotNull
-    public LocalMessage enterMessage(@NotNull MathMechBotCore context, long userId) {
+    public LocalMessage enterMessage(@NotNull MathMechBotCore context, @NotNull Request request) {
         return ON_ENTER_MESSAGE;
     }
 
@@ -53,36 +52,33 @@ public enum RegistrationGroupState implements MathMechBotState {
      * Возвращаем пользователя на два шага назад, то есть на запрос года обучения.
      *
      * @param context логического ядро (контекст для состояния).
-     * @param chatId  идентификатор чата
-     * @param bot     бот, принявший сообщение
+     * @param request запрос.
      */
-    private void backCommandHandler(MathMechBotCore context, long chatId, Bot bot) {
-        context.storage.users.changeUserState(chatId, MathMechBotUserState.REGISTRATION_YEAR);
-        final LocalMessage message = RegistrationYearState.INSTANCE.enterMessage(context, chatId);
-        bot.sendMessage(message, chatId);
+    private void backCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
+        context.storage.users.changeUserState(request.id(), MathMechBotUserState.REGISTRATION_YEAR);
+        final LocalMessage message = RegistrationYearState.INSTANCE.enterMessage(context, request);
+        request.bot().sendMessage(message, request.id());
     }
 
     /**
      * Проверяем различные текстовые сообщения.
      *
      * @param context логического ядро (контекст для состояния).
-     * @param message полученное сообщение
-     * @param chatId  идентификатор чата
-     * @param bot     бот, принявший сообщение
+     * @param request запрос.
      */
-    private void textCommandHandler(MathMechBotCore context, LocalMessage message, long chatId, Bot bot) {
-        assert message.text() != null;
+    private void textCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
+        assert request.message().text() != null;
 
-        if (!VALID_GROUP_STRING_PATTERN.matcher(message.text()).matches()) {
-            bot.sendMessage(Constants.TRY_AGAIN, chatId);
-            bot.sendMessage(ON_ENTER_MESSAGE, chatId);
+        if (!VALID_GROUP_STRING_PATTERN.matcher(request.message().text()).matches()) {
+            request.bot().sendMessage(Constants.TRY_AGAIN, request.id());
+            request.bot().sendMessage(ON_ENTER_MESSAGE, request.id());
             return;
         }
 
-        context.storage.userEntries.changeUserEntryGroup(chatId, Integer.parseInt(message.text()));
-        context.storage.users.changeUserState(chatId, MathMechBotUserState.REGISTRATION_MEN);
+        context.storage.userEntries.changeUserEntryGroup(request.id(), Integer.parseInt(request.message().text()));
+        context.storage.users.changeUserState(request.id(), MathMechBotUserState.REGISTRATION_MEN);
 
-        final LocalMessage msg = RegistrationMenGroupState.INSTANCE.enterMessage(context, chatId);
-        bot.sendMessage(msg, chatId);
+        final LocalMessage msg = RegistrationMenGroupState.INSTANCE.enterMessage(context, request);
+        request.bot().sendMessage(msg, request.id());
     }
 }

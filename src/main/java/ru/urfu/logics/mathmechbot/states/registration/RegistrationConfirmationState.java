@@ -7,9 +7,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.urfu.bots.Bot;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
+import ru.urfu.localobjects.Request;
 import ru.urfu.logics.mathmechbot.Constants;
 import ru.urfu.logics.mathmechbot.MathMechBotCore;
 import ru.urfu.logics.mathmechbot.models.MathMechBotUserState;
@@ -27,34 +27,35 @@ public enum RegistrationConfirmationState implements MathMechBotState {
     private final static Logger LOGGER = LoggerFactory.getLogger(RegistrationConfirmationState.class);
 
     @Override
-    public void processMessage(@NotNull MathMechBotCore context, @NotNull LocalMessage msg,
-                               long chatId, @NotNull Bot bot) {
-        switch (msg.text()) {
+    public void processMessage(@NotNull MathMechBotCore context, @NotNull Request request) {
+        switch (request.message().text()) {
             case Constants.BACK_COMMAND -> {
-                context.storage.users.changeUserState(chatId, MathMechBotUserState.REGISTRATION_MEN);
-                bot.sendMessage(RegistrationMenGroupState.INSTANCE.enterMessage(context, chatId), chatId);
+                context.storage.users.changeUserState(request.id(), MathMechBotUserState.REGISTRATION_MEN);
+                request.bot().sendMessage(
+                        RegistrationMenGroupState.INSTANCE.enterMessage(context, request),
+                        request.id());
             }
 
             case Constants.ACCEPT_COMMAND -> {
-                context.storage.users.changeUserState(chatId, MathMechBotUserState.DEFAULT);
-                bot.sendMessage(new LocalMessageBuilder().text("Сохранил...").build(), chatId);
-                bot.sendMessage(DefaultState.INSTANCE.enterMessage(context, chatId), chatId);
+                context.storage.users.changeUserState(request.id(), MathMechBotUserState.DEFAULT);
+                request.bot().sendMessage(new LocalMessageBuilder().text("Сохранил...").build(), request.id());
+                request.bot().sendMessage(DefaultState.INSTANCE.enterMessage(context, request), request.id());
             }
 
             case Constants.DECLINE_COMMAND -> {
-                context.storage.users.changeUserState(chatId, MathMechBotUserState.DEFAULT);
-                bot.sendMessage(new LocalMessageBuilder().text("Отмена...").build(), chatId);
-                bot.sendMessage(DefaultState.INSTANCE.enterMessage(context, chatId), chatId);
+                context.storage.users.changeUserState(request.id(), MathMechBotUserState.DEFAULT);
+                request.bot().sendMessage(new LocalMessageBuilder().text("Отмена...").build(), request.id());
+                request.bot().sendMessage(DefaultState.INSTANCE.enterMessage(context, request), request.id());
             }
 
-            case null, default -> bot.sendMessage(Constants.TRY_AGAIN, chatId);
+            case null, default -> request.bot().sendMessage(Constants.TRY_AGAIN, request.id());
         }
     }
 
     @Override
     @Nullable
-    public LocalMessage enterMessage(@NotNull MathMechBotCore context, long userId) {
-        final Optional<UserEntry> userEntryOptional = context.storage.userEntries.get(userId);
+    public LocalMessage enterMessage(@NotNull MathMechBotCore context, @NotNull Request request) {
+        final Optional<UserEntry> userEntryOptional = context.storage.userEntries.get(request.id());
 
         if (userEntryOptional.isEmpty()) {
             LOGGER.error("User without entry reached registration end");
