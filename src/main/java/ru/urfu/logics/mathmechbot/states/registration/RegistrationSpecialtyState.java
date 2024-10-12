@@ -53,7 +53,8 @@ public enum RegistrationSpecialtyState implements MathMechBotState {
      * Возвращает список разрешённых специальностей.
      * Нужно для наследования от этого класса.
      *
-     * @return список разрешённых специальностей
+     * @param year год обучения данного студента.
+     * @return список разрешённых специальностей.
      */
     @NotNull
     private List<Specialty> allowedSpecialties(int year) {
@@ -79,6 +80,7 @@ public enum RegistrationSpecialtyState implements MathMechBotState {
         }
     }
 
+    @Override
     @NotNull
     public LocalMessage enterMessage(@NotNull MathMechBotCore context, @NotNull Request request) {
         List<LocalButton> buttons = new ArrayList<>();
