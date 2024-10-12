@@ -26,10 +26,8 @@ public enum Specialty {
         this.abbreviation = abbreviation;
     }
 
-
     /**
      * Геттер поля abbreviation.
-     *
      * @return содержимое поля.
      */
     @NotNull

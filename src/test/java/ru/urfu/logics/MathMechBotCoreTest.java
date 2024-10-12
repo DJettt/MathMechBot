@@ -25,6 +25,7 @@ import ru.urfu.logics.mathmechbot.models.UserBuilder;
 import ru.urfu.logics.mathmechbot.models.UserEntry;
 import ru.urfu.logics.mathmechbot.models.UserEntryBuilder;
 import ru.urfu.logics.mathmechbot.models.userstates.DefaultUserState;
+import ru.urfu.logics.mathmechbot.models.userstates.DeletionUserState;
 import ru.urfu.logics.mathmechbot.models.userstates.RegistrationUserState;
 import ru.urfu.logics.mathmechbot.storages.MathMechStorage;
 import ru.urfu.logics.mathmechbot.storages.UserArrayStorage;
@@ -89,9 +90,8 @@ final class MathMechBotCoreTest {
      * @param specialty аббревиатура направления.
      * @param group     номер группы.
      * @param men       группа в формате МЕН.
-     * @return результат команды <code>/info</code> для него.
      */
-    private LocalMessage registerUser(String fullName, int year, String specialty, int group, String men) {
+    private void registerUser(long id, String fullName, int year, String specialty, int group, String men) {
         final ArrayList<LocalMessage> messages = new ArrayList<>(List.of(
                 REGISTER_MESSAGE,
                 new LocalMessageBuilder().text(fullName).build(),
@@ -104,11 +104,9 @@ final class MathMechBotCoreTest {
         ));
 
         for (final LocalMessage message : messages) {
-            logic.processMessage(message, 0L, bot);
+            logic.processMessage(message, id, bot);
         }
-        final LocalMessage infoResult = bot.getOutcomingMessageList().getLast();
         bot.getOutcomingMessageList().clear();
-        return infoResult;
     }
 
     @Test
@@ -117,7 +115,7 @@ final class MathMechBotCoreTest {
         logic.processMessage(INFO_MESSAGE, 0L, bot);
         Assertions.assertEquals(ASK_FOR_REGISTRATION_MESSAGE, bot.getOutcomingMessageList().getFirst());
 
-        registerUser("Ильин Илья Ильич", 2, "КН", 3, "МЕН-654321");
+        registerUser(0L, "Ильин Илья Ильич", 2, "КН", 3, "МЕН-654321");
         logic.processMessage(INFO_MESSAGE, 0L, bot);
         Assertions.assertEquals(new LocalMessageBuilder()
                         .text("""
@@ -650,22 +648,25 @@ final class MathMechBotCoreTest {
             Assertions.assertEquals(ASK_FOR_REGISTRATION_MESSAGE, bot.getOutcomingMessageList().getLast());
         }
 
-
         /**
-         * Проверяем, что у зарегистрированного пользователя при просьбе
-         * и подтверждении удалить данные, данные удаляются.
+         * <p>Проверяем, что у зарегистрированного пользователя при просьбе
+         * и подтверждении удалить данные, данные удаляются.</p>
+         *
          * <ol>
          *     <li>Регистрируемся.</li>
          *     <li>Запускаем команду <code>/delete</code>.</li>
          *     <li>Проверяем, что бот отправил запрос на подтверждение.</li>
          *     <li>Нажимаем кнопку "Да".</li>
          *     <li>Проверяем, что бот подтвердил удаление данных.</li>
+         *     <li>Проверяем, что пользователь вернулся в дефолтное состояние.</li>
+         *     <li>Проверяем, что данные действительно удалились.</li>
+         *     <li>Проверяем, что пользователю отправилась справка.</li>
          * </ol>
          */
         @Test
         @DisplayName("Нажата кнопка 'Да' во время подтверждения удаления данных")
         void testRegisteredUserSaysYes() {
-            registerUser("Иванов Иван Иванович", 1, "ММП", 2, "МЕН-123456");
+            registerUser(0L, "Иванов Иван Иванович", 1, "ММП", 2, "МЕН-123456");
 
             logic.processMessage(DELETE_MESSAGE, 0L, bot);
             Assertions.assertEquals(
@@ -682,89 +683,119 @@ final class MathMechBotCoreTest {
             Assertions.assertEquals(
                     new LocalMessageBuilder().text("Удаляем...").build(),
                     bot.getOutcomingMessageList().get(1));
-            Assertions.assertEquals(HELP, bot.getOutcomingMessageList().get(2));
 
-            logic.processMessage(INFO_MESSAGE, 0L, bot);
-            Assertions.assertEquals(ASK_FOR_REGISTRATION_MESSAGE, bot.getOutcomingMessageList().get(3));
+            Assertions.assertTrue(storage.userEntries.get(0L).isEmpty());
+            Assertions.assertEquals(
+                    new UserBuilder(0L, DefaultUserState.DEFAULT).build(),
+                    storage.users.get(0L).get());
+            Assertions.assertEquals(HELP, bot.getOutcomingMessageList().get(1));
         }
 
         /**
-         * Проверяем случай, когда зарегистрированный пользователь
-         * запускает команду /delete, но не подтверждает удаление.
+         * <p>Проверяем случай, когда зарегистрированный пользователь
+         * запускает команду /delete, но не подтверждает удаление.</p>
+         *
          * <ol>
          *     <li>Регистрируемся.</li>
          *     <li>Запускаем команду <code>/delete</code>.</li>
          *     <li>Нажимаем кнопку "Неа".</li>
          *     <li>Проверяем, что бот подтвердил не удаление данных.</li>
+         *     <li>Проверяем, что пользователь вернулся в дефолтное состояние.</li>
          *     <li>Проверяем, что данные не удалились.</li>
+         *     <li>Проверяем, что пользователю отправилась справка.</li>
          * </ol>
          */
         @Test
         @DisplayName("Нажата кнопка 'Неа' во время подтверждения удаления данных")
         void testRegisteredUserSaysNo() {
-            final LocalMessage userInfo = registerUser(
-                    "Иванов Иван Иванович", 1, "ММП", 2, "МЕН-123456");
-            logic.processMessage(DELETE_MESSAGE, 0L, bot);
-            bot.getOutcomingMessageList().clear();
+            registerUser(0L, "Иванов Иван Иванович", 1, "ММП", 2, "МЕН-123456");
+            final UserEntry userEntryBeforeDelete = storage.userEntries.get(0L).get();
 
+            logic.processMessage(DELETE_MESSAGE, 0L, bot);
             logic.processMessage(DECLINE_MESSAGE, 0L, bot);
             Assertions.assertEquals(
                     new LocalMessageBuilder().text("Отмена...").build(),
-                    bot.getOutcomingMessageList().getFirst());
-            Assertions.assertEquals(HELP, bot.getOutcomingMessageList().get(1));
+                    bot.getOutcomingMessageList().get(1));
 
-            logic.processMessage(INFO_MESSAGE, 0L, bot);
-            Assertions.assertEquals(userInfo, bot.getOutcomingMessageList().get(2));
+            Assertions.assertEquals(
+                    new UserBuilder(0L, DefaultUserState.DEFAULT).build(),
+                    storage.users.get(0L).get());
+            Assertions.assertEquals(
+                    userEntryBeforeDelete,
+                    storage.userEntries.get(0L).get());
+            Assertions.assertEquals(HELP, bot.getOutcomingMessageList().get(1));
         }
 
         /**
-         * Проверяем случай, когда зарегистрированный пользователь
-         * запускает команду /delete, а затем нажимает кнопку "Назад".
+         * <p>Проверяем случай, когда зарегистрированный пользователь
+         * запускает команду /delete, а затем нажимает кнопку "Назад".</p>
+         *
          * <ol>
          *     <li>Регистрируемся.</li>
          *     <li>Запускаем команду <code>/delete</code>.</li>
          *     <li>Нажимаем кнопку "Назад".</li>
          *     <li>Проверяем, что бот вернулся в основное состояние.</li>
          *     <li>Проверяем, что данные не удалились.</li>
+         *     <li>Проверяем, что пользователю отправилась справка.</li>
          * </ol>
          */
         @Test
         @DisplayName("Нажата кнопка 'Назад' во время подтверждения удаления данных")
         void testRegisteredUserSaysBack() {
-            final LocalMessage userInfo = registerUser(
-                    "Иванов Иван Иванович", 1, "ММП", 2, "МЕН-123456");
+            registerUser(0L, "Иванов Иван Иванович", 1, "ММП", 2, "МЕН-123456");
+            final UserEntry userEntryBeforeDelete = storage.userEntries.get(0L).get();
+
             logic.processMessage(DELETE_MESSAGE, 0L, bot);
-            bot.getOutcomingMessageList().clear();
-
             logic.processMessage(BACK_MESSAGE, 0L, bot);
-            Assertions.assertEquals(HELP, bot.getOutcomingMessageList().getFirst());
 
-            logic.processMessage(INFO_MESSAGE, 0L, bot);
-            Assertions.assertEquals(userInfo, bot.getOutcomingMessageList().get(1));
+            Assertions.assertEquals(
+                    new UserBuilder(0L, DefaultUserState.DEFAULT).build(),
+                    storage.users.get(0L).get());
+            Assertions.assertEquals(
+                    userEntryBeforeDelete,
+                    storage.userEntries.get(0L).get());
+            Assertions.assertEquals(HELP, bot.getOutcomingMessageList().get(1));
         }
 
         /**
-         * Проверяем случай, когда зарегистрированный пользователь
+         * <p>Проверяем случай, когда зарегистрированный пользователь
          * запускает команду /delete, но на запрос о подтверждении
-         * удаления пользователь отправляет непредвиденный текст.
+         * удаления пользователь отправляет непредвиденный текст.</p>
+         *
          * <ol>
          *     <li>Регистрируемся.</li>
          *     <li>Запускаем команду <code>/delete</code>.</li>
-         *     <li>Отправляем сообщение с произвольным текстом "SomethingElse".</li>
-         *     <li>Проверяем, что бот переспросил.</li>
+         *     <li>Нажимаем кнопку отправляем сообщение, не содержащее ожидаемые ответы.</li>
+         *     <li>Проверяем, что состояние пользователя не изменилось.</li>
+         *     <li>Проверяем, что данные не удалились.</li>
+         *     <li>Проверяем, что бот запросил повторный ввод.</li>
          * </ol>
          */
         @Test
         @DisplayName("Вместо подтверждения пришёл неожиданный текст")
         void testRegisteredUserSaysSomethingElse() {
-            registerUser("Иванов Иван Иванович", 1, "ММП", 2, "МЕН-123456");
-            logic.processMessage(DELETE_MESSAGE, 0L, bot);
-            bot.getOutcomingMessageList().clear();
+            registerUser(0L, "Иванов Иван Иванович", 1, "ММП", 2, "МЕН-123456");
+            final UserEntry userEntryBeforeDelete = storage.userEntries.get(0L).get();
 
-            logic.processMessage(
-                    new LocalMessageBuilder().text("SomethingElse").build(),
-                    0L, bot);
-            Assertions.assertEquals(TRY_AGAIN, bot.getOutcomingMessageList().getFirst());
+            logic.processMessage(DELETE_MESSAGE, 0L, bot);
+            logic.processMessage(new LocalMessageBuilder().text("Some string").build(), 0L, bot);
+
+            Assertions.assertEquals(
+                    new UserBuilder(0L, DeletionUserState.CONFIRMATION).build(),
+                    storage.users.get(0L).get());
+            Assertions.assertEquals(
+                    userEntryBeforeDelete,
+                    storage.userEntries.get(0L).get());
+            Assertions.assertEquals(TRY_AGAIN, bot.getOutcomingMessageList().get(1));
+            Assertions.assertEquals(
+                    new LocalMessageBuilder().text("""
+                                    Точно удаляем?
+
+                                    ФИО: Иванов Иван Иванович
+                                    Группа: ММП-102 (МЕН-123456)""")
+                            .buttons(YES_NO_BACK)
+                            .build(),
+                    bot.getOutcomingMessageList().get(2));
         }
     }
 }

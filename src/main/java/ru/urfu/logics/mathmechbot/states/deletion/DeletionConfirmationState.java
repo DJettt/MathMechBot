@@ -30,27 +30,13 @@ public enum DeletionConfirmationState implements MathMechBotState {
     public void processMessage(@NotNull MathMechBotCore context, @NotNull LocalMessage msg,
                                long chatId, @NotNull Bot bot) {
         switch (msg.text()) {
-            case Constants.BACK_COMMAND -> {
-                context.storage.users.changeUserState(chatId, DefaultUserState.DEFAULT);
-                bot.sendMessage(DefaultState.INSTANCE.enterMessage(context, chatId), chatId);
+            case Constants.BACK_COMMAND -> backCommandHandler(context, chatId, bot);
+            case Constants.ACCEPT_COMMAND -> acceptCommandHandler(context, chatId, bot);
+            case Constants.DECLINE_COMMAND -> declineCommandHandler(context, chatId, bot);
+            case null, default -> {
+                bot.sendMessage(Constants.TRY_AGAIN, chatId);
+                bot.sendMessage(enterMessage(context, chatId), chatId);
             }
-
-            case Constants.ACCEPT_COMMAND -> {
-                final Optional<UserEntry> userEntryOptional = context.storage.userEntries.get(chatId);
-                userEntryOptional.ifPresent(context.storage.userEntries::delete);
-
-                context.storage.users.changeUserState(chatId, DefaultUserState.DEFAULT);
-                bot.sendMessage(new LocalMessageBuilder().text("Удаляем...").build(), chatId);
-                bot.sendMessage(DefaultState.INSTANCE.enterMessage(context, chatId), chatId);
-            }
-
-            case Constants.DECLINE_COMMAND -> {
-                context.storage.users.changeUserState(chatId, DefaultUserState.DEFAULT);
-                bot.sendMessage(new LocalMessageBuilder().text("Отмена...").build(), chatId);
-                bot.sendMessage(DefaultState.INSTANCE.enterMessage(context, chatId), chatId);
-            }
-
-            case null, default -> bot.sendMessage(Constants.TRY_AGAIN, chatId);
         }
     }
 
@@ -73,5 +59,46 @@ public enum DeletionConfirmationState implements MathMechBotState {
                 .text("Точно удаляем?\n\n" + userInfo)
                 .buttons(new ArrayList<>(List.of(Constants.YES_BUTTON, Constants.NO_BUTTON, Constants.BACK_BUTTON)))
                 .build();
+    }
+
+    /**
+     * Возвращаем пользователя на шаг назад, то есть в основное состояние.
+     *
+     * @param context логического ядро (контекст для состояния).
+     * @param chatId  идентификатор чата
+     * @param bot     бот, принявший сообщение
+     */
+    private void backCommandHandler(MathMechBotCore context, long chatId, Bot bot) {
+        context.storage.users.changeUserState(chatId, DefaultUserState.DEFAULT);
+        bot.sendMessage(DefaultState.INSTANCE.enterMessage(context, chatId), chatId);
+    }
+
+    /**
+     * Обрабатывает команду согласия: удаляет данные пользователя, переносит в дефолтное состояние.
+     *
+     * @param context логического ядро (контекст для состояния).
+     * @param chatId  идентификатор чата
+     * @param bot     бот, принявший сообщение
+     */
+    private void acceptCommandHandler(MathMechBotCore context, long chatId, Bot bot) {
+        final Optional<UserEntry> userEntryOptional = context.storage.userEntries.get(chatId);
+        userEntryOptional.ifPresent(context.storage.userEntries::delete);
+
+        context.storage.users.changeUserState(chatId, DefaultUserState.DEFAULT);
+        bot.sendMessage(new LocalMessageBuilder().text("Удаляем...").build(), chatId);
+        bot.sendMessage(DefaultState.INSTANCE.enterMessage(context, chatId), chatId);
+    }
+
+    /**
+     * Обрабатывает команду несогласия: переносит в дефолтное состояние.
+     *
+     * @param context логического ядро (контекст для состояния).
+     * @param chatId  идентификатор чата
+     * @param bot     бот, принявший сообщение
+     */
+    private void declineCommandHandler(MathMechBotCore context, long chatId, Bot bot) {
+        context.storage.users.changeUserState(chatId, DefaultUserState.DEFAULT);
+        bot.sendMessage(new LocalMessageBuilder().text("Отмена...").build(), chatId);
+        bot.sendMessage(DefaultState.INSTANCE.enterMessage(context, chatId), chatId);
     }
 }
