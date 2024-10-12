@@ -1,9 +1,9 @@
 package ru.urfu.logics.mathmechbot.storages;
 
 import org.jetbrains.annotations.NotNull;
+import ru.urfu.logics.mathmechbot.models.MathMechBotUserState;
 import ru.urfu.logics.mathmechbot.models.User;
 import ru.urfu.logics.mathmechbot.models.UserBuilder;
-import ru.urfu.logics.mathmechbot.models.userstates.MathMechBotUserState;
 import ru.urfu.storages.Storage;
 
 /**

@@ -11,7 +11,7 @@ import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
 import ru.urfu.logics.mathmechbot.Constants;
 import ru.urfu.logics.mathmechbot.MathMechBotCore;
-import ru.urfu.logics.mathmechbot.models.userstates.RegistrationUserState;
+import ru.urfu.logics.mathmechbot.models.MathMechBotUserState;
 import ru.urfu.logics.mathmechbot.states.MathMechBotState;
 
 
@@ -62,7 +62,7 @@ public enum RegistrationYearState implements MathMechBotState {
      * @param bot    бот, принявший сообщение
      */
     private void backCommandHandler(MathMechBotCore context, long chatId, Bot bot) {
-        context.storage.users.changeUserState(chatId, RegistrationUserState.NAME);
+        context.storage.users.changeUserState(chatId, MathMechBotUserState.REGISTRATION_NAME);
         bot.sendMessage(RegistrationFullNameState.INSTANCE.enterMessage(context, chatId), chatId);
     }
 
@@ -93,13 +93,13 @@ public enum RegistrationYearState implements MathMechBotState {
 
         if (message.text().equals("1")) {
             context.storage.userEntries.changeUserEntryYear(chatId, year);
-            context.storage.users.changeUserState(chatId, RegistrationUserState.SPECIALTY1);
+            context.storage.users.changeUserState(chatId, MathMechBotUserState.REGISTRATION_SPECIALTY1);
 
             final LocalMessage msg = RegistrationFirstYearSpecialtiesState.INSTANCE.enterMessage(context, chatId);
             bot.sendMessage(msg, chatId);
         } else if (VALID_YEAR_STRING_PATTERN.matcher(message.text()).matches()) {
             context.storage.userEntries.changeUserEntryYear(chatId, year);
-            context.storage.users.changeUserState(chatId, RegistrationUserState.SPECIALTY2);
+            context.storage.users.changeUserState(chatId, MathMechBotUserState.REGISTRATION_SPECIALTY2);
 
             final LocalMessage msg = RegistrationLaterYearSpecialitiesState.INSTANCE.enterMessage(context, chatId);
             bot.sendMessage(msg, chatId);

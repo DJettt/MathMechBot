@@ -7,8 +7,8 @@ import org.slf4j.LoggerFactory;
 import ru.urfu.bots.Bot;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.logics.LogicCore;
+import ru.urfu.logics.mathmechbot.models.MathMechBotUserState;
 import ru.urfu.logics.mathmechbot.models.User;
-import ru.urfu.logics.mathmechbot.models.userstates.DefaultUserState;
 import ru.urfu.logics.mathmechbot.states.DefaultState;
 import ru.urfu.logics.mathmechbot.states.MathMechBotState;
 import ru.urfu.logics.mathmechbot.storages.MathMechStorage;
@@ -48,7 +48,7 @@ public final class MathMechBotCore implements LogicCore {
         Optional<User> userOptional = storage.users.get(chatId);
 
         if (userOptional.isEmpty()) {
-            storage.users.add(new User(chatId, DefaultUserState.DEFAULT));
+            storage.users.add(new User(chatId, MathMechBotUserState.DEFAULT));
             assert storage.users.get(chatId).isPresent();
         }
         user = storage.users.get(chatId).get();

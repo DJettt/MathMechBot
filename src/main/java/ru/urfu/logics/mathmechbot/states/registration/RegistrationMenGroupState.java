@@ -9,7 +9,7 @@ import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
 import ru.urfu.logics.mathmechbot.Constants;
 import ru.urfu.logics.mathmechbot.MathMechBotCore;
-import ru.urfu.logics.mathmechbot.models.userstates.RegistrationUserState;
+import ru.urfu.logics.mathmechbot.models.MathMechBotUserState;
 import ru.urfu.logics.mathmechbot.states.MathMechBotState;
 
 
@@ -48,7 +48,7 @@ public enum RegistrationMenGroupState implements MathMechBotState {
      * @param bot     бот, принявший сообщение.
      */
     private void backCommandHandler(MathMechBotCore context, long chatId, Bot bot) {
-        context.storage.users.changeUserState(chatId, RegistrationUserState.GROUP);
+        context.storage.users.changeUserState(chatId, MathMechBotUserState.REGISTRATION_GROUP);
         bot.sendMessage(RegistrationGroupState.INSTANCE.enterMessage(context, chatId), chatId);
     }
 
@@ -71,7 +71,7 @@ public enum RegistrationMenGroupState implements MathMechBotState {
         }
 
         context.storage.userEntries.changeUserEntryMen(chatId, msg.text());
-        context.storage.users.changeUserState(chatId, RegistrationUserState.CONFIRMATION);
+        context.storage.users.changeUserState(chatId, MathMechBotUserState.REGISTRATION_CONFIRMATION);
 
         final LocalMessage message = RegistrationConfirmationState.INSTANCE.enterMessage(context, chatId);
         if (message != null) {

@@ -20,13 +20,11 @@ import ru.urfu.localobjects.LocalButton;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
 import ru.urfu.logics.mathmechbot.MathMechBotCore;
+import ru.urfu.logics.mathmechbot.models.MathMechBotUserState;
 import ru.urfu.logics.mathmechbot.models.User;
 import ru.urfu.logics.mathmechbot.models.UserBuilder;
 import ru.urfu.logics.mathmechbot.models.UserEntry;
 import ru.urfu.logics.mathmechbot.models.UserEntryBuilder;
-import ru.urfu.logics.mathmechbot.models.userstates.DefaultUserState;
-import ru.urfu.logics.mathmechbot.models.userstates.DeletionUserState;
-import ru.urfu.logics.mathmechbot.models.userstates.RegistrationUserState;
 import ru.urfu.logics.mathmechbot.storages.MathMechStorage;
 import ru.urfu.logics.mathmechbot.storages.UserArrayStorage;
 import ru.urfu.logics.mathmechbot.storages.UserEntryArrayStorage;
@@ -253,7 +251,7 @@ final class MathMechBotCoreTest {
                         storage.userEntries.get(0L).get()
                 );
                 Assertions.assertEquals(
-                        new UserBuilder(0L, RegistrationUserState.YEAR).build(),
+                        new UserBuilder(0L, MathMechBotUserState.REGISTRATION_YEAR).build(),
                         storage.users.get(0L).get()
                 );
                 Assertions.assertEquals(ASK_YEAR, bot.getOutcomingMessageList().get(1));
@@ -286,7 +284,7 @@ final class MathMechBotCoreTest {
 
                 Assertions.assertTrue(storage.userEntries.get(0L).isEmpty());
                 Assertions.assertEquals(
-                        new UserBuilder(0L, RegistrationUserState.NAME).build(),
+                        new UserBuilder(0L, MathMechBotUserState.REGISTRATION_NAME).build(),
                         storage.users.get(0L).get()
                 );
                 Assertions.assertEquals(TRY_AGAIN, bot.getOutcomingMessageList().getLast());
@@ -311,7 +309,7 @@ final class MathMechBotCoreTest {
 
                 Assertions.assertTrue(storage.userEntries.get(0L).isEmpty());
                 Assertions.assertEquals(
-                        new UserBuilder(0L, DefaultUserState.DEFAULT).build(),
+                        new UserBuilder(0L, MathMechBotUserState.DEFAULT).build(),
                         storage.users.get(0L).get()
                 );
                 Assertions.assertEquals(HELP, bot.getOutcomingMessageList().get(1));
@@ -367,12 +365,12 @@ final class MathMechBotCoreTest {
                 logic.processMessage(new LocalMessageBuilder().text(year).build(), 0L, bot);
                 if (Objects.equals(year, "1")) {
                     Assertions.assertEquals(
-                            new UserBuilder(0L, RegistrationUserState.SPECIALTY1).build(),
+                            new UserBuilder(0L, MathMechBotUserState.REGISTRATION_SPECIALTY1).build(),
                             storage.users.get(0L).get());
                     Assertions.assertEquals(ASK_FIRST_YEAR_SPECIALTY, bot.getOutcomingMessageList().getLast());
                 } else {
                     Assertions.assertEquals(
-                            new UserBuilder(0L, RegistrationUserState.SPECIALTY2).build(),
+                            new UserBuilder(0L, MathMechBotUserState.REGISTRATION_SPECIALTY2).build(),
                             storage.users.get(0L).get());
                     Assertions.assertEquals(ASK_LATER_YEAR_SPECIALTY, bot.getOutcomingMessageList().getLast());
                 }
@@ -420,7 +418,7 @@ final class MathMechBotCoreTest {
             void testBackCommand() {
                 logic.processMessage(BACK_MESSAGE, 0L, bot);
                 Assertions.assertEquals(
-                        new UserBuilder(0L, RegistrationUserState.NAME).build(),
+                        new UserBuilder(0L, MathMechBotUserState.REGISTRATION_NAME).build(),
                         storage.users.get(0L).get());
             }
         }
@@ -476,7 +474,7 @@ final class MathMechBotCoreTest {
                 // Первокурсник
                 logic.processMessage(new LocalMessageBuilder().text(specialtyAbbreviation).build(), 0L, bot);
                 Assertions.assertEquals(
-                        new UserBuilder(0L, RegistrationUserState.GROUP).build(),
+                        new UserBuilder(0L, MathMechBotUserState.REGISTRATION_GROUP).build(),
                         storage.users.get(0L).get());
                 Assertions.assertEquals(
                         new UserEntryBuilder(currentFirstYearUserEntry).specialty(specialtyAbbreviation).build(),
@@ -486,7 +484,7 @@ final class MathMechBotCoreTest {
                 // Второкурсник
                 logic.processMessage(new LocalMessageBuilder().text(specialtyAbbreviation).build(), 1L, bot);
                 Assertions.assertEquals(
-                        new UserBuilder(1L, RegistrationUserState.GROUP).build(),
+                        new UserBuilder(1L, MathMechBotUserState.REGISTRATION_GROUP).build(),
                         storage.users.get(1L).get());
                 Assertions.assertEquals(
                         new UserEntryBuilder(currentSecondYearUserEntry).specialty(specialtyAbbreviation).build(),
@@ -518,7 +516,7 @@ final class MathMechBotCoreTest {
                 // Первокурсник
                 logic.processMessage(new LocalMessageBuilder().text(specialtyAbbreviation).build(), 0L, bot);
                 Assertions.assertEquals(
-                        new UserBuilder(0L, RegistrationUserState.GROUP).build(),
+                        new UserBuilder(0L, MathMechBotUserState.REGISTRATION_GROUP).build(),
                         storage.users.get(0L).get());
                 Assertions.assertEquals(
                         new UserEntryBuilder(currentFirstYearUserEntry).specialty(specialtyAbbreviation).build(),
@@ -566,7 +564,7 @@ final class MathMechBotCoreTest {
                 // Второкурсник
                 logic.processMessage(new LocalMessageBuilder().text(specialtyAbbreviation).build(), 1L, bot);
                 Assertions.assertEquals(
-                        new UserBuilder(1L, RegistrationUserState.GROUP).build(),
+                        new UserBuilder(1L, MathMechBotUserState.REGISTRATION_GROUP).build(),
                         storage.users.get(1L).get());
                 Assertions.assertEquals(
                         new UserEntryBuilder(currentSecondYearUserEntry).specialty(specialtyAbbreviation).build(),
@@ -625,10 +623,10 @@ final class MathMechBotCoreTest {
                 logic.processMessage(BACK_MESSAGE, 1L, bot);
 
                 Assertions.assertEquals(
-                        new UserBuilder(0L, RegistrationUserState.YEAR).build(),
+                        new UserBuilder(0L, MathMechBotUserState.REGISTRATION_YEAR).build(),
                         storage.users.get(0L).get());
                 Assertions.assertEquals(
-                        new UserBuilder(1L, RegistrationUserState.YEAR).build(),
+                        new UserBuilder(1L, MathMechBotUserState.REGISTRATION_YEAR).build(),
                         storage.users.get(1L).get());
 
                 Assertions.assertEquals(ASK_YEAR, bot.getOutcomingMessageList().getFirst());
@@ -675,7 +673,7 @@ final class MathMechBotCoreTest {
                 logic.processMessage(new LocalMessageBuilder().text(group).build(), 0L, bot);
 
                 Assertions.assertEquals(
-                        new UserBuilder(0L, RegistrationUserState.MEN).build(),
+                        new UserBuilder(0L, MathMechBotUserState.REGISTRATION_MEN).build(),
                         storage.users.get(0L).get());
                 Assertions.assertEquals(
                         new UserEntryBuilder(currentUserEntry).group(Integer.parseInt(group)).build(),
@@ -721,7 +719,7 @@ final class MathMechBotCoreTest {
             void testBackCommand() {
                 logic.processMessage(BACK_MESSAGE, 0L, bot);
                 Assertions.assertEquals(
-                        new UserBuilder(0L, RegistrationUserState.YEAR).build(),
+                        new UserBuilder(0L, MathMechBotUserState.REGISTRATION_YEAR).build(),
                         storage.users.get(0L).get());
             }
         }
@@ -782,7 +780,7 @@ final class MathMechBotCoreTest {
 
             Assertions.assertTrue(storage.userEntries.get(0L).isEmpty());
             Assertions.assertEquals(
-                    new UserBuilder(0L, DefaultUserState.DEFAULT).build(),
+                    new UserBuilder(0L, MathMechBotUserState.DEFAULT).build(),
                     storage.users.get(0L).get());
             Assertions.assertEquals(HELP, bot.getOutcomingMessageList().get(2));
         }
@@ -814,7 +812,7 @@ final class MathMechBotCoreTest {
                     bot.getOutcomingMessageList().get(1));
 
             Assertions.assertEquals(
-                    new UserBuilder(0L, DefaultUserState.DEFAULT).build(),
+                    new UserBuilder(0L, MathMechBotUserState.DEFAULT).build(),
                     storage.users.get(0L).get());
             Assertions.assertEquals(
                     userEntryBeforeDelete,
@@ -845,7 +843,7 @@ final class MathMechBotCoreTest {
             logic.processMessage(BACK_MESSAGE, 0L, bot);
 
             Assertions.assertEquals(
-                    new UserBuilder(0L, DefaultUserState.DEFAULT).build(),
+                    new UserBuilder(0L, MathMechBotUserState.DEFAULT).build(),
                     storage.users.get(0L).get());
             Assertions.assertEquals(
                     userEntryBeforeDelete,
@@ -877,7 +875,7 @@ final class MathMechBotCoreTest {
             logic.processMessage(new LocalMessageBuilder().text("Some string").build(), 0L, bot);
 
             Assertions.assertEquals(
-                    new UserBuilder(0L, DeletionUserState.CONFIRMATION).build(),
+                    new UserBuilder(0L, MathMechBotUserState.DELETION_CONFIRMATION).build(),
                     storage.users.get(0L).get());
             Assertions.assertEquals(
                     userEntryBeforeDelete,

@@ -12,8 +12,8 @@ import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
 import ru.urfu.logics.mathmechbot.Constants;
 import ru.urfu.logics.mathmechbot.MathMechBotCore;
+import ru.urfu.logics.mathmechbot.models.MathMechBotUserState;
 import ru.urfu.logics.mathmechbot.models.UserEntry;
-import ru.urfu.logics.mathmechbot.models.userstates.DefaultUserState;
 import ru.urfu.logics.mathmechbot.states.DefaultState;
 import ru.urfu.logics.mathmechbot.states.MathMechBotState;
 
@@ -69,7 +69,7 @@ public enum DeletionConfirmationState implements MathMechBotState {
      * @param bot     бот, принявший сообщение
      */
     private void backCommandHandler(MathMechBotCore context, long chatId, Bot bot) {
-        context.storage.users.changeUserState(chatId, DefaultUserState.DEFAULT);
+        context.storage.users.changeUserState(chatId, MathMechBotUserState.DEFAULT);
         bot.sendMessage(DefaultState.INSTANCE.enterMessage(context, chatId), chatId);
     }
 
@@ -84,7 +84,7 @@ public enum DeletionConfirmationState implements MathMechBotState {
         final Optional<UserEntry> userEntryOptional = context.storage.userEntries.get(chatId);
         userEntryOptional.ifPresent(context.storage.userEntries::delete);
 
-        context.storage.users.changeUserState(chatId, DefaultUserState.DEFAULT);
+        context.storage.users.changeUserState(chatId, MathMechBotUserState.DEFAULT);
         bot.sendMessage(new LocalMessageBuilder().text("Удаляем...").build(), chatId);
         bot.sendMessage(DefaultState.INSTANCE.enterMessage(context, chatId), chatId);
     }
@@ -97,7 +97,7 @@ public enum DeletionConfirmationState implements MathMechBotState {
      * @param bot     бот, принявший сообщение
      */
     private void declineCommandHandler(MathMechBotCore context, long chatId, Bot bot) {
-        context.storage.users.changeUserState(chatId, DefaultUserState.DEFAULT);
+        context.storage.users.changeUserState(chatId, MathMechBotUserState.DEFAULT);
         bot.sendMessage(new LocalMessageBuilder().text("Отмена...").build(), chatId);
         bot.sendMessage(DefaultState.INSTANCE.enterMessage(context, chatId), chatId);
     }

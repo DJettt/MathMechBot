@@ -10,9 +10,8 @@ import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
 import ru.urfu.logics.mathmechbot.Constants;
 import ru.urfu.logics.mathmechbot.MathMechBotCore;
+import ru.urfu.logics.mathmechbot.models.MathMechBotUserState;
 import ru.urfu.logics.mathmechbot.models.UserEntry;
-import ru.urfu.logics.mathmechbot.models.userstates.DefaultUserState;
-import ru.urfu.logics.mathmechbot.models.userstates.RegistrationUserState;
 import ru.urfu.logics.mathmechbot.states.DefaultState;
 import ru.urfu.logics.mathmechbot.states.MathMechBotState;
 
@@ -68,7 +67,7 @@ public enum RegistrationFullNameState implements MathMechBotState {
      */
     private void backCommandHandler(MathMechBotCore context, long chatId, Bot bot) {
         final Optional<UserEntry> userEntryOptional = context.storage.userEntries.get(chatId);
-        context.storage.users.changeUserState(chatId, DefaultUserState.DEFAULT);
+        context.storage.users.changeUserState(chatId, MathMechBotUserState.DEFAULT);
         userEntryOptional.ifPresent(context.storage.userEntries::delete);
         bot.sendMessage(DefaultState.INSTANCE.enterMessage(context, chatId), chatId);
     }
@@ -99,7 +98,7 @@ public enum RegistrationFullNameState implements MathMechBotState {
         context.storage.userEntries.add(new UserEntry(
                 chatId, strings.get(0), strings.get(1), (hasPatronym) ? strings.get(2) : null,
                 null, null, null, null, chatId));
-        context.storage.users.changeUserState(chatId, RegistrationUserState.YEAR);
+        context.storage.users.changeUserState(chatId, MathMechBotUserState.REGISTRATION_YEAR);
 
         final LocalMessage msg = RegistrationYearState.INSTANCE.enterMessage(context, chatId);
         bot.sendMessage(msg, chatId);

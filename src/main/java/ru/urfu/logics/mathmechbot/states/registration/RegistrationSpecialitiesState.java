@@ -9,8 +9,8 @@ import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
 import ru.urfu.logics.mathmechbot.Constants;
 import ru.urfu.logics.mathmechbot.MathMechBotCore;
+import ru.urfu.logics.mathmechbot.models.MathMechBotUserState;
 import ru.urfu.logics.mathmechbot.models.Specialty;
-import ru.urfu.logics.mathmechbot.models.userstates.RegistrationUserState;
 import ru.urfu.logics.mathmechbot.states.MathMechBotState;
 
 
@@ -68,7 +68,7 @@ public sealed interface RegistrationSpecialitiesState
      * @param bot     бот, принявший сообщение.
      */
     private void backCommandHandler(MathMechBotCore context, long chatId, Bot bot) {
-        context.storage.users.changeUserState(chatId, RegistrationUserState.YEAR);
+        context.storage.users.changeUserState(chatId, MathMechBotUserState.REGISTRATION_YEAR);
         bot.sendMessage(RegistrationYearState.INSTANCE.enterMessage(context, chatId), chatId);
     }
 
@@ -93,7 +93,7 @@ public sealed interface RegistrationSpecialitiesState
         }
 
         context.storage.userEntries.changeUserEntrySpecialty(chatId, message.text());
-        context.storage.users.changeUserState(chatId, RegistrationUserState.GROUP);
+        context.storage.users.changeUserState(chatId, MathMechBotUserState.REGISTRATION_GROUP);
         bot.sendMessage(RegistrationGroupState.INSTANCE.enterMessage(context, chatId), chatId);
     }
 }
