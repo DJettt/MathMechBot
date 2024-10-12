@@ -140,6 +140,7 @@ final class MathMechBotCoreTest {
                         Иванов Артём Иванович
                         Без дополнительных пробелов и с буквой ё, если нужно.""")
                 .build();
+
         final static LocalMessage ASK_YEAR = new LocalMessageBuilder()
                 .text("На каком курсе Вы обучаетесь?")
                 .buttons(new ArrayList<>(List.of(
@@ -192,6 +193,11 @@ final class MathMechBotCoreTest {
                         new LocalButton("5 группа", "5"),
                         BACK_BUTTON
                 )))
+                .build();
+
+        final static LocalMessage ASK_MEN = new LocalMessageBuilder()
+                .text("Введите свою академическую группу в формате:\nМЕН-123456")
+                .buttons(new ArrayList<>(List.of(BACK_BUTTON)))
                 .build();
 
         /**
@@ -420,7 +426,7 @@ final class MathMechBotCoreTest {
         }
 
         /**
-         * Тесты для команды регистрации в состоянии запроса направления подготовки для первокурсников.
+         * Тесты для команды регистрации в состояниях запроса направления подготовки.
          */
         @Nested
         @DisplayName("Состояние: запрос направления подготовки")
@@ -629,6 +635,96 @@ final class MathMechBotCoreTest {
                 Assertions.assertEquals(ASK_YEAR, bot.getOutcomingMessageList().get(1));
             }
         }
+
+        /**
+         * Тесты для команды регистрации в состоянии запроса номера группы.
+         */
+        @Nested
+        @DisplayName("Состояние: запрос номера группы")
+        class Group {
+            User currentUser;
+            UserEntry currentUserEntry;
+
+            @BeforeEach
+            void setupTest() {
+                logic.processMessage(REGISTER_MESSAGE, 0L, bot);
+                logic.processMessage(new LocalMessageBuilder().text("Максимов Андрей").build(), 0L, bot);
+                logic.processMessage(new LocalMessageBuilder().text("2").build(), 0L, bot);
+                logic.processMessage(new LocalMessageBuilder().text("ФТ").build(), 0L, bot);
+                currentUser = storage.users.get(0L).get();
+                currentUserEntry = storage.userEntries.get(0L).get();
+                bot.getOutcomingMessageList().clear();
+            }
+
+            /**
+             * <p>Проверяем, что бот принимает корректные номера групп.</p>
+             *
+             * <ol>
+             *     <li>Отправляем корректный номер группы.</li>
+             *     <li>Проверяем, что бот отправил нужное сообщение.</li>
+             *     <li>Проверяем, что пользователь перешёл в нужное состояние.</li>
+             *     <li>Проверяем, что пользовательские данные теперь содержат номер группы.</li>
+             * </ol>
+             *
+             * @param group корректный номер группы.
+             */
+            @DisplayName("Все возможные корректные номера группы")
+            @ParameterizedTest(name = "\"{0}\" - корректный номер группы")
+            @ValueSource(strings = {"1", "2", "3", "4", "5", "6"})
+            void testCorrectData(String group) {
+                logic.processMessage(new LocalMessageBuilder().text(group).build(), 0L, bot);
+
+                Assertions.assertEquals(
+                        new UserBuilder(0L, RegistrationUserState.MEN).build(),
+                        storage.users.get(0L).get());
+                Assertions.assertEquals(
+                        new UserEntryBuilder(currentUserEntry).group(Integer.parseInt(group)).build(),
+                        storage.userEntries.get(0L).get());
+                Assertions.assertEquals(ASK_MEN, bot.getOutcomingMessageList().getLast());
+            }
+
+            /**
+             * <p>Проверяем, что бот не принимает некорректные сообщения.</p>
+             *
+             * <ol>
+             *     <li>Отправляем некорректные данные.</li>
+             *     <li>Проверяем, что состояние пользователя не изменилось.</li>
+             *     <li>Проверяем, что запись пользователя не изменилась.</li>
+             *     <li>Проверяем, что запросил повторный ввод.</li>
+             * </ol>
+             *
+             * @param text некорректное сообщение.
+             */
+            @DisplayName("Некорректный ввод")
+            @ParameterizedTest(name = "\"{0}\" не является номером группы")
+            @NullAndEmptySource
+            @ValueSource(strings = {"0", "01", " 1", "2 ", " 3 ", "7", "10", "a", "((("})
+            void testIncorrectData(String text) {
+                logic.processMessage(new LocalMessageBuilder().text(text).build(), 0L, bot);
+
+                Assertions.assertEquals(currentUser, storage.users.get(0L).get());
+                Assertions.assertEquals(currentUserEntry, storage.userEntries.get(0L).get());
+                Assertions.assertEquals(TRY_AGAIN, bot.getOutcomingMessageList().getFirst());
+            }
+
+            /**
+             * <p>Проверяем, что бот корректно возвращает на шаг назад,
+             * то есть в состояние запроса года обучения.</p>
+             *
+             * <ol>
+             *     <li>Нажимаем кнопку "Назад".</li>
+             *     <li>Проверяем, что бот в вернулся в состояние запроса года обучения.</li>
+             * </ol>
+             */
+            @Test
+            @DisplayName("Нажата кнопка 'Назад'")
+            void testBackCommand() {
+                logic.processMessage(BACK_MESSAGE, 0L, bot);
+                Assertions.assertEquals(
+                        new UserBuilder(0L, RegistrationUserState.YEAR).build(),
+                        storage.users.get(0L).get());
+            }
+        }
     }
 
     /**
@@ -688,7 +784,7 @@ final class MathMechBotCoreTest {
             Assertions.assertEquals(
                     new UserBuilder(0L, DefaultUserState.DEFAULT).build(),
                     storage.users.get(0L).get());
-            Assertions.assertEquals(HELP, bot.getOutcomingMessageList().get(1));
+            Assertions.assertEquals(HELP, bot.getOutcomingMessageList().get(2));
         }
 
         /**
@@ -723,7 +819,7 @@ final class MathMechBotCoreTest {
             Assertions.assertEquals(
                     userEntryBeforeDelete,
                     storage.userEntries.get(0L).get());
-            Assertions.assertEquals(HELP, bot.getOutcomingMessageList().get(1));
+            Assertions.assertEquals(HELP, bot.getOutcomingMessageList().get(2));
         }
 
         /**
