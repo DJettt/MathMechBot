@@ -2,7 +2,10 @@ package ru.urfu.logics.mathmechbot.states.registration;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.urfu.localobjects.LocalButton;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
@@ -11,6 +14,7 @@ import ru.urfu.logics.mathmechbot.Constants;
 import ru.urfu.logics.mathmechbot.MathMechBotCore;
 import ru.urfu.logics.mathmechbot.models.MathMechBotUserState;
 import ru.urfu.logics.mathmechbot.models.Specialty;
+import ru.urfu.logics.mathmechbot.models.UserEntry;
 import ru.urfu.logics.mathmechbot.states.MathMechBotState;
 
 
@@ -19,9 +23,31 @@ import ru.urfu.logics.mathmechbot.states.MathMechBotState;
  * Предлагает пользователю направление подготовки
  * из списка, который возвращает метод allowedSpecialties.
  */
-public sealed interface RegistrationSpecialitiesState
-        extends MathMechBotState
-        permits RegistrationFirstYearSpecialtiesState, RegistrationLaterYearSpecialitiesState {
+public enum RegistrationSpecialtyState implements MathMechBotState {
+    INSTANCE;
+
+    private final static Logger LOGGER = LoggerFactory.getLogger(RegistrationSpecialtyState.class);
+
+    /**
+     * Достаёт год пользователя из хранилища.
+     *
+     * @param context контекст.
+     * @param request запрос.
+     * @return год для записи данного пользователя.
+     */
+    private int getUserEntryYear(@NotNull MathMechBotCore context, @NotNull Request request) {
+        final Optional<UserEntry> userEntryOptional = context.storage.userEntries.get(request.id());
+
+        if (userEntryOptional.isEmpty()) {
+            LOGGER.error("User without entry managed to reach registration_specialty state.");
+            throw new RuntimeException();
+        } else if (userEntryOptional.get().year() == null) {
+            LOGGER.error("User without set year managed to reach registration_specialty state.");
+            throw new RuntimeException();
+        }
+
+        return userEntryOptional.get().year();
+    }
 
     /**
      * Возвращает список разрешённых специальностей.
@@ -30,13 +56,19 @@ public sealed interface RegistrationSpecialitiesState
      * @return список разрешённых специальностей
      */
     @NotNull
-    default List<Specialty> allowedSpecialties() {
-        return new ArrayList<>() {
-        };
+    private List<Specialty> allowedSpecialties(int year) {
+        if (year == 1) {
+            return new ArrayList<>(List.of(
+                    Specialty.KNMO, Specialty.MMP, Specialty.KB, Specialty.FT
+            ));
+        }
+        return new ArrayList<>(List.of(
+                Specialty.KN, Specialty.MO, Specialty.MH, Specialty.MT, Specialty.PM, Specialty.KB, Specialty.FT
+        ));
     }
 
     @Override
-    default void processMessage(@NotNull MathMechBotCore context, @NotNull Request request) {
+    public void processMessage(@NotNull MathMechBotCore context, @NotNull Request request) {
         switch (request.message().text()) {
             case Constants.BACK_COMMAND -> backCommandHandler(context, request);
             case null -> {
@@ -47,15 +79,13 @@ public sealed interface RegistrationSpecialitiesState
         }
     }
 
-    @Override
     @NotNull
-    default LocalMessage enterMessage(@NotNull MathMechBotCore context, @NotNull Request request) {
+    public LocalMessage enterMessage(@NotNull MathMechBotCore context, @NotNull Request request) {
         List<LocalButton> buttons = new ArrayList<>();
-        for (Specialty specialty : allowedSpecialties()) {
+        for (Specialty specialty : allowedSpecialties(getUserEntryYear(context, request))) {
             buttons.add(new LocalButton(specialty.getAbbreviation(), specialty.getAbbreviation()));
         }
         buttons.add(Constants.BACK_BUTTON);
-
         return new LocalMessageBuilder().text("На каком направлении?").buttons(buttons).build();
     }
 
@@ -70,7 +100,6 @@ public sealed interface RegistrationSpecialitiesState
         request.bot().sendMessage(RegistrationYearState.INSTANCE.enterMessage(context, request), request.id());
     }
 
-
     /**
      * Проверяем различные текстовые сообщения.
      * В частности, проверяем, что пользователь отправил аббревиатуру одной из разрешённых специальностей.
@@ -79,10 +108,10 @@ public sealed interface RegistrationSpecialitiesState
      * @param context логического ядро (контекст для состояния).
      * @param request запрос.
      */
-    default void textHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
+    private void textHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
         assert request.message().text() != null;
 
-        if (!allowedSpecialties()
+        if (!allowedSpecialties(getUserEntryYear(context, request))
                 .stream()
                 .map(Specialty::getAbbreviation)
                 .toList()

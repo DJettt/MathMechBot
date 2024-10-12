@@ -375,17 +375,14 @@ final class MathMechBotCoreTest {
             void testCorrectData(String year) {
                 logic.processMessage(
                         makeRequestFromMessage(new LocalMessageBuilder().text(year).build()));
+                Assertions.assertEquals(
+                        new UserBuilder(0L, MathMechBotUserState.REGISTRATION_SPECIALTY).build(),
+                        storage.users.get(0L).orElseThrow());
 
                 if (Objects.equals(year, "1")) {
-                    Assertions.assertEquals(
-                            new UserBuilder(0L, MathMechBotUserState.REGISTRATION_SPECIALTY1).build(),
-                            storage.users.get(0L).orElseThrow());
-                    Assertions.assertEquals(ASK_FIRST_YEAR_SPECIALTY, bot.getOutcomingMessageList().getLast());
+                    Assertions.assertEquals(ASK_FIRST_YEAR_SPECIALTY, bot.getOutcomingMessageList().getFirst());
                 } else {
-                    Assertions.assertEquals(
-                            new UserBuilder(0L, MathMechBotUserState.REGISTRATION_SPECIALTY2).build(),
-                            storage.users.get(0L).orElseThrow());
-                    Assertions.assertEquals(ASK_LATER_YEAR_SPECIALTY, bot.getOutcomingMessageList().getLast());
+                    Assertions.assertEquals(ASK_LATER_YEAR_SPECIALTY, bot.getOutcomingMessageList().getFirst());
                 }
                 Assertions.assertEquals(
                         new UserEntryBuilder(currentUserEntry).year(Integer.parseInt(year)).build(),

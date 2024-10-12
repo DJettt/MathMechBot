@@ -68,9 +68,6 @@ public enum RegistrationYearState implements MathMechBotState {
      * Проверяем различные текстовые сообщения.
      * Если текстовое сообщение является числом от 1 до 6 (проходит валидацию),
      * пользователь перемещается на следующее состояние, то есть запрос специальности.
-     * Если год обучения - 1, отправляем в запрос специальности первокурсника (так как они отличаются от других курсов).
-     * Если год обучения иной, отправляем в запрос специальности поздних курсов.
-     * В противном случае просим пользователя повторить ввод.
      *
      * @param context логического ядро (контекст для состояния).
      * @param request запрос.
@@ -87,17 +84,11 @@ public enum RegistrationYearState implements MathMechBotState {
             return;
         }
 
-        if (request.message().text().equals("1")) {
+        if (VALID_YEAR_STRING_PATTERN.matcher(request.message().text()).matches()) {
             context.storage.userEntries.changeUserEntryYear(request.id(), year);
-            context.storage.users.changeUserState(request.id(), MathMechBotUserState.REGISTRATION_SPECIALTY1);
+            context.storage.users.changeUserState(request.id(), MathMechBotUserState.REGISTRATION_SPECIALTY);
 
-            final LocalMessage msg = RegistrationFirstYearSpecialtiesState.INSTANCE.enterMessage(context, request);
-            request.bot().sendMessage(msg, request.id());
-        } else if (VALID_YEAR_STRING_PATTERN.matcher(request.message().text()).matches()) {
-            context.storage.userEntries.changeUserEntryYear(request.id(), year);
-            context.storage.users.changeUserState(request.id(), MathMechBotUserState.REGISTRATION_SPECIALTY2);
-
-            final LocalMessage msg = RegistrationLaterYearSpecialitiesState.INSTANCE.enterMessage(context, request);
+            final LocalMessage msg = RegistrationSpecialtyState.INSTANCE.enterMessage(context, request);
             request.bot().sendMessage(msg, request.id());
         } else {
             request.bot().sendMessage(Constants.TRY_AGAIN, request.id());
