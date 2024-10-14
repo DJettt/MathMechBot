@@ -55,6 +55,16 @@ public enum EditingChooseState implements MathMechBotState {
                         MathMechBotUserState.EDITING_SPECIALITY);
                 request.bot().sendMessage(EditingSpecialityState.INSTANCE.enterMessage(context, request), request.id());
             }
+            case EDITING_GROUP -> {
+                context.storage.users.changeUserState(request.id(),
+                        MathMechBotUserState.EDITING_GROUP);
+                request.bot().sendMessage(EditingGroupState.INSTANCE.enterMessage(context, request), request.id());
+            }
+            case EDITING_MEN -> {
+                context.storage.users.changeUserState(request.id(),
+                        MathMechBotUserState.EDITING_MEN);
+                request.bot().sendMessage(EditingMenState.INSTANCE.enterMessage(context, request), request.id());
+            }
             default -> request.bot().sendMessage(Constants.TRY_AGAIN, request.id());
         }
     }

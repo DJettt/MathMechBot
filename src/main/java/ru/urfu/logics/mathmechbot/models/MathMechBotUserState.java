@@ -30,6 +30,8 @@ public enum MathMechBotUserState implements UserState {
     EDITING_ADDITIONAL_EDIT(EditingAdditionalEditState.INSTANCE),
     EDITING_YEAR(EditingYearState.INSTANCE),
     EDITING_SPECIALITY(EditingSpecialityState.INSTANCE),
+    EDITING_GROUP(EditingGroupState.INSTANCE),
+    EDITING_MEN(EditingMenState.INSTANCE),
 
     DELETION_CONFIRMATION(DeletionConfirmationState.INSTANCE);
 

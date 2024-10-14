@@ -80,7 +80,7 @@ public enum EditingFullNameState implements MathMechBotState {
 
         final List<String> strings = List.of(trimmedText.split("\\s+"));
 
-        context.storage.userEntries.changeUserEntryName(request.id(), strings.get(0));
+        context.storage.userEntries.changeUserEntrySurname(request.id(), strings.get(0));
         context.storage.userEntries.changeUserEntryName(request.id(), strings.get(1));
         if (strings.size() == NUMBER_OF_WORDS_IN_FULL_NAME_WITH_PATRONYM) {
             context.storage.userEntries.changeUserEntryPatronym(request.id(), strings.get(2));
