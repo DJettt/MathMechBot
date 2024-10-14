@@ -91,14 +91,8 @@ public enum DefaultState implements MathMechBotState {
             request.bot().sendMessage(Constants.ASK_FOR_REGISTRATION, request.id());
             return;
         }
-        final UserEntry userEntry = userEntryOptional.get();
-
-        final String userInfo = Constants.USER_INFO_TEMPLATE.formatted(
-                String.join(" ", userEntry.surname(), userEntry.name(), userEntry.patronym()),
-                userEntry.specialty(), userEntry.year(), userEntry.group(), userEntry.men());
-
         final LocalMessage answer = new LocalMessageBuilder()
-                .text("Данные о Вас:\n\n" + userInfo)
+                .text("Данные о Вас:\n\n" + userEntryOptional.get().toHumanReadable())
                 .build();
         request.bot().sendMessage(answer, request.id());
     }
