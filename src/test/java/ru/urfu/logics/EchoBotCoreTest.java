@@ -12,7 +12,7 @@ import ru.urfu.localobjects.Request;
 /**
  * Тесты для класса EchoBotCore
  */
-@DisplayName("Логика эхо бот")
+@DisplayName("Логика эхо бота")
 final class EchoBotCoreTest {
     final static String HELP_MESSAGE_TEXT = """
             Привет, я эхо бот! Сейчас я расскажу как ты можешь со мной взаимодействовать.

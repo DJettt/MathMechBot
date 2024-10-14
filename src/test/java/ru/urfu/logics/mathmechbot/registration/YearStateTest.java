@@ -36,9 +36,7 @@ final class YearStateTest {
     UserEntry currentUserEntry;
 
     /**
-     * До тестов запускаем команду <code>/register</code>
-     * и отправляем корректное ФИО, так как это уже протестировано.
-     * Все отправленные ботом сообщения стираем, так как они не интересны.
+     * Создаём объект логики, ложного бота и утилиты для каждого теста, выполняем все предыдущие шаги регистрации.
      */
     @BeforeEach
     void setupTest() {
@@ -74,9 +72,9 @@ final class YearStateTest {
      *
      * @param year корректный год обучения.
      */
-    @DisplayName("Все возможные корректные годы обучения")
+    @DisplayName("Корректный ввод")
     @ValueSource(strings = {"1", "2", "3", "4", "5", "6"})
-    @ParameterizedTest(name = "\"{0}\" - корректный год обучения")
+    @ParameterizedTest(name = "\"{0}\" - сообщение, содержащее корректный год обучения")
     void testCorrectData(String year) {
         logic.processMessage(
                 utils.makeRequestFromMessage(new LocalMessageBuilder().text(year).build()));
@@ -129,7 +127,7 @@ final class YearStateTest {
      * </ol>
      */
     @Test
-    @DisplayName("Нажата кнопка 'Назад'")
+    @DisplayName("Кнопка 'Назад'")
     void testBackCommand() {
         logic.processMessage(utils.makeRequestFromMessage(TestConstants.BACK_MESSAGE));
         Assertions.assertEquals(

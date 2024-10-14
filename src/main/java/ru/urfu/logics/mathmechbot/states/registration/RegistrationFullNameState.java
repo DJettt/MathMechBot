@@ -65,8 +65,8 @@ public enum RegistrationFullNameState implements MathMechBotState {
      */
     private void backCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
         final Optional<UserEntry> userEntryOptional = context.storage.userEntries.get(request.id());
-        context.storage.users.changeUserState(request.id(), MathMechBotUserState.DEFAULT);
         userEntryOptional.ifPresent(context.storage.userEntries::delete);
+        context.storage.users.changeUserState(request.id(), MathMechBotUserState.DEFAULT);
         request.bot().sendMessage(DefaultState.INSTANCE.enterMessage(context, request), request.id());
     }
 

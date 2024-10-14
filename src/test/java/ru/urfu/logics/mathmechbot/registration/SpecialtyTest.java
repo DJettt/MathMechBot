@@ -37,7 +37,8 @@ final class SpecialtyTest {
     UserEntry currentSecondYearUserEntry;
 
     /**
-     * До тестов регистрируем двух студентов, первокурсника и второкурсника.
+     * Создаём объект логики, ложного бота и утилиты для каждого теста,
+     * выполняем все предыдущие шаги регистрации для первокурсника и второкурсника.
      */
     @BeforeEach
     void setupTest() {
@@ -76,7 +77,7 @@ final class SpecialtyTest {
      *
      * @param specialtyAbbreviation корректная аббревиатура направления подготовки, общего для всех курсов.
      */
-    @DisplayName("Корректные направления подготовки, общие для всех курсов")
+    @DisplayName("Корректный ввод для всех курсов")
     @ValueSource(strings = {"КБ", "ФТ"})
     @ParameterizedTest(name = "\"{0}\" - корректное направление подготовки для обоих курсов")
     void testCommonData(String specialtyAbbreviation) {
@@ -120,7 +121,7 @@ final class SpecialtyTest {
      *
      * @param specialtyAbbreviation корректная аббревиатура направления подготовки только первого курса.
      */
-    @DisplayName("Корректные направления подготовки первого курса")
+    @DisplayName("Корректный ввод для первого курса")
     @ValueSource(strings = {"КНМО", "ММП"})
     @ParameterizedTest(name = "\"{0}\" - корректное направление подготовки только для первого курса")
     void testFirstYearOnlyData(String specialtyAbbreviation) {
@@ -162,7 +163,7 @@ final class SpecialtyTest {
      *
      * @param specialtyAbbreviation корректная аббревиатура направления подготовки только старших курсов.
      */
-    @DisplayName("Корректные направления подготовки поздних курса")
+    @DisplayName("Корректный ввод для поздних курса")
     @ValueSource(strings = {"КН", "МО", "МХ", "ПМ"})
     @ParameterizedTest(name = "\"{0}\" - корректное направление подготовки только для поздних курса")
     void testLaterYearsOnlyData(String specialtyAbbreviation) {
@@ -233,7 +234,7 @@ final class SpecialtyTest {
      * </ol>
      */
     @Test
-    @DisplayName("Нажата кнопка 'Назад'")
+    @DisplayName("Кнопка 'Назад'")
     void testBackCommand() {
         logic.processMessage(utils.makeRequestFromMessage(TestConstants.BACK_MESSAGE));
         logic.processMessage(utils.makeRequestFromMessage(TestConstants.BACK_MESSAGE, 1));

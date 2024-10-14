@@ -11,6 +11,8 @@ import ru.urfu.logics.mathmechbot.TestConstants;
  * Тесты для команды регистрации
  */
 public final class RegistrationConstants {
+    final static String CONFIRMATION_PREFIX = "Всё верно?\n\n";
+
     final static LocalMessage ASK_FULL_NAME = new LocalMessageBuilder()
             .text("""
                     Введите свое ФИО в формате:

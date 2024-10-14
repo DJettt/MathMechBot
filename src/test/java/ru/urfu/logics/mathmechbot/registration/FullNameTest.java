@@ -72,11 +72,11 @@ final class FullNameTest {
      * </ol>
      *
      * @param incomingMessageText сообщение с корректным ФИО или ФИ.
-     * @param surname             фамилия, содержащая в сообщении.
-     * @param name                имя, содержащее в сообщении.
-     * @param patronym            отчество, содержащее в сообщении.
+     * @param surname             фамилия, содержащаяся в сообщении.
+     * @param name                имя, содержащееся в сообщении.
+     * @param patronym            отчество, содержащееся в сообщении.
      */
-    @DisplayName("Различные корректные ФИО или ФИ")
+    @DisplayName("Корректный ввод")
     @MethodSource
     @ParameterizedTest(name = "\"{0}\" - сообщение, содержащее корректное ФИО")
     void testCorrectData(String incomingMessageText, String surname, String name, String patronym) {
@@ -98,7 +98,7 @@ final class FullNameTest {
     }
 
     /**
-     * <p>Проверяем, что бот не принимает некорректные ФИО или ФИ.</p>
+     * <p>Проверяем, что бот не принимает некорректные данные.</p>
      *
      * <ol>
      *     <li>Отправляем команду <code>/register</code>.</li>
@@ -108,20 +108,20 @@ final class FullNameTest {
      *     <li>Проверяем, что бот запросил повторить ввод.</li>
      * </ol>
      *
-     * @param fullName некорректные ФИО или ФИ.
+     * @param text некорректные данные.
      */
-    @DisplayName("Различные некорректные ФИО или ФИ")
+    @DisplayName("Некорректный ввод")
     @NullAndEmptySource
     @ValueSource(strings = {
             "И", "И И", "И И", "Иванов", "Иванов И", "И Иванов",
             "И Иванов Иванов", "Иванов Иванов И", "Иванов И Иванов",
             "ИВанов Иванов", "Иванов ИВанов", "Иванов Иванов ИВанов",
     })
-    @ParameterizedTest(name = "\"{0}\" - сообщение, содержащее некорректное ФИО")
-    void testIncorrectData(String fullName) {
+    @ParameterizedTest(name = "\"{0}\" не содержит корректное ФИО")
+    void testIncorrectData(String text) {
         logic.processMessage(utils.makeRequestFromMessage(TestConstants.REGISTER_MESSAGE));
         logic.processMessage(
-                utils.makeRequestFromMessage(new LocalMessageBuilder().text(fullName).build()));
+                utils.makeRequestFromMessage(new LocalMessageBuilder().text(text).build()));
 
         Assertions.assertTrue(storage.userEntries.get(0L).isEmpty());
         Assertions.assertEquals(
@@ -137,22 +137,22 @@ final class FullNameTest {
      * <ol>
      *     <li>Отправляем команду <code>/register</code>.</li>
      *     <li>Нажимаем кнопку "Назад"</li>
+     *     <li>Проверяем, что бот отравил запрос года обучения.</li>
      *     <li>Проверяем, что бот не сохранил никаких данных.</li>
      *     <li>Проверяем, что состояние пользователя изменилось на дефолтное.</li>
-     *     <li>Проверяем, что бот отравил запрос года обучения.</li>
      * </ol>
      */
     @Test
-    @DisplayName("Нажата кнопка 'Назад'")
+    @DisplayName("Кнопка 'Назад'")
     void testBackCommand() {
         logic.processMessage(utils.makeRequestFromMessage(TestConstants.REGISTER_MESSAGE));
         logic.processMessage(utils.makeRequestFromMessage(TestConstants.BACK_MESSAGE));
 
+        Assertions.assertEquals(TestConstants.HELP, bot.getOutcomingMessageList().get(1));
         Assertions.assertTrue(storage.userEntries.get(0L).isEmpty());
         Assertions.assertEquals(
                 new UserBuilder(0L, MathMechBotUserState.DEFAULT).build(),
                 storage.users.get(0L).orElseThrow()
         );
-        Assertions.assertEquals(TestConstants.HELP, bot.getOutcomingMessageList().get(1));
     }
 }

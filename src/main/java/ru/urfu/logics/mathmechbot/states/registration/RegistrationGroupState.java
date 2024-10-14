@@ -49,14 +49,14 @@ public enum RegistrationGroupState implements MathMechBotState {
     }
 
     /**
-     * Возвращаем пользователя на два шага назад, то есть на запрос года обучения.
+     * Возвращаем пользователя на шаг назад, то есть на запрос года обучения.
      *
      * @param context логического ядро (контекст для состояния).
      * @param request запрос.
      */
     private void backCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
-        context.storage.users.changeUserState(request.id(), MathMechBotUserState.REGISTRATION_YEAR);
-        final LocalMessage message = RegistrationYearState.INSTANCE.enterMessage(context, request);
+        context.storage.users.changeUserState(request.id(), MathMechBotUserState.REGISTRATION_SPECIALTY);
+        final LocalMessage message = RegistrationSpecialtyState.INSTANCE.enterMessage(context, request);
         request.bot().sendMessage(message, request.id());
     }
 

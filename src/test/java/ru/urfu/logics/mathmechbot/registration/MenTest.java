@@ -1,5 +1,6 @@
 package ru.urfu.logics.mathmechbot.registration;
 
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -22,10 +23,10 @@ import ru.urfu.logics.mathmechbot.storages.UserArrayStorage;
 import ru.urfu.logics.mathmechbot.storages.UserEntryArrayStorage;
 
 /**
- * Тесты для команды регистрации в состоянии запроса номера группы.
+ * Тесты для команды регистрации в состоянии запроса группы в формате МЕН.
  */
-@DisplayName("[/register] Состояние: ожидание номера группы")
-final class GroupTest {
+@DisplayName("[/register] Состояние: ожидание академической группы в формате МЕН")
+final class MenTest {
     private TestUtils utils;
     private MathMechStorage storage;
     private MathMechBotCore logic;
@@ -51,37 +52,51 @@ final class GroupTest {
                 utils.makeRequestFromMessage(new LocalMessageBuilder().text("2").build()));
         logic.processMessage(
                 utils.makeRequestFromMessage(new LocalMessageBuilder().text("ФТ").build()));
+        logic.processMessage(
+                utils.makeRequestFromMessage(new LocalMessageBuilder().text("5").build()));
+
         currentUser = storage.users.get(0L).orElseThrow();
         currentUserEntry = storage.userEntries.get(0L).orElseThrow();
+
         bot.getOutcomingMessageList().clear();
     }
 
     /**
-     * <p>Проверяем, что бот принимает корректные номера групп.</p>
+     * <p>Проверяем, что бот принимает корректные группы в формате МЕН.</p>
      *
      * <ol>
-     *     <li>Отправляем корректный номер группы.</li>
+     *     <li>Отправляем корректный номер МЕН-группы.</li>
      *     <li>Проверяем, что бот отправил нужное сообщение.</li>
      *     <li>Проверяем, что пользователь перешёл в нужное состояние.</li>
      *     <li>Проверяем, что пользовательские данные теперь содержат номер группы.</li>
      * </ol>
      *
-     * @param group корректный номер группы.
+     * @param men сообщение с корректным номером МЕН-группы.
      */
     @DisplayName("Корректный ввод")
-    @ValueSource(strings = {"1", "2", "3", "4", "5"})
-    @ParameterizedTest(name = "\"{0}\" - корректный номер группы")
-    void testCorrectData(String group) {
+    @ValueSource(strings = {
+            "МЕН-123456", "МЕН-000000", "МЕН-111111", "МЕН-999999",
+            "   МЕН-123456", "МЕН-123456   ", "   МЕН-123456   "
+    })
+    @ParameterizedTest(name = "\"{0}\" - сообщение, содержащее корректную МЕН-группу")
+    void testCorrectData(String men) {
         logic.processMessage(
-                utils.makeRequestFromMessage(new LocalMessageBuilder().text(group).build()));
+                utils.makeRequestFromMessage(new LocalMessageBuilder().text(men).build()));
 
         Assertions.assertEquals(
-                new UserBuilder(0L, MathMechBotUserState.REGISTRATION_MEN).build(),
+                new LocalMessageBuilder()
+                        .text(RegistrationConstants.CONFIRMATION_PREFIX
+                                + new UserEntryBuilder(currentUserEntry).men(men.trim()).build().toHumanReadable())
+                        .buttons(TestConstants.YES_NO_BACK)
+                        .build(),
+                bot.getOutcomingMessageList().getLast());
+
+        Assertions.assertEquals(
+                new UserBuilder(0L, MathMechBotUserState.REGISTRATION_CONFIRMATION).build(),
                 storage.users.get(0L).orElseThrow());
         Assertions.assertEquals(
-                new UserEntryBuilder(currentUserEntry).group(Integer.parseInt(group)).build(),
+                new UserEntryBuilder(currentUserEntry).men(men.trim()).build(),
                 storage.userEntries.get(0L).orElseThrow());
-        Assertions.assertEquals(RegistrationConstants.ASK_MEN, bot.getOutcomingMessageList().getLast());
     }
 
     /**
@@ -89,33 +104,33 @@ final class GroupTest {
      *
      * <ol>
      *     <li>Отправляем некорректные данные.</li>
+     *     <li>Проверяем, что запросил повторный ввод.</li>
      *     <li>Проверяем, что состояние пользователя не изменилось.</li>
      *     <li>Проверяем, что запись пользователя не изменилась.</li>
-     *     <li>Проверяем, что запросил повторный ввод.</li>
      * </ol>
      *
      * @param text некорректное сообщение.
      */
     @DisplayName("Некорректный ввод")
     @NullAndEmptySource
-    @ValueSource(strings = {"0", "01", " 1", "2 ", " 3 ", "7", "10", "a", "((("})
-    @ParameterizedTest(name = "\"{0}\" не является номером группы")
+    @ValueSource(strings = {"мен-123456", "Мен-123456", "МЕН--123456", "МЕН-1234567", "МЕН-12345"})
+    @ParameterizedTest(name = "\"{0}\" не является номером МЕН-группы")
     void testIncorrectData(String text) {
         logic.processMessage(
                 utils.makeRequestFromMessage(new LocalMessageBuilder().text(text).build()));
 
+        Assertions.assertEquals(TestConstants.TRY_AGAIN, bot.getOutcomingMessageList().getFirst());
         Assertions.assertEquals(currentUser, storage.users.get(0L).orElseThrow());
         Assertions.assertEquals(currentUserEntry, storage.userEntries.get(0L).orElseThrow());
-        Assertions.assertEquals(TestConstants.TRY_AGAIN, bot.getOutcomingMessageList().getFirst());
     }
 
     /**
      * <p>Проверяем, что бот корректно возвращает на шаг назад,
-     * то есть в состояние запроса направления подготовки.</p>
+     * то есть в состояние запроса номера группы.</p>
      *
      * <ol>
      *     <li>Нажимаем кнопку "Назад".</li>
-     *     <li>Проверяем, что бот в вернулся в состояние запроса направления.</li>
+     *     <li>Проверяем, что бот в вернулся в состояние запроса номера группы.</li>
      * </ol>
      */
     @Test
@@ -123,7 +138,7 @@ final class GroupTest {
     void testBackCommand() {
         logic.processMessage(utils.makeRequestFromMessage(TestConstants.BACK_MESSAGE));
         Assertions.assertEquals(
-                new UserBuilder(0L, MathMechBotUserState.REGISTRATION_SPECIALTY).build(),
+                new UserBuilder(0L, MathMechBotUserState.REGISTRATION_GROUP).build(),
                 storage.users.get(0L).orElseThrow());
     }
 }
