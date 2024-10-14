@@ -83,9 +83,13 @@ final class YearStateTest {
                 storage.users.get(0L).orElseThrow());
 
         if (Objects.equals(year, "1")) {
-            Assertions.assertEquals(RegistrationConstants.ASK_FIRST_YEAR_SPECIALTY, bot.getOutcomingMessageList().getFirst());
+            Assertions.assertEquals(
+                    RegistrationConstants.ASK_FIRST_YEAR_SPECIALTY,
+                    bot.getOutcomingMessageList().getFirst());
         } else {
-            Assertions.assertEquals(RegistrationConstants.ASK_LATER_YEAR_SPECIALTY, bot.getOutcomingMessageList().getFirst());
+            Assertions.assertEquals(
+                    RegistrationConstants.ASK_LATER_YEAR_SPECIALTY,
+                    bot.getOutcomingMessageList().getFirst());
         }
         Assertions.assertEquals(
                 new UserEntryBuilder(currentUserEntry).year(Integer.parseInt(year)).build(),

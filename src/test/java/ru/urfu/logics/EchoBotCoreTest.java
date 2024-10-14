@@ -10,7 +10,7 @@ import ru.urfu.localobjects.LocalMessageBuilder;
 import ru.urfu.localobjects.Request;
 
 /**
- * Тесты для класса EchoBotCore
+ * Тесты для класса EchoBotCore.
  */
 @DisplayName("Логика эхо бота")
 final class EchoBotCoreTest {
@@ -26,6 +26,12 @@ final class EchoBotCoreTest {
     private DummyBot bot;
     private EchoBotCore logic;
 
+    /**
+     * Оборачивает сообщение в Request с DummyBot и id=0L.
+     *
+     * @param message сообщение.
+     * @return запрос.
+     */
     private Request makeRequestFromMessage(@NotNull LocalMessage message) {
         return new Request(0L, message, bot);
     }

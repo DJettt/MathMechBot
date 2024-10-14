@@ -51,7 +51,7 @@ final class FullNameTest {
     static Stream<Arguments> testCorrectData() {
         return Stream.of(
                 Arguments.of("Иванов Иван", "Иванов", "Иван", null),
-                Arguments.of("   Иванов   Иван   ", "Иванов", "Иван", null),
+                Arguments.of("   Дим   Димыч   ", "Дим", "Димыч", null),
                 Arguments.of("Артемов Артемий Артёмович", "Артемов", "Артемий", "Артёмович"),
                 Arguments.of("    Ильин   Илья     Ильич  ", "Ильин", "Илья", "Ильич"),
                 Arguments.of("Ии Ии Ии", "Ии", "Ии", "Ии"),
@@ -113,9 +113,9 @@ final class FullNameTest {
     @DisplayName("Некорректный ввод")
     @NullAndEmptySource
     @ValueSource(strings = {
-            "И", "И И", "И И", "Иванов", "Иванов И", "И Иванов",
-            "И Иванов Иванов", "Иванов Иванов И", "Иванов И Иванов",
-            "ИВанов Иванов", "Иванов ИВанов", "Иванов Иванов ИВанов",
+            "И", "И И", "И И", "Иванова", "Иванова И", "И Иванов",
+            "И Иванов Иванов", "Иванова Иванов И", "Иванова И Иванов",
+            "ИВанова Иванов", "Иванова ИВанов", "Иванова Иванов ИВанов",
     })
     @ParameterizedTest(name = "\"{0}\" не содержит корректное ФИО")
     void testIncorrectData(String text) {

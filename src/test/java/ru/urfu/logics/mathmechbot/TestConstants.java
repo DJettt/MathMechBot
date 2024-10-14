@@ -6,6 +6,9 @@ import ru.urfu.localobjects.LocalButton;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
 
+/**
+ * Константы для теста матмех-бота.
+ */
 public final class TestConstants {
     /**
      * Приватный конструктор для класса-утилит.

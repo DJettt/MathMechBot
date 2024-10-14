@@ -8,9 +8,18 @@ import ru.urfu.localobjects.LocalMessageBuilder;
 import ru.urfu.logics.mathmechbot.TestConstants;
 
 /**
- * Тесты для команды регистрации
+ * <p>Константы для тестирования команды регистрации.</p>
+ *
+ * <p>SuppressWarnings: считаю, что в случае тестов лучше явно повторить.</p>
  */
+@SuppressWarnings("MultipleStringLiterals")
 public final class RegistrationConstants {
+    /**
+     * Приватный конструктор утилит-класса.
+     */
+    private RegistrationConstants() {
+    }
+
     final static String CONFIRMATION_PREFIX = "Всё верно?\n\n";
 
     final static LocalMessage ASK_FULL_NAME = new LocalMessageBuilder()

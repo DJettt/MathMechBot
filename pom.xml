@@ -146,6 +146,7 @@
                     <consoleOutput>true</consoleOutput>
                     <logViolationsToConsole>true</logViolationsToConsole>
                     <failsOnError>true</failsOnError>
+                    <includeTestSourceDirectory>true</includeTestSourceDirectory>
                 </configuration>
             </plugin>
             <plugin>

@@ -9,12 +9,28 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 /**
- * Тесты для различных реализаций Storage
+ * <p>Тесты для различных реализаций Storage.</p>
+ *
+ * <p>SuppressWarnings: считаю, что в данном случае повторения делают тесты прозрачнее.</p>
  */
+@SuppressWarnings({"MagicNumber", "MultipleStringLiterals"})
 @DisplayName("Тесты различных реализаций хранилищ (Storage)")
 final class StorageTest {
     /**
-     * Тестируем различные реализации хранилищ сразу же.
+     * <p>Добавляет в хранилище элементы для тестов.</p>
+     *
+     * @param storage хранилище, в которое добавляем элементы.
+     */
+    private void addElements(Storage<StringWithId, Integer> storage) {
+        storage.add(new StringWithId(1, "String 1"));
+        storage.add(new StringWithId(34, "String 34"));
+        storage.add(new StringWithId(5, "String 5"));
+        storage.add(new StringWithId(27, "String 27"));
+    }
+
+    /**
+     * <p>Тестируем различные реализации хранилищ сразу же.</p>
+     *
      * @return аргументы для теста (объект тестируемой реализации хранилища).
      */
     static Arguments[] storages() {
@@ -41,6 +57,8 @@ final class StorageTest {
      *     <li>Добавляем ещё один элемент.</li>
      *     <li>Проверяем, что хранилище возвращает все добавленные элементы, включая добавленный.</li>
      * </ol>
+     *
+     * @param storage тестируемая реализация Storage.
      */
     @DisplayName("Добавление элементов и запрос всех элементов")
     @MethodSource("storages")
@@ -48,10 +66,7 @@ final class StorageTest {
     void testAddAndGetAll(Storage<StringWithId, Integer> storage) {
         Assertions.assertEquals(new ArrayList<>(), storage.getAll());
 
-        storage.add(new StringWithId(1, "String 1"));
-        storage.add(new StringWithId(34, "String 34"));
-        storage.add(new StringWithId(5, "String 5"));
-        storage.add(new StringWithId(27, "String 27"));
+        addElements(storage);
 
         Assertions.assertEquals(new ArrayList<>(List.of(
                         new StringWithId(1, "String 1"),
@@ -81,15 +96,14 @@ final class StorageTest {
      *     <li>Проверяем, что добавление изменённого элемента с уже занятым id кидает исключение.</li>
      *     <li>Проверяем, что содержимое хранилища не изменилось.</li>
      * </ol>
+     *
+     * @param storage тестируемая реализация Storage.
      */
     @DisplayName("Добавление уже существующего элемента")
     @MethodSource("storages")
     @ParameterizedTest
     void testAddExisting(Storage<StringWithId, Integer> storage) {
-        storage.add(new StringWithId(1, "String 1"));
-        storage.add(new StringWithId(34, "String 34"));
-        storage.add(new StringWithId(5, "String 5"));
-        storage.add(new StringWithId(27, "String 27"));
+        addElements(storage);
 
         Assertions.assertThrows(
                 IllegalArgumentException.class, () -> storage.add(new StringWithId(1, "String 1")));
@@ -113,15 +127,14 @@ final class StorageTest {
      *     <li>Ищем существующий элемент.</li>
      *     <li>Проверяем, что поиск вернул его.</li>
      * </ol>
+     *
+     * @param storage тестируемая реализация Storage.
      */
     @DisplayName("Поиск существующего элемента")
     @MethodSource("storages")
     @ParameterizedTest
     void testGetExisting(Storage<StringWithId, Integer> storage) {
-        storage.add(new StringWithId(1, "String 1"));
-        storage.add(new StringWithId(34, "String 34"));
-        storage.add(new StringWithId(5, "String 5"));
-        storage.add(new StringWithId(27, "String 27"));
+        addElements(storage);
 
         Assertions.assertTrue(storage.get(5).isPresent());
         Assertions.assertEquals(
@@ -138,18 +151,15 @@ final class StorageTest {
      *     <li>Ищем несуществующий.</li>
      *     <li>Проверяем, что ничего не нашлось.</li>
      * </ol>
+     *
+     * @param storage тестируемая реализация Storage.
      */
     @DisplayName("Поиск несуществующего элемента")
     @MethodSource("storages")
     @ParameterizedTest
     void testGetNonexistent(Storage<StringWithId, Integer> storage) {
         Assertions.assertTrue(storage.get(2).isEmpty());
-
-        storage.add(new StringWithId(1, "String 1"));
-        storage.add(new StringWithId(34, "String 34"));
-        storage.add(new StringWithId(5, "String 5"));
-        storage.add(new StringWithId(27, "String 27"));
-
+        addElements(storage);
         Assertions.assertTrue(storage.get(2).isEmpty());
     }
 
@@ -161,16 +171,14 @@ final class StorageTest {
      *     <li>Модифицируем существующий.</li>
      *     <li>Проверяем, что хранилище содержит все элементы, но модифицированный - изменён.</li>
      * </ol>
+     *
+     * @param storage тестируемая реализация Storage.
      */
     @DisplayName("Обновление существующего элемента")
     @MethodSource("storages")
     @ParameterizedTest
     void testUpdateExisting(Storage<StringWithId, Integer> storage) {
-        storage.add(new StringWithId(1, "String 1"));
-        storage.add(new StringWithId(34, "String 34"));
-        storage.add(new StringWithId(5, "String 5"));
-        storage.add(new StringWithId(27, "String 27"));
-
+        addElements(storage);
         storage.update(new StringWithId(5, "Modified String 5"));
         Assertions.assertEquals(new ArrayList<>(List.of(
                         new StringWithId(1, "String 1"),
@@ -191,6 +199,8 @@ final class StorageTest {
      *     <li>Модифицируем снова.</li>
      *     <li>Проверяем, что содержимое хранилища не изменилось.</li>
      * </ol>
+     *
+     * @param storage тестируемая реализация Storage.
      */
     @DisplayName("Обновление несуществующего элемента")
     @MethodSource("storages")
@@ -199,10 +209,7 @@ final class StorageTest {
         storage.update(new StringWithId(2, "Modified String 2"));
         Assertions.assertEquals(new ArrayList<>(), storage.getAll());
 
-        storage.add(new StringWithId(1, "String 1"));
-        storage.add(new StringWithId(34, "String 34"));
-        storage.add(new StringWithId(5, "String 5"));
-        storage.add(new StringWithId(27, "String 27"));
+        addElements(storage);
 
         storage.update(new StringWithId(2, "Modified String 2"));
         Assertions.assertEquals(new ArrayList<>(List.of(
@@ -222,16 +229,14 @@ final class StorageTest {
      *     <li>Удаляем существующий.</li>
      *     <li>Проверяем, что хранилище содержит все элементы, кроме удалённого.</li>
      * </ol>
+     *
+     * @param storage тестируемая реализация Storage.
      */
     @DisplayName("Удаление существующего элемента")
     @MethodSource("storages")
     @ParameterizedTest
     void testDeleteExisting(Storage<StringWithId, Integer> storage) {
-        storage.add(new StringWithId(1, "String 1"));
-        storage.add(new StringWithId(34, "String 34"));
-        storage.add(new StringWithId(5, "String 5"));
-        storage.add(new StringWithId(27, "String 27"));
-
+        addElements(storage);
         storage.delete(new StringWithId(5, "Modified String 5"));
         Assertions.assertEquals(new ArrayList<>(List.of(
                         new StringWithId(1, "String 1"),
@@ -251,6 +256,8 @@ final class StorageTest {
      *     <li>Удаляем несуществующий.</li>
      *     <li>Проверяем, что содержимое хранилища не изменилось.</li>
      * </ol>
+     *
+     * @param storage тестируемая реализация Storage.
      */
     @DisplayName("Удаление несуществующего элемента")
     @MethodSource("storages")
@@ -259,10 +266,7 @@ final class StorageTest {
         storage.delete(new StringWithId(2, "Modified String 2"));
         Assertions.assertEquals(new ArrayList<>(), storage.getAll());
 
-        storage.add(new StringWithId(1, "String 1"));
-        storage.add(new StringWithId(34, "String 34"));
-        storage.add(new StringWithId(5, "String 5"));
-        storage.add(new StringWithId(27, "String 27"));
+        addElements(storage);
 
         storage.delete(new StringWithId(2, "Modified String 2"));
         Assertions.assertEquals(new ArrayList<>(List.of(

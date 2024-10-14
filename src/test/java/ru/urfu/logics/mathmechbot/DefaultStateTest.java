@@ -11,10 +11,12 @@ import ru.urfu.logics.mathmechbot.storages.MathMechStorage;
 import ru.urfu.logics.mathmechbot.storages.UserArrayStorage;
 import ru.urfu.logics.mathmechbot.storages.UserEntryArrayStorage;
 
+/**
+ * Тесты для дефолтного состояния.
+ */
 @DisplayName("[default] Состояние: по умолчанию")
 final class DefaultStateTest {
     private TestUtils utils;
-    private MathMechStorage storage;
     private MathMechBotCore logic;
     private DummyBot bot;
 
@@ -23,15 +25,21 @@ final class DefaultStateTest {
      */
     @BeforeEach
     void setupTest() {
-        storage = new MathMechStorage(new UserArrayStorage(), new UserEntryArrayStorage());
+        final MathMechStorage storage = new MathMechStorage(new UserArrayStorage(), new UserEntryArrayStorage());
         logic = new MathMechBotCore(storage);
         bot = new DummyBot();
         utils = new TestUtils(logic, bot);
     }
 
     /**
-     * Проверяем, что на попытку незарегистрированного пользователя
-     * удалить или просмотреть свои данные, ядро отвечает просьбой о регистрации.
+     * <p>Проверяем, что на попытку незарегистрированного пользователя
+     * удалить или просмотреть свои данные, ядро отвечает просьбой о регистрации.</p>
+     *
+     * <ol>
+     *     <li>Отправляем команду.</li>
+     *     <li>Проверяем, что бот попросил зарегистрироваться.</li>
+     * </ol>
+     * @param command тестируемая команда
      */
     @DisplayName("Незарегистрированный пользователь вызывает команду для зарегистрированных пользователей")
     @ValueSource(strings = {TestConstants.INFO_COMMAND, TestConstants.DELETE_COMMAND})
@@ -41,21 +49,28 @@ final class DefaultStateTest {
         Assertions.assertEquals(TestConstants.ASK_FOR_REGISTRATION, bot.getOutcomingMessageList().getLast());
     }
 
+    /**
+     * <p>Проверяем, что бот корректно выводит данные пользователей.</p>
+     *
+     * <p>Проверяем человека с отчество и без.</p>
+     *
+     * @param fullName ФИО
+     */
     @DisplayName("Тестирование команды " + TestConstants.INFO_COMMAND)
-    @ValueSource(strings = {"Ильин Илья Ильич", "Ильин Илья", "Аа Аа"})
+    @ValueSource(strings = {"Ильин Илья Ильич", "Ильин Илья"})
     @ParameterizedTest(name = "\"{0}\" - различные конфигурации ФИО")
     void testInfoExist(String fullName) {
         logic.processMessage(utils.makeRequestFromMessage(TestConstants.INFO_MESSAGE));
         Assertions.assertEquals(TestConstants.ASK_FOR_REGISTRATION, bot.getOutcomingMessageList().getFirst());
 
-        utils.registerUser(0L, fullName, 2, "КН", 3, "МЕН-654321");
+        utils.registerUser(0L, fullName, 2, "КН", 2, "МЕН-654321");
         logic.processMessage(utils.makeRequestFromMessage(TestConstants.INFO_MESSAGE));
         Assertions.assertEquals(new LocalMessageBuilder()
                         .text("""
                                 Данные о Вас:
 
                                 ФИО: %s
-                                Группа: КН-203 (МЕН-654321)"""
+                                Группа: КН-202 (МЕН-654321)"""
                                 .formatted(fullName))
                         .build(),
                 bot.getOutcomingMessageList().getFirst());

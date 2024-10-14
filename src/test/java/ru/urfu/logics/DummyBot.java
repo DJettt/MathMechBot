@@ -12,10 +12,18 @@ import ru.urfu.localobjects.LocalMessage;
 public final class DummyBot implements Bot {
     final private List<LocalMessage> outcomingMessageList;
 
+    /**
+     * Конструктор.
+     */
     public DummyBot() {
         outcomingMessageList = new Stack<>();
     }
 
+    /**
+     * Геттер списка отправленных сообщений.
+     *
+     * @return список отправленных сообщений.
+     */
     public List<LocalMessage> getOutcomingMessageList() {
         return outcomingMessageList;
     }

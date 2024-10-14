@@ -21,7 +21,7 @@ import ru.urfu.logics.mathmechbot.storages.UserArrayStorage;
 import ru.urfu.logics.mathmechbot.storages.UserEntryArrayStorage;
 
 /**
- * Тесты для команды удаления
+ * Тесты для состояния ожидания подтверждения регистрационных данных.
  */
 @DisplayName("[/register] Состояние: ожидание подтверждения")
 final class ConfirmationTest {
