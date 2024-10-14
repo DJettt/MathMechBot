@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Структура, содержащая все хранилища для MathMechBot.
  */
-public class MathMechStorage {
+public final class MathMechStorage {
     public final UserStorage users;
     public final UserEntryStorage userEntries;
 
