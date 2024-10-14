@@ -12,6 +12,7 @@ import ru.urfu.localobjects.Request;
 /**
  * Тесты для класса EchoBotCore
  */
+@DisplayName("Логика эхо бот")
 final class EchoBotCoreTest {
     final static String HELP_MESSAGE_TEXT = """
             Привет, я эхо бот! Сейчас я расскажу как ты можешь со мной взаимодействовать.
@@ -39,7 +40,7 @@ final class EchoBotCoreTest {
     }
 
     /**
-     * Проверяем, что на сообщение /help логика отправляет справку
+     * Проверяем, что на сообщение /help логика отправляет справку.
      */
     @Test
     @DisplayName("Проверка команды /help")
@@ -50,7 +51,7 @@ final class EchoBotCoreTest {
     }
 
     /**
-     * Проверяем, что на сообщение /start логика отправляет справку
+     * Проверяем, что на сообщение /start логика отправляет справку.
      */
     @Test
     @DisplayName("Проверка команды /start")
@@ -61,7 +62,7 @@ final class EchoBotCoreTest {
     }
 
     /**
-     * Проверяем, что логика дублирует набор слов с префиксом "Ты написал: "
+     * Проверяем, что логика дублирует набор слов с префиксом "Ты написал: ".
      */
     @Test
     @DisplayName("Набор слов")
@@ -73,7 +74,7 @@ final class EchoBotCoreTest {
     }
 
     /**
-     * Проверяем, что на сообщение без текста логика отвечает ничем (вместо LocalMessage -- null)
+     * Проверяем, что на сообщение без текста логика отвечает ничем (вместо LocalMessage -- null).
      */
     @Test
     @DisplayName("Сообщение без текста")

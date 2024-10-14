@@ -11,6 +11,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 /**
  * Тесты для различных реализаций Storage
  */
+@DisplayName("Тесты различных реализаций хранилищ (Storage)")
 final class StorageTest {
     /**
      * Тестируем различные реализации хранилищ сразу же.
