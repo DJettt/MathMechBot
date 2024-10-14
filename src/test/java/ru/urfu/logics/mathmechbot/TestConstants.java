@@ -47,6 +47,7 @@ public final class TestConstants {
                     /help - выводит команды, которые принимает бот
                     /register - регистрация
                     /info - информация о Вас
+                    /edit - изменить информацию
                     /delete - удалить информацию о Вас""")
             .build();
     public final static LocalMessage ASK_FOR_REGISTRATION = new LocalMessageBuilder()
