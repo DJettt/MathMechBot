@@ -41,8 +41,17 @@ public enum EditingChooseState implements MathMechBotState {
     public void processMessage(@NotNull MathMechBotCore context, @NotNull Request request) {
         switch (request.message().text()) {
             case Constants.BACK_COMMAND -> backCommandHandler(context, request);
-            case null -> request.bot().sendMessage(Constants.TRY_AGAIN, request.id());
-            default -> textCommandHandler(context, request);
+            case EDITING_FULL_NAME -> {
+                context.storage.users.changeUserState(request.id(),
+                        MathMechBotUserState.EDITING_FULL_NAME);
+                request.bot().sendMessage(EditingFullNameState.INSTANCE.enterMessage(context, request), request.id());
+            }
+            case EDITING_YEAR -> {
+                context.storage.users.changeUserState(request.id(),
+                        MathMechBotUserState.EDITING_YEAR);
+                request.bot().sendMessage(EditingYearState.INSTANCE.enterMessage(context, request), request.id());
+            }
+            default -> request.bot().sendMessage(Constants.TRY_AGAIN, request.id());
         }
     }
 
@@ -60,23 +69,5 @@ public enum EditingChooseState implements MathMechBotState {
     private void backCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
         context.storage.users.changeUserState(request.id(), MathMechBotUserState.DEFAULT);
         request.bot().sendMessage(DefaultState.INSTANCE.enterMessage(context, request), request.id());
-    }
-
-    /**
-     * Проверяем что именно хочет изменить пользователь.
-     *
-     * @param context логического ядро (контекст для состояния).
-     * @param request запрос.
-     */
-    private void textCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
-        //TODO: дополнить!
-        switch (request.message().text()) {
-            case EDITING_FULL_NAME -> {
-                context.storage.users.changeUserState(request.id(),
-                        MathMechBotUserState.EDITING_FULL_NAME);
-                request.bot().sendMessage(EditingFullNameState.INSTANCE.enterMessage(context, request), request.id());
-            }
-            default -> request.bot().sendMessage(Constants.TRY_AGAIN, request.id());
-        }
     }
 }

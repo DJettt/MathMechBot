@@ -28,24 +28,6 @@ public enum EditingAdditionalEditState implements MathMechBotState {
     @Override
     public void processMessage(@NotNull MathMechBotCore context, @NotNull Request request) {
         switch (request.message().text()) {
-            case null -> request.bot().sendMessage(Constants.TRY_AGAIN, request.id());
-            default -> textCommandHandler(context, request);
-        }
-    }
-
-    @Override
-    public LocalMessage enterMessage(@NotNull MathMechBotCore context, @NotNull Request request) {
-        return ON_ENTER_MESSAGE;
-    }
-
-    /**
-     * Обработка входящих команд от пользователя.
-     *
-     * @param context логическое ядро
-     * @param request запрос
-     */
-    private void textCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
-        switch (request.message().text()) {
             case Constants.ACCEPT_COMMAND -> {
                 context.storage.users.changeUserState(request.id(),
                         MathMechBotUserState.EDITING_CHOOSE);
@@ -60,5 +42,10 @@ public enum EditingAdditionalEditState implements MathMechBotState {
             }
             default -> request.bot().sendMessage(Constants.TRY_AGAIN, request.id());
         }
+    }
+
+    @Override
+    public LocalMessage enterMessage(@NotNull MathMechBotCore context, @NotNull Request request) {
+        return ON_ENTER_MESSAGE;
     }
 }
