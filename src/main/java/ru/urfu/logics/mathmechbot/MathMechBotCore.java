@@ -2,8 +2,6 @@ package ru.urfu.logics.mathmechbot;
 
 import java.util.Optional;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import ru.urfu.localobjects.Request;
 import ru.urfu.logics.LogicCore;
 import ru.urfu.logics.mathmechbot.models.MathMechBotUserState;
@@ -17,8 +15,6 @@ import ru.urfu.logics.mathmechbot.storages.MathMechStorage;
  * Логическое ядро бота, обрабатывающего сообщения Telegram-каналов на предмет упоминания студентов.<br/>
  */
 public final class MathMechBotCore implements LogicCore {
-    private final static Logger LOGGER = LoggerFactory.getLogger(MathMechBotCore.class);
-
     public final MathMechStorage storage;
     private MathMechBotState currentState;
 
@@ -41,8 +37,6 @@ public final class MathMechBotCore implements LogicCore {
             assert storage.users.get(request.id()).isPresent();
         }
         final User user = storage.users.get(request.id()).get();
-
-        LOGGER.info(user.toString());
 
         currentState = user.currentState().stateInstance();
         currentState.processMessage(this, request);
