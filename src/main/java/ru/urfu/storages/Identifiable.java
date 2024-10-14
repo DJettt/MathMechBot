@@ -1,4 +1,4 @@
-package ru.urfu.models;
+package ru.urfu.storages;
 
 /**
  * Интерфейс, указывающий на то, что у объекта можно выделить id.

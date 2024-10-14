@@ -1,6 +1,7 @@
 package ru.urfu.storages;
 
-import ru.urfu.models.Identifiable;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Интерфейс хранилища, некоторой абстракции над данными.
@@ -9,15 +10,39 @@ import ru.urfu.models.Identifiable;
  */
 public interface Storage<T extends Identifiable<I>, I> {
     /**
-     * Добавляет элемент в хранилище.
-     * @param member элемент, который добавляем.
-     */
-    void add(T member);
-
-    /**
      * Ищет элемент с данным идентификатором.
      * @param id идентификатор.
      * @return первый элемент из хранилища с данным идентификатором.
      */
-    T getById(I id);
+    Optional<T> get(I id);
+
+    /**
+     * Возвращает все элементы.
+     *
+     * @return все элементы хранилища.
+     */
+    List<T> getAll();
+
+    /**
+     * Добавляет элемент в хранилище.
+     *
+     * @param member элемент, который добавляем.
+     */
+    void add(T member) throws IllegalArgumentException;
+
+    /**
+     * Обновляет элемент в хранилище.<br/>
+     * Два элемента считаются одним и тем же, если их id совпадает.
+     *
+     * @param member элемент, который хотим обновить.
+     */
+    void update(T member);
+
+    /**
+     * Удаляет элемент из хранилища.<br/>
+     * Два элемента считаются одним и тем же, если их id совпадает.
+     *
+     * @param member элемент, который хотим удалить.
+     */
+    void delete(T member);
 }

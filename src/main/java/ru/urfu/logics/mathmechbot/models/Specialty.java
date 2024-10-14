@@ -1,4 +1,4 @@
-package ru.urfu.enums;
+package ru.urfu.logics.mathmechbot.models;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -16,10 +16,22 @@ public enum Specialty {
     MO("МО"),
     KN("КН");
 
+    private final String abbreviation;
+
     /**
      * Конструктор элемента перечисления.
      * @param abbreviation аббревиатура направления
      */
     Specialty(@NotNull String abbreviation) {
+        this.abbreviation = abbreviation;
+    }
+
+    /**
+     * Геттер поля abbreviation.
+     * @return содержимое поля.
+     */
+    @NotNull
+    public String getAbbreviation() {
+        return abbreviation;
     }
 }
