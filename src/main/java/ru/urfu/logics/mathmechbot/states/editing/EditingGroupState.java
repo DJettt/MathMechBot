@@ -13,6 +13,9 @@ import ru.urfu.logics.mathmechbot.MathMechBotCore;
 import ru.urfu.logics.mathmechbot.models.MathMechBotUserState;
 import ru.urfu.logics.mathmechbot.states.MathMechBotState;
 
+/**
+ * Состояние при котором пользователь меняет номер группы.
+ */
 public enum EditingGroupState implements MathMechBotState {
     INSTANCE;
 
