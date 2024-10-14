@@ -4,17 +4,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <!-- Идентификатор проекта (пакет, id, версия) -->
     <groupId>ru.urfu</groupId>
     <artifactId>MathMechBot</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <properties>
-        <!-- Определяет версию Java для исходных кодов -->
         <maven.compiler.source>21</maven.compiler.source>
-        <!-- Определяет версию Java для скомпилированных классов -->
         <maven.compiler.target>21</maven.compiler.target>
-        <!-- Кодировка проекта -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <junit-jupiter.version>5.9.2</junit-jupiter.version>
@@ -27,7 +23,7 @@
         <commons-io.version>2.11.0</commons-io.version>
 
         <maven-checkstyle-plugin.version>3.5.0</maven-checkstyle-plugin.version>
-        <maven-surefire-plugin.version>3.5.0</maven-surefire-plugin.version>
+        <maven-surefire-plugin.version>3.5.1</maven-surefire-plugin.version>
     </properties>
 
     <dependencyManagement>
@@ -123,7 +119,6 @@
             <artifactId>JDA</artifactId>
             <version>5.1.1</version>
         </dependency>
-
     </dependencies>
 
     <build>
@@ -149,12 +144,13 @@
                     <includeTestSourceDirectory>true</includeTestSourceDirectory>
                 </configuration>
             </plugin>
+
+            <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-surefire-plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${maven-surefire-plugin.version}</version>
             </plugin>
-
         </plugins>
     </build>
 
