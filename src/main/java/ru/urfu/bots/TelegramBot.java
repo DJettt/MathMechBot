@@ -2,6 +2,7 @@ package ru.urfu.bots;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.telegram.telegrambots.client.okhttp.OkHttpTelegramClient;
@@ -16,6 +17,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
 import ru.urfu.localobjects.LocalButton;
 import ru.urfu.localobjects.LocalMessage;
+import ru.urfu.localobjects.Request;
 import ru.urfu.logics.LogicCore;
 
 
@@ -23,7 +25,7 @@ import ru.urfu.logics.LogicCore;
  * Простой телеграм-бот, который принимает текстовые сообщения и составляет ответ
  * в зависимости от переданного ему при создании логического ядра (logicCore).
  */
-public class TelegramBot implements Bot, LongPollingSingleThreadUpdateConsumer {
+public final class TelegramBot implements Bot, LongPollingSingleThreadUpdateConsumer {
     private static final Logger LOGGER = LoggerFactory.getLogger(TelegramBot.class);
     private final TelegramClient telegramClient;
     private final LogicCore logicCore;
@@ -35,7 +37,7 @@ public class TelegramBot implements Bot, LongPollingSingleThreadUpdateConsumer {
      * @param token строка, содержащая токен для бота
      * @param core логическое ядро, обрабатывающее сообщения
      */
-    public TelegramBot(String token, LogicCore core) {
+    public TelegramBot(@NotNull String token, @NotNull LogicCore core) {
         telegramClient = new OkHttpTelegramClient(token);
         logicCore = core;
         botToken = token;
@@ -65,7 +67,7 @@ public class TelegramBot implements Bot, LongPollingSingleThreadUpdateConsumer {
      * @param id id пользователя
      */
     @Override
-    public void sendMessage(LocalMessage msg, Long id) {
+    public void sendMessage(@NotNull LocalMessage msg, @NotNull Long id) {
         try {
             if (msg.text() != null) {
                 telegramClient.execute(createSendMessage(msg, id));
@@ -81,8 +83,8 @@ public class TelegramBot implements Bot, LongPollingSingleThreadUpdateConsumer {
      * @param sizeOfSquare количество кнопок, которое должно быть в строчке
      * @return возвращает сетку кнопок нужного для вывода формата.
      */
-    private ArrayList<List<LocalButton>> splitButtonList(List<LocalButton> buttons, int sizeOfSquare) {
-        ArrayList<List<LocalButton>> splitedButtonList = new ArrayList<>();
+    private List<List<LocalButton>> splitButtonList(List<LocalButton> buttons, int sizeOfSquare) {
+        List<List<LocalButton>> splitedButtonList = new ArrayList<>();
         int count = 0;
         while (count < buttons.size()) {
             List<LocalButton> buttonsRow = new ArrayList<>();
@@ -108,7 +110,7 @@ public class TelegramBot implements Bot, LongPollingSingleThreadUpdateConsumer {
     /**
      * Создание кнопок после сообщения.
      * @param localButton информация об одной кнопке, которую нужно создать в сообщении
-     * @return возвращает кнопку фаормата Telegram бота
+     * @return возвращает кнопку формата Telegram бота
      */
     private InlineKeyboardButton createButton(LocalButton localButton) {
         InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton(localButton.name());
@@ -136,7 +138,7 @@ public class TelegramBot implements Bot, LongPollingSingleThreadUpdateConsumer {
      */
     private InlineKeyboardMarkup createButtons(List<LocalButton> localButtons) {
         int size = calculateSizeOfSquare(localButtons.size());
-        ArrayList<List<LocalButton>> splitedButtonList = splitButtonList(localButtons, size);
+        List<List<LocalButton>> splitedButtonList = splitButtonList(localButtons, size);
         List<InlineKeyboardRow> keyboard = new ArrayList<>();
         for (List<LocalButton> localButtonRow : splitedButtonList) {
             keyboard.add(createButtonsRow(localButtonRow));
@@ -157,6 +159,7 @@ public class TelegramBot implements Bot, LongPollingSingleThreadUpdateConsumer {
                 .chatId(chatId)
                 .text(msg.text());
         if (msg.hasButtons()) {
+            assert msg.buttons() != null;
             sendMessage = sendMessage.replyMarkup(createButtons(msg.buttons()));
         }
         return sendMessage.build();
@@ -187,6 +190,6 @@ public class TelegramBot implements Bot, LongPollingSingleThreadUpdateConsumer {
             LOGGER.error("Unknown message type!");
             return;
         }
-        logicCore.processMessage(msg, chatId, this);
+        logicCore.processMessage(new Request(chatId, msg, this));
     }
 }

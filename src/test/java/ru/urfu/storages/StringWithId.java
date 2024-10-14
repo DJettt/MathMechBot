@@ -1,7 +1,6 @@
 package ru.urfu.storages;
 
 import org.jetbrains.annotations.NotNull;
-import ru.urfu.models.Identifiable;
 
 /**
  * Строка с идентификатором. Простой класс для тестирования хранилищ.

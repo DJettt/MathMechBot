@@ -13,17 +13,19 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.requests.restaction.MessageCreateAction;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.urfu.localobjects.LocalButton;
 import ru.urfu.localobjects.LocalMessage;
+import ru.urfu.localobjects.Request;
 import ru.urfu.logics.LogicCore;
 
 /**
  * Простой дискорд-бот, который принимает текстовые сообщения и составляет ответ
  * в зависимости от переданного ему при создании логического ядра (logicCore).
  */
-public class DiscordBot extends ListenerAdapter implements Bot {
+public final class DiscordBot extends ListenerAdapter implements Bot {
     private static final Logger LOGGER = LoggerFactory.getLogger(DiscordBot.class);
     private final LogicCore logicCore;
     private final String botToken;
@@ -63,11 +65,14 @@ public class DiscordBot extends ListenerAdapter implements Bot {
     /**
      * Разделяет один большой список кнопок на несколько других размером не больше 5.
      * @param message принимает LocalMessage, откуда берет список кнопок.
-     * @return возвращает ArrayList списков, чтобы бот отправлял их по очерди в каждом сообщении.
+     * @return возвращает список списков, чтобы бот отправлял их по очереди в каждом сообщении.
      */
-    private ArrayList<List<LocalButton>> splitButtons(LocalMessage message) {
+    private List<List<LocalButton>> splitButtons(LocalMessage message) {
+        assert message.buttons() != null;
+
         final int maxSize = 5;
-        ArrayList<List<LocalButton>> arrayOfButtons = new ArrayList<>();
+        List<List<LocalButton>> arrayOfButtons = new ArrayList<>();
+
         if (message.buttons().size() <= maxSize) {
             arrayOfButtons.add(message.buttons());
         } else {
@@ -92,7 +97,7 @@ public class DiscordBot extends ListenerAdapter implements Bot {
      * @param id id чата куда нужно отправить сообщение.
      */
     @Override
-    public void sendMessage(LocalMessage message, Long id) {
+    public void sendMessage(@NotNull LocalMessage message, @NotNull Long id) {
         MessageChannel channel = jda.getTextChannelById(id);
         if (channel == null) {
             channel = jda.getPrivateChannelById(id);
@@ -104,7 +109,7 @@ public class DiscordBot extends ListenerAdapter implements Bot {
         if (message.text() != null) {
             MessageCreateAction messageCreateAction = channel.sendMessage(message.text());
             if (message.hasButtons()) {
-                ArrayList<List<LocalButton>> splitButtons = splitButtons(message);
+                List<List<LocalButton>> splitButtons = splitButtons(message);
                 boolean first = true;
                 for (List<LocalButton> buttons : splitButtons) {
                     if (first) {
@@ -126,7 +131,7 @@ public class DiscordBot extends ListenerAdapter implements Bot {
     }
 
     /**
-     * Создаёт объекты класса LocalMessage из дискордоских MessageReceivedEvent.
+     * Создаёт объекты класса LocalMessage из дискордовских Message.
      * @param message полученное сообщение
      * @return то же сообщение в формате LocalMessage для общения с ядром
      */
@@ -166,7 +171,7 @@ public class DiscordBot extends ListenerAdapter implements Bot {
             return;
         }
         LocalMessage msg = convertDiscordMessage(event.getMessage());
-        logicCore.processMessage(msg, event.getChannel().getIdLong(), this);
+        logicCore.processMessage(new Request(event.getChannel().getIdLong(), msg, this));
     }
 
     /**
@@ -176,6 +181,6 @@ public class DiscordBot extends ListenerAdapter implements Bot {
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {
         LocalMessage msg = new LocalMessage(event.getButton().getId(), null);
-        logicCore.processMessage(msg, event.getChannelIdLong(), this);
+        logicCore.processMessage(new Request(event.getChannel().getIdLong(), msg, this));
     }
 }
