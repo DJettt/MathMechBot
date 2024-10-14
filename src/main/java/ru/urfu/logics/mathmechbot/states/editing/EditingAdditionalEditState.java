@@ -38,12 +38,14 @@ public enum EditingAdditionalEditState implements MathMechBotState {
                         MathMechBotUserState.DEFAULT);
                 request.bot().sendMessage(new LocalMessageBuilder()
                         .text("Изменения успешно сохранены.").build(), request.id());
+                DefaultState.INSTANCE.infoCommandHandler(context, request);
                 request.bot().sendMessage(DefaultState.INSTANCE.enterMessage(context, request), request.id());
             }
             default -> request.bot().sendMessage(Constants.TRY_AGAIN, request.id());
         }
     }
 
+    @NotNull
     @Override
     public LocalMessage enterMessage(@NotNull MathMechBotCore context, @NotNull Request request) {
         return ON_ENTER_MESSAGE;

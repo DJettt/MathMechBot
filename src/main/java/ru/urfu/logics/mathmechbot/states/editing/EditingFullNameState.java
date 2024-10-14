@@ -38,6 +38,7 @@ public enum EditingFullNameState implements MathMechBotState {
         }
     }
 
+    @NotNull
     @Override
     public LocalMessage enterMessage(@NotNull MathMechBotCore context, @NotNull Request request) {
         return ON_ENTER_MESSAGE;

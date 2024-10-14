@@ -3,7 +3,6 @@ package ru.urfu.logics.mathmechbot.states.editing;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
-
 import org.jetbrains.annotations.NotNull;
 import ru.urfu.localobjects.LocalButton;
 import ru.urfu.localobjects.LocalMessage;
@@ -12,15 +11,16 @@ import ru.urfu.localobjects.Request;
 import ru.urfu.logics.mathmechbot.Constants;
 import ru.urfu.logics.mathmechbot.MathMechBotCore;
 import ru.urfu.logics.mathmechbot.models.MathMechBotUserState;
-import ru.urfu.logics.mathmechbot.states.DefaultState;
 import ru.urfu.logics.mathmechbot.states.MathMechBotState;
-import ru.urfu.logics.mathmechbot.states.registration.RegistrationSpecialtyState;
 
+/**
+ * Состояние изменения курса обучения.
+ */
 public enum EditingYearState implements MathMechBotState {
     INSTANCE;
 
     private final static Pattern VALID_YEAR_STRING_PATTERN = Pattern.compile("^[1-6]$");
-    private static final LocalMessage ON_ENTER_MESSAGE = new LocalMessageBuilder()
+    private final static LocalMessage ON_ENTER_MESSAGE = new LocalMessageBuilder()
             .text("На каком курсе Вы обучаетесь?")
             .buttons(new ArrayList<>(List.of(
                     new LocalButton("1 курс", "1"),
@@ -42,6 +42,7 @@ public enum EditingYearState implements MathMechBotState {
         }
     }
 
+    @NotNull
     @Override
     public LocalMessage enterMessage(@NotNull MathMechBotCore context, @NotNull Request request) {
         return ON_ENTER_MESSAGE;

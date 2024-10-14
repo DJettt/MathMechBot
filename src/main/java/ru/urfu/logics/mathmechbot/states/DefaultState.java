@@ -85,7 +85,7 @@ public enum DefaultState implements MathMechBotState {
      * @param context логического ядро (контекст для состояния).
      * @param request запрос.
      */
-    private void infoCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
+    public void infoCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
         final Optional<UserEntry> userEntryOptional = context.storage.userEntries.get(request.id());
         if (userEntryOptional.isEmpty()) {
             request.bot().sendMessage(Constants.ASK_FOR_REGISTRATION, request.id());

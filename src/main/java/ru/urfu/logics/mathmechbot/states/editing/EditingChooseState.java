@@ -3,7 +3,6 @@ package ru.urfu.logics.mathmechbot.states.editing;
 import java.util.ArrayList;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import ru.urfu.localobjects.LocalButton;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
@@ -51,12 +50,17 @@ public enum EditingChooseState implements MathMechBotState {
                         MathMechBotUserState.EDITING_YEAR);
                 request.bot().sendMessage(EditingYearState.INSTANCE.enterMessage(context, request), request.id());
             }
+            case EDITING_SPECIALITY -> {
+                context.storage.users.changeUserState(request.id(),
+                        MathMechBotUserState.EDITING_SPECIALITY);
+                request.bot().sendMessage(EditingSpecialityState.INSTANCE.enterMessage(context, request), request.id());
+            }
             default -> request.bot().sendMessage(Constants.TRY_AGAIN, request.id());
         }
     }
 
     @Override
-    @Nullable
+    @NotNull
     public LocalMessage enterMessage(@NotNull MathMechBotCore context, @NotNull Request request) {
         return ON_ENTER_MESSAGE;
     }
