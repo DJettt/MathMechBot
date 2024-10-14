@@ -48,14 +48,9 @@ public enum DeletionConfirmationState implements MathMechBotState {
             LOGGER.error("User without entry reached deletion confirmation state");
             return null;
         }
-        final UserEntry userEntry = userEntryOptional.get();
-
-        final String userInfo = Constants.USER_INFO_TEMPLATE.formatted(
-                String.join(" ", userEntry.surname(), userEntry.name(), userEntry.patronym()),
-                userEntry.specialty(), userEntry.year(), userEntry.group(), userEntry.men());
 
         return new LocalMessageBuilder()
-                .text("Точно удаляем?\n\n" + userInfo)
+                .text("Точно удаляем?\n\n" + userEntryOptional.get().toHumanReadable())
                 .buttons(new ArrayList<>(List.of(Constants.YES_BUTTON, Constants.NO_BUTTON, Constants.BACK_BUTTON)))
                 .build();
     }

@@ -27,4 +27,15 @@ public record UserEntry(
         @Nullable Integer group,
         @NotNull Long userId
 ) implements Identifiable<Long> {
+    /**
+     * Представляет объект UserEntry в виде удобного для восприятия пользователем текста.
+     *
+     * @return строка с содержимым объекта в удобном для пользователя виде.
+     */
+    public String toHumanReadable() {
+        return "ФИО: %s\nГруппа: %s-%d0%d (%s)".formatted(
+                surname + " " + name + ((patronym != null) ? " " + patronym : ""),
+                specialty, year, group, men
+        );
+    }
 }

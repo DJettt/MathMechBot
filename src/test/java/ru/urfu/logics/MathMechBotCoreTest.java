@@ -70,24 +70,6 @@ final class MathMechBotCoreTest {
     private DummyBot bot;
 
     /**
-     * Создаём объект логики и ложного бота для каждого теста.
-     */
-    @BeforeEach
-    void setupTest() {
-        storage = new MathMechStorage(new UserArrayStorage(), new UserEntryArrayStorage());
-        logic = new MathMechBotCore(storage);
-        bot = new DummyBot();
-    }
-
-    private Request makeRequestFromMessage(@NotNull LocalMessage message) {
-        return makeRequestFromMessage(message, 0L);
-    }
-
-    private Request makeRequestFromMessage(@NotNull LocalMessage message, long id) {
-        return new Request(id, message, bot);
-    }
-
-    /**
      * Регистрирует человека со следующими данными.
      * Нужна для быстрых тестов команд, где требуется зарегистрированный пользователь.
      *
@@ -115,20 +97,40 @@ final class MathMechBotCoreTest {
         bot.getOutcomingMessageList().clear();
     }
 
-    @Test
+    private Request makeRequestFromMessage(@NotNull LocalMessage message) {
+        return makeRequestFromMessage(message, 0L);
+    }
+
+    private Request makeRequestFromMessage(@NotNull LocalMessage message, long id) {
+        return new Request(id, message, bot);
+    }
+
+    /**
+     * Создаём объект логики и ложного бота для каждого теста.
+     */
+    @BeforeEach
+    void setupTest() {
+        storage = new MathMechStorage(new UserArrayStorage(), new UserEntryArrayStorage());
+        logic = new MathMechBotCore(storage);
+        bot = new DummyBot();
+    }
+
     @DisplayName("Тестирование команды /info")
-    void testInfoExist() {
+    @ValueSource(strings = {"Ильин Илья Ильич", "Ильин Илья", "Аа Аа"})
+    @ParameterizedTest(name = "\"{0}\" - различные конфигурации ФИО")
+    void testInfoExist(String fullName) {
         logic.processMessage(makeRequestFromMessage(INFO_MESSAGE));
         Assertions.assertEquals(ASK_FOR_REGISTRATION_MESSAGE, bot.getOutcomingMessageList().getFirst());
 
-        registerUser(0L, "Ильин Илья Ильич", 2, "КН", 3, "МЕН-654321");
+        registerUser(0L, fullName, 2, "КН", 3, "МЕН-654321");
         logic.processMessage(makeRequestFromMessage(INFO_MESSAGE));
         Assertions.assertEquals(new LocalMessageBuilder()
                         .text("""
                                 Данные о Вас:
 
-                                ФИО: Ильин Илья Ильич
-                                Группа: КН-203 (МЕН-654321)""")
+                                ФИО: %s
+                                Группа: КН-203 (МЕН-654321)"""
+                                .formatted(fullName))
                         .build(),
                 bot.getOutcomingMessageList().getFirst());
     }
@@ -245,9 +247,9 @@ final class MathMechBotCoreTest {
              * @param name                имя, содержащее в сообщении.
              * @param patronym            отчество, содержащее в сообщении.
              */
+            @DisplayName("Различные корректные ФИО или ФИ")
             @ParameterizedTest(name = "\"{0}\" - сообщение, содержащее корректное ФИО")
             @MethodSource
-            @DisplayName("Различные корректные ФИО или ФИ")
             void testCorrectData(String incomingMessageText, String surname, String name, String patronym) {
                 logic.processMessage(makeRequestFromMessage(REGISTER_MESSAGE));
                 Assertions.assertEquals(ASK_FULL_NAME, bot.getOutcomingMessageList().getFirst());

@@ -25,6 +25,4 @@ public final class Constants {
     public final static LocalMessage TRY_AGAIN = new LocalMessageBuilder().text("Попробуйте снова.").build();
     public final static LocalMessage ASK_FOR_REGISTRATION = new LocalMessageBuilder()
             .text("Сперва нужно зарегистрироваться.").build();
-
-    public final static String USER_INFO_TEMPLATE = "ФИО: %s\nГруппа: %s-%d0%d (%s)";
 }
