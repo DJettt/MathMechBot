@@ -21,7 +21,7 @@ import ru.urfu.logics.mathmechbot.storages.UserEntryArrayStorage;
 /**
  * Тесты для команды изменения информации о себе - /edit.
  */
-@DisplayName("[/register] Состояние: ожидание ФИО")
+@DisplayName("[/edit] Состояние: Default")
 final class EditingTest {
     private TestUtils utils;
     private MathMechStorage storage;
@@ -32,7 +32,7 @@ final class EditingTest {
     UserEntry currentUserEntry;
 
     /**
-     * Создаём объект логики, ложного бота и утилиты для каждого теста, выполняем все предыдущие шаги регистрации.
+     * Создаём объект логики, ложного бота и утилиты для каждого теста, регистрируемся.
      */
     @BeforeEach
     void setupTest() {

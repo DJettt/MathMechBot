@@ -13,7 +13,7 @@ import ru.urfu.storages.Storage;
 public interface UserEntryStorage extends Storage<UserEntry, Long> {
 
     /**
-     * Меняет поля name, surname, patronym.
+     * Меняет поля name, surname.
      * @param id идентификатор записи в хранилище.
      * @param strings ФИО
      */
