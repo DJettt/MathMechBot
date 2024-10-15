@@ -11,6 +11,7 @@ import ru.urfu.logics.mathmechbot.MathMechBotCore;
 import ru.urfu.logics.mathmechbot.models.MathMechBotUserState;
 import ru.urfu.logics.mathmechbot.models.UserEntry;
 import ru.urfu.logics.mathmechbot.states.deletion.DeletionConfirmationState;
+import ru.urfu.logics.mathmechbot.states.editing.EditingChooseState;
 import ru.urfu.logics.mathmechbot.states.registration.RegistrationFullNameState;
 
 
@@ -24,6 +25,7 @@ public enum DefaultState implements MathMechBotState {
     private final static String HELP_COMMAND = "/help";
     private final static String REGISTER_COMMAND = "/register";
     private final static String INFO_COMMAND = "/info";
+    private final static String EDIT_COMMAND = "/edit";
     private final static String DELETE_COMMAND = "/delete";
 
     @Override
@@ -32,6 +34,7 @@ public enum DefaultState implements MathMechBotState {
             case REGISTER_COMMAND -> registerCommandHandler(context, request);
             case INFO_COMMAND -> infoCommandHandler(context, request);
             case DELETE_COMMAND -> deleteCommandHandler(context, request);
+            case EDIT_COMMAND -> editCommandHandler(context, request);
             case null, default -> helpCommandHandler(context, request);
         }
     }
@@ -44,8 +47,9 @@ public enum DefaultState implements MathMechBotState {
                 %s - выводит команды, которые принимает бот
                 %s - регистрация
                 %s - информация о Вас
+                %s - изменить информацию
                 %s - удалить информацию о Вас"""
-                .formatted(START_COMMAND, HELP_COMMAND, REGISTER_COMMAND, INFO_COMMAND, DELETE_COMMAND);
+                .formatted(START_COMMAND, HELP_COMMAND, REGISTER_COMMAND, INFO_COMMAND, EDIT_COMMAND, DELETE_COMMAND);
         return new LocalMessageBuilder().text(HELP_MESSAGE).build();
     }
 
@@ -81,7 +85,7 @@ public enum DefaultState implements MathMechBotState {
      * @param context логического ядро (контекст для состояния).
      * @param request запрос.
      */
-    private void infoCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
+    public void infoCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
         final Optional<UserEntry> userEntryOptional = context.storage.getUserEntries().get(request.id());
         if (userEntryOptional.isEmpty()) {
             request.bot().sendMessage(Constants.ASK_FOR_REGISTRATION, request.id());
@@ -91,6 +95,26 @@ public enum DefaultState implements MathMechBotState {
                 .text("Данные о Вас:\n\n" + userEntryOptional.get().toHumanReadable())
                 .build();
         request.bot().sendMessage(answer, request.id());
+    }
+
+    /**
+     * Запускает процесс изменения информации о пользователе.
+     *
+     * @param context логического ядро (контекст для состояния).
+     * @param request запрос.
+     */
+    private void editCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
+        final Optional<UserEntry> userEntryOptional = context.storage.getUserEntries().get(request.id());
+        if (userEntryOptional.isPresent()) {
+            context.storage.getUsers().changeUserState(request.id(), MathMechBotUserState.EDITING_CHOOSE);
+
+            final LocalMessage msg = EditingChooseState.INSTANCE.enterMessage(context, request);
+            if (msg != null) {
+                request.bot().sendMessage(msg, request.id());
+            }
+        } else {
+            request.bot().sendMessage(Constants.ASK_FOR_REGISTRATION, request.id());
+        }
     }
 
     /**
