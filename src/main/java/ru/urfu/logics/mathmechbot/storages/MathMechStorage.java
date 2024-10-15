@@ -20,10 +20,20 @@ public final class MathMechStorage {
         this.userEntries = userEntryStorage;
     }
 
+    /**
+     * Геттер хранилища объектов User.
+     *
+     * @return хранилище объектов User.
+     */
     public UserStorage getUsers() {
         return users;
     }
 
+    /**
+     * Геттер хранилища объектов UserEntry.
+     *
+     * @return хранилище объектов UserEntry.
+     */
     public UserEntryStorage getUserEntries() {
         return userEntries;
     }
