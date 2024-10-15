@@ -64,9 +64,9 @@ public enum RegistrationFullNameState implements MathMechBotState {
      * @param request запрос.
      */
     private void backCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
-        final Optional<UserEntry> userEntryOptional = context.storage.userEntries.get(request.id());
-        userEntryOptional.ifPresent(context.storage.userEntries::delete);
-        context.storage.users.changeUserState(request.id(), MathMechBotUserState.DEFAULT);
+        final Optional<UserEntry> userEntryOptional = context.storage.getUserEntries().get(request.id());
+        userEntryOptional.ifPresent(context.storage.getUserEntries()::delete);
+        context.storage.getUsers().changeUserState(request.id(), MathMechBotUserState.DEFAULT);
         request.bot().sendMessage(DefaultState.INSTANCE.enterMessage(context, request), request.id());
     }
 
@@ -91,10 +91,10 @@ public enum RegistrationFullNameState implements MathMechBotState {
         final List<String> strings = List.of(trimmedText.split("\\s+"));
         final boolean hasPatronym = strings.size() == NUMBER_OF_WORDS_IN_FULL_NAME_WITH_PATRONYM;
 
-        context.storage.userEntries.add(new UserEntry(
+        context.storage.getUserEntries().add(new UserEntry(
                 request.id(), strings.get(0), strings.get(1), (hasPatronym) ? strings.get(2) : null,
                 null, null, null, null, request.id()));
-        context.storage.users.changeUserState(request.id(), MathMechBotUserState.REGISTRATION_YEAR);
+        context.storage.getUsers().changeUserState(request.id(), MathMechBotUserState.REGISTRATION_YEAR);
 
         final LocalMessage msg = RegistrationYearState.INSTANCE.enterMessage(context, request);
         request.bot().sendMessage(msg, request.id());
