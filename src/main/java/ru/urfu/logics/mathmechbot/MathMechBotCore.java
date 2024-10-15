@@ -30,13 +30,13 @@ public final class MathMechBotCore implements LogicCore {
 
     @Override
     public void processMessage(@NotNull Request request) {
-        Optional<User> userOptional = storage.users.get(request.id());
+        Optional<User> userOptional = storage.getUsers().get(request.id());
 
         if (userOptional.isEmpty()) {
-            storage.users.add(new User(request.id(), MathMechBotUserState.DEFAULT));
-            assert storage.users.get(request.id()).isPresent();
+            storage.getUsers().add(new User(request.id(), MathMechBotUserState.DEFAULT));
+            assert storage.getUsers().get(request.id()).isPresent();
         }
-        final User user = storage.users.get(request.id()).get();
+        final User user = storage.getUsers().get(request.id()).get();
 
         currentState = user.currentState().stateInstance();
         currentState.processMessage(this, request);

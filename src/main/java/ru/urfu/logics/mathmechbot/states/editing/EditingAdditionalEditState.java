@@ -29,12 +29,12 @@ public enum EditingAdditionalEditState implements MathMechBotState {
     public void processMessage(@NotNull MathMechBotCore context, @NotNull Request request) {
         switch (request.message().text()) {
             case Constants.ACCEPT_COMMAND -> {
-                context.storage.users.changeUserState(request.id(),
+                context.storage.getUsers().changeUserState(request.id(),
                         MathMechBotUserState.EDITING_CHOOSE);
                 request.bot().sendMessage(EditingChooseState.INSTANCE.enterMessage(context, request), request.id());
             }
             case Constants.DECLINE_COMMAND -> {
-                context.storage.users.changeUserState(request.id(),
+                context.storage.getUsers().changeUserState(request.id(),
                         MathMechBotUserState.DEFAULT);
                 request.bot().sendMessage(new LocalMessageBuilder()
                         .text("Изменения успешно сохранены.").build(), request.id());

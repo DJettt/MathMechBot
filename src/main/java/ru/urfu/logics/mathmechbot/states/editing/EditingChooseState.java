@@ -41,27 +41,27 @@ public enum EditingChooseState implements MathMechBotState {
         switch (request.message().text()) {
             case Constants.BACK_COMMAND -> backCommandHandler(context, request);
             case EDITING_FULL_NAME -> {
-                context.storage.users.changeUserState(request.id(),
+                context.storage.getUsers().changeUserState(request.id(),
                         MathMechBotUserState.EDITING_FULL_NAME);
                 request.bot().sendMessage(EditingFullNameState.INSTANCE.enterMessage(context, request), request.id());
             }
             case EDITING_YEAR -> {
-                context.storage.users.changeUserState(request.id(),
+                context.storage.getUsers().changeUserState(request.id(),
                         MathMechBotUserState.EDITING_YEAR);
                 request.bot().sendMessage(EditingYearState.INSTANCE.enterMessage(context, request), request.id());
             }
             case EDITING_SPECIALITY -> {
-                context.storage.users.changeUserState(request.id(),
+                context.storage.getUsers().changeUserState(request.id(),
                         MathMechBotUserState.EDITING_SPECIALITY);
                 request.bot().sendMessage(EditingSpecialityState.INSTANCE.enterMessage(context, request), request.id());
             }
             case EDITING_GROUP -> {
-                context.storage.users.changeUserState(request.id(),
+                context.storage.getUsers().changeUserState(request.id(),
                         MathMechBotUserState.EDITING_GROUP);
                 request.bot().sendMessage(EditingGroupState.INSTANCE.enterMessage(context, request), request.id());
             }
             case EDITING_MEN -> {
-                context.storage.users.changeUserState(request.id(),
+                context.storage.getUsers().changeUserState(request.id(),
                         MathMechBotUserState.EDITING_MEN);
                 request.bot().sendMessage(EditingMenState.INSTANCE.enterMessage(context, request), request.id());
             }
@@ -81,7 +81,7 @@ public enum EditingChooseState implements MathMechBotState {
      * @param request запрос
      */
     private void backCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
-        context.storage.users.changeUserState(request.id(), MathMechBotUserState.DEFAULT);
+        context.storage.getUsers().changeUserState(request.id(), MathMechBotUserState.DEFAULT);
         request.bot().sendMessage(DefaultState.INSTANCE.enterMessage(context, request), request.id());
     }
 }

@@ -60,7 +60,7 @@ public enum RegistrationYearState implements MathMechBotState {
      * @param request запрос.
      */
     private void backCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
-        context.storage.users.changeUserState(request.id(), MathMechBotUserState.REGISTRATION_NAME);
+        context.storage.getUsers().changeUserState(request.id(), MathMechBotUserState.REGISTRATION_NAME);
         request.bot().sendMessage(RegistrationFullNameState.INSTANCE.enterMessage(context, request), request.id());
     }
 
@@ -85,8 +85,8 @@ public enum RegistrationYearState implements MathMechBotState {
         }
 
         if (VALID_YEAR_STRING_PATTERN.matcher(request.message().text()).matches()) {
-            context.storage.userEntries.changeUserEntryYear(request.id(), year);
-            context.storage.users.changeUserState(request.id(), MathMechBotUserState.REGISTRATION_SPECIALTY);
+            context.storage.getUserEntries().changeUserEntryYear(request.id(), year);
+            context.storage.getUsers().changeUserState(request.id(), MathMechBotUserState.REGISTRATION_SPECIALTY);
 
             final LocalMessage msg = RegistrationSpecialtyState.INSTANCE.enterMessage(context, request);
             request.bot().sendMessage(msg, request.id());

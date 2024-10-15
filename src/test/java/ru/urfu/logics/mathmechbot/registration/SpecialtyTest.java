@@ -51,15 +51,15 @@ final class SpecialtyTest {
         logic.processMessage(
                 utils.makeRequestFromMessage(new LocalMessageBuilder().text("Иванов Иван Иванович").build()));
         logic.processMessage(utils.makeRequestFromMessage(new LocalMessageBuilder().text("1").build()));
-        currentFirstYearUser = storage.users.get(0L).orElseThrow();
-        currentFirstYearUserEntry = storage.userEntries.get(0L).orElseThrow();
+        currentFirstYearUser = storage.getUsers().get(0L).orElseThrow();
+        currentFirstYearUserEntry = storage.getUserEntries().get(0L).orElseThrow();
 
         logic.processMessage(utils.makeRequestFromMessage(TestConstants.REGISTER_MESSAGE, 1));
         logic.processMessage(
                 utils.makeRequestFromMessage(new LocalMessageBuilder().text("Ильин Илья Ильич").build(), 1));
         logic.processMessage(utils.makeRequestFromMessage(new LocalMessageBuilder().text("2").build(), 1));
-        currentSecondYearUser = storage.users.get(1L).orElseThrow();
-        currentSecondYearUserEntry = storage.userEntries.get(1L).orElseThrow();
+        currentSecondYearUser = storage.getUsers().get(1L).orElseThrow();
+        currentSecondYearUserEntry = storage.getUserEntries().get(1L).orElseThrow();
 
         bot.getOutcomingMessageList().clear();
     }
@@ -86,10 +86,10 @@ final class SpecialtyTest {
                 utils.makeRequestFromMessage(new LocalMessageBuilder().text(specialtyAbbreviation).build()));
         Assertions.assertEquals(
                 new UserBuilder(0L, MathMechBotUserState.REGISTRATION_GROUP).build(),
-                storage.users.get(0L).orElseThrow());
+                storage.getUsers().get(0L).orElseThrow());
         Assertions.assertEquals(
                 new UserEntryBuilder(currentFirstYearUserEntry).specialty(specialtyAbbreviation).build(),
-                storage.userEntries.get(0L).orElseThrow());
+                storage.getUserEntries().get(0L).orElseThrow());
         Assertions.assertEquals(RegistrationConstants.ASK_GROUP_NUMBER, bot.getOutcomingMessageList().getFirst());
 
         // Второкурсник
@@ -97,10 +97,10 @@ final class SpecialtyTest {
                 new LocalMessageBuilder().text(specialtyAbbreviation).build(), 1));
         Assertions.assertEquals(
                 new UserBuilder(1L, MathMechBotUserState.REGISTRATION_GROUP).build(),
-                storage.users.get(1L).orElseThrow());
+                storage.getUsers().get(1L).orElseThrow());
         Assertions.assertEquals(
                 new UserEntryBuilder(currentSecondYearUserEntry).specialty(specialtyAbbreviation).build(),
-                storage.userEntries.get(1L).orElseThrow());
+                storage.getUserEntries().get(1L).orElseThrow());
         Assertions.assertEquals(RegistrationConstants.ASK_GROUP_NUMBER, bot.getOutcomingMessageList().get(1));
     }
 
@@ -130,18 +130,18 @@ final class SpecialtyTest {
                 utils.makeRequestFromMessage(new LocalMessageBuilder().text(specialtyAbbreviation).build(), 0L));
         Assertions.assertEquals(
                 new UserBuilder(0L, MathMechBotUserState.REGISTRATION_GROUP).build(),
-                storage.users.get(0L).orElseThrow());
+                storage.getUsers().get(0L).orElseThrow());
         Assertions.assertEquals(
                 new UserEntryBuilder(currentFirstYearUserEntry).specialty(specialtyAbbreviation).build(),
-                storage.userEntries.get(0L).orElseThrow());
+                storage.getUserEntries().get(0L).orElseThrow());
         Assertions.assertEquals(RegistrationConstants.ASK_GROUP_NUMBER, bot.getOutcomingMessageList().getFirst());
         bot.getOutcomingMessageList().clear();
 
         // Второкурсник
         logic.processMessage(
                 utils.makeRequestFromMessage(new LocalMessageBuilder().text(specialtyAbbreviation).build(), 1));
-        Assertions.assertEquals(currentSecondYearUser, storage.users.get(1L).orElseThrow());
-        Assertions.assertEquals(currentSecondYearUserEntry, storage.userEntries.get(1L).orElseThrow());
+        Assertions.assertEquals(currentSecondYearUser, storage.getUsers().get(1L).orElseThrow());
+        Assertions.assertEquals(currentSecondYearUserEntry, storage.getUserEntries().get(1L).orElseThrow());
         Assertions.assertEquals(TestConstants.TRY_AGAIN, bot.getOutcomingMessageList().getFirst());
         Assertions.assertEquals(RegistrationConstants.ASK_LATER_YEAR_SPECIALTY, bot.getOutcomingMessageList().get(1));
     }
@@ -170,8 +170,8 @@ final class SpecialtyTest {
         // Первокурсник
         logic.processMessage(
                 utils.makeRequestFromMessage(new LocalMessageBuilder().text(specialtyAbbreviation).build()));
-        Assertions.assertEquals(currentFirstYearUser, storage.users.get(0L).orElseThrow());
-        Assertions.assertEquals(currentFirstYearUserEntry, storage.userEntries.get(0L).orElseThrow());
+        Assertions.assertEquals(currentFirstYearUser, storage.getUsers().get(0L).orElseThrow());
+        Assertions.assertEquals(currentFirstYearUserEntry, storage.getUserEntries().get(0L).orElseThrow());
         Assertions.assertEquals(TestConstants.TRY_AGAIN, bot.getOutcomingMessageList().getFirst());
         Assertions.assertEquals(RegistrationConstants.ASK_FIRST_YEAR_SPECIALTY, bot.getOutcomingMessageList().get(1));
         bot.getOutcomingMessageList().clear();
@@ -181,10 +181,10 @@ final class SpecialtyTest {
                 utils.makeRequestFromMessage(new LocalMessageBuilder().text(specialtyAbbreviation).build(), 1));
         Assertions.assertEquals(
                 new UserBuilder(1L, MathMechBotUserState.REGISTRATION_GROUP).build(),
-                storage.users.get(1L).orElseThrow());
+                storage.getUsers().get(1L).orElseThrow());
         Assertions.assertEquals(
                 new UserEntryBuilder(currentSecondYearUserEntry).specialty(specialtyAbbreviation).build(),
-                storage.userEntries.get(1L).orElseThrow());
+                storage.getUserEntries().get(1L).orElseThrow());
         Assertions.assertEquals(RegistrationConstants.ASK_GROUP_NUMBER, bot.getOutcomingMessageList().getFirst());
         bot.getOutcomingMessageList().clear();
     }
@@ -209,8 +209,8 @@ final class SpecialtyTest {
         // Первокурсник
         logic.processMessage(
                 utils.makeRequestFromMessage(new LocalMessageBuilder().text(incorrectMessageText).build()));
-        Assertions.assertEquals(currentFirstYearUser, storage.users.get(0L).orElseThrow());
-        Assertions.assertEquals(currentFirstYearUserEntry, storage.userEntries.get(0L).orElseThrow());
+        Assertions.assertEquals(currentFirstYearUser, storage.getUsers().get(0L).orElseThrow());
+        Assertions.assertEquals(currentFirstYearUserEntry, storage.getUserEntries().get(0L).orElseThrow());
         Assertions.assertEquals(TestConstants.TRY_AGAIN, bot.getOutcomingMessageList().getFirst());
         Assertions.assertEquals(RegistrationConstants.ASK_FIRST_YEAR_SPECIALTY, bot.getOutcomingMessageList().get(1));
         bot.getOutcomingMessageList().clear();
@@ -218,8 +218,8 @@ final class SpecialtyTest {
         // Второкурсник
         logic.processMessage(
                 utils.makeRequestFromMessage(new LocalMessageBuilder().text(incorrectMessageText).build(), 1));
-        Assertions.assertEquals(currentSecondYearUser, storage.users.get(1L).orElseThrow());
-        Assertions.assertEquals(currentSecondYearUserEntry, storage.userEntries.get(1L).orElseThrow());
+        Assertions.assertEquals(currentSecondYearUser, storage.getUsers().get(1L).orElseThrow());
+        Assertions.assertEquals(currentSecondYearUserEntry, storage.getUserEntries().get(1L).orElseThrow());
         Assertions.assertEquals(TestConstants.TRY_AGAIN, bot.getOutcomingMessageList().getFirst());
         Assertions.assertEquals(RegistrationConstants.ASK_LATER_YEAR_SPECIALTY, bot.getOutcomingMessageList().get(1));
     }
@@ -241,10 +241,10 @@ final class SpecialtyTest {
 
         Assertions.assertEquals(
                 new UserBuilder(0L, MathMechBotUserState.REGISTRATION_YEAR).build(),
-                storage.users.get(0L).orElseThrow());
+                storage.getUsers().get(0L).orElseThrow());
         Assertions.assertEquals(
                 new UserBuilder(1L, MathMechBotUserState.REGISTRATION_YEAR).build(),
-                storage.users.get(1L).orElseThrow());
+                storage.getUsers().get(1L).orElseThrow());
 
         Assertions.assertEquals(RegistrationConstants.ASK_YEAR, bot.getOutcomingMessageList().getFirst());
         Assertions.assertEquals(RegistrationConstants.ASK_YEAR, bot.getOutcomingMessageList().get(1));

@@ -44,7 +44,7 @@ public enum EditingMenState implements MathMechBotState {
      * @param request запрос.
      */
     private void backCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
-        context.storage.users.changeUserState(request.id(), MathMechBotUserState.EDITING_CHOOSE);
+        context.storage.getUsers().changeUserState(request.id(), MathMechBotUserState.EDITING_CHOOSE);
         request.bot().sendMessage(EditingChooseState.INSTANCE.enterMessage(context, request), request.id());
     }
 
@@ -63,8 +63,8 @@ public enum EditingMenState implements MathMechBotState {
             return;
         }
 
-        context.storage.userEntries.changeUserEntryMen(request.id(), trimmedText);
-        context.storage.users.changeUserState(request.id(), MathMechBotUserState.EDITING_ADDITIONAL_EDIT);
+        context.storage.getUserEntries().changeUserEntryMen(request.id(), trimmedText);
+        context.storage.getUsers().changeUserState(request.id(), MathMechBotUserState.EDITING_ADDITIONAL_EDIT);
 
         final LocalMessage message = EditingAdditionalEditState.INSTANCE.enterMessage(context, request);
         if (message != null) {
