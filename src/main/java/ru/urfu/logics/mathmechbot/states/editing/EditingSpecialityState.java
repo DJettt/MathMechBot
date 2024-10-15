@@ -35,10 +35,10 @@ public enum EditingSpecialityState implements MathMechBotState {
         final Optional<UserEntry> userEntryOptional = context.storage.getUserEntries().get(request.id());
 
         if (userEntryOptional.isEmpty()) {
-            LOGGER.error("User without entry managed to reach registration_specialty state.");
+            LOGGER.error("User without entry managed to reach editing_specialty state.");
             throw new RuntimeException();
         } else if (userEntryOptional.get().year() == null) {
-            LOGGER.error("User without set year managed to reach registration_specialty state.");
+            LOGGER.error("User without set year managed to reach editing_specialty state.");
             throw new RuntimeException();
         }
 
