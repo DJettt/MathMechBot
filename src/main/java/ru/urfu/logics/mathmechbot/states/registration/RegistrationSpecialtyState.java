@@ -36,7 +36,7 @@ public enum RegistrationSpecialtyState implements MathMechBotState {
      * @return год для записи данного пользователя.
      */
     private int getUserEntryYear(@NotNull MathMechBotCore context, @NotNull Request request) {
-        final Optional<UserEntry> userEntryOptional = context.storage.userEntries.get(request.id());
+        final Optional<UserEntry> userEntryOptional = context.storage.getUserEntries().get(request.id());
 
         if (userEntryOptional.isEmpty()) {
             LOGGER.error("User without entry managed to reach registration_specialty state.");
@@ -98,7 +98,7 @@ public enum RegistrationSpecialtyState implements MathMechBotState {
      * @param request запрос.
      */
     private void backCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
-        context.storage.users.changeUserState(request.id(), MathMechBotUserState.REGISTRATION_YEAR);
+        context.storage.getUsers().changeUserState(request.id(), MathMechBotUserState.REGISTRATION_YEAR);
         request.bot().sendMessage(RegistrationYearState.INSTANCE.enterMessage(context, request), request.id());
     }
 
@@ -123,8 +123,8 @@ public enum RegistrationSpecialtyState implements MathMechBotState {
             return;
         }
 
-        context.storage.userEntries.changeUserEntrySpecialty(request.id(), request.message().text());
-        context.storage.users.changeUserState(request.id(), MathMechBotUserState.REGISTRATION_GROUP);
+        context.storage.getUserEntries().changeUserEntrySpecialty(request.id(), request.message().text());
+        context.storage.getUsers().changeUserState(request.id(), MathMechBotUserState.REGISTRATION_GROUP);
         request.bot().sendMessage(RegistrationGroupState.INSTANCE.enterMessage(context, request), request.id());
     }
 }
