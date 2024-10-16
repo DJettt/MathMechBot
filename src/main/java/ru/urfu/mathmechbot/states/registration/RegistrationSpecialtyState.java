@@ -6,10 +6,10 @@ import java.util.Optional;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.urfu.localobjects.BotProcessMessageRequest;
 import ru.urfu.localobjects.LocalButton;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
-import ru.urfu.localobjects.Request;
 import ru.urfu.mathmechbot.Constants;
 import ru.urfu.mathmechbot.MathMechBotCore;
 import ru.urfu.mathmechbot.models.MathMechBotUserState;
@@ -33,7 +33,7 @@ public final class RegistrationSpecialtyState extends MathMechBotState {
      * @param request запрос.
      * @return год для записи данного пользователя.
      */
-    private int getUserEntryYear(@NotNull MathMechBotCore context, @NotNull Request request) {
+    private int getUserEntryYear(@NotNull MathMechBotCore context, @NotNull BotProcessMessageRequest request) {
         final Optional<UserEntry> userEntryOptional = context.storage.userEntries.get(request.id());
 
         if (userEntryOptional.isEmpty()) {
@@ -67,7 +67,7 @@ public final class RegistrationSpecialtyState extends MathMechBotState {
     }
 
     @Override
-    public void processMessage(@NotNull Request request) {
+    public void processMessage(@NotNull BotProcessMessageRequest request) {
         switch (request.message().text()) {
             case Constants.BACK_COMMAND -> backCommandHandler(context(), request);
             case null -> {
@@ -80,7 +80,7 @@ public final class RegistrationSpecialtyState extends MathMechBotState {
 
     @Override
     @NotNull
-    public LocalMessage enterMessage(@NotNull MathMechBotCore context, @NotNull Request request) {
+    public LocalMessage enterMessage(@NotNull MathMechBotCore context, @NotNull BotProcessMessageRequest request) {
         List<LocalButton> buttons = new ArrayList<>();
         for (Specialty specialty : allowedSpecialties(getUserEntryYear(context, request))) {
             buttons.add(new LocalButton(specialty.getAbbreviation(), specialty.getAbbreviation()));
@@ -95,7 +95,7 @@ public final class RegistrationSpecialtyState extends MathMechBotState {
      * @param context логического ядро (контекст для состояния).
      * @param request запрос.
      */
-    private void backCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
+    private void backCommandHandler(@NotNull MathMechBotCore context, @NotNull BotProcessMessageRequest request) {
         context.storage.users.changeUserState(request.id(), MathMechBotUserState.REGISTRATION_YEAR);
         request.bot().sendMessage(new RegistrationYearState().enterMessage(context, request), request.id());
     }
@@ -108,7 +108,7 @@ public final class RegistrationSpecialtyState extends MathMechBotState {
      * @param context логического ядро (контекст для состояния).
      * @param request запрос.
      */
-    private void textHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
+    private void textHandler(@NotNull MathMechBotCore context, @NotNull BotProcessMessageRequest request) {
         assert request.message().text() != null;
 
         if (!allowedSpecialties(getUserEntryYear(context, request))

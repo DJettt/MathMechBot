@@ -1,9 +1,9 @@
 package ru.urfu.logics;
 
 import org.jetbrains.annotations.NotNull;
+import ru.urfu.localobjects.BotProcessMessageRequest;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
-import ru.urfu.localobjects.Request;
 
 /**
  * Логическое ядро эхо-бота.
@@ -19,7 +19,7 @@ public final class EchoBotCore implements LogicCore {
      * @param request сообщение, которое нужно обработать
      */
     @Override
-    public void processMessage(@NotNull Request request) {
+    public void processMessage(@NotNull BotProcessMessageRequest request) {
         if (request.message().text() == null) {
             return;
         }
@@ -34,7 +34,7 @@ public final class EchoBotCore implements LogicCore {
      * Обрабатывает сообщения, не распознанные как заявленные команды.
      * @param request запрос.
      */
-    private void defaultHandler(@NotNull Request request) {
+    private void defaultHandler(@NotNull BotProcessMessageRequest request) {
         final LocalMessage answer = new LocalMessageBuilder()
                 .text("Ты написал: " + request.message().text())
                 .build();
@@ -45,7 +45,7 @@ public final class EchoBotCore implements LogicCore {
      * Выдаёт справку.
      * @param request запрос.
      */
-    private void helpCommandHandler(@NotNull Request request) {
+    private void helpCommandHandler(@NotNull BotProcessMessageRequest request) {
         final String HELP_MESSAGE = """
                 Привет, я эхо бот! Сейчас я расскажу как ты можешь со мной взаимодействовать.
                 Пассивная способность: Я пишу твое сообщение тебе обратно но добавляю фразу 'Ты написал:' в начало \

@@ -1,15 +1,15 @@
 package ru.urfu.fsm;
 
-import ru.urfu.localobjects.Request;
+import ru.urfu.localobjects.BotProcessMessageRequest;
 
 public abstract class RequestEvent implements Event {
-    private final Request request;
+    private final BotProcessMessageRequest request;
 
-    protected RequestEvent(Request request) {
+    protected RequestEvent(BotProcessMessageRequest request) {
         this.request = request;
     }
 
-    public Request request() {
+    public BotProcessMessageRequest request() {
         return request;
     }
 }

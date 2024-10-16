@@ -3,9 +3,9 @@ package ru.urfu.logics.mathmechbot;
 import java.util.ArrayList;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
+import ru.urfu.localobjects.BotProcessMessageRequest;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
-import ru.urfu.localobjects.Request;
 import ru.urfu.logics.DummyBot;
 import ru.urfu.logics.LogicCore;
 import ru.urfu.mathmechbot.MathMechBotCore;
@@ -62,7 +62,7 @@ public final class TestUtils {
      * @param message сообщение.
      * @return запрос.
      */
-    public Request makeRequestFromMessage(@NotNull LocalMessage message) {
+    public BotProcessMessageRequest makeRequestFromMessage(@NotNull LocalMessage message) {
         return makeRequestFromMessage(message, 0L);
     }
 
@@ -72,7 +72,7 @@ public final class TestUtils {
      * @param id идентификатор пользователя.
      * @return запрос.
      */
-    public Request makeRequestFromMessage(@NotNull LocalMessage message, long id) {
-        return new Request(id, message, bot);
+    public BotProcessMessageRequest makeRequestFromMessage(@NotNull LocalMessage message, long id) {
+        return new BotProcessMessageRequest(id, message, bot);
     }
 }

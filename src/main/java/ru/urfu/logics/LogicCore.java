@@ -1,7 +1,7 @@
 package ru.urfu.logics;
 
 import org.jetbrains.annotations.NotNull;
-import ru.urfu.localobjects.Request;
+import ru.urfu.localobjects.BotProcessMessageRequest;
 
 /**
  * Интерфейс логического ядра.
@@ -13,5 +13,5 @@ public interface LogicCore {
      *
      * @param request запрос.
      */
-    void processMessage(@NotNull Request request);
+    void processMessage(@NotNull BotProcessMessageRequest request);
 }

@@ -2,8 +2,8 @@ package ru.urfu.mathmechbot.states;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import ru.urfu.localobjects.BotProcessMessageRequest;
 import ru.urfu.localobjects.LocalMessage;
-import ru.urfu.localobjects.Request;
 import ru.urfu.logics.LogicCoreState;
 import ru.urfu.mathmechbot.MathMechBotCore;
 
@@ -36,5 +36,5 @@ public abstract class MathMechBotState implements LogicCoreState<MathMechBotCore
      * @return сообщение, которое нужно отправить пользователю при переходе в это состояние.
      */
     @Nullable
-    public abstract LocalMessage enterMessage(@NotNull MathMechBotCore context, @NotNull Request request);
+    public abstract LocalMessage enterMessage(@NotNull MathMechBotCore context, @NotNull BotProcessMessageRequest request);
 }

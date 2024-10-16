@@ -5,10 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 import org.jetbrains.annotations.NotNull;
+import ru.urfu.localobjects.BotProcessMessageRequest;
 import ru.urfu.localobjects.LocalButton;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
-import ru.urfu.localobjects.Request;
 import ru.urfu.mathmechbot.Constants;
 import ru.urfu.mathmechbot.MathMechBotCore;
 import ru.urfu.mathmechbot.models.MathMechBotUserState;
@@ -34,7 +34,7 @@ public final class RegistrationYearState extends MathMechBotState {
             .build();
 
     @Override
-    public void processMessage(@NotNull Request request) {
+    public void processMessage(@NotNull BotProcessMessageRequest request) {
         switch (request.message().text()) {
             case Constants.BACK_COMMAND -> backCommandHandler(context(), request);
             case null -> {
@@ -47,7 +47,7 @@ public final class RegistrationYearState extends MathMechBotState {
 
     @Override
     @NotNull
-    public LocalMessage enterMessage(@NotNull MathMechBotCore context, @NotNull Request request) {
+    public LocalMessage enterMessage(@NotNull MathMechBotCore context, @NotNull BotProcessMessageRequest request) {
         return ON_ENTER_MESSAGE;
     }
 
@@ -57,7 +57,7 @@ public final class RegistrationYearState extends MathMechBotState {
      * @param context логического ядро (контекст для состояния).
      * @param request запрос.
      */
-    private void backCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
+    private void backCommandHandler(@NotNull MathMechBotCore context, @NotNull BotProcessMessageRequest request) {
         context.storage.users.changeUserState(request.id(), MathMechBotUserState.REGISTRATION_NAME);
         request.bot().sendMessage(new RegistrationFullNameState().enterMessage(context, request), request.id());
     }
@@ -70,7 +70,7 @@ public final class RegistrationYearState extends MathMechBotState {
      * @param context логического ядро (контекст для состояния).
      * @param request запрос.
      */
-    public void textHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
+    public void textHandler(@NotNull MathMechBotCore context, @NotNull BotProcessMessageRequest request) {
         assert request.message().text() != null;
 
         int year;

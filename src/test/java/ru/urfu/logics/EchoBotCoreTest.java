@@ -5,9 +5,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import ru.urfu.localobjects.BotProcessMessageRequest;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
-import ru.urfu.localobjects.Request;
 
 /**
  * Тесты для класса EchoBotCore.
@@ -32,8 +32,8 @@ final class EchoBotCoreTest {
      * @param message сообщение.
      * @return запрос.
      */
-    private Request makeRequestFromMessage(@NotNull LocalMessage message) {
-        return new Request(0L, message, bot);
+    private BotProcessMessageRequest makeRequestFromMessage(@NotNull LocalMessage message) {
+        return new BotProcessMessageRequest(0L, message, bot);
     }
 
     /**

@@ -2,7 +2,7 @@ package ru.urfu.mathmechbot;
 
 import java.util.Optional;
 import org.jetbrains.annotations.NotNull;
-import ru.urfu.localobjects.Request;
+import ru.urfu.localobjects.BotProcessMessageRequest;
 import ru.urfu.logics.LogicCore;
 import ru.urfu.mathmechbot.models.MathMechBotUserState;
 import ru.urfu.mathmechbot.models.User;
@@ -28,7 +28,7 @@ public final class MathMechBotCore implements LogicCore {
     }
 
     @Override
-    public void processMessage(@NotNull Request request) {
+    public void processMessage(@NotNull BotProcessMessageRequest request) {
         Optional<User> userOptional = storage.users.get(request.id());
 
         if (userOptional.isEmpty()) {

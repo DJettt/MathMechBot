@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
 import org.jetbrains.annotations.NotNull;
+import ru.urfu.localobjects.BotProcessMessageRequest;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
-import ru.urfu.localobjects.Request;
 import ru.urfu.mathmechbot.Constants;
 import ru.urfu.mathmechbot.MathMechBotCore;
 import ru.urfu.mathmechbot.models.MathMechBotUserState;
@@ -36,7 +36,7 @@ public final class RegistrationFullNameState extends MathMechBotState {
     }
 
     @Override
-    public void processMessage(@NotNull Request request) {
+    public void processMessage(@NotNull BotProcessMessageRequest request) {
         switch (request.message().text()) {
             case Constants.BACK_COMMAND -> backCommandHandler(context(), request);
             case null -> request.bot().sendMessage(Constants.TRY_AGAIN, request.id());
@@ -46,7 +46,7 @@ public final class RegistrationFullNameState extends MathMechBotState {
 
     @Override
     @NotNull
-    public LocalMessage enterMessage(@NotNull MathMechBotCore context, @NotNull Request request) {
+    public LocalMessage enterMessage(@NotNull MathMechBotCore context, @NotNull BotProcessMessageRequest request) {
         return new LocalMessageBuilder()
                 .text("""
                         Введите свое ФИО в формате:
@@ -61,7 +61,7 @@ public final class RegistrationFullNameState extends MathMechBotState {
      * @param context логического ядро (контекст для состояния).
      * @param request запрос.
      */
-    private void backCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
+    private void backCommandHandler(@NotNull MathMechBotCore context, @NotNull BotProcessMessageRequest request) {
         final Optional<UserEntry> userEntryOptional = context.storage.userEntries.get(request.id());
         userEntryOptional.ifPresent(context.storage.userEntries::delete);
         context.storage.users.changeUserState(request.id(), MathMechBotUserState.DEFAULT);
@@ -77,7 +77,7 @@ public final class RegistrationFullNameState extends MathMechBotState {
      * @param context логического ядро (контекст для состояния).
      * @param request запрос.
      */
-    public void textHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
+    public void textHandler(@NotNull MathMechBotCore context, @NotNull BotProcessMessageRequest request) {
         assert request.message().text() != null;
         final String trimmedText = request.message().text().trim();
 
