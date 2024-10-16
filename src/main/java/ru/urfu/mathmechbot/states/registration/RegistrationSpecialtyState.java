@@ -1,4 +1,4 @@
-package ru.urfu.logics.mathmechbot.states.registration;
+package ru.urfu.mathmechbot.states.registration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,12 +10,12 @@ import ru.urfu.localobjects.LocalButton;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
 import ru.urfu.localobjects.Request;
-import ru.urfu.logics.mathmechbot.Constants;
-import ru.urfu.logics.mathmechbot.MathMechBotCore;
-import ru.urfu.logics.mathmechbot.models.MathMechBotUserState;
-import ru.urfu.logics.mathmechbot.models.Specialty;
-import ru.urfu.logics.mathmechbot.models.UserEntry;
-import ru.urfu.logics.mathmechbot.states.MathMechBotState;
+import ru.urfu.mathmechbot.Constants;
+import ru.urfu.mathmechbot.MathMechBotCore;
+import ru.urfu.mathmechbot.models.MathMechBotUserState;
+import ru.urfu.mathmechbot.models.Specialty;
+import ru.urfu.mathmechbot.models.UserEntry;
+import ru.urfu.mathmechbot.states.MathMechBotState;
 
 
 /**
@@ -23,9 +23,7 @@ import ru.urfu.logics.mathmechbot.states.MathMechBotState;
  * Предлагает пользователю направление подготовки
  * из списка, который возвращает метод allowedSpecialties.
  */
-public enum RegistrationSpecialtyState implements MathMechBotState {
-    INSTANCE;
-
+public final class RegistrationSpecialtyState extends MathMechBotState {
     private final static Logger LOGGER = LoggerFactory.getLogger(RegistrationSpecialtyState.class);
 
     /**
@@ -69,14 +67,14 @@ public enum RegistrationSpecialtyState implements MathMechBotState {
     }
 
     @Override
-    public void processMessage(@NotNull MathMechBotCore context, @NotNull Request request) {
+    public void processMessage(@NotNull Request request) {
         switch (request.message().text()) {
-            case Constants.BACK_COMMAND -> backCommandHandler(context, request);
+            case Constants.BACK_COMMAND -> backCommandHandler(context(), request);
             case null -> {
                 request.bot().sendMessage(Constants.TRY_AGAIN, request.id());
-                request.bot().sendMessage(enterMessage(context, request), request.id());
+                request.bot().sendMessage(enterMessage(context(), request), request.id());
             }
-            default -> textHandler(context, request);
+            default -> textHandler(context(), request);
         }
     }
 
@@ -99,7 +97,7 @@ public enum RegistrationSpecialtyState implements MathMechBotState {
      */
     private void backCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
         context.storage.users.changeUserState(request.id(), MathMechBotUserState.REGISTRATION_YEAR);
-        request.bot().sendMessage(RegistrationYearState.INSTANCE.enterMessage(context, request), request.id());
+        request.bot().sendMessage(new RegistrationYearState().enterMessage(context, request), request.id());
     }
 
     /**
@@ -125,6 +123,6 @@ public enum RegistrationSpecialtyState implements MathMechBotState {
 
         context.storage.userEntries.changeUserEntrySpecialty(request.id(), request.message().text());
         context.storage.users.changeUserState(request.id(), MathMechBotUserState.REGISTRATION_GROUP);
-        request.bot().sendMessage(RegistrationGroupState.INSTANCE.enterMessage(context, request), request.id());
+        request.bot().sendMessage(new RegistrationGroupState().enterMessage(context, request), request.id());
     }
 }

@@ -1,4 +1,4 @@
-package ru.urfu.logics.mathmechbot.states.registration;
+package ru.urfu.mathmechbot.states.registration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,29 +10,27 @@ import org.slf4j.LoggerFactory;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
 import ru.urfu.localobjects.Request;
-import ru.urfu.logics.mathmechbot.Constants;
-import ru.urfu.logics.mathmechbot.MathMechBotCore;
-import ru.urfu.logics.mathmechbot.models.MathMechBotUserState;
-import ru.urfu.logics.mathmechbot.models.UserEntry;
-import ru.urfu.logics.mathmechbot.states.DefaultState;
-import ru.urfu.logics.mathmechbot.states.MathMechBotState;
+import ru.urfu.mathmechbot.Constants;
+import ru.urfu.mathmechbot.MathMechBotCore;
+import ru.urfu.mathmechbot.models.MathMechBotUserState;
+import ru.urfu.mathmechbot.models.UserEntry;
+import ru.urfu.mathmechbot.states.DefaultState;
+import ru.urfu.mathmechbot.states.MathMechBotState;
 
 
 /**
  * Состояние подтверждения введённых данных во время регистрации.
  */
-public enum RegistrationConfirmationState implements MathMechBotState {
-    INSTANCE;
-
+public final class RegistrationConfirmationState extends MathMechBotState {
     private final static Logger LOGGER = LoggerFactory.getLogger(RegistrationConfirmationState.class);
     private final static String ENTER_MESSAGE_PREFIX = "Всё верно?\n\n";
 
     @Override
-    public void processMessage(@NotNull MathMechBotCore context, @NotNull Request request) {
+    public void processMessage(@NotNull Request request) {
         switch (request.message().text()) {
-            case Constants.BACK_COMMAND -> backCommandHandler(context, request);
-            case Constants.ACCEPT_COMMAND -> acceptCommandHandler(context, request);
-            case Constants.DECLINE_COMMAND -> declineCommandHandler(context, request);
+            case Constants.BACK_COMMAND -> backCommandHandler(context(), request);
+            case Constants.ACCEPT_COMMAND -> acceptCommandHandler(context(), request);
+            case Constants.DECLINE_COMMAND -> declineCommandHandler(context(), request);
             case null, default -> request.bot().sendMessage(Constants.TRY_AGAIN, request.id());
         }
     }
@@ -62,7 +60,7 @@ public enum RegistrationConfirmationState implements MathMechBotState {
     private void backCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
         context.storage.users.changeUserState(request.id(), MathMechBotUserState.REGISTRATION_MEN);
         request.bot().sendMessage(
-                RegistrationMenGroupState.INSTANCE.enterMessage(context, request),
+                new RegistrationMenGroupState().enterMessage(context, request),
                 request.id());
     }
 
@@ -75,7 +73,7 @@ public enum RegistrationConfirmationState implements MathMechBotState {
     private void acceptCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
         context.storage.users.changeUserState(request.id(), MathMechBotUserState.DEFAULT);
         request.bot().sendMessage(new LocalMessageBuilder().text("Сохранил...").build(), request.id());
-        request.bot().sendMessage(DefaultState.INSTANCE.enterMessage(context, request), request.id());
+        request.bot().sendMessage(new DefaultState().enterMessage(context, request), request.id());
     }
 
     /**
@@ -89,6 +87,6 @@ public enum RegistrationConfirmationState implements MathMechBotState {
         userEntryOptional.ifPresent(context.storage.userEntries::delete);
         context.storage.users.changeUserState(request.id(), MathMechBotUserState.DEFAULT);
         request.bot().sendMessage(new LocalMessageBuilder().text("Отмена...").build(), request.id());
-        request.bot().sendMessage(DefaultState.INSTANCE.enterMessage(context, request), request.id());
+        request.bot().sendMessage(new DefaultState().enterMessage(context, request), request.id());
     }
 }

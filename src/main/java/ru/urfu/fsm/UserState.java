@@ -1,19 +1,20 @@
-package ru.urfu.logics.mathmechbot.models;
+package ru.urfu.fsm;
 
 import org.jetbrains.annotations.NotNull;
-import ru.urfu.logics.mathmechbot.states.MathMechBotState;
+import ru.urfu.logics.LogicCore;
+import ru.urfu.logics.LogicCoreState;
 
 /**
  * Состояние пользователя (на каком этапе диалога он находится).
- * TODO: отделить этот интерфейс от MathMechBot.
+ * @param <C> тип логического ядра (контекста).
+ * @param <T> тип состояний контекста.
  */
-public interface UserState {
+public interface UserState<C extends LogicCore, T extends LogicCoreState<C>> {
 
     /**
      * Геттер объекта, реализующего логику для данного состояния пользователя.
-     *
      * @return объект, реализующий логику состояния.
      */
     @NotNull
-    MathMechBotState stateInstance();
+    T logicCoreState();
 }

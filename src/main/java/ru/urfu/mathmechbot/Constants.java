@@ -1,4 +1,4 @@
-package ru.urfu.logics.mathmechbot;
+package ru.urfu.mathmechbot;
 
 import ru.urfu.localobjects.LocalButton;
 import ru.urfu.localobjects.LocalMessage;

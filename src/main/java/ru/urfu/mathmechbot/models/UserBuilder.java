@@ -1,13 +1,16 @@
-package ru.urfu.logics.mathmechbot.models;
+package ru.urfu.mathmechbot.models;
 
 import org.jetbrains.annotations.NotNull;
+import ru.urfu.fsm.UserState;
+import ru.urfu.mathmechbot.MathMechBotCore;
+import ru.urfu.mathmechbot.states.MathMechBotState;
 
 /**
  * Билдер для рекорда User.
  */
 public final class UserBuilder {
     private final Long id;
-    private final MathMechBotUserState currentState;
+    private final UserState<MathMechBotCore, MathMechBotState> currentState;
 
     /**
      * Конструктор, устанавливающий дефолтные значения для полей.
@@ -15,7 +18,7 @@ public final class UserBuilder {
      * @param id идентификатор пользователя.
      * @param currentState состояние пользователя.
      */
-    public UserBuilder(@NotNull Long id, @NotNull MathMechBotUserState currentState) {
+    public UserBuilder(@NotNull Long id, @NotNull UserState<MathMechBotCore, MathMechBotState> currentState) {
         this.id = id;
         this.currentState = currentState;
     }

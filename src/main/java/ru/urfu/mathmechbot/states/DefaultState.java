@@ -1,4 +1,4 @@
-package ru.urfu.logics.mathmechbot.states;
+package ru.urfu.mathmechbot.states;
 
 import java.util.Optional;
 import org.jetbrains.annotations.NotNull;
@@ -6,20 +6,18 @@ import ru.urfu.bots.Bot;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
 import ru.urfu.localobjects.Request;
-import ru.urfu.logics.mathmechbot.Constants;
-import ru.urfu.logics.mathmechbot.MathMechBotCore;
-import ru.urfu.logics.mathmechbot.models.MathMechBotUserState;
-import ru.urfu.logics.mathmechbot.models.UserEntry;
-import ru.urfu.logics.mathmechbot.states.deletion.DeletionConfirmationState;
-import ru.urfu.logics.mathmechbot.states.registration.RegistrationFullNameState;
+import ru.urfu.mathmechbot.Constants;
+import ru.urfu.mathmechbot.MathMechBotCore;
+import ru.urfu.mathmechbot.models.MathMechBotUserState;
+import ru.urfu.mathmechbot.models.UserEntry;
+import ru.urfu.mathmechbot.states.deletion.DeletionConfirmationState;
+import ru.urfu.mathmechbot.states.registration.RegistrationFullNameState;
 
 
 /**
  * Состояние, в котором изначально пребывает пользователь.
  */
-public enum DefaultState implements MathMechBotState {
-    INSTANCE;
-
+public final class DefaultState extends MathMechBotState {
     private final static String START_COMMAND = "/start";
     private final static String HELP_COMMAND = "/help";
     private final static String REGISTER_COMMAND = "/register";
@@ -27,12 +25,12 @@ public enum DefaultState implements MathMechBotState {
     private final static String DELETE_COMMAND = "/delete";
 
     @Override
-    public void processMessage(@NotNull MathMechBotCore context, @NotNull Request request) {
+    public void processMessage(@NotNull Request request) {
         switch (request.message().text()) {
-            case REGISTER_COMMAND -> registerCommandHandler(context, request);
-            case INFO_COMMAND -> infoCommandHandler(context, request);
-            case DELETE_COMMAND -> deleteCommandHandler(context, request);
-            case null, default -> helpCommandHandler(context, request);
+            case REGISTER_COMMAND -> registerCommandHandler(context(), request);
+            case INFO_COMMAND -> infoCommandHandler(context(), request);
+            case DELETE_COMMAND -> deleteCommandHandler(context(), request);
+            case null, default -> helpCommandHandler(context(), request);
         }
     }
 
@@ -69,7 +67,7 @@ public enum DefaultState implements MathMechBotState {
         final Optional<UserEntry> userEntryOptional = context.storage.userEntries.get(request.id());
         if (userEntryOptional.isEmpty()) {
             context.storage.users.changeUserState(request.id(), MathMechBotUserState.REGISTRATION_NAME);
-            request.bot().sendMessage(RegistrationFullNameState.INSTANCE.enterMessage(context, request), request.id());
+            request.bot().sendMessage(new RegistrationFullNameState().enterMessage(context, request), request.id());
         } else {
             alreadyRegistered(request.id(), request.bot());
         }
@@ -104,7 +102,7 @@ public enum DefaultState implements MathMechBotState {
         if (userEntryOptional.isPresent()) {
             context.storage.users.changeUserState(request.id(), MathMechBotUserState.DELETION_CONFIRMATION);
 
-            final LocalMessage msg = DeletionConfirmationState.INSTANCE.enterMessage(context, request);
+            final LocalMessage msg = new DeletionConfirmationState().enterMessage(context, request);
             if (msg != null) {
                 request.bot().sendMessage(msg, request.id());
             }

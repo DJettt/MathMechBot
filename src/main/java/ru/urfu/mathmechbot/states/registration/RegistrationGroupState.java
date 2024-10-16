@@ -1,4 +1,4 @@
-package ru.urfu.logics.mathmechbot.states.registration;
+package ru.urfu.mathmechbot.states.registration;
 
 
 import java.util.ArrayList;
@@ -9,18 +9,16 @@ import ru.urfu.localobjects.LocalButton;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
 import ru.urfu.localobjects.Request;
-import ru.urfu.logics.mathmechbot.Constants;
-import ru.urfu.logics.mathmechbot.MathMechBotCore;
-import ru.urfu.logics.mathmechbot.models.MathMechBotUserState;
-import ru.urfu.logics.mathmechbot.states.MathMechBotState;
+import ru.urfu.mathmechbot.Constants;
+import ru.urfu.mathmechbot.MathMechBotCore;
+import ru.urfu.mathmechbot.models.MathMechBotUserState;
+import ru.urfu.mathmechbot.states.MathMechBotState;
 
 
 /**
  * Состояние запроса номера группы во время регистрации.
  */
-public enum RegistrationGroupState implements MathMechBotState {
-    INSTANCE;
-
+public final class RegistrationGroupState extends MathMechBotState {
     private final static Pattern VALID_GROUP_STRING_PATTERN = Pattern.compile("^[1-5]$");
     private final static LocalMessage ON_ENTER_MESSAGE = new LocalMessageBuilder()
             .text("Какая у Вас группа?")
@@ -34,11 +32,11 @@ public enum RegistrationGroupState implements MathMechBotState {
             .build();
 
     @Override
-    public void processMessage(@NotNull MathMechBotCore context, @NotNull Request request) {
+    public void processMessage(@NotNull Request request) {
         switch (request.message().text()) {
-            case Constants.BACK_COMMAND -> backCommandHandler(context, request);
+            case Constants.BACK_COMMAND -> backCommandHandler(context(), request);
             case null -> request.bot().sendMessage(Constants.TRY_AGAIN, request.id());
-            default -> textCommandHandler(context, request);
+            default -> textCommandHandler(context(), request);
         }
     }
 
@@ -56,7 +54,7 @@ public enum RegistrationGroupState implements MathMechBotState {
      */
     private void backCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
         context.storage.users.changeUserState(request.id(), MathMechBotUserState.REGISTRATION_SPECIALTY);
-        final LocalMessage message = RegistrationSpecialtyState.INSTANCE.enterMessage(context, request);
+        final LocalMessage message = new RegistrationSpecialtyState().enterMessage(context, request);
         request.bot().sendMessage(message, request.id());
     }
 
@@ -78,7 +76,7 @@ public enum RegistrationGroupState implements MathMechBotState {
         context.storage.userEntries.changeUserEntryGroup(request.id(), Integer.parseInt(request.message().text()));
         context.storage.users.changeUserState(request.id(), MathMechBotUserState.REGISTRATION_MEN);
 
-        final LocalMessage msg = RegistrationMenGroupState.INSTANCE.enterMessage(context, request);
+        final LocalMessage msg = new RegistrationMenGroupState().enterMessage(context, request);
         request.bot().sendMessage(msg, request.id());
     }
 }

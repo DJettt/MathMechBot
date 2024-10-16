@@ -1,4 +1,4 @@
-package ru.urfu.logics.mathmechbot.states.registration;
+package ru.urfu.mathmechbot.states.registration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,27 +7,25 @@ import org.jetbrains.annotations.NotNull;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
 import ru.urfu.localobjects.Request;
-import ru.urfu.logics.mathmechbot.Constants;
-import ru.urfu.logics.mathmechbot.MathMechBotCore;
-import ru.urfu.logics.mathmechbot.models.MathMechBotUserState;
-import ru.urfu.logics.mathmechbot.states.MathMechBotState;
+import ru.urfu.mathmechbot.Constants;
+import ru.urfu.mathmechbot.MathMechBotCore;
+import ru.urfu.mathmechbot.models.MathMechBotUserState;
+import ru.urfu.mathmechbot.states.MathMechBotState;
 
 
 /**
  * Состояние ожидания ввода академической группы в формате МЕН во время регистрации.
  */
-public enum RegistrationMenGroupState implements MathMechBotState {
-    INSTANCE;
-
+public final class RegistrationMenGroupState extends MathMechBotState {
     // TODO: Проверить более сложные имена, содержащие дефисы или несколько слов.
     private final static Pattern VALID_MEN_GROUP_STRING = Pattern.compile("^МЕН-\\d{6}$");
 
     @Override
-    public void processMessage(@NotNull MathMechBotCore context, @NotNull Request request) {
+    public void processMessage(@NotNull Request request) {
         switch (request.message().text()) {
-            case Constants.BACK_COMMAND -> backCommandHandler(context, request);
+            case Constants.BACK_COMMAND -> backCommandHandler(context(), request);
             case null -> request.bot().sendMessage(Constants.TRY_AGAIN, request.id());
-            default -> textHandler(context, request);
+            default -> textHandler(context(), request);
         }
     }
 
@@ -47,7 +45,7 @@ public enum RegistrationMenGroupState implements MathMechBotState {
      */
     private void backCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
         context.storage.users.changeUserState(request.id(), MathMechBotUserState.REGISTRATION_GROUP);
-        request.bot().sendMessage(RegistrationGroupState.INSTANCE.enterMessage(context, request), request.id());
+        request.bot().sendMessage(new RegistrationGroupState().enterMessage(context, request), request.id());
     }
 
     /**
@@ -68,7 +66,7 @@ public enum RegistrationMenGroupState implements MathMechBotState {
         context.storage.userEntries.changeUserEntryMen(request.id(), trimmedText);
         context.storage.users.changeUserState(request.id(), MathMechBotUserState.REGISTRATION_CONFIRMATION);
 
-        final LocalMessage message = RegistrationConfirmationState.INSTANCE.enterMessage(context, request);
+        final LocalMessage message = new RegistrationConfirmationState().enterMessage(context, request);
         if (message != null) {
             request.bot().sendMessage(message, request.id());
         }

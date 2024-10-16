@@ -8,6 +8,7 @@ import ru.urfu.localobjects.LocalMessageBuilder;
 import ru.urfu.localobjects.Request;
 import ru.urfu.logics.DummyBot;
 import ru.urfu.logics.LogicCore;
+import ru.urfu.mathmechbot.MathMechBotCore;
 
 /**
  * Утилиты для тестирования матмех бота. В идеале должен быть статичным.

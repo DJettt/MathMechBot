@@ -1,24 +1,31 @@
-package ru.urfu.logics.mathmechbot.states;
+package ru.urfu.mathmechbot.states;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.Request;
-import ru.urfu.logics.mathmechbot.MathMechBotCore;
+import ru.urfu.logics.LogicCoreState;
+import ru.urfu.mathmechbot.MathMechBotCore;
 
 /**
  * Интерфейс состояний для MathMechBot.
  */
-public interface MathMechBotState {
+public abstract class MathMechBotState implements LogicCoreState<MathMechBotCore> {
+    private MathMechBotCore context;
+
+    @Override
+    public void setContext(MathMechBotCore context) {
+        this.context = context;
+    }
+
     /**
-     * <p>Обработчик сообщений, возвращающий ответы на них.</p>
+     * Геттер поля context.
      *
-     * <p>В процессе обработки может вызывать методы ботов, чтобы, например, отправлять сообщения.</p>
-     *
-     * @param context логического ядро (контекст для состояния).
-     * @param request запрос.
+     * @return контекст состояния.
      */
-    void processMessage(@NotNull MathMechBotCore context, @NotNull Request request);
+    protected MathMechBotCore context() {
+        return context;
+    }
 
     /**
      * <p>Вызывать этот метод, чтобы отправилось сообщение, которое должно отправлять при переходе в состояние.</p>
@@ -29,5 +36,5 @@ public interface MathMechBotState {
      * @return сообщение, которое нужно отправить пользователю при переходе в это состояние.
      */
     @Nullable
-    LocalMessage enterMessage(@NotNull MathMechBotCore context, @NotNull Request request);
+    public abstract LocalMessage enterMessage(@NotNull MathMechBotCore context, @NotNull Request request);
 }

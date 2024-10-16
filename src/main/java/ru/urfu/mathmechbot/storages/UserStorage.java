@@ -1,9 +1,11 @@
-package ru.urfu.logics.mathmechbot.storages;
+package ru.urfu.mathmechbot.storages;
 
 import org.jetbrains.annotations.NotNull;
-import ru.urfu.logics.mathmechbot.models.MathMechBotUserState;
-import ru.urfu.logics.mathmechbot.models.User;
-import ru.urfu.logics.mathmechbot.models.UserBuilder;
+import ru.urfu.fsm.UserState;
+import ru.urfu.mathmechbot.MathMechBotCore;
+import ru.urfu.mathmechbot.models.User;
+import ru.urfu.mathmechbot.models.UserBuilder;
+import ru.urfu.mathmechbot.states.MathMechBotState;
 import ru.urfu.storages.Storage;
 
 /**
@@ -16,7 +18,7 @@ public interface UserStorage extends Storage<User, Long> {
      * @param id    идентификатор пользователя в хранилище.
      * @param state новое текущее состояние.
      */
-    default void changeUserState(@NotNull Long id, @NotNull MathMechBotUserState state) {
+    default void changeUserState(@NotNull Long id, @NotNull UserState<MathMechBotCore, MathMechBotState> state) {
         update(new UserBuilder(id, state).build());
     }
 }

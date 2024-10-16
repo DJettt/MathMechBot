@@ -1,4 +1,4 @@
-package ru.urfu.logics.mathmechbot.storages;
+package ru.urfu.mathmechbot.storages;
 
 import org.jetbrains.annotations.NotNull;
 

@@ -1,4 +1,4 @@
-package ru.urfu.logics.mathmechbot.states.registration;
+package ru.urfu.mathmechbot.states.registration;
 
 
 import java.util.ArrayList;
@@ -9,18 +9,16 @@ import ru.urfu.localobjects.LocalButton;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
 import ru.urfu.localobjects.Request;
-import ru.urfu.logics.mathmechbot.Constants;
-import ru.urfu.logics.mathmechbot.MathMechBotCore;
-import ru.urfu.logics.mathmechbot.models.MathMechBotUserState;
-import ru.urfu.logics.mathmechbot.states.MathMechBotState;
+import ru.urfu.mathmechbot.Constants;
+import ru.urfu.mathmechbot.MathMechBotCore;
+import ru.urfu.mathmechbot.models.MathMechBotUserState;
+import ru.urfu.mathmechbot.states.MathMechBotState;
 
 
 /**
  * Состояние ожидания ответа на запрос года обучения во время регистрации.
  */
-public enum RegistrationYearState implements MathMechBotState {
-    INSTANCE;
-
+public final class RegistrationYearState extends MathMechBotState {
     private final static Pattern VALID_YEAR_STRING_PATTERN = Pattern.compile("^[1-6]$");
     private final static LocalMessage ON_ENTER_MESSAGE = new LocalMessageBuilder()
             .text("На каком курсе Вы обучаетесь?")
@@ -36,14 +34,14 @@ public enum RegistrationYearState implements MathMechBotState {
             .build();
 
     @Override
-    public void processMessage(@NotNull MathMechBotCore context, @NotNull Request request) {
+    public void processMessage(@NotNull Request request) {
         switch (request.message().text()) {
-            case Constants.BACK_COMMAND -> backCommandHandler(context, request);
+            case Constants.BACK_COMMAND -> backCommandHandler(context(), request);
             case null -> {
                 request.bot().sendMessage(Constants.TRY_AGAIN, request.id());
                 request.bot().sendMessage(ON_ENTER_MESSAGE, request.id());
             }
-            default -> textHandler(context, request);
+            default -> textHandler(context(), request);
         }
     }
 
@@ -61,7 +59,7 @@ public enum RegistrationYearState implements MathMechBotState {
      */
     private void backCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
         context.storage.users.changeUserState(request.id(), MathMechBotUserState.REGISTRATION_NAME);
-        request.bot().sendMessage(RegistrationFullNameState.INSTANCE.enterMessage(context, request), request.id());
+        request.bot().sendMessage(new RegistrationFullNameState().enterMessage(context, request), request.id());
     }
 
     /**
@@ -88,7 +86,7 @@ public enum RegistrationYearState implements MathMechBotState {
             context.storage.userEntries.changeUserEntryYear(request.id(), year);
             context.storage.users.changeUserState(request.id(), MathMechBotUserState.REGISTRATION_SPECIALTY);
 
-            final LocalMessage msg = RegistrationSpecialtyState.INSTANCE.enterMessage(context, request);
+            final LocalMessage msg = new RegistrationSpecialtyState().enterMessage(context, request);
             request.bot().sendMessage(msg, request.id());
         } else {
             request.bot().sendMessage(Constants.TRY_AGAIN, request.id());

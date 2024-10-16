@@ -1,14 +1,13 @@
-package ru.urfu.logics.mathmechbot;
+package ru.urfu.mathmechbot;
 
 import java.util.Optional;
 import org.jetbrains.annotations.NotNull;
 import ru.urfu.localobjects.Request;
 import ru.urfu.logics.LogicCore;
-import ru.urfu.logics.mathmechbot.models.MathMechBotUserState;
-import ru.urfu.logics.mathmechbot.models.User;
-import ru.urfu.logics.mathmechbot.states.DefaultState;
-import ru.urfu.logics.mathmechbot.states.MathMechBotState;
-import ru.urfu.logics.mathmechbot.storages.MathMechStorage;
+import ru.urfu.mathmechbot.models.MathMechBotUserState;
+import ru.urfu.mathmechbot.models.User;
+import ru.urfu.mathmechbot.states.MathMechBotState;
+import ru.urfu.mathmechbot.storages.MathMechStorage;
 
 
 /**
@@ -25,7 +24,7 @@ public final class MathMechBotCore implements LogicCore {
      */
     public MathMechBotCore(@NotNull MathMechStorage storage) {
         this.storage = storage;
-        currentState = DefaultState.INSTANCE;
+        currentState = MathMechBotUserState.DEFAULT.logicCoreState();
     }
 
     @Override
@@ -38,7 +37,8 @@ public final class MathMechBotCore implements LogicCore {
         }
         final User user = storage.users.get(request.id()).get();
 
-        currentState = user.currentState().stateInstance();
-        currentState.processMessage(this, request);
+        currentState = user.currentState().logicCoreState();
+        currentState.setContext(this);
+        currentState.processMessage(request);
     }
 }

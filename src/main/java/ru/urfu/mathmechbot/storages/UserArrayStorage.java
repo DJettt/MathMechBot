@@ -1,6 +1,6 @@
-package ru.urfu.logics.mathmechbot.storages;
+package ru.urfu.mathmechbot.storages;
 
-import ru.urfu.logics.mathmechbot.models.User;
+import ru.urfu.mathmechbot.models.User;
 import ru.urfu.storages.ArrayStorage;
 
 /**

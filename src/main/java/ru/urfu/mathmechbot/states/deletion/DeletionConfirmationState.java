@@ -1,4 +1,4 @@
-package ru.urfu.logics.mathmechbot.states.deletion;
+package ru.urfu.mathmechbot.states.deletion;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,31 +10,29 @@ import org.slf4j.LoggerFactory;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
 import ru.urfu.localobjects.Request;
-import ru.urfu.logics.mathmechbot.Constants;
-import ru.urfu.logics.mathmechbot.MathMechBotCore;
-import ru.urfu.logics.mathmechbot.models.MathMechBotUserState;
-import ru.urfu.logics.mathmechbot.models.UserEntry;
-import ru.urfu.logics.mathmechbot.states.DefaultState;
-import ru.urfu.logics.mathmechbot.states.MathMechBotState;
+import ru.urfu.mathmechbot.Constants;
+import ru.urfu.mathmechbot.MathMechBotCore;
+import ru.urfu.mathmechbot.models.MathMechBotUserState;
+import ru.urfu.mathmechbot.models.UserEntry;
+import ru.urfu.mathmechbot.states.DefaultState;
+import ru.urfu.mathmechbot.states.MathMechBotState;
 
 
 /**
  * Состояние ожидания подтверждения удаления данных.
  */
-public enum DeletionConfirmationState implements MathMechBotState {
-    INSTANCE;
-
+public final class DeletionConfirmationState extends MathMechBotState {
     private final static Logger LOGGER = LoggerFactory.getLogger(DeletionConfirmationState.class);
 
     @Override
-    public void processMessage(@NotNull MathMechBotCore context, @NotNull Request request) {
+    public void processMessage(@NotNull Request request) {
         switch (request.message().text()) {
-            case Constants.BACK_COMMAND -> backCommandHandler(context, request);
-            case Constants.ACCEPT_COMMAND -> acceptCommandHandler(context, request);
-            case Constants.DECLINE_COMMAND -> declineCommandHandler(context, request);
+            case Constants.BACK_COMMAND -> backCommandHandler(context(), request);
+            case Constants.ACCEPT_COMMAND -> acceptCommandHandler(context(), request);
+            case Constants.DECLINE_COMMAND -> declineCommandHandler(context(), request);
             case null, default -> {
                 request.bot().sendMessage(Constants.TRY_AGAIN, request.id());
-                request.bot().sendMessage(enterMessage(context, request), request.id());
+                request.bot().sendMessage(enterMessage(context(), request), request.id());
             }
         }
     }
@@ -63,7 +61,7 @@ public enum DeletionConfirmationState implements MathMechBotState {
      */
     private void backCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
         context.storage.users.changeUserState(request.id(), MathMechBotUserState.DEFAULT);
-        request.bot().sendMessage(DefaultState.INSTANCE.enterMessage(context, request), request.id());
+        request.bot().sendMessage(new DefaultState().enterMessage(context, request), request.id());
     }
 
     /**
@@ -78,7 +76,7 @@ public enum DeletionConfirmationState implements MathMechBotState {
 
         context.storage.users.changeUserState(request.id(), MathMechBotUserState.DEFAULT);
         request.bot().sendMessage(new LocalMessageBuilder().text("Удаляем...").build(), request.id());
-        request.bot().sendMessage(DefaultState.INSTANCE.enterMessage(context, request), request.id());
+        request.bot().sendMessage(new DefaultState().enterMessage(context, request), request.id());
     }
 
     /**
@@ -90,6 +88,6 @@ public enum DeletionConfirmationState implements MathMechBotState {
     private void declineCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
         context.storage.users.changeUserState(request.id(), MathMechBotUserState.DEFAULT);
         request.bot().sendMessage(new LocalMessageBuilder().text("Отмена...").build(), request.id());
-        request.bot().sendMessage(DefaultState.INSTANCE.enterMessage(context, request), request.id());
+        request.bot().sendMessage(new DefaultState().enterMessage(context, request), request.id());
     }
 }
