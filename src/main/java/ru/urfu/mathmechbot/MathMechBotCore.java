@@ -1,9 +1,13 @@
 package ru.urfu.mathmechbot;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import org.jetbrains.annotations.NotNull;
 import ru.urfu.localobjects.BotProcessMessageRequest;
 import ru.urfu.logics.LogicCore;
+import ru.urfu.mathmechbot.fsm.FiniteUserStateMachine;
+import ru.urfu.mathmechbot.fsm.FiniteUserStateMachineImpl;
 import ru.urfu.mathmechbot.models.MathMechBotUserState;
 import ru.urfu.mathmechbot.models.User;
 import ru.urfu.mathmechbot.states.MathMechBotState;
@@ -15,7 +19,7 @@ import ru.urfu.mathmechbot.storages.MathMechStorage;
  */
 public final class MathMechBotCore implements LogicCore {
     private final MathMechStorage storage;
-    private MathMechBotState currentState;
+    private final FiniteUserStateMachine fsm;
 
     /**
      * Конструктор.
@@ -24,7 +28,10 @@ public final class MathMechBotCore implements LogicCore {
      */
     public MathMechBotCore(@NotNull MathMechStorage storage) {
         this.storage = storage;
-        currentState = MathMechBotUserState.DEFAULT.logicCoreState();
+        this.fsm = new FiniteUserStateMachineImpl(
+                new HashSet<>(List.of(MathMechBotUserState.values())),
+                MathMechBotUserState.DEFAULT,
+                storage.getUsers());
     }
 
     @Override
@@ -37,7 +44,7 @@ public final class MathMechBotCore implements LogicCore {
         }
         final User user = getStorage().getUsers().get(request.id()).get();
 
-        currentState = user.currentState().logicCoreState();
+        final MathMechBotState currentState = user.currentState().logicCoreState();
         currentState.setContext(this);
         currentState.processMessage(request);
     }
