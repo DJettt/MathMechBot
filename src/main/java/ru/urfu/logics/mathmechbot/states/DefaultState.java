@@ -70,9 +70,9 @@ public enum DefaultState implements MathMechBotState {
      * @param request запрос.
      */
     private void registerCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
-        final Optional<UserEntry> userEntryOptional = context.storage.getUserEntries().get(request.id());
+        final Optional<UserEntry> userEntryOptional = context.getStorage().getUserEntries().get(request.id());
         if (userEntryOptional.isEmpty()) {
-            context.storage.getUsers().changeUserState(request.id(), MathMechBotUserState.REGISTRATION_NAME);
+            context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.REGISTRATION_NAME);
             request.bot().sendMessage(RegistrationFullNameState.INSTANCE.enterMessage(context, request), request.id());
         } else {
             alreadyRegistered(request.id(), request.bot());
@@ -86,7 +86,7 @@ public enum DefaultState implements MathMechBotState {
      * @param request запрос.
      */
     public void infoCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
-        final Optional<UserEntry> userEntryOptional = context.storage.getUserEntries().get(request.id());
+        final Optional<UserEntry> userEntryOptional = context.getStorage().getUserEntries().get(request.id());
         if (userEntryOptional.isEmpty()) {
             request.bot().sendMessage(Constants.ASK_FOR_REGISTRATION, request.id());
             return;
@@ -104,9 +104,9 @@ public enum DefaultState implements MathMechBotState {
      * @param request запрос.
      */
     private void editCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
-        final Optional<UserEntry> userEntryOptional = context.storage.getUserEntries().get(request.id());
+        final Optional<UserEntry> userEntryOptional = context.getStorage().getUserEntries().get(request.id());
         if (userEntryOptional.isPresent()) {
-            context.storage.getUsers().changeUserState(request.id(), MathMechBotUserState.EDITING_CHOOSE);
+            context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.EDITING_CHOOSE);
 
             final LocalMessage msg = EditingChooseState.INSTANCE.enterMessage(context, request);
             if (msg != null) {
@@ -124,9 +124,9 @@ public enum DefaultState implements MathMechBotState {
      * @param request запрос.
      */
     private void deleteCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
-        final Optional<UserEntry> userEntryOptional = context.storage.getUserEntries().get(request.id());
+        final Optional<UserEntry> userEntryOptional = context.getStorage().getUserEntries().get(request.id());
         if (userEntryOptional.isPresent()) {
-            context.storage.getUsers().changeUserState(request.id(), MathMechBotUserState.DELETION_CONFIRMATION);
+            context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.DELETION_CONFIRMATION);
 
             final LocalMessage msg = DeletionConfirmationState.INSTANCE.enterMessage(context, request);
             if (msg != null) {

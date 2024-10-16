@@ -46,7 +46,7 @@ public enum RegistrationMenGroupState implements MathMechBotState {
      * @param request запрос.
      */
     private void backCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
-        context.storage.getUsers().changeUserState(request.id(), MathMechBotUserState.REGISTRATION_GROUP);
+        context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.REGISTRATION_GROUP);
         request.bot().sendMessage(RegistrationGroupState.INSTANCE.enterMessage(context, request), request.id());
     }
 
@@ -65,8 +65,8 @@ public enum RegistrationMenGroupState implements MathMechBotState {
             return;
         }
 
-        context.storage.getUserEntries().changeUserEntryMen(request.id(), trimmedText);
-        context.storage.getUsers().changeUserState(request.id(), MathMechBotUserState.REGISTRATION_CONFIRMATION);
+        context.getStorage().getUserEntries().changeUserEntryMen(request.id(), trimmedText);
+        context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.REGISTRATION_CONFIRMATION);
 
         final LocalMessage message = RegistrationConfirmationState.INSTANCE.enterMessage(context, request);
         if (message != null) {

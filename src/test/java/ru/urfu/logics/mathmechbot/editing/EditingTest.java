@@ -146,6 +146,13 @@ final class EditingTest {
     @SuppressWarnings("MagicNumber")
     @DisplayName("Полное изменение")
     void testFullCheck() {
+        final String TEST_SURNAME = "Иванов";
+        final String TEST_NAME = "Иван";
+        final String TEST_PATRONYM = "Иванович";
+        final String TEST_YEAR = "2";
+        final String TEST_SPECIALITY = "КН";
+        final String TEST_GROUP = "1";
+        final String TEST_MEN = "МЕН-200201";
         logic.processMessage(utils.makeRequestFromMessage(TestConstants.EDIT_MESSAGE));
         Assertions.assertEquals(
                 TestConstants.EDITING_CHOOSE_MESSAGE,
@@ -162,7 +169,7 @@ final class EditingTest {
                 storage.getUsers().get(0L).orElseThrow());
 
         logic.processMessage(utils.makeRequestFromMessage(new LocalMessageBuilder()
-                .text("Иванов Иван Иванович").build()));
+                .text(TEST_SURNAME + " " + TEST_NAME + " " + TEST_PATRONYM).build()));
 
         Assertions.assertEquals(
                 new UserBuilder(0L, MathMechBotUserState.EDITING_ADDITIONAL_EDIT).build(),
@@ -183,7 +190,7 @@ final class EditingTest {
                 storage.getUsers().get(0L).orElseThrow());
 
         logic.processMessage(utils.makeRequestFromMessage(new LocalMessageBuilder()
-                .text("2").build()));
+                .text(TEST_YEAR).build()));
         Assertions.assertEquals(
                 new UserBuilder(0L, MathMechBotUserState.EDITING_ADDITIONAL_EDIT).build(),
                 storage.getUsers().get(0L).orElseThrow());
@@ -203,7 +210,7 @@ final class EditingTest {
                 storage.getUsers().get(0L).orElseThrow());
 
         logic.processMessage(utils.makeRequestFromMessage(new LocalMessageBuilder()
-                .text("КН").build()));
+                .text(TEST_SPECIALITY).build()));
         Assertions.assertEquals(
                 new UserBuilder(0L, MathMechBotUserState.EDITING_ADDITIONAL_EDIT).build(),
                 storage.getUsers().get(0L).orElseThrow());
@@ -224,7 +231,7 @@ final class EditingTest {
                 storage.getUsers().get(0L).orElseThrow());
 
         logic.processMessage(utils.makeRequestFromMessage(new LocalMessageBuilder()
-                .text("1").build()));
+                .text(TEST_GROUP).build()));
         Assertions.assertEquals(
                 new UserBuilder(0L, MathMechBotUserState.EDITING_ADDITIONAL_EDIT).build(),
                 storage.getUsers().get(0L).orElseThrow());
@@ -244,7 +251,7 @@ final class EditingTest {
                 storage.getUsers().get(0L).orElseThrow());
 
         logic.processMessage(utils.makeRequestFromMessage(new LocalMessageBuilder()
-                .text("МЕН-654321")
+                .text(TEST_MEN)
                 .build()));
         Assertions.assertEquals(
                 new UserBuilder(0L, MathMechBotUserState.EDITING_ADDITIONAL_EDIT).build(),
@@ -254,5 +261,14 @@ final class EditingTest {
         Assertions.assertEquals(
                 new UserBuilder(0L, MathMechBotUserState.DEFAULT).build(),
                 storage.getUsers().get(0L).orElseThrow());
+
+
+        Assertions.assertEquals(storage.getUserEntries().get(0L).orElseThrow().surname(), TEST_SURNAME);
+        Assertions.assertEquals(storage.getUserEntries().get(0L).orElseThrow().name(), TEST_NAME);
+        Assertions.assertEquals(storage.getUserEntries().get(0L).orElseThrow().patronym(), TEST_PATRONYM);
+        Assertions.assertEquals(storage.getUserEntries().get(0L).orElseThrow().year(), Integer.parseInt(TEST_YEAR));
+        Assertions.assertEquals(storage.getUserEntries().get(0L).orElseThrow().specialty(), TEST_SPECIALITY);
+        Assertions.assertEquals(storage.getUserEntries().get(0L).orElseThrow().group(), Integer.parseInt(TEST_GROUP));
+        Assertions.assertEquals(storage.getUserEntries().get(0L).orElseThrow().men(), TEST_MEN);
     }
 }

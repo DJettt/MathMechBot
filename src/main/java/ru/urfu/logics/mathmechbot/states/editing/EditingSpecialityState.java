@@ -32,7 +32,7 @@ public enum EditingSpecialityState implements MathMechBotState {
      * @return год для записи данного пользователя.
      */
     private int getUserEntryYear(@NotNull MathMechBotCore context, @NotNull Request request) {
-        final Optional<UserEntry> userEntryOptional = context.storage.getUserEntries().get(request.id());
+        final Optional<UserEntry> userEntryOptional = context.getStorage().getUserEntries().get(request.id());
 
         if (userEntryOptional.isEmpty()) {
             LOGGER.error("User without entry managed to reach editing_specialty state.");
@@ -97,7 +97,7 @@ public enum EditingSpecialityState implements MathMechBotState {
      * @param request запрос.
      */
     private void backCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
-        context.storage.getUsers().changeUserState(request.id(), MathMechBotUserState.EDITING_CHOOSE);
+        context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.EDITING_CHOOSE);
         request.bot().sendMessage(EditingChooseState.INSTANCE.enterMessage(context, request), request.id());
     }
 
@@ -122,8 +122,8 @@ public enum EditingSpecialityState implements MathMechBotState {
             return;
         }
 
-        context.storage.getUserEntries().changeUserEntrySpecialty(request.id(), request.message().text());
-        context.storage.getUsers().changeUserState(request.id(), MathMechBotUserState.EDITING_ADDITIONAL_EDIT);
+        context.getStorage().getUserEntries().changeUserEntrySpecialty(request.id(), request.message().text());
+        context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.EDITING_ADDITIONAL_EDIT);
         request.bot().sendMessage(EditingAdditionalEditState.INSTANCE.enterMessage(context, request), request.id());
     }
 }

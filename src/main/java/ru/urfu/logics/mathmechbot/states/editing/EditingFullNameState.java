@@ -50,7 +50,7 @@ public enum EditingFullNameState implements MathMechBotState {
      * @param request запрос
      */
     private void backCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
-        context.storage.getUsers().changeUserState(request.id(), MathMechBotUserState.EDITING_CHOOSE);
+        context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.EDITING_CHOOSE);
         request.bot().sendMessage(EditingChooseState.INSTANCE.enterMessage(context, request), request.id());
     }
 
@@ -80,14 +80,14 @@ public enum EditingFullNameState implements MathMechBotState {
 
         final List<String> strings = List.of(trimmedText.split("\\s+"));
 
-        context.storage.getUserEntries().changeUserEntrySurname(request.id(), strings.get(0));
-        context.storage.getUserEntries().changeUserEntryName(request.id(), strings.get(1));
+        context.getStorage().getUserEntries().changeUserEntrySurname(request.id(), strings.get(0));
+        context.getStorage().getUserEntries().changeUserEntryName(request.id(), strings.get(1));
         if (strings.size() == NUMBER_OF_WORDS_IN_FULL_NAME_WITH_PATRONYM) {
-            context.storage.getUserEntries().changeUserEntryPatronym(request.id(), strings.get(2));
+            context.getStorage().getUserEntries().changeUserEntryPatronym(request.id(), strings.get(2));
         } else {
-            context.storage.getUserEntries().changeUserEntryPatronym(request.id(), null);
+            context.getStorage().getUserEntries().changeUserEntryPatronym(request.id(), null);
         }
-        context.storage.getUsers().changeUserState(request.id(), MathMechBotUserState.EDITING_ADDITIONAL_EDIT);
+        context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.EDITING_ADDITIONAL_EDIT);
         request.bot().sendMessage(new LocalMessageBuilder().text("Данные сохранены.").build(), request.id());
 
         final LocalMessage msg = EditingAdditionalEditState.INSTANCE.enterMessage(context, request);

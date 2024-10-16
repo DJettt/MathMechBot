@@ -54,7 +54,7 @@ public enum EditingYearState implements MathMechBotState {
      * @param request запрос
      */
     private void backCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
-        context.storage.getUsers().changeUserState(request.id(), MathMechBotUserState.EDITING_CHOOSE);
+        context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.EDITING_CHOOSE);
         request.bot().sendMessage(EditingChooseState.INSTANCE.enterMessage(context, request), request.id());
     }
 
@@ -77,8 +77,8 @@ public enum EditingYearState implements MathMechBotState {
         }
 
         if (VALID_YEAR_STRING_PATTERN.matcher(request.message().text()).matches()) {
-            context.storage.getUserEntries().changeUserEntryYear(request.id(), year);
-            context.storage.getUsers().changeUserState(request.id(), MathMechBotUserState.EDITING_ADDITIONAL_EDIT);
+            context.getStorage().getUserEntries().changeUserEntryYear(request.id(), year);
+            context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.EDITING_ADDITIONAL_EDIT);
 
             final LocalMessage msg = EditingAdditionalEditState.INSTANCE.enterMessage(context, request);
             request.bot().sendMessage(msg, request.id());
