@@ -1,7 +1,7 @@
 package ru.urfu.bots;
 
 import org.jetbrains.annotations.NotNull;
-import ru.urfu.localobjects.LocalMessage;
+import ru.urfu.logics.localobjects.LocalMessage;
 
 /**
  * Интерфейс бота, описывающий методы, которые ожидаются в каждом боте.

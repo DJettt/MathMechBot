@@ -8,12 +8,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
-import ru.urfu.localobjects.LocalMessageBuilder;
 import ru.urfu.logics.DummyBot;
+import ru.urfu.logics.localobjects.LocalMessageBuilder;
 import ru.urfu.logics.mathmechbot.TestConstants;
 import ru.urfu.logics.mathmechbot.TestUtils;
-import ru.urfu.mathmechbot.MathMechBotCore;
-import ru.urfu.mathmechbot.models.MathMechBotUserState;
+import ru.urfu.mathmechbot.MMBCore;
+import ru.urfu.mathmechbot.MMBUserState;
 import ru.urfu.mathmechbot.models.User;
 import ru.urfu.mathmechbot.models.UserBuilder;
 import ru.urfu.mathmechbot.models.UserEntry;
@@ -29,7 +29,7 @@ import ru.urfu.mathmechbot.storages.UserEntryArrayStorage;
 final class MenTest {
     private TestUtils utils;
     private MathMechStorage storage;
-    private MathMechBotCore logic;
+    private MMBCore logic;
     private DummyBot bot;
 
     User currentUser;
@@ -41,7 +41,7 @@ final class MenTest {
     @BeforeEach
     void setupTest() {
         storage = new MathMechStorage(new UserArrayStorage(), new UserEntryArrayStorage());
-        logic = new MathMechBotCore(storage);
+        logic = new MMBCore(storage);
         bot = new DummyBot();
         utils = new TestUtils(logic, bot);
 
@@ -92,7 +92,7 @@ final class MenTest {
                 bot.getOutcomingMessageList().getLast());
 
         Assertions.assertEquals(
-                new UserBuilder(0L, MathMechBotUserState.REGISTRATION_CONFIRMATION).build(),
+                new UserBuilder(0L, MMBUserState.REGISTRATION_CONFIRMATION).build(),
                 storage.getUsers().get(0L).orElseThrow());
         Assertions.assertEquals(
                 new UserEntryBuilder(currentUserEntry).men(men.trim()).build(),
@@ -138,7 +138,7 @@ final class MenTest {
     void testBackCommand() {
         logic.processMessage(utils.makeRequestFromMessage(TestConstants.BACK_MESSAGE));
         Assertions.assertEquals(
-                new UserBuilder(0L, MathMechBotUserState.REGISTRATION_GROUP).build(),
+                new UserBuilder(0L, MMBUserState.REGISTRATION_GROUP).build(),
                 storage.getUsers().get(0L).orElseThrow());
     }
 }

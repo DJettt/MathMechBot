@@ -1,9 +1,9 @@
 package ru.urfu.logics;
 
 import org.jetbrains.annotations.NotNull;
-import ru.urfu.localobjects.BotProcessMessageRequest;
-import ru.urfu.localobjects.LocalMessage;
-import ru.urfu.localobjects.LocalMessageBuilder;
+import ru.urfu.logics.localobjects.BotProcessMessageRequest;
+import ru.urfu.logics.localobjects.LocalMessage;
+import ru.urfu.logics.localobjects.LocalMessageBuilder;
 
 /**
  * Логическое ядро эхо-бота.

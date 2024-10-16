@@ -1,9 +1,7 @@
 package ru.urfu.mathmechbot.models;
 
 import org.jetbrains.annotations.NotNull;
-import ru.urfu.fsm.UserState;
-import ru.urfu.mathmechbot.MathMechBotCore;
-import ru.urfu.mathmechbot.states.MathMechBotState;
+import ru.urfu.mathmechbot.MMBUserState;
 import ru.urfu.storages.Identifiable;
 
 /**
@@ -13,6 +11,6 @@ import ru.urfu.storages.Identifiable;
  */
 public record User(
         @NotNull Long id,
-        @NotNull UserState<MathMechBotCore, MathMechBotState> currentState
+        @NotNull MMBUserState currentState
 ) implements Identifiable<Long> {
 }

@@ -2,9 +2,9 @@ package ru.urfu.logics.mathmechbot;
 
 import java.util.ArrayList;
 import java.util.List;
-import ru.urfu.localobjects.LocalButton;
-import ru.urfu.localobjects.LocalMessage;
-import ru.urfu.localobjects.LocalMessageBuilder;
+import ru.urfu.logics.localobjects.LocalButton;
+import ru.urfu.logics.localobjects.LocalMessage;
+import ru.urfu.logics.localobjects.LocalMessageBuilder;
 import ru.urfu.mathmechbot.Constants;
 
 /**

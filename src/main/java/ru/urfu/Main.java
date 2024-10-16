@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 import ru.urfu.bots.Bot;
 import ru.urfu.bots.TelegramBot;
 import ru.urfu.logics.LogicCore;
-import ru.urfu.mathmechbot.MathMechBotCore;
+import ru.urfu.mathmechbot.MMBCore;
 import ru.urfu.mathmechbot.storages.MathMechStorage;
 import ru.urfu.mathmechbot.storages.UserArrayStorage;
 import ru.urfu.mathmechbot.storages.UserEntryArrayStorage;
@@ -49,7 +49,7 @@ final public class Main {
      */
     public static void main(String[] args) {
         final MathMechStorage storage = new MathMechStorage(new UserArrayStorage(), new UserEntryArrayStorage());
-        final LogicCore logicCore = new MathMechBotCore(storage);
+        final LogicCore logicCore = new MMBCore(storage);
         startBot(logicCore, "TGMATHMECHBOT_TOKEN", TelegramBot.class);
 
 //        Выключил, потому что его нормально не запустить из-за блокировки.

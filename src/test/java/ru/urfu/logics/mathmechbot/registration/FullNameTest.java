@@ -10,12 +10,12 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
-import ru.urfu.localobjects.LocalMessageBuilder;
 import ru.urfu.logics.DummyBot;
+import ru.urfu.logics.localobjects.LocalMessageBuilder;
 import ru.urfu.logics.mathmechbot.TestConstants;
 import ru.urfu.logics.mathmechbot.TestUtils;
-import ru.urfu.mathmechbot.MathMechBotCore;
-import ru.urfu.mathmechbot.models.MathMechBotUserState;
+import ru.urfu.mathmechbot.MMBCore;
+import ru.urfu.mathmechbot.MMBUserState;
 import ru.urfu.mathmechbot.models.UserBuilder;
 import ru.urfu.mathmechbot.models.UserEntryBuilder;
 import ru.urfu.mathmechbot.storages.MathMechStorage;
@@ -29,7 +29,7 @@ import ru.urfu.mathmechbot.storages.UserEntryArrayStorage;
 final class FullNameTest {
     private TestUtils utils;
     private MathMechStorage storage;
-    private MathMechBotCore logic;
+    private MMBCore logic;
     private DummyBot bot;
 
     /**
@@ -38,7 +38,7 @@ final class FullNameTest {
     @BeforeEach
     void setupTest() {
         storage = new MathMechStorage(new UserArrayStorage(), new UserEntryArrayStorage());
-        logic = new MathMechBotCore(storage);
+        logic = new MMBCore(storage);
         bot = new DummyBot();
         utils = new TestUtils(logic, bot);
     }
@@ -91,7 +91,7 @@ final class FullNameTest {
                 storage.getUserEntries().get(0L).orElseThrow()
         );
         Assertions.assertEquals(
-                new UserBuilder(0L, MathMechBotUserState.REGISTRATION_YEAR).build(),
+                new UserBuilder(0L, MMBUserState.REGISTRATION_YEAR).build(),
                 storage.getUsers().get(0L).orElseThrow()
         );
         Assertions.assertEquals(RegistrationConstants.ASK_YEAR, bot.getOutcomingMessageList().get(1));
@@ -125,7 +125,7 @@ final class FullNameTest {
 
         Assertions.assertTrue(storage.getUserEntries().get(0L).isEmpty());
         Assertions.assertEquals(
-                new UserBuilder(0L, MathMechBotUserState.REGISTRATION_NAME).build(),
+                new UserBuilder(0L, MMBUserState.REGISTRATION_NAME).build(),
                 storage.getUsers().get(0L).orElseThrow()
         );
         Assertions.assertEquals(TestConstants.TRY_AGAIN, bot.getOutcomingMessageList().getLast());
@@ -151,7 +151,7 @@ final class FullNameTest {
         Assertions.assertEquals(TestConstants.HELP, bot.getOutcomingMessageList().get(1));
         Assertions.assertTrue(storage.getUserEntries().get(0L).isEmpty());
         Assertions.assertEquals(
-                new UserBuilder(0L, MathMechBotUserState.DEFAULT).build(),
+                new UserBuilder(0L, MMBUserState.DEFAULT).build(),
                 storage.getUsers().get(0L).orElseThrow()
         );
     }

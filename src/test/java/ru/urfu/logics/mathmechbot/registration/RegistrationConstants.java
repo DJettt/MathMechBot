@@ -2,9 +2,9 @@ package ru.urfu.logics.mathmechbot.registration;
 
 import java.util.ArrayList;
 import java.util.List;
-import ru.urfu.localobjects.LocalButton;
-import ru.urfu.localobjects.LocalMessage;
-import ru.urfu.localobjects.LocalMessageBuilder;
+import ru.urfu.logics.localobjects.LocalButton;
+import ru.urfu.logics.localobjects.LocalMessage;
+import ru.urfu.logics.localobjects.LocalMessageBuilder;
 import ru.urfu.logics.mathmechbot.TestConstants;
 
 /**
@@ -27,6 +27,7 @@ public final class RegistrationConstants {
                     Введите свое ФИО в формате:
                     Иванов Артём Иванович
                     Без дополнительных пробелов и с буквой ё, если нужно.""")
+            .buttons(new ArrayList<>(List.of(TestConstants.BACK_BUTTON)))
             .build();
 
     final static LocalMessage ASK_YEAR = new LocalMessageBuilder()

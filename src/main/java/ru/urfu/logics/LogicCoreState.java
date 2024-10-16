@@ -1,15 +1,17 @@
 package ru.urfu.logics;
 
+import org.jetbrains.annotations.NotNull;
+import ru.urfu.logics.localobjects.ContextProcessMessageRequest;
+
 /**
  * Состояние логического ядра (см. паттерн "Состояние").
- *
- * @param <T> класс контекста.
+ * @param <T> тип контекста.
  */
-public interface LogicCoreState<T extends LogicCore> extends LogicCore {
+public interface LogicCoreState<T extends LogicCore> {
     /**
-     * Устанавливает контекст состояния.
+     * Обработчик запросов с сообщением от ядра.
      *
-     * @param context контекст.
+     * @param request запрос от ядра.
      */
-    void setContext(T context);
+    void processMessage(@NotNull ContextProcessMessageRequest<T> request);
 }

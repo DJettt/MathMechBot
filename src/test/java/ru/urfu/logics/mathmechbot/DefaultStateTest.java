@@ -5,9 +5,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import ru.urfu.localobjects.LocalMessageBuilder;
 import ru.urfu.logics.DummyBot;
-import ru.urfu.mathmechbot.MathMechBotCore;
+import ru.urfu.logics.localobjects.LocalMessageBuilder;
+import ru.urfu.mathmechbot.MMBCore;
 import ru.urfu.mathmechbot.storages.MathMechStorage;
 import ru.urfu.mathmechbot.storages.UserArrayStorage;
 import ru.urfu.mathmechbot.storages.UserEntryArrayStorage;
@@ -18,7 +18,7 @@ import ru.urfu.mathmechbot.storages.UserEntryArrayStorage;
 @DisplayName("[default] Состояние: по умолчанию")
 final class DefaultStateTest {
     private TestUtils utils;
-    private MathMechBotCore logic;
+    private MMBCore logic;
     private DummyBot bot;
 
     /**
@@ -27,7 +27,7 @@ final class DefaultStateTest {
     @BeforeEach
     void setupTest() {
         final MathMechStorage storage = new MathMechStorage(new UserArrayStorage(), new UserEntryArrayStorage());
-        logic = new MathMechBotCore(storage);
+        logic = new MMBCore(storage);
         bot = new DummyBot();
         utils = new TestUtils(logic, bot);
     }

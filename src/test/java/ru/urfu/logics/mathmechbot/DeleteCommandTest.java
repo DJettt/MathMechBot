@@ -7,11 +7,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
-import ru.urfu.localobjects.LocalMessage;
-import ru.urfu.localobjects.LocalMessageBuilder;
 import ru.urfu.logics.DummyBot;
-import ru.urfu.mathmechbot.MathMechBotCore;
-import ru.urfu.mathmechbot.models.MathMechBotUserState;
+import ru.urfu.logics.localobjects.LocalMessage;
+import ru.urfu.logics.localobjects.LocalMessageBuilder;
+import ru.urfu.mathmechbot.MMBCore;
+import ru.urfu.mathmechbot.MMBUserState;
 import ru.urfu.mathmechbot.models.UserBuilder;
 import ru.urfu.mathmechbot.models.UserEntry;
 import ru.urfu.mathmechbot.storages.MathMechStorage;
@@ -32,7 +32,7 @@ final class DeleteCommandTest {
             .build();
     private TestUtils utils;
     private MathMechStorage storage;
-    private MathMechBotCore logic;
+    private MMBCore logic;
     private DummyBot bot;
 
     UserEntry userEntryBeforeDelete;
@@ -43,7 +43,7 @@ final class DeleteCommandTest {
     @BeforeEach
     void setupTest() {
         storage = new MathMechStorage(new UserArrayStorage(), new UserEntryArrayStorage());
-        logic = new MathMechBotCore(storage);
+        logic = new MMBCore(storage);
         bot = new DummyBot();
         utils = new TestUtils(logic, bot);
 
@@ -79,7 +79,7 @@ final class DeleteCommandTest {
 
         Assertions.assertTrue(storage.getUserEntries().get(0L).isEmpty());
         Assertions.assertEquals(
-                new UserBuilder(0L, MathMechBotUserState.DEFAULT).build(),
+                new UserBuilder(0L, MMBUserState.DEFAULT).build(),
                 storage.getUsers().get(0L).orElseThrow());
         Assertions.assertEquals(TestConstants.HELP, bot.getOutcomingMessageList().get(2));
     }
@@ -107,7 +107,7 @@ final class DeleteCommandTest {
                 bot.getOutcomingMessageList().get(1));
 
         Assertions.assertEquals(
-                new UserBuilder(0L, MathMechBotUserState.DEFAULT).build(),
+                new UserBuilder(0L, MMBUserState.DEFAULT).build(),
                 storage.getUsers().get(0L).orElseThrow());
         Assertions.assertEquals(
                 userEntryBeforeDelete,
@@ -134,7 +134,7 @@ final class DeleteCommandTest {
         logic.processMessage(utils.makeRequestFromMessage(TestConstants.BACK_MESSAGE));
 
         Assertions.assertEquals(
-                new UserBuilder(0L, MathMechBotUserState.DEFAULT).build(),
+                new UserBuilder(0L, MMBUserState.DEFAULT).build(),
                 storage.getUsers().get(0L).orElseThrow());
         Assertions.assertEquals(
                 userEntryBeforeDelete,
@@ -167,7 +167,7 @@ final class DeleteCommandTest {
                 utils.makeRequestFromMessage(new LocalMessageBuilder().text(text).build()));
 
         Assertions.assertEquals(
-                new UserBuilder(0L, MathMechBotUserState.DELETION_CONFIRMATION).build(),
+                new UserBuilder(0L, MMBUserState.DELETION_CONFIRMATION).build(),
                 storage.getUsers().get(0L).orElseThrow());
         Assertions.assertEquals(
                 userEntryBeforeDelete,

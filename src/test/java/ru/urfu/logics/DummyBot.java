@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Stack;
 import org.jetbrains.annotations.NotNull;
 import ru.urfu.bots.Bot;
-import ru.urfu.localobjects.LocalMessage;
+import ru.urfu.logics.localobjects.LocalMessage;
 
 /**
  * Ничего просто сохраняющий сообщения. Создан для тестов.

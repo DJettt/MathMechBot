@@ -16,10 +16,10 @@ import net.dv8tion.jda.api.requests.restaction.MessageCreateAction;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.urfu.localobjects.BotProcessMessageRequest;
-import ru.urfu.localobjects.LocalButton;
-import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.logics.LogicCore;
+import ru.urfu.logics.localobjects.BotProcessMessageRequest;
+import ru.urfu.logics.localobjects.LocalButton;
+import ru.urfu.logics.localobjects.LocalMessage;
 
 /**
  * Простой дискорд-бот, который принимает текстовые сообщения и составляет ответ

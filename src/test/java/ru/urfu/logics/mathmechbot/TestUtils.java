@@ -3,12 +3,12 @@ package ru.urfu.logics.mathmechbot;
 import java.util.ArrayList;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
-import ru.urfu.localobjects.BotProcessMessageRequest;
-import ru.urfu.localobjects.LocalMessage;
-import ru.urfu.localobjects.LocalMessageBuilder;
 import ru.urfu.logics.DummyBot;
 import ru.urfu.logics.LogicCore;
-import ru.urfu.mathmechbot.MathMechBotCore;
+import ru.urfu.logics.localobjects.BotProcessMessageRequest;
+import ru.urfu.logics.localobjects.LocalMessage;
+import ru.urfu.logics.localobjects.LocalMessageBuilder;
+import ru.urfu.mathmechbot.MMBCore;
 
 /**
  * Утилиты для тестирования матмех бота. В идеале должен быть статичным.
@@ -23,7 +23,7 @@ public final class TestUtils {
      * @param logic ядро
      * @param bot   фейк-бот.
      */
-    public TestUtils(MathMechBotCore logic, DummyBot bot) {
+    public TestUtils(MMBCore logic, DummyBot bot) {
         this.logic = logic;
         this.bot = bot;
     }

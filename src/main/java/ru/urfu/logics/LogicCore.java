@@ -1,7 +1,7 @@
 package ru.urfu.logics;
 
 import org.jetbrains.annotations.NotNull;
-import ru.urfu.localobjects.BotProcessMessageRequest;
+import ru.urfu.logics.localobjects.BotProcessMessageRequest;
 
 /**
  * Интерфейс логического ядра.
