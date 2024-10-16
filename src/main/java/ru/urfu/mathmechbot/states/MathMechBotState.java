@@ -36,5 +36,7 @@ public abstract class MathMechBotState implements LogicCoreState<MathMechBotCore
      * @return сообщение, которое нужно отправить пользователю при переходе в это состояние.
      */
     @Nullable
-    public abstract LocalMessage enterMessage(@NotNull MathMechBotCore context, @NotNull BotProcessMessageRequest request);
+    public abstract LocalMessage enterMessage(
+            @NotNull MathMechBotCore context,
+            @NotNull BotProcessMessageRequest request);
 }
