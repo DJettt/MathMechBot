@@ -14,7 +14,7 @@ import ru.urfu.mathmechbot.storages.MathMechStorage;
  * Логическое ядро бота, обрабатывающего сообщения Telegram-каналов на предмет упоминания студентов.<br/>
  */
 public final class MathMechBotCore implements LogicCore {
-    public final MathMechStorage storage;
+    private final MathMechStorage storage;
     private MathMechBotState currentState;
 
     /**
@@ -29,16 +29,24 @@ public final class MathMechBotCore implements LogicCore {
 
     @Override
     public void processMessage(@NotNull BotProcessMessageRequest request) {
-        Optional<User> userOptional = storage.users.get(request.id());
+        Optional<User> userOptional = getStorage().getUsers().get(request.id());
 
         if (userOptional.isEmpty()) {
-            storage.users.add(new User(request.id(), MathMechBotUserState.DEFAULT));
-            assert storage.users.get(request.id()).isPresent();
+            getStorage().getUsers().add(new User(request.id(), MathMechBotUserState.DEFAULT));
+            assert getStorage().getUsers().get(request.id()).isPresent();
         }
-        final User user = storage.users.get(request.id()).get();
+        final User user = getStorage().getUsers().get(request.id()).get();
 
         currentState = user.currentState().logicCoreState();
         currentState.setContext(this);
         currentState.processMessage(request);
+    }
+
+    /**
+     * Геттер поля storage.
+     * @return storage
+     */
+    public MathMechStorage getStorage() {
+        return storage;
     }
 }

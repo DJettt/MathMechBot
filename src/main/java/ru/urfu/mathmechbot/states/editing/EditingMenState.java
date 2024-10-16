@@ -1,4 +1,4 @@
-package ru.urfu.mathmechbot.states.registration;
+package ru.urfu.mathmechbot.states.editing;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,12 +12,10 @@ import ru.urfu.mathmechbot.MathMechBotCore;
 import ru.urfu.mathmechbot.models.MathMechBotUserState;
 import ru.urfu.mathmechbot.states.MathMechBotState;
 
-
 /**
- * Состояние ожидания ввода академической группы в формате МЕН во время регистрации.
+ * Состояние изменения академической группы (МЕН-123456).
  */
-public final class RegistrationMenGroupState extends MathMechBotState {
-    // TODO: Проверить более сложные имена, содержащие дефисы или несколько слов.
+public final class EditingMenState extends MathMechBotState {
     private final static Pattern VALID_MEN_GROUP_STRING = Pattern.compile("^МЕН-\\d{6}$");
 
     @Override
@@ -38,14 +36,14 @@ public final class RegistrationMenGroupState extends MathMechBotState {
     }
 
     /**
-     * Возвращает пользователя на шаг назад, то есть на этап запроса группы.
+     * Возвращает пользователя на шаг назад, то есть на этап выбора, что конкретно изменить.
      *
      * @param context контекст состояния.
      * @param request запрос.
      */
     private void backCommandHandler(@NotNull MathMechBotCore context, @NotNull BotProcessMessageRequest request) {
-        context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.REGISTRATION_GROUP);
-        request.bot().sendMessage(new RegistrationGroupState().enterMessage(context, request), request.id());
+        context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.EDITING_CHOOSE);
+        request.bot().sendMessage(new EditingChooseState().enterMessage(context, request), request.id());
     }
 
     /**
@@ -64,11 +62,9 @@ public final class RegistrationMenGroupState extends MathMechBotState {
         }
 
         context.getStorage().getUserEntries().changeUserEntryMen(request.id(), trimmedText);
-        context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.REGISTRATION_CONFIRMATION);
+        context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.EDITING_ADDITIONAL_EDIT);
 
-        final LocalMessage message = new RegistrationConfirmationState().enterMessage(context, request);
-        if (message != null) {
-            request.bot().sendMessage(message, request.id());
-        }
+        final LocalMessage message = new EditingAdditionalEditState().enterMessage(context, request);
+        request.bot().sendMessage(message, request.id());
     }
 }

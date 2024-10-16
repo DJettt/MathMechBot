@@ -49,8 +49,8 @@ final class YearStateTest {
         logic.processMessage(
                 utils.makeRequestFromMessage(new LocalMessageBuilder().text("Иванов Артём Иванович").build()));
 
-        currentUser = storage.users.get(0L).orElseThrow();
-        currentUserEntry = storage.userEntries.get(0L).orElseThrow();
+        currentUser = storage.getUsers().get(0L).orElseThrow();
+        currentUserEntry = storage.getUserEntries().get(0L).orElseThrow();
 
         bot.getOutcomingMessageList().clear();
     }
@@ -80,7 +80,7 @@ final class YearStateTest {
                 utils.makeRequestFromMessage(new LocalMessageBuilder().text(year).build()));
         Assertions.assertEquals(
                 new UserBuilder(0L, MathMechBotUserState.REGISTRATION_SPECIALTY).build(),
-                storage.users.get(0L).orElseThrow());
+                storage.getUsers().get(0L).orElseThrow());
 
         if (Objects.equals(year, "1")) {
             Assertions.assertEquals(
@@ -93,7 +93,7 @@ final class YearStateTest {
         }
         Assertions.assertEquals(
                 new UserEntryBuilder(currentUserEntry).year(Integer.parseInt(year)).build(),
-                storage.userEntries.get(0L).orElseThrow());
+                storage.getUserEntries().get(0L).orElseThrow());
     }
 
     /**
@@ -115,8 +115,8 @@ final class YearStateTest {
     void testIncorrectData(String text) {
         logic.processMessage(utils.makeRequestFromMessage(new LocalMessageBuilder().text(text).build()));
 
-        Assertions.assertEquals(currentUser, storage.users.get(0L).orElseThrow());
-        Assertions.assertEquals(currentUserEntry, storage.userEntries.get(0L).orElseThrow());
+        Assertions.assertEquals(currentUser, storage.getUsers().get(0L).orElseThrow());
+        Assertions.assertEquals(currentUserEntry, storage.getUserEntries().get(0L).orElseThrow());
 
         Assertions.assertEquals(TestConstants.TRY_AGAIN, bot.getOutcomingMessageList().getFirst());
         Assertions.assertEquals(RegistrationConstants.ASK_YEAR, bot.getOutcomingMessageList().getLast());
@@ -136,6 +136,6 @@ final class YearStateTest {
         logic.processMessage(utils.makeRequestFromMessage(TestConstants.BACK_MESSAGE));
         Assertions.assertEquals(
                 new UserBuilder(0L, MathMechBotUserState.REGISTRATION_NAME).build(),
-                storage.users.get(0L).orElseThrow());
+                storage.getUsers().get(0L).orElseThrow());
     }
 }

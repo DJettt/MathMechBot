@@ -1,4 +1,4 @@
-package ru.urfu.mathmechbot.states.registration;
+package ru.urfu.mathmechbot.states.editing;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,14 +17,11 @@ import ru.urfu.mathmechbot.models.Specialty;
 import ru.urfu.mathmechbot.models.UserEntry;
 import ru.urfu.mathmechbot.states.MathMechBotState;
 
-
 /**
- * Состояние запроса направления подготовки.
- * Предлагает пользователю направление подготовки
- * из списка, который возвращает метод allowedSpecialties.
+ * Состояние изменения информации о направлении.
  */
-public final class RegistrationSpecialtyState extends MathMechBotState {
-    private final static Logger LOGGER = LoggerFactory.getLogger(RegistrationSpecialtyState.class);
+public final class EditingSpecialityState extends MathMechBotState {
+    private final static Logger LOGGER = LoggerFactory.getLogger(EditingSpecialityState.class);
 
     /**
      * Достаёт год пользователя из хранилища.
@@ -37,10 +34,10 @@ public final class RegistrationSpecialtyState extends MathMechBotState {
         final Optional<UserEntry> userEntryOptional = context.getStorage().getUserEntries().get(request.id());
 
         if (userEntryOptional.isEmpty()) {
-            LOGGER.error("User without entry managed to reach registration_specialty state.");
+            LOGGER.error("User without entry managed to reach editing_specialty state.");
             throw new RuntimeException();
         } else if (userEntryOptional.get().year() == null) {
-            LOGGER.error("User without set year managed to reach registration_specialty state.");
+            LOGGER.error("User without set year managed to reach editing_specialty state.");
             throw new RuntimeException();
         }
 
@@ -86,7 +83,10 @@ public final class RegistrationSpecialtyState extends MathMechBotState {
             buttons.add(new LocalButton(specialty.getAbbreviation(), specialty.getAbbreviation()));
         }
         buttons.add(Constants.BACK_BUTTON);
-        return new LocalMessageBuilder().text("На каком направлении?").buttons(buttons).build();
+        return new LocalMessageBuilder().text("""
+                На каком направлении?
+                Если Вы не видите свое направление, то, возможно, Вы выбрали не тот курс.
+                """).buttons(buttons).build();
     }
 
     /**
@@ -96,8 +96,8 @@ public final class RegistrationSpecialtyState extends MathMechBotState {
      * @param request запрос.
      */
     private void backCommandHandler(@NotNull MathMechBotCore context, @NotNull BotProcessMessageRequest request) {
-        context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.REGISTRATION_YEAR);
-        request.bot().sendMessage(new RegistrationYearState().enterMessage(context, request), request.id());
+        context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.EDITING_CHOOSE);
+        request.bot().sendMessage(new EditingChooseState().enterMessage(context, request), request.id());
     }
 
     /**
@@ -122,7 +122,7 @@ public final class RegistrationSpecialtyState extends MathMechBotState {
         }
 
         context.getStorage().getUserEntries().changeUserEntrySpecialty(request.id(), request.message().text());
-        context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.REGISTRATION_GROUP);
-        request.bot().sendMessage(new RegistrationGroupState().enterMessage(context, request), request.id());
+        context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.EDITING_ADDITIONAL_EDIT);
+        request.bot().sendMessage(new EditingAdditionalEditState().enterMessage(context, request), request.id());
     }
 }

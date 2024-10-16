@@ -51,8 +51,8 @@ final class GroupTest {
                 utils.makeRequestFromMessage(new LocalMessageBuilder().text("2").build()));
         logic.processMessage(
                 utils.makeRequestFromMessage(new LocalMessageBuilder().text("ФТ").build()));
-        currentUser = storage.users.get(0L).orElseThrow();
-        currentUserEntry = storage.userEntries.get(0L).orElseThrow();
+        currentUser = storage.getUsers().get(0L).orElseThrow();
+        currentUserEntry = storage.getUserEntries().get(0L).orElseThrow();
         bot.getOutcomingMessageList().clear();
     }
 
@@ -77,10 +77,10 @@ final class GroupTest {
 
         Assertions.assertEquals(
                 new UserBuilder(0L, MathMechBotUserState.REGISTRATION_MEN).build(),
-                storage.users.get(0L).orElseThrow());
+                storage.getUsers().get(0L).orElseThrow());
         Assertions.assertEquals(
                 new UserEntryBuilder(currentUserEntry).group(Integer.parseInt(group)).build(),
-                storage.userEntries.get(0L).orElseThrow());
+                storage.getUserEntries().get(0L).orElseThrow());
         Assertions.assertEquals(RegistrationConstants.ASK_MEN, bot.getOutcomingMessageList().getLast());
     }
 
@@ -104,8 +104,8 @@ final class GroupTest {
         logic.processMessage(
                 utils.makeRequestFromMessage(new LocalMessageBuilder().text(text).build()));
 
-        Assertions.assertEquals(currentUser, storage.users.get(0L).orElseThrow());
-        Assertions.assertEquals(currentUserEntry, storage.userEntries.get(0L).orElseThrow());
+        Assertions.assertEquals(currentUser, storage.getUsers().get(0L).orElseThrow());
+        Assertions.assertEquals(currentUserEntry, storage.getUserEntries().get(0L).orElseThrow());
         Assertions.assertEquals(TestConstants.TRY_AGAIN, bot.getOutcomingMessageList().getFirst());
     }
 
@@ -124,6 +124,6 @@ final class GroupTest {
         logic.processMessage(utils.makeRequestFromMessage(TestConstants.BACK_MESSAGE));
         Assertions.assertEquals(
                 new UserBuilder(0L, MathMechBotUserState.REGISTRATION_SPECIALTY).build(),
-                storage.users.get(0L).orElseThrow());
+                storage.getUsers().get(0L).orElseThrow());
     }
 }

@@ -55,8 +55,8 @@ final class ConfirmationTest {
         logic.processMessage(
                 utils.makeRequestFromMessage(new LocalMessageBuilder().text("МЕН-162534").build()));
 
-        currentUser = storage.users.get(0L).orElseThrow();
-        currentUserEntry = storage.userEntries.get(0L).orElseThrow();
+        currentUser = storage.getUsers().get(0L).orElseThrow();
+        currentUserEntry = storage.getUserEntries().get(0L).orElseThrow();
 
         bot.getOutcomingMessageList().clear();
     }
@@ -83,8 +83,8 @@ final class ConfirmationTest {
 
         Assertions.assertEquals(
                 new UserBuilder(0L, MathMechBotUserState.DEFAULT).build(),
-                storage.users.get(0L).orElseThrow());
-        Assertions.assertEquals(currentUserEntry, storage.userEntries.get(0L).orElseThrow());
+                storage.getUsers().get(0L).orElseThrow());
+        Assertions.assertEquals(currentUserEntry, storage.getUserEntries().get(0L).orElseThrow());
     }
 
     /**
@@ -109,8 +109,8 @@ final class ConfirmationTest {
 
         Assertions.assertEquals(
                 new UserBuilder(0L, MathMechBotUserState.DEFAULT).build(),
-                storage.users.get(0L).orElseThrow());
-        Assertions.assertTrue(storage.userEntries.get(0L).isEmpty());
+                storage.getUsers().get(0L).orElseThrow());
+        Assertions.assertTrue(storage.getUserEntries().get(0L).isEmpty());
     }
 
     /**
@@ -132,7 +132,7 @@ final class ConfirmationTest {
         );
         Assertions.assertEquals(
                 new UserBuilder(0L, MathMechBotUserState.REGISTRATION_MEN).build(),
-                storage.users.get(0L).orElseThrow());
+                storage.getUsers().get(0L).orElseThrow());
     }
 
     /**
@@ -156,6 +156,6 @@ final class ConfirmationTest {
                 TestConstants.TRY_AGAIN,
                 bot.getOutcomingMessageList().getFirst()
         );
-        Assertions.assertEquals(currentUser, storage.users.get(0L).orElseThrow());
+        Assertions.assertEquals(currentUser, storage.getUsers().get(0L).orElseThrow());
     }
 }

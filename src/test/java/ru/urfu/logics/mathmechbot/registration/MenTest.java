@@ -55,8 +55,8 @@ final class MenTest {
         logic.processMessage(
                 utils.makeRequestFromMessage(new LocalMessageBuilder().text("5").build()));
 
-        currentUser = storage.users.get(0L).orElseThrow();
-        currentUserEntry = storage.userEntries.get(0L).orElseThrow();
+        currentUser = storage.getUsers().get(0L).orElseThrow();
+        currentUserEntry = storage.getUserEntries().get(0L).orElseThrow();
 
         bot.getOutcomingMessageList().clear();
     }
@@ -93,10 +93,10 @@ final class MenTest {
 
         Assertions.assertEquals(
                 new UserBuilder(0L, MathMechBotUserState.REGISTRATION_CONFIRMATION).build(),
-                storage.users.get(0L).orElseThrow());
+                storage.getUsers().get(0L).orElseThrow());
         Assertions.assertEquals(
                 new UserEntryBuilder(currentUserEntry).men(men.trim()).build(),
-                storage.userEntries.get(0L).orElseThrow());
+                storage.getUserEntries().get(0L).orElseThrow());
     }
 
     /**
@@ -120,8 +120,8 @@ final class MenTest {
                 utils.makeRequestFromMessage(new LocalMessageBuilder().text(text).build()));
 
         Assertions.assertEquals(TestConstants.TRY_AGAIN, bot.getOutcomingMessageList().getFirst());
-        Assertions.assertEquals(currentUser, storage.users.get(0L).orElseThrow());
-        Assertions.assertEquals(currentUserEntry, storage.userEntries.get(0L).orElseThrow());
+        Assertions.assertEquals(currentUser, storage.getUsers().get(0L).orElseThrow());
+        Assertions.assertEquals(currentUserEntry, storage.getUserEntries().get(0L).orElseThrow());
     }
 
     /**
@@ -139,6 +139,6 @@ final class MenTest {
         logic.processMessage(utils.makeRequestFromMessage(TestConstants.BACK_MESSAGE));
         Assertions.assertEquals(
                 new UserBuilder(0L, MathMechBotUserState.REGISTRATION_GROUP).build(),
-                storage.users.get(0L).orElseThrow());
+                storage.getUsers().get(0L).orElseThrow());
     }
 }

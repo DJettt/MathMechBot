@@ -38,7 +38,7 @@ public final class RegistrationConfirmationState extends MathMechBotState {
     @Override
     @Nullable
     public LocalMessage enterMessage(@NotNull MathMechBotCore context, @NotNull BotProcessMessageRequest request) {
-        final Optional<UserEntry> userEntryOptional = context.storage.userEntries.get(request.id());
+        final Optional<UserEntry> userEntryOptional = context.getStorage().getUserEntries().get(request.id());
 
         if (userEntryOptional.isEmpty()) {
             LOGGER.error("User without entry reached registration end");
@@ -58,7 +58,7 @@ public final class RegistrationConfirmationState extends MathMechBotState {
      * @param request запрос.
      */
     private void backCommandHandler(@NotNull MathMechBotCore context, @NotNull BotProcessMessageRequest request) {
-        context.storage.users.changeUserState(request.id(), MathMechBotUserState.REGISTRATION_MEN);
+        context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.REGISTRATION_MEN);
         request.bot().sendMessage(
                 new RegistrationMenGroupState().enterMessage(context, request),
                 request.id());
@@ -71,7 +71,7 @@ public final class RegistrationConfirmationState extends MathMechBotState {
      * @param request запрос.
      */
     private void acceptCommandHandler(@NotNull MathMechBotCore context, @NotNull BotProcessMessageRequest request) {
-        context.storage.users.changeUserState(request.id(), MathMechBotUserState.DEFAULT);
+        context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.DEFAULT);
         request.bot().sendMessage(new LocalMessageBuilder().text("Сохранил...").build(), request.id());
         request.bot().sendMessage(new DefaultState().enterMessage(context, request), request.id());
     }
@@ -83,9 +83,9 @@ public final class RegistrationConfirmationState extends MathMechBotState {
      * @param request запрос.
      */
     private void declineCommandHandler(@NotNull MathMechBotCore context, @NotNull BotProcessMessageRequest request) {
-        final Optional<UserEntry> userEntryOptional = context.storage.userEntries.get(request.id());
-        userEntryOptional.ifPresent(context.storage.userEntries::delete);
-        context.storage.users.changeUserState(request.id(), MathMechBotUserState.DEFAULT);
+        final Optional<UserEntry> userEntryOptional = context.getStorage().getUserEntries().get(request.id());
+        userEntryOptional.ifPresent(context.getStorage().getUserEntries()::delete);
+        context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.DEFAULT);
         request.bot().sendMessage(new LocalMessageBuilder().text("Отмена...").build(), request.id());
         request.bot().sendMessage(new DefaultState().enterMessage(context, request), request.id());
     }

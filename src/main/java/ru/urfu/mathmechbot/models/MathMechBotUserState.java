@@ -6,6 +6,13 @@ import ru.urfu.mathmechbot.MathMechBotCore;
 import ru.urfu.mathmechbot.states.DefaultState;
 import ru.urfu.mathmechbot.states.MathMechBotState;
 import ru.urfu.mathmechbot.states.deletion.DeletionConfirmationState;
+import ru.urfu.mathmechbot.states.editing.EditingAdditionalEditState;
+import ru.urfu.mathmechbot.states.editing.EditingChooseState;
+import ru.urfu.mathmechbot.states.editing.EditingFullNameState;
+import ru.urfu.mathmechbot.states.editing.EditingGroupState;
+import ru.urfu.mathmechbot.states.editing.EditingMenState;
+import ru.urfu.mathmechbot.states.editing.EditingSpecialityState;
+import ru.urfu.mathmechbot.states.editing.EditingYearState;
 import ru.urfu.mathmechbot.states.registration.RegistrationConfirmationState;
 import ru.urfu.mathmechbot.states.registration.RegistrationFullNameState;
 import ru.urfu.mathmechbot.states.registration.RegistrationGroupState;
@@ -25,6 +32,14 @@ public enum MathMechBotUserState implements UserState<MathMechBotCore, MathMechB
     REGISTRATION_GROUP(new RegistrationGroupState()),
     REGISTRATION_MEN(new RegistrationMenGroupState()),
     REGISTRATION_CONFIRMATION(new RegistrationConfirmationState()),
+
+    EDITING_CHOOSE(new EditingChooseState()),
+    EDITING_FULL_NAME(new EditingFullNameState()),
+    EDITING_ADDITIONAL_EDIT(new EditingAdditionalEditState()),
+    EDITING_YEAR(new EditingYearState()),
+    EDITING_SPECIALITY(new EditingSpecialityState()),
+    EDITING_GROUP(new EditingGroupState()),
+    EDITING_MEN(new EditingMenState()),
 
     DELETION_CONFIRMATION(new DeletionConfirmationState());
 

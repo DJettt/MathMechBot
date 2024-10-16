@@ -11,6 +11,7 @@ import ru.urfu.mathmechbot.MathMechBotCore;
 import ru.urfu.mathmechbot.models.MathMechBotUserState;
 import ru.urfu.mathmechbot.models.UserEntry;
 import ru.urfu.mathmechbot.states.deletion.DeletionConfirmationState;
+import ru.urfu.mathmechbot.states.editing.EditingChooseState;
 import ru.urfu.mathmechbot.states.registration.RegistrationFullNameState;
 
 
@@ -22,6 +23,7 @@ public final class DefaultState extends MathMechBotState {
     private final static String HELP_COMMAND = "/help";
     private final static String REGISTER_COMMAND = "/register";
     private final static String INFO_COMMAND = "/info";
+    private final static String EDIT_COMMAND = "/edit";
     private final static String DELETE_COMMAND = "/delete";
 
     @Override
@@ -30,6 +32,7 @@ public final class DefaultState extends MathMechBotState {
             case REGISTER_COMMAND -> registerCommandHandler(context(), request);
             case INFO_COMMAND -> infoCommandHandler(context(), request);
             case DELETE_COMMAND -> deleteCommandHandler(context(), request);
+            case EDIT_COMMAND -> editCommandHandler(context(), request);
             case null, default -> helpCommandHandler(context(), request);
         }
     }
@@ -42,8 +45,9 @@ public final class DefaultState extends MathMechBotState {
                 %s - выводит команды, которые принимает бот
                 %s - регистрация
                 %s - информация о Вас
+                %s - изменить информацию
                 %s - удалить информацию о Вас"""
-                .formatted(START_COMMAND, HELP_COMMAND, REGISTER_COMMAND, INFO_COMMAND, DELETE_COMMAND);
+                .formatted(START_COMMAND, HELP_COMMAND, REGISTER_COMMAND, INFO_COMMAND, EDIT_COMMAND, DELETE_COMMAND);
         return new LocalMessageBuilder().text(HELP_MESSAGE).build();
     }
 
@@ -64,9 +68,9 @@ public final class DefaultState extends MathMechBotState {
      * @param request запрос.
      */
     private void registerCommandHandler(@NotNull MathMechBotCore context, @NotNull BotProcessMessageRequest request) {
-        final Optional<UserEntry> userEntryOptional = context.storage.userEntries.get(request.id());
+        final Optional<UserEntry> userEntryOptional = context.getStorage().getUserEntries().get(request.id());
         if (userEntryOptional.isEmpty()) {
-            context.storage.users.changeUserState(request.id(), MathMechBotUserState.REGISTRATION_NAME);
+            context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.REGISTRATION_NAME);
             request.bot().sendMessage(new RegistrationFullNameState().enterMessage(context, request), request.id());
         } else {
             alreadyRegistered(request.id(), request.bot());
@@ -79,8 +83,8 @@ public final class DefaultState extends MathMechBotState {
      * @param context логического ядро (контекст для состояния).
      * @param request запрос.
      */
-    private void infoCommandHandler(@NotNull MathMechBotCore context, @NotNull BotProcessMessageRequest request) {
-        final Optional<UserEntry> userEntryOptional = context.storage.userEntries.get(request.id());
+    public void infoCommandHandler(@NotNull MathMechBotCore context, @NotNull BotProcessMessageRequest request) {
+        final Optional<UserEntry> userEntryOptional = context.getStorage().getUserEntries().get(request.id());
         if (userEntryOptional.isEmpty()) {
             request.bot().sendMessage(Constants.ASK_FOR_REGISTRATION, request.id());
             return;
@@ -92,15 +96,33 @@ public final class DefaultState extends MathMechBotState {
     }
 
     /**
+     * Запускает процесс изменения информации о пользователе.
+     *
+     * @param context логического ядро (контекст для состояния).
+     * @param request запрос.
+     */
+    private void editCommandHandler(@NotNull MathMechBotCore context, @NotNull BotProcessMessageRequest request) {
+        final Optional<UserEntry> userEntryOptional = context.getStorage().getUserEntries().get(request.id());
+        if (userEntryOptional.isPresent()) {
+            context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.EDITING_CHOOSE);
+
+            final LocalMessage msg = new EditingChooseState().enterMessage(context, request);
+            request.bot().sendMessage(msg, request.id());
+        } else {
+            request.bot().sendMessage(Constants.ASK_FOR_REGISTRATION, request.id());
+        }
+    }
+
+    /**
      * Запускает процесс удаления.
      *
      * @param context логического ядро (контекст для состояния).
      * @param request запрос.
      */
     private void deleteCommandHandler(@NotNull MathMechBotCore context, @NotNull BotProcessMessageRequest request) {
-        final Optional<UserEntry> userEntryOptional = context.storage.userEntries.get(request.id());
+        final Optional<UserEntry> userEntryOptional = context.getStorage().getUserEntries().get(request.id());
         if (userEntryOptional.isPresent()) {
-            context.storage.users.changeUserState(request.id(), MathMechBotUserState.DELETION_CONFIRMATION);
+            context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.DELETION_CONFIRMATION);
 
             final LocalMessage msg = new DeletionConfirmationState().enterMessage(context, request);
             if (msg != null) {

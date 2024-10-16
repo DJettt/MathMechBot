@@ -88,11 +88,11 @@ final class FullNameTest {
 
         Assertions.assertEquals(
                 new UserEntryBuilder(0L, surname, name, 0L).patronym(patronym).build(),
-                storage.userEntries.get(0L).orElseThrow()
+                storage.getUserEntries().get(0L).orElseThrow()
         );
         Assertions.assertEquals(
                 new UserBuilder(0L, MathMechBotUserState.REGISTRATION_YEAR).build(),
-                storage.users.get(0L).orElseThrow()
+                storage.getUsers().get(0L).orElseThrow()
         );
         Assertions.assertEquals(RegistrationConstants.ASK_YEAR, bot.getOutcomingMessageList().get(1));
     }
@@ -123,10 +123,10 @@ final class FullNameTest {
         logic.processMessage(
                 utils.makeRequestFromMessage(new LocalMessageBuilder().text(text).build()));
 
-        Assertions.assertTrue(storage.userEntries.get(0L).isEmpty());
+        Assertions.assertTrue(storage.getUserEntries().get(0L).isEmpty());
         Assertions.assertEquals(
                 new UserBuilder(0L, MathMechBotUserState.REGISTRATION_NAME).build(),
-                storage.users.get(0L).orElseThrow()
+                storage.getUsers().get(0L).orElseThrow()
         );
         Assertions.assertEquals(TestConstants.TRY_AGAIN, bot.getOutcomingMessageList().getLast());
     }
@@ -149,10 +149,10 @@ final class FullNameTest {
         logic.processMessage(utils.makeRequestFromMessage(TestConstants.BACK_MESSAGE));
 
         Assertions.assertEquals(TestConstants.HELP, bot.getOutcomingMessageList().get(1));
-        Assertions.assertTrue(storage.userEntries.get(0L).isEmpty());
+        Assertions.assertTrue(storage.getUserEntries().get(0L).isEmpty());
         Assertions.assertEquals(
                 new UserBuilder(0L, MathMechBotUserState.DEFAULT).build(),
-                storage.users.get(0L).orElseThrow()
+                storage.getUsers().get(0L).orElseThrow()
         );
     }
 }
