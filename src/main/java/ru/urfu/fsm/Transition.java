@@ -1,7 +1,7 @@
 package ru.urfu.fsm;
 
+import java.util.List;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Переход в автомате.
@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
  * @param sourceState  входное состояние.
  * @param targetState  целевое состояние.
  * @param eventType    класс событий, наследники которого провоцируют данный переход.
- * @param eventHandler обработчик этих событий.
+ * @param eventHandlers обработчик этих событий.
  *
  * @param <E> верхняя граница типа события.
  * @param <S> тип состояний автомата.
@@ -22,6 +22,6 @@ public record Transition<
         @NotNull S sourceState,
         @NotNull S targetState,
         @NotNull Class<? extends E> eventType,
-        @Nullable EventHandler eventHandler
+        @NotNull List<EventHandler<E>> eventHandlers
 ) {
 }

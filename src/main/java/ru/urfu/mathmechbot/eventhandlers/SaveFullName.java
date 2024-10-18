@@ -1,18 +1,20 @@
-package ru.urfu.mathmechbot.eventhandlers.editing;
+package ru.urfu.mathmechbot.eventhandlers;
 
 import java.util.List;
-import ru.urfu.mathmechbot.events.ValidInputEvent;
+import ru.urfu.fsm.EventHandler;
+import ru.urfu.logics.RequestEvent;
+import ru.urfu.mathmechbot.MMBCore;
 import ru.urfu.mathmechbot.models.UserEntry;
 import ru.urfu.mathmechbot.models.UserEntryBuilder;
 
 /**
  * Обрабатывает корректный ввод ФИО во время редактирования.
  */
-public final class EditingValidNameEventHandler extends GenericEditingValidEventHandler {
+public final class SaveFullName implements EventHandler<RequestEvent<MMBCore>> {
     private final static int NUMBER_OF_WORDS_IN_FULL_NAME_WITH_PATRONYM = 3;
 
     @Override
-    public void handleEvent(ValidInputEvent e) {
+    public void handleEvent(RequestEvent<MMBCore> e) {
         final String text = e.request().message().text();
         assert text != null; // Otherwise it's not valid input
 
@@ -38,7 +40,5 @@ public final class EditingValidNameEventHandler extends GenericEditingValidEvent
                 .getStorage()
                 .getUserEntries()
                 .update(updatedUserEntry);
-
-        super.handleEvent(e);
     }
 }

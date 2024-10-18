@@ -21,14 +21,12 @@ public final class UserEntryBuilder {
      * Конструктор, устанавливающий дефолтные значения для полей.
      *
      * @param id      идентификатор записи.
-     * @param surname фамилия.
-     * @param name    имя.
      * @param userId  идентификатор пользователя, который эту запись зарегистрировал.
      */
-    public UserEntryBuilder(@NotNull Long id, @NotNull String surname, @NotNull String name, @NotNull Long userId) {
+    public UserEntryBuilder(@NotNull Long id, @NotNull Long userId) {
         this.id = id;
-        this.surname = surname;
-        this.name = name;
+        this.surname = null;
+        this.name = null;
         this.patronym = null;
         this.specialty = null;
         this.men = null;

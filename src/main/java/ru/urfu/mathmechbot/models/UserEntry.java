@@ -18,8 +18,8 @@ import ru.urfu.storages.Identifiable;
  */
 public record UserEntry(
         @NotNull Long id,
-        @NotNull String surname,
-        @NotNull String name,
+        @Nullable String surname,
+        @Nullable String name,
         @Nullable String patronym,
         @Nullable String specialty,
         @Nullable String men,

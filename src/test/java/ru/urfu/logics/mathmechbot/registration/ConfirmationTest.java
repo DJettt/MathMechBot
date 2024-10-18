@@ -77,7 +77,7 @@ final class ConfirmationTest {
         logic.processMessage(utils.makeRequestFromMessage(TestConstants.ACCEPT_MESSAGE));
 
         Assertions.assertEquals(
-                new LocalMessageBuilder().text("Сохранил...").build(),
+                new LocalMessageBuilder().text("Данные сохранены.").build(),
                 bot.getOutcomingMessageList().getFirst());
         Assertions.assertEquals(TestConstants.HELP, bot.getOutcomingMessageList().get(1));
 

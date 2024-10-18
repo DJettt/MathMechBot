@@ -6,20 +6,21 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.urfu.fsm.EventHandler;
+import ru.urfu.logics.RequestEvent;
 import ru.urfu.logics.localobjects.LocalMessage;
 import ru.urfu.logics.localobjects.LocalMessageBuilder;
 import ru.urfu.mathmechbot.Constants;
-import ru.urfu.mathmechbot.events.DeleteEvent;
+import ru.urfu.mathmechbot.MMBCore;
 import ru.urfu.mathmechbot.models.UserEntry;
 
 /**
  * Обрабатывает запрос пользователя на удаление данных.
  */
-public final class DeleteRequestEventHandler implements EventHandler<DeleteEvent> {
-    private final static Logger LOGGER = LoggerFactory.getLogger(DeleteRequestEventHandler.class);
+public final class AskDeletionConfirmation implements EventHandler<RequestEvent<MMBCore>> {
+    private final static Logger LOGGER = LoggerFactory.getLogger(AskDeletionConfirmation.class);
 
     @Override
-    public void handleEvent(DeleteEvent e) {
+    public void handleEvent(RequestEvent<MMBCore> e) {
         final Optional<UserEntry> userEntryOptional = e.request()
                 .context()
                 .getStorage()

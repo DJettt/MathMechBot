@@ -1,13 +1,15 @@
-package ru.urfu.mathmechbot.eventhandlers.editing;
+package ru.urfu.mathmechbot.eventhandlers;
 
-import ru.urfu.mathmechbot.events.ValidInputEvent;
+import ru.urfu.fsm.EventHandler;
+import ru.urfu.logics.RequestEvent;
+import ru.urfu.mathmechbot.MMBCore;
 
 /**
  * Обрабатывает корректный ввод направления подготовки во время редактирования.
  */
-public final class EditingValidSpecialtyEventHandler extends GenericEditingValidEventHandler {
+public final class SaveSpecialty implements EventHandler<RequestEvent<MMBCore>> {
     @Override
-    public void handleEvent(ValidInputEvent e) {
+    public void handleEvent(RequestEvent<MMBCore> e) {
         final String text = e.request().message().text();
         assert text != null; // Otherwise it's not valid input
 
@@ -16,6 +18,5 @@ public final class EditingValidSpecialtyEventHandler extends GenericEditingValid
                 .getStorage()
                 .getUserEntries()
                 .changeUserEntrySpecialty(e.request().user().id(), text);
-        super.handleEvent(e);
     }
 }

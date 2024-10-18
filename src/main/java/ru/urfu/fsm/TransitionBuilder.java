@@ -1,7 +1,8 @@
 package ru.urfu.fsm;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Билдер перехода автомата.
@@ -17,13 +18,14 @@ public class TransitionBuilder<
     private S sourceState;
     private S targetState;
     private Class<? extends E> eventType;
-    private EventHandler eventHandler;
+    private List<EventHandler<E>> eventHandlers;
 
     /**
      * Конструктор.
      */
     public TransitionBuilder() {
         this.name = "noname";
+        this.eventHandlers = new ArrayList<>();
     }
 
     /**
@@ -71,8 +73,19 @@ public class TransitionBuilder<
      * @param eventHandler обработчик.
      * @return себя же.
      */
-    public TransitionBuilder<E, S> eventHandler(@Nullable EventHandler eventHandler) {
-        this.eventHandler = eventHandler;
+    public TransitionBuilder<E, S> eventHandler(@NotNull EventHandler<E> eventHandler) {
+        this.eventHandlers.add(eventHandler);
+        return this;
+    }
+
+    /**
+     * Обработчик событий, который будет запускаться после перехода.
+     *
+     * @param eventHandlers обработчик.
+     * @return себя же.
+     */
+    public TransitionBuilder<E, S> eventHandlers(@NotNull List<EventHandler<E>> eventHandlers) {
+        this.eventHandlers.addAll(eventHandlers);
         return this;
     }
 
@@ -81,6 +94,6 @@ public class TransitionBuilder<
      * @return готовое состояние.
      */
     public Transition<E, S> build() {
-        return new Transition<>(name, sourceState, targetState, eventType, eventHandler);
+        return new Transition<>(name, sourceState, targetState, eventType, eventHandlers);
     }
 }

@@ -87,7 +87,11 @@ final class FullNameTest {
                 utils.makeRequestFromMessage(new LocalMessageBuilder().text(incomingMessageText).build()));
 
         Assertions.assertEquals(
-                new UserEntryBuilder(0L, surname, name, 0L).patronym(patronym).build(),
+                new UserEntryBuilder(0L, 0L)
+                        .name(name)
+                        .surname(surname)
+                        .patronym(patronym)
+                        .build(),
                 storage.getUserEntries().get(0L).orElseThrow()
         );
         Assertions.assertEquals(

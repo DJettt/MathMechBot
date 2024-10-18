@@ -45,9 +45,10 @@ public class FiniteStateMachineImpl<
             }
 
             try {
-                final EventHandler eventHandler = transition.eventHandler();
-                if (eventHandler != null) {
-                    eventHandler.handleEvent(event);
+                for (final EventHandler<E> eventHandler : transition.eventHandlers()) {
+                    if (eventHandler != null) {
+                        eventHandler.handleEvent(event);
+                    }
                 }
                 currentState = transition.targetState();
                 onTransition(event);

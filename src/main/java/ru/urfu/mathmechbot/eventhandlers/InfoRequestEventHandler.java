@@ -1,18 +1,19 @@
 package ru.urfu.mathmechbot.eventhandlers;
 
 import ru.urfu.fsm.EventHandler;
+import ru.urfu.logics.RequestEvent;
 import ru.urfu.logics.localobjects.LocalMessage;
 import ru.urfu.logics.localobjects.LocalMessageBuilder;
-import ru.urfu.mathmechbot.events.InfoEvent;
+import ru.urfu.mathmechbot.MMBCore;
 import ru.urfu.mathmechbot.models.User;
 import ru.urfu.mathmechbot.models.UserEntry;
 
 /**
  * Обрабатывает запроса пользователя на получение зарегистрированных данных.
  */
-public final class InfoRequestEventHandler implements EventHandler<InfoEvent> {
+public final class InfoRequestEventHandler implements EventHandler<RequestEvent<MMBCore>> {
     @Override
-    public void handleEvent(InfoEvent e) {
+    public void handleEvent(RequestEvent<MMBCore> e) {
         final User user = e.request().user();
         final UserEntry userEntry = e
                 .request()

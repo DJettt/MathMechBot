@@ -9,15 +9,14 @@ import ru.urfu.mathmechbot.MMBCore;
 /**
  * Посылает определённое на этапе создания сообщение.
  */
-public final class SendPredeterminedMessage implements EventHandler<RequestEvent<MMBCore>> {
+public final class SendConstantMessage implements EventHandler<RequestEvent<MMBCore>> {
     private final LocalMessage message;
 
     /**
      * Конструктор.
-     *
      * @param message сообщение, которое нужно отравить при запуске обработчика.
      */
-    public SendPredeterminedMessage(@NotNull LocalMessage message) {
+    public SendConstantMessage(@NotNull LocalMessage message) {
         this.message = message;
     }
 
