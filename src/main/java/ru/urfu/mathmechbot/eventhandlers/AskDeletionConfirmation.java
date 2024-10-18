@@ -14,7 +14,7 @@ import ru.urfu.mathmechbot.MMBCore;
 import ru.urfu.mathmechbot.models.UserEntry;
 
 /**
- * Обрабатывает запрос пользователя на удаление данных.
+ * Спрашивает у пользователя подтверждение удаления информации.
  */
 public final class AskDeletionConfirmation implements EventHandler<RequestEvent<MMBCore>> {
     private final static Logger LOGGER = LoggerFactory.getLogger(AskDeletionConfirmation.class);

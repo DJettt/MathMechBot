@@ -7,7 +7,7 @@ import ru.urfu.mathmechbot.models.UserEntry;
 import ru.urfu.mathmechbot.models.UserEntryBuilder;
 
 /**
- * Обрабатывает корректный ввод ФИО.
+ * Создаёт пустую пользовательскую запись.
  */
 public final class CreateUserEntry implements EventHandler<RequestEvent<MMBCore>> {
     @Override

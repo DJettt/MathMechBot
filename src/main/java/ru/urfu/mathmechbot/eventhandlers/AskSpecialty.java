@@ -2,7 +2,6 @@ package ru.urfu.mathmechbot.eventhandlers;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.urfu.fsm.EventHandler;
@@ -16,23 +15,21 @@ import ru.urfu.mathmechbot.logicstates.SpecialtyCheckState;
 import ru.urfu.mathmechbot.models.Specialty;
 import ru.urfu.mathmechbot.models.UserEntry;
 
+/**
+ * Отправляет пользователю сообщение с вариантами выбора направления подготовки (на основе года обучения).
+ */
 public final class AskSpecialty implements EventHandler<RequestEvent<MMBCore>> {
     private static final Logger LOGGER = LoggerFactory.getLogger(AskSpecialty.class);
 
     @Override
     public void handleEvent(RequestEvent<MMBCore> e) {
-        final Optional<UserEntry> userEntryOptional = e.request()
+        final UserEntry userEntry = e.request()
                 .context()
                 .getStorage()
                 .getUserEntries()
-                .get(e.request().user().id());
+                .get(e.request().user().id())
+                .orElseThrow();
 
-        if (userEntryOptional.isEmpty()) {
-            LOGGER.error("User doesn't have user entry but managed to reach specialty state");
-            return;
-        }
-
-        final UserEntry userEntry = userEntryOptional.get();
         if (userEntry.year() == null) {
             LOGGER.error("User entry doesn't contain year but it should");
             return;

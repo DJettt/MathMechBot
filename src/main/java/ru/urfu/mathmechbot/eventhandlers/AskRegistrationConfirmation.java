@@ -14,7 +14,7 @@ import ru.urfu.mathmechbot.MMBCore;
 import ru.urfu.mathmechbot.models.UserEntry;
 
 /**
- * Обрабатывает некорректный ввод во время подтверждения регистрации.
+ * Спрашивает у пользователя подтверждение регистрации.
  */
 public final class AskRegistrationConfirmation implements EventHandler<RequestEvent<MMBCore>> {
     private final static Logger LOGGER = LoggerFactory.getLogger(AskRegistrationConfirmation.class);

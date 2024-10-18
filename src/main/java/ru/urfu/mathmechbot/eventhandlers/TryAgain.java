@@ -6,7 +6,7 @@ import ru.urfu.mathmechbot.Constants;
 import ru.urfu.mathmechbot.MMBCore;
 
 /**
- * Обрабатывает обобщённый некорректный ввод.
+ * Отправляет просьбу повторить ввод.
  */
 public final class TryAgain implements EventHandler<RequestEvent<MMBCore>> {
     @Override

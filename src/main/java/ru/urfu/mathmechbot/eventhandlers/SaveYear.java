@@ -5,7 +5,7 @@ import ru.urfu.logics.RequestEvent;
 import ru.urfu.mathmechbot.MMBCore;
 
 /**
- * Обрабатывает корректный ввод года обучения во время редактирования.
+ * Сохраняет год обучения из сообщения.
  */
 public final class SaveYear implements EventHandler<RequestEvent<MMBCore>> {
     @Override

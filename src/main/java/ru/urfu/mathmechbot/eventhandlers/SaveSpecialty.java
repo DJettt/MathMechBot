@@ -5,7 +5,7 @@ import ru.urfu.logics.RequestEvent;
 import ru.urfu.mathmechbot.MMBCore;
 
 /**
- * Обрабатывает корректный ввод направления подготовки во время редактирования.
+ * Сохраняет направление подготовки из сообщения.
  */
 public final class SaveSpecialty implements EventHandler<RequestEvent<MMBCore>> {
     @Override

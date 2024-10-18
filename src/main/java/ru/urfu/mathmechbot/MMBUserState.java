@@ -1,7 +1,7 @@
 package ru.urfu.mathmechbot;
 
 import org.jetbrains.annotations.NotNull;
-import ru.urfu.logics.UserState;
+import ru.urfu.fsm.State;
 import ru.urfu.mathmechbot.logicstates.DefaultState;
 import ru.urfu.mathmechbot.logicstates.EditingChooseState;
 import ru.urfu.mathmechbot.logicstates.FullNameCheckState;
@@ -16,7 +16,7 @@ import ru.urfu.mathmechbot.logicstates.YesNoState;
 /**
  * Cостояние пользователя в MathMechBot.
  */
-public enum MMBUserState implements UserState<MMBCoreState> {
+public enum MMBUserState implements State {
     DEFAULT(new DefaultState()),
 
     REGISTRATION_NAME(new FullNameCheckState()),
@@ -36,7 +36,6 @@ public enum MMBUserState implements UserState<MMBCoreState> {
 
     DELETION_CONFIRMATION(new YesNoBackState());
 
-
     private final MMBCoreState stateInstance;
 
     /**
@@ -49,7 +48,11 @@ public enum MMBUserState implements UserState<MMBCoreState> {
         this.stateInstance = stateInstance;
     }
 
-    @Override
+    /**
+     * Возвращает состояние логического ядра, обрабатывающее данное состояние.
+     *
+     * @return состояние логического ядра.
+     */
     @NotNull
     public MMBCoreState logicCoreState() {
         return stateInstance;

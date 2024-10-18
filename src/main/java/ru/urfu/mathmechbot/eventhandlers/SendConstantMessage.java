@@ -7,7 +7,7 @@ import ru.urfu.logics.localobjects.LocalMessage;
 import ru.urfu.mathmechbot.MMBCore;
 
 /**
- * Посылает определённое на этапе создания сообщение.
+ * Отправляет определённое на этапе создания сообщение.
  */
 public final class SendConstantMessage implements EventHandler<RequestEvent<MMBCore>> {
     private final LocalMessage message;

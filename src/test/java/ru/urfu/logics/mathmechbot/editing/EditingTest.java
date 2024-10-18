@@ -11,9 +11,7 @@ import ru.urfu.logics.mathmechbot.TestConstants;
 import ru.urfu.logics.mathmechbot.TestUtils;
 import ru.urfu.mathmechbot.MMBCore;
 import ru.urfu.mathmechbot.MMBUserState;
-import ru.urfu.mathmechbot.models.User;
 import ru.urfu.mathmechbot.models.UserBuilder;
-import ru.urfu.mathmechbot.models.UserEntry;
 import ru.urfu.mathmechbot.storages.MathMechStorage;
 import ru.urfu.mathmechbot.storages.UserArrayStorage;
 import ru.urfu.mathmechbot.storages.UserEntryArrayStorage;
@@ -27,9 +25,6 @@ final class EditingTest {
     private MathMechStorage storage;
     private MMBCore logic;
     private DummyBot bot;
-
-    User currentUser;
-    UserEntry currentUserEntry;
 
     /**
      * Создаём объект логики, ложного бота и утилиты для каждого теста, регистрируемся.
@@ -55,9 +50,6 @@ final class EditingTest {
         logic.processMessage(
                 utils.makeRequestFromMessage(new LocalMessageBuilder().text(TestConstants.ACCEPT_COMMAND).build()));
 
-        currentUser = storage.getUsers().get(0L).orElseThrow();
-        currentUserEntry = storage.getUserEntries().get(0L).orElseThrow();
-
         bot.getOutcomingMessageList().clear();
     }
 
@@ -76,7 +68,6 @@ final class EditingTest {
      * </ol>
      */
     @Test
-    @SuppressWarnings("MagicNumber")
     @DisplayName("Команда '/edit' ")
     void testEdit() {
         logic.processMessage(utils.makeRequestFromMessage(TestConstants.EDIT_MESSAGE));
@@ -101,7 +92,6 @@ final class EditingTest {
      * Проверка изменения ФИО.
      */
     @Test
-    @SuppressWarnings("MagicNumber")
     @DisplayName("Изменение ФИО")
     void testFullName() {
         logic.processMessage(utils.makeRequestFromMessage(TestConstants.EDIT_MESSAGE));
@@ -111,7 +101,6 @@ final class EditingTest {
         Assertions.assertEquals(
                 new UserBuilder(0L, MMBUserState.EDITING_FULL_NAME).build(),
                 storage.getUsers().get(0L).orElseThrow());
-
 
         logic.processMessage(utils.makeRequestFromMessage(new LocalMessageBuilder()
                 .text("Иванов Иван Сергеевич")
@@ -125,7 +114,6 @@ final class EditingTest {
      * Проверка работы кнопки "назад".
      */
     @Test
-    @SuppressWarnings("MagicNumber")
     @DisplayName("Кнопка 'Назад'")
     void testBackButton() {
         logic.processMessage(utils.makeRequestFromMessage(TestConstants.EDIT_MESSAGE));
@@ -143,16 +131,15 @@ final class EditingTest {
      * Проверка изменения всей информации.
      */
     @Test
-    @SuppressWarnings("MagicNumber")
     @DisplayName("Полное изменение")
     void testFullCheck() {
-        final String TEST_SURNAME = "Иванов";
-        final String TEST_NAME = "Иван";
-        final String TEST_PATRONYM = "Иванович";
-        final String TEST_YEAR = "2";
-        final String TEST_SPECIALITY = "КН";
-        final String TEST_GROUP = "1";
-        final String TEST_MEN = "МЕН-200201";
+        final String testSurname = "Иванов";
+        final String testName = "Иван";
+        final String testPatronym = "Иванович";
+        final String testYear = "2";
+        final String testSpeciality = "КН";
+        final String testGroup = "1";
+        final String testMen = "МЕН-200201";
 
         logic.processMessage(utils.makeRequestFromMessage(TestConstants.EDIT_MESSAGE));
         Assertions.assertEquals(
@@ -170,7 +157,7 @@ final class EditingTest {
                 storage.getUsers().get(0L).orElseThrow());
 
         logic.processMessage(utils.makeRequestFromMessage(new LocalMessageBuilder()
-                .text(TEST_SURNAME + " " + TEST_NAME + " " + TEST_PATRONYM).build()));
+                .text(testSurname + " " + testName + " " + testPatronym).build()));
         Assertions.assertEquals(
                 new UserBuilder(0L, MMBUserState.EDITING_ADDITIONAL_EDIT).build(),
                 storage.getUsers().get(0L).orElseThrow());
@@ -190,7 +177,7 @@ final class EditingTest {
                 storage.getUsers().get(0L).orElseThrow());
 
         logic.processMessage(utils.makeRequestFromMessage(new LocalMessageBuilder()
-                .text(TEST_YEAR).build()));
+                .text(testYear).build()));
         Assertions.assertEquals(
                 new UserBuilder(0L, MMBUserState.EDITING_ADDITIONAL_EDIT).build(),
                 storage.getUsers().get(0L).orElseThrow());
@@ -210,7 +197,7 @@ final class EditingTest {
                 storage.getUsers().get(0L).orElseThrow());
 
         logic.processMessage(utils.makeRequestFromMessage(new LocalMessageBuilder()
-                .text(TEST_SPECIALITY).build()));
+                .text(testSpeciality).build()));
         Assertions.assertEquals(
                 new UserBuilder(0L, MMBUserState.EDITING_ADDITIONAL_EDIT).build(),
                 storage.getUsers().get(0L).orElseThrow());
@@ -231,7 +218,7 @@ final class EditingTest {
                 storage.getUsers().get(0L).orElseThrow());
 
         logic.processMessage(utils.makeRequestFromMessage(new LocalMessageBuilder()
-                .text(TEST_GROUP).build()));
+                .text(testGroup).build()));
         Assertions.assertEquals(
                 new UserBuilder(0L, MMBUserState.EDITING_ADDITIONAL_EDIT).build(),
                 storage.getUsers().get(0L).orElseThrow());
@@ -251,7 +238,7 @@ final class EditingTest {
                 storage.getUsers().get(0L).orElseThrow());
 
         logic.processMessage(utils.makeRequestFromMessage(new LocalMessageBuilder()
-                .text(TEST_MEN)
+                .text(testMen)
                 .build()));
         Assertions.assertEquals(
                 new UserBuilder(0L, MMBUserState.EDITING_ADDITIONAL_EDIT).build(),
@@ -262,12 +249,12 @@ final class EditingTest {
                 new UserBuilder(0L, MMBUserState.DEFAULT).build(),
                 storage.getUsers().get(0L).orElseThrow());
 
-        Assertions.assertEquals(storage.getUserEntries().get(0L).orElseThrow().surname(), TEST_SURNAME);
-        Assertions.assertEquals(storage.getUserEntries().get(0L).orElseThrow().name(), TEST_NAME);
-        Assertions.assertEquals(storage.getUserEntries().get(0L).orElseThrow().patronym(), TEST_PATRONYM);
-        Assertions.assertEquals(storage.getUserEntries().get(0L).orElseThrow().year(), Integer.parseInt(TEST_YEAR));
-        Assertions.assertEquals(storage.getUserEntries().get(0L).orElseThrow().specialty(), TEST_SPECIALITY);
-        Assertions.assertEquals(storage.getUserEntries().get(0L).orElseThrow().group(), Integer.parseInt(TEST_GROUP));
-        Assertions.assertEquals(storage.getUserEntries().get(0L).orElseThrow().men(), TEST_MEN);
+        Assertions.assertEquals(storage.getUserEntries().get(0L).orElseThrow().surname(), testSurname);
+        Assertions.assertEquals(storage.getUserEntries().get(0L).orElseThrow().name(), testName);
+        Assertions.assertEquals(storage.getUserEntries().get(0L).orElseThrow().patronym(), testPatronym);
+        Assertions.assertEquals(storage.getUserEntries().get(0L).orElseThrow().year(), Integer.parseInt(testYear));
+        Assertions.assertEquals(storage.getUserEntries().get(0L).orElseThrow().specialty(), testSpeciality);
+        Assertions.assertEquals(storage.getUserEntries().get(0L).orElseThrow().group(), Integer.parseInt(testGroup));
+        Assertions.assertEquals(storage.getUserEntries().get(0L).orElseThrow().men(), testMen);
     }
 }

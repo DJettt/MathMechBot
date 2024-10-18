@@ -6,7 +6,8 @@ import ru.urfu.mathmechbot.Constants;
 import ru.urfu.mathmechbot.MMBCore;
 
 /**
- * Обрабатывает корректный ввод некоторой информации во время редактирования.
+ * Отправляет пользователю подтверждение сохранения
+ * информации и спрашивает о желании отредактировать что-то ещё.
  */
 public final class EditingInfoSaved implements EventHandler<RequestEvent<MMBCore>> {
     @Override

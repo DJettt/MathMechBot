@@ -9,7 +9,7 @@ import ru.urfu.mathmechbot.models.User;
 import ru.urfu.mathmechbot.models.UserEntry;
 
 /**
- * Обрабатывает запроса пользователя на получение зарегистрированных данных.
+ * Посылает пользователю информацию зарегистрированные данные.
  */
 public final class InfoRequestEventHandler implements EventHandler<RequestEvent<MMBCore>> {
     @Override

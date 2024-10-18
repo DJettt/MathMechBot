@@ -18,7 +18,7 @@ public class TransitionBuilder<
     private S sourceState;
     private S targetState;
     private Class<? extends E> eventType;
-    private List<EventHandler<E>> eventHandlers;
+    private final List<EventHandler<E>> eventHandlers;
 
     /**
      * Конструктор.
@@ -75,17 +75,6 @@ public class TransitionBuilder<
      */
     public TransitionBuilder<E, S> eventHandler(@NotNull EventHandler<E> eventHandler) {
         this.eventHandlers.add(eventHandler);
-        return this;
-    }
-
-    /**
-     * Обработчик событий, который будет запускаться после перехода.
-     *
-     * @param eventHandlers обработчик.
-     * @return себя же.
-     */
-    public TransitionBuilder<E, S> eventHandlers(@NotNull List<EventHandler<E>> eventHandlers) {
-        this.eventHandlers.addAll(eventHandlers);
         return this;
     }
 

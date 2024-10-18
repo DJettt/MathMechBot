@@ -241,7 +241,9 @@ public final class MMBFiniteUserStateMachine
 
     /**
      * Добавляем все переходы, связанные с редактированием.
+     * TODO: решить, что делать с этими длинными методами.
      */
+    @SuppressWarnings("MethodLength")
     private void setupEditingTransitions() {
         registerTransition(new MMBTransitionBuilder()
                 .sourceState(MMBUserState.DEFAULT)

@@ -74,14 +74,4 @@ public final class TestConstants {
                     new LocalButton("МЕН", EDITING_MEN_COMMAND),
                     Constants.BACK_BUTTON)))
             .build();
-    public final static LocalMessage EDITING_GROUP_MESSAGE = new LocalMessageBuilder()
-            .text("Какая у Вас группа?")
-            .buttons(new ArrayList<>(List.of(
-                    new LocalButton("1 группа", "1"),
-                    new LocalButton("2 группа", "2"),
-                    new LocalButton("3 группа", "3"),
-                    new LocalButton("4 группа", "4"),
-                    new LocalButton("5 группа", "5"),
-                    Constants.BACK_BUTTON)))
-            .build();
 }

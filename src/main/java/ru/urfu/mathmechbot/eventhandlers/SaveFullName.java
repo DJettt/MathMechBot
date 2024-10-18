@@ -8,7 +8,7 @@ import ru.urfu.mathmechbot.models.UserEntry;
 import ru.urfu.mathmechbot.models.UserEntryBuilder;
 
 /**
- * Обрабатывает корректный ввод ФИО во время редактирования.
+ * Сохраняет ФИО из сообщения.
  */
 public final class SaveFullName implements EventHandler<RequestEvent<MMBCore>> {
     private final static int NUMBER_OF_WORDS_IN_FULL_NAME_WITH_PATRONYM = 3;

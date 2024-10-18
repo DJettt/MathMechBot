@@ -61,7 +61,7 @@ public final class MMBCore implements LogicCore {
      *
      * @return fsm (конечный автомат).
      */
-    public FiniteStateMachine getFsm() {
+    public FiniteStateMachine<RequestEvent<MMBCore>, MMBUserState> getFsm() {
         return fsm;
     }
 }

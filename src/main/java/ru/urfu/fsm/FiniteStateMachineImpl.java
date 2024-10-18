@@ -62,11 +62,28 @@ public class FiniteStateMachineImpl<
         LOGGER.debug("No transition found for {}. Current state is {}", event, currentState);
     }
 
-    @Override
+    /**
+     * Фрагмент кода, который будет выполняться при переходе в другое состояние.
+     *
+     * @param event событие, которое спровоцировало переход.
+     */
     public void onTransition(@NotNull E event) {
     }
 
-    @Override
+    /**
+     * Зарегистрировать переход между состояниями.
+     *
+     * @param transition переход.
+     */
+    public void registerTransition(@NotNull Transition<E, S> transition) {
+        transitionValidator.validate(transition, this);
+        this.transitions.add(transition);
+    }
+
+    /**
+     * Геттер текущего состояния.
+     * @return текущее состояние.
+     */
     public S getCurrentState() {
         return currentState;
     }
@@ -79,12 +96,6 @@ public class FiniteStateMachineImpl<
     @Override
     public Set<S> getStates() {
         return states;
-    }
-
-    @Override
-    public void registerTransition(@NotNull Transition<E, S> transition) {
-        transitionValidator.validate(transition, this);
-        this.transitions.add(transition);
     }
 
     /**
