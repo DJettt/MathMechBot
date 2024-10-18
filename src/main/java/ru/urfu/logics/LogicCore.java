@@ -4,7 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import ru.urfu.logics.localobjects.BotProcessMessageRequest;
 
 /**
- * <p>Логическое ядро -- объект, получающий сообщения с различны
+ * <p>Логическое ядро -- объект, получающий сообщения с различных
  * платформ и определяющий действия, которые необходимо предпринять.</p>
  */
 public interface LogicCore {

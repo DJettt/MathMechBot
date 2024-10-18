@@ -5,29 +5,29 @@ import org.jetbrains.annotations.NotNull;
 
 
 /**
- * Конечный автомат для смены пользовательских состояний.
+ * <p>Интерфейс конечного автомата.</p>
  *
  * @param <E> тип событий ядра.
  * @param <S> тип пользовательского состояния.
  */
-public interface FiniteStateMachine<
-        E extends Event,
-        S extends State> {
-
+public interface FiniteStateMachine<E extends Event, S extends State> {
     /**
-     * Запустить событие в FSM.
+     * <p>Запустить событие в FSM.</p>
+     *
      * @param event событие с запросом.
      */
     void dispatch(@NotNull E event);
 
     /**
-     * Сеттер текущего состояния.
+     * <p>Сеттер текущего состояния.</p>
+     *
      * @param state состояние, которое автомат должен принять.
      */
     void setCurrentState(@NotNull S state);
 
     /**
-     * Геттер всех состояний.
+     * <p>Геттер всех состояний.</p>
+     *
      * @return все состояния.
      */
     Set<S> getStates();

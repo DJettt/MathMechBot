@@ -5,11 +5,12 @@ import ru.urfu.logics.localobjects.ContextProcessMessageRequest;
 import ru.urfu.mathmechbot.MMBCore;
 
 /**
- * Пользователь уже зарегистрирован.
+ * <p>Пользователь уже зарегистрирован.</p>
  */
 public final class AlreadyRegisteredEvent extends RequestEvent<MMBCore> {
     /**
-     * Конструктор.
+     * <p>Конструктор.</p>
+     *
      * @param request запрос от контекста.
      */
     public AlreadyRegisteredEvent(ContextProcessMessageRequest<MMBCore> request) {

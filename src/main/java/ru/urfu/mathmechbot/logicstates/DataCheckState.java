@@ -40,5 +40,6 @@ public abstract class DataCheckState implements MMBCoreState {
      * @param request запрос от ядра с сообщением.
      * @return результат проверки.
      */
-    protected abstract boolean validateData(@NotNull ContextProcessMessageRequest<MMBCore> request);
+    protected abstract boolean validateData(
+            @NotNull ContextProcessMessageRequest<MMBCore> request);
 }

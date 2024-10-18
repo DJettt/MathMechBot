@@ -14,10 +14,13 @@ import ru.urfu.mathmechbot.MMBCore;
 import ru.urfu.mathmechbot.models.UserEntry;
 
 /**
- * Спрашивает у пользователя подтверждение регистрации.
+ * <p>Спрашивает у пользователя подтверждение регистрации.</p>
  */
-public final class AskRegistrationConfirmation implements EventHandler<RequestEvent<MMBCore>> {
-    private final static Logger LOGGER = LoggerFactory.getLogger(AskRegistrationConfirmation.class);
+public final class AskRegistrationConfirmation
+        implements EventHandler<RequestEvent<MMBCore>> {
+
+    private final static Logger LOGGER = LoggerFactory
+            .getLogger(AskRegistrationConfirmation.class);
 
     @Override
     public void handleEvent(RequestEvent<MMBCore> e) {
@@ -34,8 +37,13 @@ public final class AskRegistrationConfirmation implements EventHandler<RequestEv
         }
 
         final LocalMessage message = new LocalMessageBuilder()
-                .text(Constants.CONFIRM_PREFIX + userEntryOptional.get().toHumanReadable())
-                .buttons(new ArrayList<>(List.of(Constants.YES_BUTTON, Constants.NO_BUTTON, Constants.BACK_BUTTON)))
+                .text(Constants.CONFIRM_PREFIX + userEntryOptional
+                        .get()
+                        .toHumanReadable())
+                .buttons(new ArrayList<>(List.of(
+                        Constants.YES_BUTTON,
+                        Constants.NO_BUTTON,
+                        Constants.BACK_BUTTON)))
                 .build();
         e.request().bot().sendMessage(message, e.request().user().id());
     }

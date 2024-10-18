@@ -17,7 +17,7 @@ import ru.urfu.mathmechbot.models.UserEntry;
 
 
 /**
- * Состояние, в котором изначально пребывает пользователь.
+ * <p>Состояние, в котором изначально пребывает пользователь.</p>
  */
 public final class DefaultState implements MMBCoreState {
     @Override

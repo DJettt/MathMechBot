@@ -7,7 +7,7 @@ import ru.urfu.mathmechbot.MMBCore;
 
 
 /**
- * Состояние ожидания ввода академической группы в формате МЕН во время регистрации.
+ * <p>Проверяет корректность МЕН-группы.</p>
  */
 public final class MenCheckState extends DataCheckState {
     private final static Pattern VALID_MEN_GROUP_STRING = Pattern.compile("^\\s*МЕН-\\d{6}\\s*$");

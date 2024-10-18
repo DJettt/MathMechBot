@@ -3,7 +3,7 @@ package ru.urfu.mathmechbot.models;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Перечисления всех направлений на МатМехе.
+ * <p>Перечисления всех направлений на МатМехе.</p>
  */
 public enum Specialty {
     KNMO("КНМО"),
@@ -19,7 +19,8 @@ public enum Specialty {
     private final String abbreviation;
 
     /**
-     * Конструктор элемента перечисления.
+     * <p>Конструктор элемента перечисления.</p>
+     *
      * @param abbreviation аббревиатура направления
      */
     Specialty(@NotNull String abbreviation) {
@@ -27,7 +28,8 @@ public enum Specialty {
     }
 
     /**
-     * Геттер поля abbreviation.
+     * <p>Геттер поля abbreviation.</p>
+     *
      * @return содержимое поля.
      */
     @NotNull

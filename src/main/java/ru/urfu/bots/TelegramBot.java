@@ -23,8 +23,8 @@ import ru.urfu.logics.localobjects.LocalMessage;
 
 
 /**
- * Простой телеграм-бот, который принимает текстовые сообщения и составляет ответ
- * в зависимости от переданного ему при создании логического ядра (logicCore).
+ * <p>Простой телеграм-бот, который принимает текстовые сообщения и составляет ответ
+ * в зависимости от переданного ему при создании логического ядра (logicCore).</p>
  */
 public final class TelegramBot implements Bot, LongPollingSingleThreadUpdateConsumer {
     private static final Logger LOGGER = LoggerFactory.getLogger(TelegramBot.class);
@@ -34,7 +34,8 @@ public final class TelegramBot implements Bot, LongPollingSingleThreadUpdateCons
     private final TelegramBotsLongPollingApplication botsApplication;
 
     /**
-     * Конструктор.
+     * <p>Конструктор.</p>
+     *
      * @param token строка, содержащая токен для бота
      * @param core логическое ядро, обрабатывающее сообщения
      */
@@ -46,7 +47,7 @@ public final class TelegramBot implements Bot, LongPollingSingleThreadUpdateCons
     }
 
     /**
-     * Запуск бота в отдельном потоке.
+     * <p>Запуск бота в отдельном потоке.</p>
      */
     @Override
     public void start() {
@@ -63,7 +64,8 @@ public final class TelegramBot implements Bot, LongPollingSingleThreadUpdateCons
     }
 
     /**
-     * Отправление сообщения, формат которого содержится в msg.
+     * <p>Отправление сообщения, формат которого содержится в msg.</p>
+     *
      * @param msg вся информация о том, что должно содержаться в сообщении
      * @param id id пользователя
      */
@@ -101,7 +103,8 @@ public final class TelegramBot implements Bot, LongPollingSingleThreadUpdateCons
     }
 
     /**
-     * Подсчитывает сколько кнопок должно быть в ряду в сообщении.
+     * <p>Подсчитывает сколько кнопок должно быть в ряду в сообщении.</p>
+     *
      * @param listSize все кнопки, которые нужно добавить
      * @return возвращает количество кнопок должно быть в ряду в сообщении.
      */
@@ -111,7 +114,8 @@ public final class TelegramBot implements Bot, LongPollingSingleThreadUpdateCons
 
 
     /**
-     * Создание кнопок после сообщения.
+     * <p>Создание кнопок после сообщения.</p>
+     *
      * @param localButton информация об одной кнопке, которую нужно создать в сообщении
      * @return возвращает кнопку формата Telegram бота
      */
@@ -123,7 +127,8 @@ public final class TelegramBot implements Bot, LongPollingSingleThreadUpdateCons
     }
 
     /**
-     * Создание ряда кнопок.
+     * <p>Создание ряда кнопок.</p>
+     *
      * @param localButtonList контейнер кнопок, который нужно создать
      * @return возвращает готовый контейнер кнопок
      */
@@ -136,7 +141,8 @@ public final class TelegramBot implements Bot, LongPollingSingleThreadUpdateCons
     }
 
     /**
-     * Создание сетки кнопок.
+     * <p>Создание сетки кнопок.</p>
+     *
      * @param localButtons информация о кнопках, которые нужно вставить в сообщение
      * @return возвращает сетку кнопок
      */
@@ -151,8 +157,10 @@ public final class TelegramBot implements Bot, LongPollingSingleThreadUpdateCons
     }
 
     /**
-     * Превращает LocalMessage в SendMessage.
-     * Стоит использовать в тех случаях, когда нет картинок.
+     * <p>Превращает LocalMessage в SendMessage.</p>
+     *
+     * <p>Стоит использовать в тех случаях, когда нет картинок.</p>
+     *
      * @param msg  объект сообщения
      * @param chatId id чата, куда надо отправить сообщение
      * @return объект SendMessage, который можно отправлять
@@ -170,7 +178,8 @@ public final class TelegramBot implements Bot, LongPollingSingleThreadUpdateCons
     }
 
     /**
-     * Переводит Telegram-сообщения в наши сообщения.
+     * <p>Переводит Telegram-сообщения в LocalMessage.</p>
+     *
      * @param message объект сообщения из TelegramBots
      * @return объект нашего универсального сообщения
      */

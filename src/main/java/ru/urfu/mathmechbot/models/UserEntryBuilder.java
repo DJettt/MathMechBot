@@ -4,7 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Билдер для рекорда UserEntry.
+ * <p>Билдер для рекорда UserEntry.</p>
  */
 public final class UserEntryBuilder {
     private final Long id;
@@ -18,7 +18,7 @@ public final class UserEntryBuilder {
     private final Long userId;
 
     /**
-     * Конструктор, устанавливающий дефолтные значения для полей.
+     * <p>Конструктор, устанавливающий дефолтные значения для полей.</p>
      *
      * @param id      идентификатор записи.
      * @param userId  идентификатор пользователя, который эту запись зарегистрировал.
@@ -36,7 +36,7 @@ public final class UserEntryBuilder {
     }
 
     /**
-     * Конструктор, копирующий значений из объекта User.
+     * <p>Конструктор, копирующий значений из объекта User.</p>
      *
      * @param userEntry объект, у которого скопировать все поля.
      */
@@ -53,7 +53,7 @@ public final class UserEntryBuilder {
     }
 
     /**
-     * Устанавливает поле name будущего объекта.
+     * <p>Устанавливает поле name будущего объекта.</p>
      *
      * @param name строка, которую нужно положить в name
      * @return себя же
@@ -64,7 +64,7 @@ public final class UserEntryBuilder {
     }
 
     /**
-     * Устанавливает поле name будущего объекта.
+     * <p>Устанавливает поле name будущего объекта.</p>
      *
      * @param surname строка, которую нужно положить в name
      * @return себя же
@@ -75,7 +75,7 @@ public final class UserEntryBuilder {
     }
 
     /**
-     * Устанавливает поле patronym будущего объекта.
+     * <p>Устанавливает поле patronym будущего объекта.</p>
      *
      * @param patronym строка, которую нужно положить в patronym
      * @return себя же
@@ -86,7 +86,7 @@ public final class UserEntryBuilder {
     }
 
     /**
-     * Устанавливает поле specialty будущего объекта.
+     * <p>Устанавливает поле specialty будущего объекта.</p>
      *
      * @param specialty строка, которую нужно положить в specialty
      * @return себя же
@@ -97,7 +97,7 @@ public final class UserEntryBuilder {
     }
 
     /**
-     * Устанавливает поле men будущего объекта.
+     * <p>Устанавливает поле men будущего объекта.</p>
      *
      * @param men строка, которую нужно положить в men
      * @return себя же
@@ -108,7 +108,7 @@ public final class UserEntryBuilder {
     }
 
     /**
-     * Устанавливает поле year будущего объекта.
+     * <p>Устанавливает поле year будущего объекта.</p>
      *
      * @param year строка, которую нужно положить в year
      * @return себя же
@@ -119,7 +119,7 @@ public final class UserEntryBuilder {
     }
 
     /**
-     * Устанавливает поле group будущего объекта.
+     * <p>Устанавливает поле group будущего объекта.</p>
      *
      * @param group строка, которую нужно положить в group
      * @return себя же
@@ -130,7 +130,7 @@ public final class UserEntryBuilder {
     }
 
     /**
-     * Создаёт объект UserEntry.
+     * <p>Создаёт объект UserEntry.</p>
      *
      * @return созданный объект
      */

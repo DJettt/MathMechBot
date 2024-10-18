@@ -4,7 +4,7 @@ import ru.urfu.fsm.TransitionBuilder;
 import ru.urfu.logics.RequestEvent;
 
 /**
- * Билдер объектов Transition с предустановленными типами для MathMechBot.
+ * <p>Билдер объектов Transition с предустановленными типами для MathMechBot.</p>
  */
 public final class MMBTransitionBuilder
         extends TransitionBuilder<RequestEvent<MMBCore>, MMBUserState> {

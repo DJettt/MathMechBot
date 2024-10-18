@@ -8,7 +8,7 @@ import ru.urfu.mathmechbot.MMBCore;
 
 
 /**
- * Состояние ожидания ответа на запрос года обучения во время регистрации.
+ * <p>Проверяет корректность года обучения.</p>
  */
 public final class YearCheckState extends DataCheckState {
     private final static Pattern VALID_YEAR_STRING_PATTERN = Pattern.compile("^[1-6]$");

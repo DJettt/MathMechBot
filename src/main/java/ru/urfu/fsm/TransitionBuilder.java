@@ -5,15 +5,12 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Билдер перехода автомата.
+ * <p>Билдер перехода автомата.</p>
  *
  * @param <E> тип события, наследники которого будут провоцировать переход.
  * @param <S> тип состояния автомата.
  */
-public class TransitionBuilder<
-        E extends Event,
-        S extends State> {
-
+public class TransitionBuilder<E extends Event, S extends State> {
     private String name;
     private S sourceState;
     private S targetState;
@@ -21,7 +18,7 @@ public class TransitionBuilder<
     private final List<EventHandler<E>> eventHandlers;
 
     /**
-     * Конструктор.
+     * <p>Конструктор.</p>
      */
     public TransitionBuilder() {
         this.name = "noname";
@@ -29,7 +26,8 @@ public class TransitionBuilder<
     }
 
     /**
-     * Устанавливает имя перехода.
+     * <p>Устанавливает имя перехода.</p>
+     *
      * @param name имя перехода.
      * @return себя же.
      */
@@ -39,7 +37,8 @@ public class TransitionBuilder<
     }
 
     /**
-     * Устанавливает исходное состояние (то, откуда переход).
+     * <p>Устанавливает исходное состояние (то, откуда переход).</p>
+     *
      * @param sourceState исходное состояние.
      * @return себя же.
      */
@@ -49,7 +48,8 @@ public class TransitionBuilder<
     }
 
     /**
-     * Устанавливает целевое состояние (то, куда переход).
+     * <p>Устанавливает целевое состояние (то, куда переход).</p>
+     *
      * @param targetState целевое состояние.
      * @return себя же.
      */
@@ -59,7 +59,8 @@ public class TransitionBuilder<
     }
 
     /**
-     * Тип события, которое должно провоцировать автомат.
+     * <p>Тип события, которое должно провоцировать автомат.</p>
+     *
      * @param eventType тип события.
      * @return себя же.
      */
@@ -69,7 +70,8 @@ public class TransitionBuilder<
     }
 
     /**
-     * Обработчик событий, который будет запускаться после перехода.
+     * <p>Обработчик событий, который будет запускаться после перехода.</p>
+     *
      * @param eventHandler обработчик.
      * @return себя же.
      */
@@ -79,8 +81,9 @@ public class TransitionBuilder<
     }
 
     /**
-     * Билдит переход на основе ранее заданных аргументов.
-     * @return готовое состояние.
+     * <p>Билдит переход на основе ранее заданных аргументов.</p>
+     *
+     * @return готовый переход.
      */
     public Transition<E, S> build() {
         return new Transition<>(name, sourceState, targetState, eventType, eventHandlers);

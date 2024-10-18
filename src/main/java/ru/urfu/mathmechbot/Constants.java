@@ -7,11 +7,11 @@ import ru.urfu.logics.localobjects.LocalMessage;
 import ru.urfu.logics.localobjects.LocalMessageBuilder;
 
 /**
- * Ряд констант, используемый во всех состояниях MathMechBot.
+ * <p>Ряд констант, используемый во всех состояниях MathMechBot.</p>
  */
 public final class Constants {
     /**
-     * Приватный конструктор для класса-утилит.
+     * <p>Приватный конструктор для класса-утилит.</p>
      */
     private Constants() {
     }

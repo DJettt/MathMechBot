@@ -5,11 +5,12 @@ import ru.urfu.logics.localobjects.ContextProcessMessageRequest;
 import ru.urfu.mathmechbot.MMBCore;
 
 /**
- * Пользователь не зарегистрирован.
+ * <p>Пользователь не зарегистрирован.</p>
  */
 public final class NotRegisteredEvent extends RequestEvent<MMBCore> {
     /**
-     * Конструктор.
+     * <p>Конструктор.</p>
+     *
      * @param request запрос от контекста.
      */
     public NotRegisteredEvent(ContextProcessMessageRequest<MMBCore> request) {

@@ -7,7 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Реализация конечного автомата в общем случае.
+ * <p>Реализация конечного автомата
+ * для произвольного типа состояний и событий.</p>
  *
  * @param <E> тип событий, которые провоцируют переходы.
  * @param <S> тип состояний, между которыми автомат совершает переходы.
@@ -23,7 +24,7 @@ public class FiniteStateMachineImpl<E extends Event, S extends State>
     private S currentState;
 
     /**
-     * Конструктор.
+     * <p>Конструктор.</p>
      *
      * @param states       набор состояний.
      * @param initialState изначальное состояние.
@@ -42,20 +43,15 @@ public class FiniteStateMachineImpl<E extends Event, S extends State>
                 continue;
             }
 
-            try {
-                for (final EventHandler<E> eventHandler : transition.eventHandlers()) {
-                    if (eventHandler != null) {
-                        eventHandler.handleEvent(event);
-                    }
+            for (final EventHandler<E> eventHandler : transition.eventHandlers()) {
+                if (eventHandler != null) {
+                    eventHandler.handleEvent(event);
                 }
-                currentState = transition.targetState();
-                onTransition(event);
-                return;
-            } catch (Exception e) {
-                LOGGER.error("An exception occurred during handling event {} of transition {}",
-                        event, transition, e);
-                throw new RuntimeException();
             }
+
+            currentState = transition.targetState();
+            onTransition(event);
+            return;
         }
 
         LOGGER.debug("No transition found for {}. Current state is {}",
@@ -63,7 +59,8 @@ public class FiniteStateMachineImpl<E extends Event, S extends State>
     }
 
     /**
-     * Фрагмент кода, который будет выполняться при переходе в другое состояние.
+     * <p>Фрагмент кода, который будет выполняться
+     * при переходе в другое состояние.</p>
      *
      * @param event событие, которое спровоцировало переход.
      */
@@ -71,7 +68,7 @@ public class FiniteStateMachineImpl<E extends Event, S extends State>
     }
 
     /**
-     * Зарегистрировать переход между состояниями.
+     * <p>Зарегистрировать переход между состояниями.</p>
      *
      * @param transition переход.
      */
@@ -81,7 +78,8 @@ public class FiniteStateMachineImpl<E extends Event, S extends State>
     }
 
     /**
-     * Геттер текущего состояния.
+     * <p>Геттер текущего состояния.</p>
+     *
      * @return текущее состояние.
      */
     public S getCurrentState() {
@@ -99,7 +97,7 @@ public class FiniteStateMachineImpl<E extends Event, S extends State>
     }
 
     /**
-     * Проверка того, может ли данный переход обработать данное событие.
+     * <p>Проверка того, может ли данный переход обработать данное событие.</p>
      *
      * @param transition проверяемый переход.
      * @param event      полученное событие.

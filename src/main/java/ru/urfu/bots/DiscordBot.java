@@ -23,8 +23,9 @@ import ru.urfu.logics.localobjects.LocalButton;
 import ru.urfu.logics.localobjects.LocalMessage;
 
 /**
- * Простой дискорд-бот, который принимает текстовые сообщения и составляет ответ
- * в зависимости от переданного ему при создании логического ядра (logicCore).
+ * <p>Простой дискорд-бот, который принимает текстовые
+ * сообщения и составляет ответ в зависимости от переданного
+ * ему при создании логического ядра (logicCore).</p>
  */
 public final class DiscordBot extends ListenerAdapter implements Bot {
     private static final Logger LOGGER = LoggerFactory.getLogger(DiscordBot.class);
@@ -33,7 +34,8 @@ public final class DiscordBot extends ListenerAdapter implements Bot {
     private JDA jda;
 
     /**
-     * Конструктор.
+     * <p>Конструктор.</p>
+     *
      * @param token токен Discord бота
      * @param core логическое ядро, обрабатывающее сообщения
      */
@@ -43,7 +45,7 @@ public final class DiscordBot extends ListenerAdapter implements Bot {
     }
 
     /**
-     * Запускает бота.
+     * <p>Запускает бота.</p>
      */
     @Override
     public void start() {
@@ -64,7 +66,8 @@ public final class DiscordBot extends ListenerAdapter implements Bot {
     }
 
     /**
-     * Разделяет один большой список кнопок на несколько других размером не больше 5.
+     * <p>Разделяет один большой список кнопок
+     * на несколько других размером не больше 5.</p>
      *
      * @param message принимает LocalMessage, откуда берет список кнопок.
      * @return возвращает список списков, чтобы
@@ -141,7 +144,8 @@ public final class DiscordBot extends ListenerAdapter implements Bot {
     }
 
     /**
-     * Создаёт объекты класса LocalMessage из дискордовских Message.
+     * <p>Создаёт объекты класса LocalMessage из дискордовских Message.</p>
+     *
      * @param message полученное сообщение
      * @return то же сообщение в формате LocalMessage для общения с ядром
      */
@@ -150,7 +154,8 @@ public final class DiscordBot extends ListenerAdapter implements Bot {
     }
 
     /**
-     * Создает кнопку в нужном формате для бота Discord.
+     * <p>Создает кнопку в нужном формате для бота Discord.</p>
+     *
      * @param btn кнопка, которую отправило ядро
      * @return возвращает кнопку формата Discord
      */
@@ -159,7 +164,8 @@ public final class DiscordBot extends ListenerAdapter implements Bot {
     }
 
     /**
-     * Создает кнопки в сообщении.
+     * <p>Создает кнопки в сообщении.</p>
+     *
      * @param buttonRow локальные кнопки, которые ядро отправило боту.
      * @return возвращает готовые кнопки в нужном формате для бота в Discord.
      */
@@ -172,7 +178,8 @@ public final class DiscordBot extends ListenerAdapter implements Bot {
     }
 
     /**
-     * Отслеживает отправление сообщения от пользователя боту.
+     * <p>Отслеживает отправление сообщения от пользователя боту.</p>
+     *
      * @param event содержит всю информацию об обновлениях в чате.
      */
     @Override
@@ -187,7 +194,8 @@ public final class DiscordBot extends ListenerAdapter implements Bot {
     }
 
     /**
-     * Отслеживает взаимодействия с кнопками.
+     * <p>Отслеживает взаимодействия с кнопками.</p>
+     *
      * @param event содержит всю информацию об обновлениях.
      */
     @Override

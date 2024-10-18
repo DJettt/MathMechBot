@@ -7,6 +7,7 @@ import ru.urfu.logics.localobjects.LocalMessageBuilder;
 
 /**
  * <p>Логическое ядро эхо-бота.</p>
+ *
  * <p>Отправляет назад несколько изменённое сообщение пользователя.
  * Обрабатывает команды /help и /start, отвечая на них справкой.</p>
  */
@@ -27,7 +28,8 @@ public final class EchoBotCore implements LogicCore {
     }
 
     /**
-     * Обрабатывает сообщения, не распознанные как заявленные команды.
+     * <p>Обрабатывает сообщения, не распознанные как заявленные команды.</p>
+     *
      * @param request запрос.
      */
     private void defaultHandler(@NotNull BotProcessMessageRequest request) {
@@ -38,7 +40,8 @@ public final class EchoBotCore implements LogicCore {
     }
 
     /**
-     * Выдаёт справку.
+     * <p>Выдаёт справку.</p>
+     *
      * @param request запрос.
      */
     private void helpCommandHandler(@NotNull BotProcessMessageRequest request) {

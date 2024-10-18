@@ -1,7 +1,7 @@
 package ru.urfu.fsm;
 
 /**
- * Состояние автомата.
+ * <p>Состояние автомата.</p>
  */
 public interface State {
 }

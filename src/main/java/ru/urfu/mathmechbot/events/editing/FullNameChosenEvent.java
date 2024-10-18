@@ -5,11 +5,12 @@ import ru.urfu.logics.localobjects.ContextProcessMessageRequest;
 import ru.urfu.mathmechbot.MMBCore;
 
 /**
- * Пользователю надо позволить отредактировать ФИО.
+ * <p>Пользователю надо позволить отредактировать ФИО.</p>
  */
 public final class FullNameChosenEvent extends RequestEvent<MMBCore> {
     /**
-     * Конструктор.
+     * <p>Конструктор.</p>
+     *
      * @param request запрос от контекста.
      */
     public FullNameChosenEvent(ContextProcessMessageRequest<MMBCore> request) {

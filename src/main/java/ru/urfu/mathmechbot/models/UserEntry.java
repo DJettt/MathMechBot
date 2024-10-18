@@ -5,7 +5,8 @@ import org.jetbrains.annotations.Nullable;
 import ru.urfu.storages.Identifiable;
 
 /**
- * Модель введённых пользователем данных.
+ * <p>Модель введённых пользователем данных.</p>
+ *
  * @param id идентификатор введённых данных.
  * @param name имя человека, упоминания которого мы ищем.
  * @param surname фамилия того же.
@@ -14,7 +15,8 @@ import ru.urfu.storages.Identifiable;
  * @param men академическая группа в формате МЕН.
  * @param year курс.
  * @param group номер группы того же человека;
- * @param userId идентификатор модели User того, указывающий на того, кому пересылать упоминания этого человека.
+ * @param userId идентификатор модели User того, указывающий
+ *               на того, кому пересылать упоминания этого человека.
  */
 public record UserEntry(
         @NotNull Long id,
@@ -28,7 +30,8 @@ public record UserEntry(
         @NotNull Long userId
 ) implements Identifiable<Long> {
     /**
-     * Представляет объект UserEntry в виде удобного для восприятия пользователем текста.
+     * <p>Представляет объект UserEntry в виде
+     * удобного для восприятия пользователем текста.</p>
      *
      * @return строка с содержимым объекта в удобном для пользователя виде.
      */

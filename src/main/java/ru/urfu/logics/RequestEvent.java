@@ -5,13 +5,15 @@ import ru.urfu.logics.localobjects.ContextProcessMessageRequest;
 
 /**
  * <p>Событие с запросом от ядра-контекста.</p>
+ *
  * @param <T> тип логического ядра, запрос от которого будет положен в событие.
  */
 public abstract class RequestEvent<T extends LogicCore> implements Event {
     private final ContextProcessMessageRequest<T> request;
 
     /**
-     * Конструктор.
+     * <p>Конструктор.</p>
+     *
      * @param request запрос от контекста.
      */
     public RequestEvent(ContextProcessMessageRequest<T> request) {
@@ -19,7 +21,8 @@ public abstract class RequestEvent<T extends LogicCore> implements Event {
     }
 
     /**
-     * Геттер запроса.
+     * <p>Геттер запроса.</p>
+     *
      * @return запрос от контекста.
      */
     public ContextProcessMessageRequest<T> request() {

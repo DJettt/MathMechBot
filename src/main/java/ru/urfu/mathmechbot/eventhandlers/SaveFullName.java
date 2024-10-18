@@ -8,7 +8,7 @@ import ru.urfu.mathmechbot.models.UserEntry;
 import ru.urfu.mathmechbot.models.UserEntryBuilder;
 
 /**
- * Сохраняет ФИО из сообщения.
+ * <p>Сохраняет ФИО из сообщения.</p>
  */
 public final class SaveFullName implements EventHandler<RequestEvent<MMBCore>> {
     private final static int NUMBER_OF_WORDS_IN_FULL_NAME_WITH_PATRONYM = 3;
@@ -28,12 +28,12 @@ public final class SaveFullName implements EventHandler<RequestEvent<MMBCore>> {
                 .getUserEntries()
                 .get(e.request().user().id())
                 .orElseThrow();
-        final UserEntry updatedUserEntry =
-                new UserEntryBuilder(currentUserEntry)
-                        .surname(strings.get(0))
-                        .name(strings.get(1))
-                        .patronym((hasPatronym) ? strings.get(2) : null)
-                        .build();
+
+        final UserEntry updatedUserEntry = new UserEntryBuilder(currentUserEntry)
+                .surname(strings.get(0))
+                .name(strings.get(1))
+                .patronym((hasPatronym) ? strings.get(2) : null)
+                .build();
 
         e.request()
                 .context()

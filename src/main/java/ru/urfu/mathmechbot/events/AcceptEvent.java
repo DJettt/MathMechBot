@@ -5,11 +5,12 @@ import ru.urfu.logics.localobjects.ContextProcessMessageRequest;
 import ru.urfu.mathmechbot.MMBCore;
 
 /**
- * Пользователь согласился.
+ * <p>Пользователь согласился.</p>
  */
 public final class AcceptEvent extends RequestEvent<MMBCore> {
     /**
-     * Конструктор.
+     * <p>Конструктор.</p>
+     *
      * @param request запрос от контекста.
      */
     public AcceptEvent(ContextProcessMessageRequest<MMBCore> request) {

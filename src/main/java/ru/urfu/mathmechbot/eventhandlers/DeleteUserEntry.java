@@ -5,7 +5,7 @@ import ru.urfu.logics.RequestEvent;
 import ru.urfu.mathmechbot.MMBCore;
 
 /**
- * Удаляет пользовательскую запись.
+ * <p>Удаляет пользовательскую запись.</p>
  */
 public final class DeleteUserEntry implements EventHandler<RequestEvent<MMBCore>> {
     @Override

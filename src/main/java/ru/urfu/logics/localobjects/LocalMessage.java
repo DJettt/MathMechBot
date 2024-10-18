@@ -12,8 +12,9 @@ import org.jetbrains.annotations.Nullable;
 public record LocalMessage(@Nullable String text, @Nullable List<LocalButton> buttons) {
 
     /**
-     * Проверка на наличие кнопок.
-     * @return есть ли кнопки или нет.
+     * <p>Проверка на наличие кнопок.</p>
+     *
+     * @return результат проверки.
      */
     public boolean hasButtons() {
         return buttons != null && !buttons.isEmpty();

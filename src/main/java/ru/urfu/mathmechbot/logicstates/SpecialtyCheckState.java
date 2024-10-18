@@ -13,9 +13,7 @@ import ru.urfu.mathmechbot.models.UserEntry;
 
 
 /**
- * Состояние запроса направления подготовки.
- * Предлагает пользователю направление подготовки
- * из списка, который возвращает метод allowedSpecialties.
+ * <p>Проверяет корректность направления подготовки.</p>
  */
 public final class SpecialtyCheckState extends DataCheckState {
     private final static Logger LOGGER = LoggerFactory
@@ -45,8 +43,8 @@ public final class SpecialtyCheckState extends DataCheckState {
     }
 
     /**
-     * Возвращает список разрешённых специальностей.
-     * Нужно для наследования от этого класса.
+     * <p>Возвращает список разрешённых
+     * специальностей для переданного года обучения.</p>
      *
      * @param year год обучения данного студента.
      * @return список разрешённых специальностей.

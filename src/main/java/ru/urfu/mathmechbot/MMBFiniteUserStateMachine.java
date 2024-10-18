@@ -37,19 +37,23 @@ import ru.urfu.mathmechbot.events.editing.YearChosenEvent;
 import ru.urfu.mathmechbot.storages.UserStorage;
 
 /**
- * FSM, настроенный для работы с MathMechBot.
+ * <p>FSM, настроенный для работы с MathMechBot.</p>
  */
 public final class MMBFiniteUserStateMachine
         extends FiniteStateMachineImpl<RequestEvent<MMBCore>, MMBUserState> {
     private final UserStorage users;
 
     /**
-     * Конструктор.
+     * <p>Конструктор.</p>
+     *
      * @param states       набор состояний.
      * @param initialState изначальное состояние.
      * @param users        хранилище пользователей, чтобы обновлять в нём состояние пользователей.
      */
-    public MMBFiniteUserStateMachine(Set<MMBUserState> states, MMBUserState initialState, UserStorage users) {
+    public MMBFiniteUserStateMachine(
+            @NotNull Set<MMBUserState> states,
+            @NotNull MMBUserState initialState,
+            @NotNull UserStorage users) {
         super(states, initialState);
         this.users = users;
         setupDefaultTransitions();
@@ -64,7 +68,7 @@ public final class MMBFiniteUserStateMachine
     }
 
     /**
-     * Добавляем все переходы, действующие в рамках дефолтного состояния.
+     * <p>Добавляем все переходы, действующие в рамках дефолтного состояния.</p>
      */
     private void setupDefaultTransitions() {
         registerTransition(new MMBTransitionBuilder()
@@ -94,7 +98,7 @@ public final class MMBFiniteUserStateMachine
     }
 
     /**
-     * Добавляем все переходы, связанные с регистрацией.
+     * <p>Добавляем все переходы, связанные с регистрацией.</p>
      */
     private void setupRegistrationTransitions() {
         registerTransition(new MMBTransitionBuilder()
@@ -239,7 +243,7 @@ public final class MMBFiniteUserStateMachine
     }
 
     /**
-     * Добавляем все переходы, связанные с редактированием.
+     * <p>Добавляем все переходы, связанные с редактированием.</p>
      * TODO: решить, что делать с этими длинными методами.
      */
     @SuppressWarnings("MethodLength")
@@ -419,7 +423,7 @@ public final class MMBFiniteUserStateMachine
     }
 
     /**
-     * Добавляем все переходы, связанные с удалением.
+     * <p>Добавляем все переходы, связанные с удалением.</p>
      */
     private void setupDeletionTransitions() {
         registerTransition(new MMBTransitionBuilder()

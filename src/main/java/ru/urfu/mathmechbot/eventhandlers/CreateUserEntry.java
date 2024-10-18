@@ -7,7 +7,7 @@ import ru.urfu.mathmechbot.models.UserEntry;
 import ru.urfu.mathmechbot.models.UserEntryBuilder;
 
 /**
- * Создаёт пустую пользовательскую запись.
+ * <p>Создаёт пустую пользовательскую запись.</p>
  */
 public final class CreateUserEntry implements EventHandler<RequestEvent<MMBCore>> {
     @Override

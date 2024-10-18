@@ -6,12 +6,12 @@ import ru.urfu.mathmechbot.models.UserEntryBuilder;
 import ru.urfu.storages.Storage;
 
 /**
- * Хранилище объектов модели UserEntry,
- * предоставляющее методы по изменению отдельных полей.
+ * <p>Хранилище объектов модели UserEntry,
+ * предоставляющее методы по изменению отдельных полей.</p>
  */
 public interface UserEntryStorage extends Storage<UserEntry, Long> {
     /**
-     * Меняет поле year.
+     * <p>Меняет поле year.</p>
      *
      * @param id   идентификатор записи в хранилище.
      * @param year новое значение.
@@ -23,7 +23,7 @@ public interface UserEntryStorage extends Storage<UserEntry, Long> {
     }
 
     /**
-     * Меняет поле specialty.
+     * <p>Меняет поле specialty.</p>
      *
      * @param id        идентификатор записи в хранилище.
      * @param specialty новое значение.
@@ -35,7 +35,7 @@ public interface UserEntryStorage extends Storage<UserEntry, Long> {
     }
 
     /**
-     * Меняет поле men.
+     * <p>Меняет поле men.</p>
      *
      * @param id  идентификатор записи в хранилище.
      * @param men новое значение.
@@ -47,7 +47,7 @@ public interface UserEntryStorage extends Storage<UserEntry, Long> {
     }
 
     /**
-     * Меняет поле group.
+     * <p>Меняет поле group.</p>
      *
      * @param id    идентификатор записи в хранилище.
      * @param group новое значение.

@@ -5,11 +5,12 @@ import ru.urfu.logics.localobjects.ContextProcessMessageRequest;
 import ru.urfu.mathmechbot.MMBCore;
 
 /**
- * Пользователю надо предложить отредактировать свои данные.
+ * <p>Пользователю надо предложить отредактировать свои данные.</p>
  */
 public final class EditEvent extends RequestEvent<MMBCore> {
     /**
-     * Конструктор.
+     * <p>Конструктор.</p>
+     *
      * @param request запрос от контекста.
      */
     public EditEvent(ContextProcessMessageRequest<MMBCore> request) {

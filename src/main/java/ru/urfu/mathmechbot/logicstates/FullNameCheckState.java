@@ -8,7 +8,7 @@ import ru.urfu.mathmechbot.MMBCore;
 
 
 /**
- * Состояние ожидания ввода ФИО во время регистрации.
+ * <p>Проверяет корректность ФИО.</p>
  */
 public final class FullNameCheckState extends DataCheckState {
     private final static Pattern VALID_FULL_NAME_PATTERN =

@@ -4,14 +4,14 @@ import java.util.List;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Билдер для класса LocalMessage.
+ * <p>Билдер для класса LocalMessage.</p>
  */
 public final class LocalMessageBuilder {
     private String text;
     private List<LocalButton> buttons;
 
     /**
-     * Конструктор, устанавливающий дефолтные значения для полей.
+     * <p>Конструктор, устанавливающий дефолтные значения для полей.</p>
      */
     public LocalMessageBuilder() {
         text = null;
@@ -19,7 +19,8 @@ public final class LocalMessageBuilder {
     }
 
     /**
-     * Устанавливает поле text будущего объекта.
+     * <p>Устанавливает поле text будущего объекта.</p>
+     *
      * @param text строка, которую нужно положить в text
      * @return себя же
      */
@@ -29,7 +30,8 @@ public final class LocalMessageBuilder {
     }
 
     /**
-     * Устанавливает поле buttons будущего объекта.
+     * <p>Устанавливает поле buttons будущего объекта.</p>
+     *
      * @param buttons все кнопки которые нужно отправить вместе с сообщением.
      * @return себя же
      */
@@ -39,7 +41,8 @@ public final class LocalMessageBuilder {
     }
 
     /**
-     * Создаёт объект LocalMessage.
+     * <p>Создаёт объект LocalMessage.</p>
+     *
      * @return созданный объект
      */
     public LocalMessage build() {

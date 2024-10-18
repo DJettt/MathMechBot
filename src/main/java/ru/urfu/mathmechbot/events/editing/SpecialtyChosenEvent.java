@@ -5,11 +5,12 @@ import ru.urfu.logics.localobjects.ContextProcessMessageRequest;
 import ru.urfu.mathmechbot.MMBCore;
 
 /**
- * Пользователю надо позволить отредактировать направление подготовки.
+ * <p>Пользователю надо позволить отредактировать направление подготовки.</p>
  */
 public final class SpecialtyChosenEvent extends RequestEvent<MMBCore> {
     /**
-     * Конструктор.
+     * <p>Конструктор.</p>
+     *
      * @param request запрос от контекста.
      */
     public SpecialtyChosenEvent(ContextProcessMessageRequest<MMBCore> request) {

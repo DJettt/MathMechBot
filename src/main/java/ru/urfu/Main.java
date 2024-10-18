@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.urfu.bots.Bot;
+import ru.urfu.bots.DiscordBot;
 import ru.urfu.bots.TelegramBot;
 import ru.urfu.logics.LogicCore;
 import ru.urfu.mathmechbot.MMBCore;
@@ -13,9 +14,9 @@ import ru.urfu.mathmechbot.storages.UserArrayStorage;
 import ru.urfu.mathmechbot.storages.UserEntryArrayStorage;
 
 /**
- * Основной класс для запуска приложения.
+ * <p>Основной класс для запуска приложения.</p>
  */
-final public class Main {
+public final class Main {
     private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
 
     /**
@@ -26,6 +27,7 @@ final public class Main {
 
     /**
      * <p>Запускает Telegram бота с переданным логическим ядром.</p>
+     *
      * @param logicCore логическое ядро (обрабатывает поступающие сообщения)
      * @param env строка, содержащая название переменной окружения,
      *            в которой находится токен бота
@@ -61,13 +63,12 @@ final public class Main {
      */
     public static void main(String[] args) {
         final MathMechStorage storage = new MathMechStorage(
-                new UserArrayStorage(), new UserEntryArrayStorage());
+                new UserArrayStorage(),
+                new UserEntryArrayStorage());
 
         final LogicCore logicCore = new MMBCore(storage);
 
         startBot(logicCore, "TGMATHMECHBOT_TOKEN", TelegramBot.class);
-
-//        Выключил, потому что его нормально не запустить из-за блокировки.
-//        startBot(logicCore, "DISCORDBOT_TOKEN", DiscordBot.class);
+        startBot(logicCore, "DISCORDBOT_TOKEN", DiscordBot.class);
     }
 }

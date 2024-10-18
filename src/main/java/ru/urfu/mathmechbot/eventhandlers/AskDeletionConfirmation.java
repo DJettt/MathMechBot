@@ -14,10 +14,13 @@ import ru.urfu.mathmechbot.MMBCore;
 import ru.urfu.mathmechbot.models.UserEntry;
 
 /**
- * Спрашивает у пользователя подтверждение удаления информации.
+ * <p>Спрашивает у пользователя подтверждение удаления информации.</p>
  */
-public final class AskDeletionConfirmation implements EventHandler<RequestEvent<MMBCore>> {
-    private final static Logger LOGGER = LoggerFactory.getLogger(AskDeletionConfirmation.class);
+public final class AskDeletionConfirmation
+        implements EventHandler<RequestEvent<MMBCore>> {
+
+    private final static Logger LOGGER = LoggerFactory
+            .getLogger(AskDeletionConfirmation.class);
 
     @Override
     public void handleEvent(RequestEvent<MMBCore> e) {
@@ -34,7 +37,10 @@ public final class AskDeletionConfirmation implements EventHandler<RequestEvent<
 
         final LocalMessage message = new LocalMessageBuilder()
                 .text("Точно удаляем?\n\n" + userEntryOptional.get().toHumanReadable())
-                .buttons(new ArrayList<>(List.of(Constants.YES_BUTTON, Constants.NO_BUTTON, Constants.BACK_BUTTON)))
+                .buttons(new ArrayList<>(List.of(
+                        Constants.YES_BUTTON,
+                        Constants.NO_BUTTON,
+                        Constants.BACK_BUTTON)))
                 .build();
         e.request().bot().sendMessage(message, e.request().user().id());
     }

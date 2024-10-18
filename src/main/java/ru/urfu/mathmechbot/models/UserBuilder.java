@@ -4,14 +4,14 @@ import org.jetbrains.annotations.NotNull;
 import ru.urfu.mathmechbot.MMBUserState;
 
 /**
- * Билдер для рекорда User.
+ * <p>Билдер для рекорда User.</p>
  */
 public final class UserBuilder {
     private final Long id;
     private final MMBUserState currentState;
 
     /**
-     * Конструктор, устанавливающий дефолтные значения для полей.
+     * <p>Конструктор, устанавливающий дефолтные значения для полей.</p>
      *
      * @param id идентификатор пользователя.
      * @param currentState состояние пользователя.
@@ -22,7 +22,7 @@ public final class UserBuilder {
     }
 
     /**
-     * Создаёт объект User.
+     * <p>Создаёт объект User.</p>
      *
      * @return созданный объект
      */

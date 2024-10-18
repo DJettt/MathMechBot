@@ -5,7 +5,7 @@ import ru.urfu.logics.RequestEvent;
 import ru.urfu.mathmechbot.MMBCore;
 
 /**
- * Сохраняет номер МЕН-группы из сообщения.
+ * <p>Сохраняет номер МЕН-группы из сообщения.</p>
  */
 public final class SaveMen implements EventHandler<RequestEvent<MMBCore>> {
     @Override

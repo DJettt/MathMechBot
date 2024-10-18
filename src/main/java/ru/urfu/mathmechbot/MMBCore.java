@@ -22,7 +22,8 @@ public final class MMBCore implements LogicCore {
     private final FiniteStateMachine<RequestEvent<MMBCore>, MMBUserState> fsm;
 
     /**
-     * Конструктор.
+     * <p>Конструктор.</p>
+     *
      * @param storage хранилище данных для логики.
      */
     public MMBCore(@NotNull MathMechStorage storage) {
@@ -50,7 +51,8 @@ public final class MMBCore implements LogicCore {
     }
 
     /**
-     * Геттер поля storage.
+     * <p>Геттер поля storage.</p>
+     *
      * @return storage
      */
     public MathMechStorage getStorage() {
@@ -58,7 +60,8 @@ public final class MMBCore implements LogicCore {
     }
 
     /**
-     * Геттер поля fsm.
+     * <p>Геттер поля fsm.</p>
+     *
      * @return fsm (конечный автомат).
      */
     public FiniteStateMachine<RequestEvent<MMBCore>, MMBUserState> getFsm() {

@@ -4,7 +4,7 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Переход в автомате.
+ * <p>Переход в автомате.</p>
  *
  * @param name         имя перехода.
  * @param sourceState  входное состояние.

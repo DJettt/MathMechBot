@@ -16,7 +16,8 @@ import ru.urfu.mathmechbot.models.Specialty;
 import ru.urfu.mathmechbot.models.UserEntry;
 
 /**
- * Отправляет пользователю сообщение с вариантами выбора направления подготовки (на основе года обучения).
+ * <p>Отправляет пользователю сообщение с вариантами
+ * выбора направления подготовки (на основе года обучения).</p>
  */
 public final class AskSpecialty implements EventHandler<RequestEvent<MMBCore>> {
     private static final Logger LOGGER = LoggerFactory.getLogger(AskSpecialty.class);

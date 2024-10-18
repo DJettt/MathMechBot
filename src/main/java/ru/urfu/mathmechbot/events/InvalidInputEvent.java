@@ -5,11 +5,12 @@ import ru.urfu.logics.localobjects.ContextProcessMessageRequest;
 import ru.urfu.mathmechbot.MMBCore;
 
 /**
- * Пользователь ввёл некорректную информацию.
+ * <p>Пользователь ввёл некорректную информацию.</p>
  */
 public final class InvalidInputEvent extends RequestEvent<MMBCore> {
     /**
-     * Конструктор.
+     * <p>Конструктор.</p>
+     *
      * @param request запрос от контекста.
      */
     public InvalidInputEvent(ContextProcessMessageRequest<MMBCore> request) {

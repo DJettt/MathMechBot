@@ -14,7 +14,7 @@ import ru.urfu.mathmechbot.events.editing.SpecialtyChosenEvent;
 import ru.urfu.mathmechbot.events.editing.YearChosenEvent;
 
 /**
- * Состояние в котором пользователь выбирает, какую информацию он хочет изменить.
+ * <p>Состояние в котором пользователь выбирает, какую информацию он хочет изменить.</p>
  */
 public final class EditingChooseState implements MMBCoreState {
     @Override

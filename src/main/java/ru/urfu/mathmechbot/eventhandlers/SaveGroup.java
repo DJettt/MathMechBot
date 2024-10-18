@@ -5,7 +5,7 @@ import ru.urfu.logics.RequestEvent;
 import ru.urfu.mathmechbot.MMBCore;
 
 /**
- * Сохраняет номер группы из сообщения.
+ * <p>Сохраняет номер группы из сообщения.</p>
  */
 public final class SaveGroup implements EventHandler<RequestEvent<MMBCore>> {
     @Override

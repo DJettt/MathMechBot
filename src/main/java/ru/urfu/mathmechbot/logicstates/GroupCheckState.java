@@ -8,7 +8,7 @@ import ru.urfu.mathmechbot.MMBCore;
 
 
 /**
- * Состояние запроса номера группы во время регистрации.
+ * <p>Проверяет корректность группы.</p>
  */
 public final class GroupCheckState extends DataCheckState {
     private final static Pattern VALID_GROUP_STRING_PATTERN = Pattern.compile("^[1-5]$");

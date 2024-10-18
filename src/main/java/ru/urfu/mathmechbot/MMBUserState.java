@@ -14,7 +14,7 @@ import ru.urfu.mathmechbot.logicstates.YesNoBackState;
 import ru.urfu.mathmechbot.logicstates.YesNoState;
 
 /**
- * Cостояние пользователя в MathMechBot.
+ * <p>Cостояние пользователя в MathMechBot.</p>
  */
 public enum MMBUserState implements State {
     DEFAULT(new DefaultState()),
@@ -49,7 +49,7 @@ public enum MMBUserState implements State {
     }
 
     /**
-     * Возвращает состояние логического ядра, обрабатывающее данное состояние.
+     * <p>Возвращает состояние логического ядра, обрабатывающее данное состояние.</p>
      *
      * @return состояние логического ядра.
      */

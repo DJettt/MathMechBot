@@ -5,11 +5,12 @@ import ru.urfu.logics.localobjects.ContextProcessMessageRequest;
 import ru.urfu.mathmechbot.MMBCore;
 
 /**
- * Пользователю надо позволить отредактировать год обучения.
+ * <p>Пользователю надо позволить отредактировать год обучения.</p>
  */
 public final class YearChosenEvent extends RequestEvent<MMBCore> {
     /**
-     * Конструктор.
+     * <p>Конструктор.</p>
+     *
      * @param request запрос от контекста.
      */
     public YearChosenEvent(ContextProcessMessageRequest<MMBCore> request) {

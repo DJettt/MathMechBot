@@ -4,7 +4,7 @@ import ru.urfu.mathmechbot.models.UserEntry;
 import ru.urfu.storages.ArrayStorage;
 
 /**
- * Имплементация UserEntryStorage через ArrayStorage.
+ * <p>Имплементация UserEntryStorage через ArrayStorage.</p>
  */
 public final class UserEntryArrayStorage
         extends ArrayStorage<UserEntry, Long>

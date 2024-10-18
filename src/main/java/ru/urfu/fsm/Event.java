@@ -1,7 +1,7 @@
 package ru.urfu.fsm;
 
 /**
- * Событие, которое может произойти в FSM.
+ * <p>Событие, которое может произойти в FSM.</p>
  */
 public interface Event {
 }
