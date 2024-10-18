@@ -7,7 +7,7 @@ import ru.urfu.mathmechbot.MMBCore;
 /**
  * Пользователь ввёл некорректную информацию.
  */
-public class InvalidInputEvent extends RequestEvent<MMBCore> {
+public final class InvalidInputEvent extends RequestEvent<MMBCore> {
     /**
      * Конструктор.
      * @param request запрос от контекста.

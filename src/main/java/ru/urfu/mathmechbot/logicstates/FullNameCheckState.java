@@ -14,11 +14,6 @@ public final class FullNameCheckState extends DataCheckState {
     private final static Pattern VALID_FULL_NAME_PATTERN =
             Pattern.compile("^\\s*[А-ЯЁ][а-яё]+\\s+[А-ЯЁ][а-яё]+(\\s+[А-ЯЁ][а-яё]+)?\\s*$");
 
-    /**
-     * Проверяет корректность введенного ФИО.
-     * @param request запрос с сообщением, корректность содержимого которого проверяется.
-     * @return корректно ли содержимое сообщения в запросе.
-     */
     @Override
     public boolean validateData(@NotNull ContextProcessMessageRequest<MMBCore> request) {
         // TODO: Проверить более сложные имена, содержащие дефисы или несколько слов.

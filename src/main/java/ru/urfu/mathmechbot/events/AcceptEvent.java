@@ -7,7 +7,7 @@ import ru.urfu.mathmechbot.MMBCore;
 /**
  * Пользователь согласился.
  */
-public class AcceptEvent extends RequestEvent<MMBCore> {
+public final class AcceptEvent extends RequestEvent<MMBCore> {
     /**
      * Конструктор.
      * @param request запрос от контекста.

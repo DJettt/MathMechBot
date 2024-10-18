@@ -7,10 +7,9 @@ import ru.urfu.mathmechbot.MMBCore;
 /**
  * Пользователю надо позволить отредактировать ФИО.
  */
-public class FullNameChosenEvent extends RequestEvent<MMBCore> {
+public final class FullNameChosenEvent extends RequestEvent<MMBCore> {
     /**
      * Конструктор.
-     *
      * @param request запрос от контекста.
      */
     public FullNameChosenEvent(ContextProcessMessageRequest<MMBCore> request) {

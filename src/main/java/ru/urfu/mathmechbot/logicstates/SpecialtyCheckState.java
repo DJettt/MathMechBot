@@ -18,7 +18,8 @@ import ru.urfu.mathmechbot.models.UserEntry;
  * из списка, который возвращает метод allowedSpecialties.
  */
 public final class SpecialtyCheckState extends DataCheckState {
-    private final static Logger LOGGER = LoggerFactory.getLogger(SpecialtyCheckState.class);
+    private final static Logger LOGGER = LoggerFactory
+            .getLogger(SpecialtyCheckState.class);
 
     @Override
     protected boolean validateData(@NotNull ContextProcessMessageRequest<MMBCore> request) {
@@ -58,7 +59,8 @@ public final class SpecialtyCheckState extends DataCheckState {
             ));
         }
         return new ArrayList<>(List.of(
-                Specialty.KN, Specialty.MO, Specialty.MH, Specialty.MT, Specialty.PM, Specialty.KB, Specialty.FT
+                Specialty.KN, Specialty.MO, Specialty.MH, Specialty.MT,
+                Specialty.PM, Specialty.KB, Specialty.FT
         ));
     }
 }

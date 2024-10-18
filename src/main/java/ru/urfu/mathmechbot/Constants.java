@@ -35,10 +35,18 @@ public final class Constants {
             .text("Вы уже зарегистрированы. Пока что регистрировать можно только одного человека.")
             .build();
 
-    public final static LocalMessage TRY_AGAIN = new LocalMessageBuilder().text("Попробуйте снова.").build();
-    public final static LocalMessage SAVED = new LocalMessageBuilder().text("Данные сохранены.").build();
-    public final static LocalMessage CANCEL = new LocalMessageBuilder().text("Отмена...").build();
-    public final static LocalMessage DELETED = new LocalMessageBuilder().text("Удаляем...").build();
+    public final static LocalMessage TRY_AGAIN = new LocalMessageBuilder()
+            .text("Попробуйте снова.")
+            .build();
+    public final static LocalMessage SAVED = new LocalMessageBuilder()
+            .text("Данные сохранены.")
+            .build();
+    public final static LocalMessage CANCEL = new LocalMessageBuilder()
+            .text("Отмена...")
+            .build();
+    public final static LocalMessage DELETED = new LocalMessageBuilder()
+            .text("Удаляем...")
+            .build();
 
     public final static LocalMessage HELP = new LocalMessageBuilder()
             .text("""

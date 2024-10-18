@@ -10,6 +10,7 @@ import org.telegram.telegrambots.longpolling.TelegramBotsLongPollingApplication;
 import org.telegram.telegrambots.longpolling.util.LongPollingSingleThreadUpdateConsumer;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.message.Message;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardRow;
@@ -78,7 +79,9 @@ public final class TelegramBot implements Bot, LongPollingSingleThreadUpdateCons
     }
 
     /**
-     *  Разделяет список кнопок на строки кнопок определенного размера для более аккуратного вывода кнопок.
+     * <p>Разделяет список кнопок на строки кнопок определенного
+     * размера для более аккуратного вывода кнопок.</p>
+     *
      * @param buttons список кнопок
      * @param sizeOfSquare количество кнопок, которое должно быть в строчке
      * @return возвращает сетку кнопок нужного для вывода формата.
@@ -98,7 +101,7 @@ public final class TelegramBot implements Bot, LongPollingSingleThreadUpdateCons
     }
 
     /**
-     *  Подсчитывает сколько кнопок должно быть в ряду в сообщении.
+     * Подсчитывает сколько кнопок должно быть в ряду в сообщении.
      * @param listSize все кнопки, которые нужно добавить
      * @return возвращает количество кнопок должно быть в ряду в сообщении.
      */
@@ -113,7 +116,8 @@ public final class TelegramBot implements Bot, LongPollingSingleThreadUpdateCons
      * @return возвращает кнопку формата Telegram бота
      */
     private InlineKeyboardButton createButton(LocalButton localButton) {
-        InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton(localButton.name());
+        final InlineKeyboardButton inlineKeyboardButton =
+                new InlineKeyboardButton(localButton.name());
         inlineKeyboardButton.setCallbackData(localButton.data());
         return inlineKeyboardButton;
     }
@@ -170,8 +174,10 @@ public final class TelegramBot implements Bot, LongPollingSingleThreadUpdateCons
      * @param message объект сообщения из TelegramBots
      * @return объект нашего универсального сообщения
      */
-    private LocalMessage convertTelegramMessage(org.telegram.telegrambots.meta.api.objects.message.Message message) {
-        final String text = (message.hasPhoto()) ? message.getCaption() : message.getText();
+    private LocalMessage convertTelegramMessage(Message message) {
+        final String text = (message.hasPhoto())
+                ? message.getCaption()
+                : message.getText();
         return new LocalMessage(text, null);
     }
 

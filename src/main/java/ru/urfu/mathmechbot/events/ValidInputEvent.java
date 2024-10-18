@@ -7,10 +7,9 @@ import ru.urfu.mathmechbot.MMBCore;
 /**
  * Пользователь ввёл корректные данные.
  */
-public class ValidInputEvent extends RequestEvent<MMBCore> {
+public final class ValidInputEvent extends RequestEvent<MMBCore> {
     /**
      * Конструктор.
-     *
      * @param request запрос от контекста.
      */
     public ValidInputEvent(ContextProcessMessageRequest<MMBCore> request) {

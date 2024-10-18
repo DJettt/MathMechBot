@@ -7,10 +7,9 @@ import ru.urfu.mathmechbot.MMBCore;
 /**
  * Пользователю надо предложить отредактировать свои данные.
  */
-public class EditEvent extends RequestEvent<MMBCore> {
+public final class EditEvent extends RequestEvent<MMBCore> {
     /**
      * Конструктор.
-     *
      * @param request запрос от контекста.
      */
     public EditEvent(ContextProcessMessageRequest<MMBCore> request) {

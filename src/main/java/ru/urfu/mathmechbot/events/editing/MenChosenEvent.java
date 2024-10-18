@@ -7,10 +7,9 @@ import ru.urfu.mathmechbot.MMBCore;
 /**
  * Пользователю надо позволить отредактировать МЕН-группу.
  */
-public class MenChosenEvent extends RequestEvent<MMBCore> {
+public final class MenChosenEvent extends RequestEvent<MMBCore> {
     /**
      * Конструктор.
-     *
      * @param request запрос от контекста.
      */
     public MenChosenEvent(ContextProcessMessageRequest<MMBCore> request) {

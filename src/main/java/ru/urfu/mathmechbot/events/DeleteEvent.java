@@ -7,7 +7,7 @@ import ru.urfu.mathmechbot.MMBCore;
 /**
  * Пользователю надо предложить удалить данные.
  */
-public class DeleteEvent extends RequestEvent<MMBCore> {
+public final class DeleteEvent extends RequestEvent<MMBCore> {
     /**
      * Конструктор.
      * @param request запрос от контекста.

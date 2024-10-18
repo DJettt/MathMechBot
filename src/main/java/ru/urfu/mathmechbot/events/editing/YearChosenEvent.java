@@ -7,10 +7,9 @@ import ru.urfu.mathmechbot.MMBCore;
 /**
  * Пользователю надо позволить отредактировать год обучения.
  */
-public class YearChosenEvent extends RequestEvent<MMBCore> {
+public final class YearChosenEvent extends RequestEvent<MMBCore> {
     /**
      * Конструктор.
-     *
      * @param request запрос от контекста.
      */
     public YearChosenEvent(ContextProcessMessageRequest<MMBCore> request) {

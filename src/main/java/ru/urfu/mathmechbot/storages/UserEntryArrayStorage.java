@@ -6,5 +6,7 @@ import ru.urfu.storages.ArrayStorage;
 /**
  * Имплементация UserEntryStorage через ArrayStorage.
  */
-public final class UserEntryArrayStorage extends ArrayStorage<UserEntry, Long> implements UserEntryStorage {
+public final class UserEntryArrayStorage
+        extends ArrayStorage<UserEntry, Long>
+        implements UserEntryStorage {
 }

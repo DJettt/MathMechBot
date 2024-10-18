@@ -4,7 +4,7 @@ import ru.urfu.fsm.Event;
 import ru.urfu.logics.localobjects.ContextProcessMessageRequest;
 
 /**
- * Событие с запросом от контекста.
+ * <p>Событие с запросом от ядра-контекста.</p>
  * @param <T> тип логического ядра, запрос от которого будет положен в событие.
  */
 public abstract class RequestEvent<T extends LogicCore> implements Event {

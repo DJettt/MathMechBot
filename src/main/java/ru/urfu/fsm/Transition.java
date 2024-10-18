@@ -15,9 +15,7 @@ import org.jetbrains.annotations.NotNull;
  * @param <E> верхняя граница типа события.
  * @param <S> тип состояний автомата.
  */
-public record Transition<
-        E extends Event,
-        S extends State>(
+public record Transition<E extends Event, S extends State>(
         @NotNull String name,
         @NotNull S sourceState,
         @NotNull S targetState,

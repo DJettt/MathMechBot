@@ -6,6 +6,7 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -64,8 +65,10 @@ public final class DiscordBot extends ListenerAdapter implements Bot {
 
     /**
      * Разделяет один большой список кнопок на несколько других размером не больше 5.
+     *
      * @param message принимает LocalMessage, откуда берет список кнопок.
-     * @return возвращает список списков, чтобы бот отправлял их по очереди в каждом сообщении.
+     * @return возвращает список списков, чтобы
+     *         бот отправлял их по очереди в каждом сообщении.
      */
     private List<List<LocalButton>> splitButtons(LocalMessage message) {
         assert message.buttons() != null;
@@ -75,26 +78,31 @@ public final class DiscordBot extends ListenerAdapter implements Bot {
 
         if (message.buttons().size() <= maxSize) {
             arrayOfButtons.add(message.buttons());
-        } else {
-            int buttonIndex = 0;
-            while (buttonIndex < message.buttons().size()) {
-                List<LocalButton> localListOfFiveButtons = new ArrayList<>();
-                for (int i = 0; i < maxSize  && buttonIndex < message.buttons().size(); i++, buttonIndex++) {
-                    localListOfFiveButtons.add(message.buttons().get(buttonIndex));
-                }
-                arrayOfButtons.add(localListOfFiveButtons);
+            return arrayOfButtons;
+        }
+
+        int buttonIndex = 0;
+        while (buttonIndex < message.buttons().size()) {
+            List<LocalButton> localListOfFiveButtons = new ArrayList<>();
+            for (int i = 0; i < maxSize && buttonIndex < message.buttons().size(); i++, buttonIndex++) {
+                localListOfFiveButtons.add(message.buttons().get(buttonIndex));
             }
+            arrayOfButtons.add(localListOfFiveButtons);
         }
         return arrayOfButtons;
     }
 
     /**
-     * Для бота сообщение в текстовом канале НА СЕРВЕРЕ используется TextChannel
-     * а для использования в ЛИЧНОМ СООБЩЕНИИ используется PrivateChannel
-     * (я до конца не разобрался почему именно сейчас это работает только так,
-     * так как до этого мы использовали только TextChannel и все работало корректно и там и там).
-     * @param message LocalMessage со всей информацией о сообщении, которое нужно отправить.
-     * @param id id чата куда нужно отправить сообщение.
+     * <p>Посылает сообщение.</p>
+     *
+     * <p>Для бота сообщение в текстовом канале НА СЕРВЕРЕ используется TextChannel
+     * а для использования в ЛИЧНОМ СООБЩЕНИИ используется PrivateChannel (я до конца
+     * не разобрался почему именно сейчас это работает только так, так как до этого мы
+     * использовали только TextChannel и все работало корректно и там и там).</p>
+     *
+     * @param message LocalMessage со всей информацией о сообщении,
+     *                которое нужно отправить.
+     * @param id id чата, куда нужно отправить сообщение.
      */
     @Override
     public void sendMessage(@NotNull LocalMessage message, @NotNull Long id) {
@@ -113,11 +121,13 @@ public final class DiscordBot extends ListenerAdapter implements Bot {
                 boolean first = true;
                 for (List<LocalButton> buttons : splitButtons) {
                     if (first) {
-                        messageCreateAction = messageCreateAction.setActionRow(createButtons(buttons));
+                        messageCreateAction = messageCreateAction
+                                .setActionRow(createButtons(buttons));
                         messageCreateAction.queue();
                         first = false;
                     } else {
-                        MessageCreateAction messageCreateActionSub = channel.sendMessage("")
+                        MessageCreateAction messageCreateActionSub = channel
+                                .sendMessage("")
                                 .setActionRow(createButtons(buttons));
                         messageCreateActionSub.queue();
                     }
@@ -135,7 +145,7 @@ public final class DiscordBot extends ListenerAdapter implements Bot {
      * @param message полученное сообщение
      * @return то же сообщение в формате LocalMessage для общения с ядром
      */
-    private LocalMessage convertDiscordMessage(net.dv8tion.jda.api.entities.Message message) {
+    private LocalMessage convertDiscordMessage(Message message) {
         return new LocalMessage(message.getContentDisplay(), null);
     }
 
@@ -170,8 +180,10 @@ public final class DiscordBot extends ListenerAdapter implements Bot {
         if (event.getAuthor().isBot()) {
             return;
         }
+
         LocalMessage msg = convertDiscordMessage(event.getMessage());
-        logicCore.processMessage(new BotProcessMessageRequest(event.getChannel().getIdLong(), msg, this));
+        logicCore.processMessage(new BotProcessMessageRequest(
+                event.getChannel().getIdLong(), msg, this));
     }
 
     /**
@@ -181,6 +193,7 @@ public final class DiscordBot extends ListenerAdapter implements Bot {
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {
         LocalMessage msg = new LocalMessage(event.getButton().getId(), null);
-        logicCore.processMessage(new BotProcessMessageRequest(event.getChannel().getIdLong(), msg, this));
+        logicCore.processMessage(new BotProcessMessageRequest(
+                event.getChannel().getIdLong(), msg, this));
     }
 }

@@ -6,18 +6,14 @@ import ru.urfu.logics.localobjects.LocalMessage;
 import ru.urfu.logics.localobjects.LocalMessageBuilder;
 
 /**
- * Логическое ядро эхо-бота.
- * Отправляет назад несколько изменённое сообщение пользователя.
- * Обрабатывает команды /help и /start, отвечая на них справкой.
+ * <p>Логическое ядро эхо-бота.</p>
+ * <p>Отправляет назад несколько изменённое сообщение пользователя.
+ * Обрабатывает команды /help и /start, отвечая на них справкой.</p>
  */
 public final class EchoBotCore implements LogicCore {
     final static String START_COMMAND = "/start";
     final static String HELP_COMMAND = "/help";
 
-    /**
-     * Обрабатывает всю информацию, полученную с ботов.
-     * @param request сообщение, которое нужно обработать
-     */
     @Override
     public void processMessage(@NotNull BotProcessMessageRequest request) {
         if (request.message().text() == null) {

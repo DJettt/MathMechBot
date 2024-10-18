@@ -35,7 +35,7 @@ public abstract class DataCheckState implements MMBCoreState {
     }
 
     /**
-     * Проверяет корректность отправленных данных.
+     * <p>Проверяет корректность отправленных данных.</p>
      *
      * @param request запрос от ядра с сообщением.
      * @return результат проверки.

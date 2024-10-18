@@ -11,7 +11,8 @@ import org.slf4j.LoggerFactory;
  * @param <S> тип состояний автомата.
  */
 final class TransitionValidator<E extends Event, S extends State> {
-    private final static Logger LOGGER = LoggerFactory.getLogger(TransitionValidator.class);
+    private final static Logger LOGGER = LoggerFactory
+            .getLogger(TransitionValidator.class);
 
     /**
      * Проверяет корректность определённого перехода.
@@ -19,7 +20,7 @@ final class TransitionValidator<E extends Event, S extends State> {
      * @param transition проверяемое состояния.
      * @param fms        автомат, для которого проверяется корректность перехода.
      */
-    void validate(final Transition<E, S> transition, @NotNull FiniteStateMachine<E, S> fms) {
+    void validate(@NotNull Transition<E, S> transition, @NotNull FiniteStateMachine<E, S> fms) {
         String transitionName = transition.name();
         S sourceState = transition.sourceState();
         S targetState = transition.targetState();

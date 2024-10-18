@@ -15,7 +15,9 @@ public final class MathMechStorage {
      * @param userStorage      хранилище User.
      * @param userEntryStorage хранилище UserEntry.
      */
-    public MathMechStorage(@NotNull UserStorage userStorage, @NotNull UserEntryStorage userEntryStorage) {
+    public MathMechStorage(
+            @NotNull UserStorage userStorage,
+            @NotNull UserEntryStorage userEntryStorage) {
         this.users = userStorage;
         this.userEntries = userEntryStorage;
     }

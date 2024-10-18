@@ -4,7 +4,8 @@ import java.util.List;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Класс сообщения, объектами которого общаются боты и логическое ядро.
+ * <p>Абстракция над сообщениями на различных платформах.</p>
+ *
  * @param text текст сообщения.
  * @param buttons кнопки сообщения.
  */

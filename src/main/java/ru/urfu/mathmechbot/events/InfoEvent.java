@@ -7,10 +7,9 @@ import ru.urfu.mathmechbot.MMBCore;
 /**
  * Пользователю надо выдать зарегистрированные данные.
  */
-public class InfoEvent extends RequestEvent<MMBCore> {
+public final class InfoEvent extends RequestEvent<MMBCore> {
     /**
      * Конструктор.
-     *
      * @param request запрос от контекста.
      */
     public InfoEvent(ContextProcessMessageRequest<MMBCore> request) {

@@ -12,12 +12,10 @@ import org.slf4j.LoggerFactory;
  * @param <E> тип событий, которые провоцируют переходы.
  * @param <S> тип состояний, между которыми автомат совершает переходы.
  */
-public class FiniteStateMachineImpl<
-        E extends Event,
-        S extends State>
+public class FiniteStateMachineImpl<E extends Event, S extends State>
         implements FiniteStateMachine<E, S> {
-
-    private final static Logger LOGGER = LoggerFactory.getLogger(FiniteStateMachineImpl.class);
+    private final static Logger LOGGER = LoggerFactory
+            .getLogger(FiniteStateMachineImpl.class);
 
     private final TransitionValidator<E, S> transitionValidator;
     private final Set<S> states;
@@ -54,12 +52,14 @@ public class FiniteStateMachineImpl<
                 onTransition(event);
                 return;
             } catch (Exception e) {
-                LOGGER.error("An exception occurred during handling event {} of transition {}", event, transition, e);
+                LOGGER.error("An exception occurred during handling event {} of transition {}",
+                        event, transition, e);
                 throw new RuntimeException();
             }
         }
 
-        LOGGER.debug("No transition found for {}. Current state is {}", event, currentState);
+        LOGGER.debug("No transition found for {}. Current state is {}",
+                event, currentState);
     }
 
     /**

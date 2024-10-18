@@ -7,10 +7,9 @@ import ru.urfu.mathmechbot.MMBCore;
 /**
  * Пользователю надо позволить отредактировать направление подготовки.
  */
-public class SpecialtyChosenEvent extends RequestEvent<MMBCore> {
+public final class SpecialtyChosenEvent extends RequestEvent<MMBCore> {
     /**
      * Конструктор.
-     *
      * @param request запрос от контекста.
      */
     public SpecialtyChosenEvent(ContextProcessMessageRequest<MMBCore> request) {

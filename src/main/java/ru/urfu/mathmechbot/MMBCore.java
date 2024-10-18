@@ -14,7 +14,8 @@ import ru.urfu.mathmechbot.storages.MathMechStorage;
 
 
 /**
- * Логическое ядро бота, обрабатывающего сообщения Telegram-каналов на предмет упоминания студентов.<br/>
+ * <p>Логическое ядро бота, обрабатывающего сообщения
+ * Telegram-каналов на предмет упоминания студентов.<p/>
  */
 public final class MMBCore implements LogicCore {
     private final MathMechStorage storage;
@@ -58,7 +59,6 @@ public final class MMBCore implements LogicCore {
 
     /**
      * Геттер поля fsm.
-     *
      * @return fsm (конечный автомат).
      */
     public FiniteStateMachine<RequestEvent<MMBCore>, MMBUserState> getFsm() {

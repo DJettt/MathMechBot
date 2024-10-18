@@ -6,7 +6,8 @@ import ru.urfu.mathmechbot.models.UserEntryBuilder;
 import ru.urfu.storages.Storage;
 
 /**
- * Хранилище объектов модели UserEntry, предоставляющее методы по изменению отдельных полей.
+ * Хранилище объектов модели UserEntry,
+ * предоставляющее методы по изменению отдельных полей.
  */
 public interface UserEntryStorage extends Storage<UserEntry, Long> {
     /**

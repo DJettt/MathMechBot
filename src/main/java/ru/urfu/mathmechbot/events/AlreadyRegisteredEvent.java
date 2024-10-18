@@ -7,7 +7,7 @@ import ru.urfu.mathmechbot.MMBCore;
 /**
  * Пользователь уже зарегистрирован.
  */
-public class AlreadyRegisteredEvent extends RequestEvent<MMBCore> {
+public final class AlreadyRegisteredEvent extends RequestEvent<MMBCore> {
     /**
      * Конструктор.
      * @param request запрос от контекста.

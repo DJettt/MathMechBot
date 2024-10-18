@@ -37,7 +37,7 @@ import ru.urfu.mathmechbot.events.editing.YearChosenEvent;
 import ru.urfu.mathmechbot.storages.UserStorage;
 
 /**
- * FuSM, настроенный для работы с MathMechBot.
+ * FSM, настроенный для работы с MathMechBot.
  */
 public final class MMBFiniteUserStateMachine
         extends FiniteStateMachineImpl<RequestEvent<MMBCore>, MMBUserState> {

@@ -6,5 +6,6 @@ import ru.urfu.logics.RequestEvent;
 /**
  * Билдер объектов Transition с предустановленными типами для MathMechBot.
  */
-public class MMBTransitionBuilder extends TransitionBuilder<RequestEvent<MMBCore>, MMBUserState> {
+public final class MMBTransitionBuilder
+        extends TransitionBuilder<RequestEvent<MMBCore>, MMBUserState> {
 }
