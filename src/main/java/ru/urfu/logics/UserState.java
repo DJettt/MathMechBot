@@ -1,9 +1,7 @@
-package ru.urfu.logics.fsm;
+package ru.urfu.logics;
 
 import org.jetbrains.annotations.NotNull;
 import ru.urfu.fsm.State;
-import ru.urfu.logics.LogicCore;
-import ru.urfu.logics.LogicCoreState;
 
 /**
  * Состояние пользователя (на каком этапе диалога он находится).

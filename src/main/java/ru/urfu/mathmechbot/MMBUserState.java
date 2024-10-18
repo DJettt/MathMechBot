@@ -1,7 +1,7 @@
 package ru.urfu.mathmechbot;
 
 import org.jetbrains.annotations.NotNull;
-import ru.urfu.logics.fsm.UserState;
+import ru.urfu.logics.UserState;
 import ru.urfu.mathmechbot.logicstates.DefaultState;
 import ru.urfu.mathmechbot.logicstates.EditingChooseState;
 import ru.urfu.mathmechbot.logicstates.FullNameCheckState;

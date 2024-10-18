@@ -2,8 +2,8 @@ package ru.urfu.mathmechbot;
 
 import java.util.Set;
 import org.jetbrains.annotations.NotNull;
-import ru.urfu.logics.fsm.FiniteUserStateMachineImpl;
-import ru.urfu.logics.fsm.RequestEvent;
+import ru.urfu.fsm.FiniteStateMachineImpl;
+import ru.urfu.logics.RequestEvent;
 import ru.urfu.mathmechbot.eventhandlers.BackToSpecialtyEventHandler;
 import ru.urfu.mathmechbot.eventhandlers.DeleteRequestEventHandler;
 import ru.urfu.mathmechbot.eventhandlers.DeletionAcceptEventHandler;
@@ -52,7 +52,8 @@ import ru.urfu.mathmechbot.storages.UserStorage;
 /**
  * FuSM, настроенный для работы с MathMechBot.
  */
-public final class MMBFiniteUserStateMachine extends FiniteUserStateMachineImpl<MMBCore, MMBUserState> {
+public final class MMBFiniteUserStateMachine
+        extends FiniteStateMachineImpl<RequestEvent<MMBCore>, MMBUserState> {
     private final UserStorage users;
 
     /**

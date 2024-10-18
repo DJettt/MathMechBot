@@ -2,7 +2,7 @@ package ru.urfu.mathmechbot.logicstates;
 
 import java.util.Optional;
 import org.jetbrains.annotations.NotNull;
-import ru.urfu.logics.fsm.RequestEvent;
+import ru.urfu.logics.RequestEvent;
 import ru.urfu.logics.localobjects.ContextProcessMessageRequest;
 import ru.urfu.mathmechbot.Constants;
 import ru.urfu.mathmechbot.MMBCore;

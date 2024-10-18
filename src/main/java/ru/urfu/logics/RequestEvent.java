@@ -1,7 +1,6 @@
-package ru.urfu.logics.fsm;
+package ru.urfu.logics;
 
 import ru.urfu.fsm.Event;
-import ru.urfu.logics.LogicCore;
 import ru.urfu.logics.localobjects.ContextProcessMessageRequest;
 
 /**

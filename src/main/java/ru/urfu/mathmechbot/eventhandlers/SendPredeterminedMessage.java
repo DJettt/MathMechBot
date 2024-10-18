@@ -2,7 +2,7 @@ package ru.urfu.mathmechbot.eventhandlers;
 
 import org.jetbrains.annotations.NotNull;
 import ru.urfu.fsm.EventHandler;
-import ru.urfu.logics.fsm.RequestEvent;
+import ru.urfu.logics.RequestEvent;
 import ru.urfu.logics.localobjects.LocalMessage;
 import ru.urfu.mathmechbot.MMBCore;
 

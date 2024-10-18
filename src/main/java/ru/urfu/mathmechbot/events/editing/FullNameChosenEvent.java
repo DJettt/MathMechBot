@@ -1,6 +1,6 @@
 package ru.urfu.mathmechbot.events.editing;
 
-import ru.urfu.logics.fsm.RequestEvent;
+import ru.urfu.logics.RequestEvent;
 import ru.urfu.logics.localobjects.ContextProcessMessageRequest;
 import ru.urfu.mathmechbot.MMBCore;
 

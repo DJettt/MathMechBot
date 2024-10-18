@@ -6,7 +6,7 @@ import java.util.Optional;
 import org.jetbrains.annotations.NotNull;
 import ru.urfu.fsm.FiniteStateMachine;
 import ru.urfu.logics.LogicCore;
-import ru.urfu.logics.fsm.RequestEvent;
+import ru.urfu.logics.RequestEvent;
 import ru.urfu.logics.localobjects.BotProcessMessageRequest;
 import ru.urfu.logics.localobjects.ContextProcessMessageRequest;
 import ru.urfu.mathmechbot.models.User;
