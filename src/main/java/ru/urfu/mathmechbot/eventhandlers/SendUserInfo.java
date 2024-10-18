@@ -11,7 +11,7 @@ import ru.urfu.mathmechbot.models.UserEntry;
 /**
  * Посылает пользователю информацию зарегистрированные данные.
  */
-public final class InfoRequestEventHandler implements EventHandler<RequestEvent<MMBCore>> {
+public final class SendUserInfo implements EventHandler<RequestEvent<MMBCore>> {
     @Override
     public void handleEvent(RequestEvent<MMBCore> e) {
         final User user = e.request().user();

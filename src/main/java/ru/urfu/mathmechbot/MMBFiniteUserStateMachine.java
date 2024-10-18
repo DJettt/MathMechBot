@@ -10,14 +10,13 @@ import ru.urfu.mathmechbot.eventhandlers.AskSpecialty;
 import ru.urfu.mathmechbot.eventhandlers.CreateUserEntry;
 import ru.urfu.mathmechbot.eventhandlers.DeleteUserEntry;
 import ru.urfu.mathmechbot.eventhandlers.EditingInfoSaved;
-import ru.urfu.mathmechbot.eventhandlers.InfoRequestEventHandler;
 import ru.urfu.mathmechbot.eventhandlers.SaveFullName;
 import ru.urfu.mathmechbot.eventhandlers.SaveGroup;
 import ru.urfu.mathmechbot.eventhandlers.SaveMen;
 import ru.urfu.mathmechbot.eventhandlers.SaveSpecialty;
 import ru.urfu.mathmechbot.eventhandlers.SaveYear;
 import ru.urfu.mathmechbot.eventhandlers.SendConstantMessage;
-import ru.urfu.mathmechbot.eventhandlers.TryAgain;
+import ru.urfu.mathmechbot.eventhandlers.SendUserInfo;
 import ru.urfu.mathmechbot.events.AcceptEvent;
 import ru.urfu.mathmechbot.events.AlreadyRegisteredEvent;
 import ru.urfu.mathmechbot.events.BackEvent;
@@ -90,7 +89,7 @@ public final class MMBFiniteUserStateMachine
                 .sourceState(MMBUserState.DEFAULT)
                 .targetState(MMBUserState.DEFAULT)
                 .eventType(InfoEvent.class)
-                .eventHandler(new InfoRequestEventHandler())
+                .eventHandler(new SendUserInfo())
                 .build());
     }
 
@@ -117,7 +116,7 @@ public final class MMBFiniteUserStateMachine
                 .sourceState(MMBUserState.REGISTRATION_NAME)
                 .targetState(MMBUserState.REGISTRATION_NAME)
                 .eventType(InvalidInputEvent.class)
-                .eventHandler(new TryAgain())
+                .eventHandler(new SendConstantMessage(Constants.TRY_AGAIN))
                 .build());
         registerTransition(new MMBTransitionBuilder()
                 .sourceState(MMBUserState.REGISTRATION_NAME)
@@ -137,7 +136,7 @@ public final class MMBFiniteUserStateMachine
                 .sourceState(MMBUserState.REGISTRATION_YEAR)
                 .targetState(MMBUserState.REGISTRATION_YEAR)
                 .eventType(InvalidInputEvent.class)
-                .eventHandler(new TryAgain())
+                .eventHandler(new SendConstantMessage(Constants.TRY_AGAIN))
                 .eventHandler(new SendConstantMessage(Constants.YEAR))
                 .build());
         registerTransition(new MMBTransitionBuilder()
@@ -158,7 +157,7 @@ public final class MMBFiniteUserStateMachine
                 .sourceState(MMBUserState.REGISTRATION_SPECIALTY)
                 .targetState(MMBUserState.REGISTRATION_SPECIALTY)
                 .eventType(InvalidInputEvent.class)
-                .eventHandler(new TryAgain())
+                .eventHandler(new SendConstantMessage(Constants.TRY_AGAIN))
                 .eventHandler(new AskSpecialty())
                 .build());
         registerTransition(new MMBTransitionBuilder()
@@ -179,7 +178,7 @@ public final class MMBFiniteUserStateMachine
                 .sourceState(MMBUserState.REGISTRATION_GROUP)
                 .targetState(MMBUserState.REGISTRATION_GROUP)
                 .eventType(InvalidInputEvent.class)
-                .eventHandler(new TryAgain())
+                .eventHandler(new SendConstantMessage(Constants.TRY_AGAIN))
                 .eventHandler(new SendConstantMessage(Constants.GROUP))
                 .build());
         registerTransition(new MMBTransitionBuilder()
@@ -200,7 +199,7 @@ public final class MMBFiniteUserStateMachine
                 .sourceState(MMBUserState.REGISTRATION_MEN)
                 .targetState(MMBUserState.REGISTRATION_MEN)
                 .eventType(InvalidInputEvent.class)
-                .eventHandler(new TryAgain())
+                .eventHandler(new SendConstantMessage(Constants.TRY_AGAIN))
                 .build());
         registerTransition(new MMBTransitionBuilder()
                 .sourceState(MMBUserState.REGISTRATION_MEN)
@@ -228,7 +227,7 @@ public final class MMBFiniteUserStateMachine
                 .sourceState(MMBUserState.REGISTRATION_CONFIRMATION)
                 .targetState(MMBUserState.REGISTRATION_CONFIRMATION)
                 .eventType(InvalidInputEvent.class)
-                .eventHandler(new TryAgain())
+                .eventHandler(new SendConstantMessage(Constants.TRY_AGAIN))
                 .eventHandler(new AskRegistrationConfirmation())
                 .build());
         registerTransition(new MMBTransitionBuilder()
@@ -292,7 +291,7 @@ public final class MMBFiniteUserStateMachine
                 .sourceState(MMBUserState.EDITING_CHOOSE)
                 .targetState(MMBUserState.EDITING_CHOOSE)
                 .eventType(InvalidInputEvent.class)
-                .eventHandler(new TryAgain())
+                .eventHandler(new SendConstantMessage(Constants.TRY_AGAIN))
                 .build());
 
         registerTransition(new MMBTransitionBuilder()
@@ -306,7 +305,7 @@ public final class MMBFiniteUserStateMachine
                 .sourceState(MMBUserState.EDITING_FULL_NAME)
                 .targetState(MMBUserState.EDITING_FULL_NAME)
                 .eventType(InvalidInputEvent.class)
-                .eventHandler(new TryAgain())
+                .eventHandler(new SendConstantMessage(Constants.TRY_AGAIN))
                 .build());
         registerTransition(new MMBTransitionBuilder()
                 .sourceState(MMBUserState.EDITING_FULL_NAME)
@@ -326,7 +325,7 @@ public final class MMBFiniteUserStateMachine
                 .sourceState(MMBUserState.EDITING_YEAR)
                 .targetState(MMBUserState.EDITING_YEAR)
                 .eventType(InvalidInputEvent.class)
-                .eventHandler(new TryAgain())
+                .eventHandler(new SendConstantMessage(Constants.TRY_AGAIN))
                 .eventHandler(new SendConstantMessage(Constants.YEAR))
                 .build());
         registerTransition(new MMBTransitionBuilder()
@@ -347,7 +346,7 @@ public final class MMBFiniteUserStateMachine
                 .sourceState(MMBUserState.EDITING_SPECIALITY)
                 .targetState(MMBUserState.EDITING_SPECIALITY)
                 .eventType(InvalidInputEvent.class)
-                .eventHandler(new TryAgain())
+                .eventHandler(new SendConstantMessage(Constants.TRY_AGAIN))
                 .eventHandler(new AskSpecialty())
                 .build());
         registerTransition(new MMBTransitionBuilder()
@@ -368,7 +367,7 @@ public final class MMBFiniteUserStateMachine
                 .sourceState(MMBUserState.EDITING_GROUP)
                 .targetState(MMBUserState.EDITING_GROUP)
                 .eventType(InvalidInputEvent.class)
-                .eventHandler(new TryAgain())
+                .eventHandler(new SendConstantMessage(Constants.TRY_AGAIN))
                 .eventHandler(new SendConstantMessage(Constants.GROUP))
                 .build());
         registerTransition(new MMBTransitionBuilder()
@@ -389,7 +388,7 @@ public final class MMBFiniteUserStateMachine
                 .sourceState(MMBUserState.EDITING_MEN)
                 .targetState(MMBUserState.EDITING_MEN)
                 .eventType(InvalidInputEvent.class)
-                .eventHandler(new TryAgain())
+                .eventHandler(new SendConstantMessage(Constants.TRY_AGAIN))
                 .build());
         registerTransition(new MMBTransitionBuilder()
                 .sourceState(MMBUserState.EDITING_MEN)
@@ -415,7 +414,7 @@ public final class MMBFiniteUserStateMachine
                 .sourceState(MMBUserState.EDITING_ADDITIONAL_EDIT)
                 .targetState(MMBUserState.EDITING_ADDITIONAL_EDIT)
                 .eventType(InvalidInputEvent.class)
-                .eventHandler(new TryAgain())
+                .eventHandler(new SendConstantMessage(Constants.TRY_AGAIN))
                 .build());
     }
 
@@ -449,7 +448,7 @@ public final class MMBFiniteUserStateMachine
                 .sourceState(MMBUserState.DELETION_CONFIRMATION)
                 .targetState(MMBUserState.DELETION_CONFIRMATION)
                 .eventType(InvalidInputEvent.class)
-                .eventHandler(new TryAgain())
+                .eventHandler(new SendConstantMessage(Constants.TRY_AGAIN))
                 .eventHandler(new AskDeletionConfirmation())
                 .build());
         registerTransition(new MMBTransitionBuilder()
