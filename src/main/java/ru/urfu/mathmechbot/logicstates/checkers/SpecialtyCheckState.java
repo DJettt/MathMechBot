@@ -1,4 +1,4 @@
-package ru.urfu.mathmechbot.logicstates;
+package ru.urfu.mathmechbot.logicstates.checkers;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.urfu.logics.localobjects.ContextProcessMessageRequest;
 import ru.urfu.mathmechbot.MMBCore;
+import ru.urfu.mathmechbot.logicstates.DataCheckState;
 import ru.urfu.mathmechbot.models.Specialty;
 import ru.urfu.mathmechbot.models.UserEntry;
 

@@ -3,14 +3,14 @@ package ru.urfu.mathmechbot;
 import org.jetbrains.annotations.NotNull;
 import ru.urfu.mathmechbot.logicstates.DefaultState;
 import ru.urfu.mathmechbot.logicstates.EditingChooseState;
-import ru.urfu.mathmechbot.logicstates.FullNameCheckState;
-import ru.urfu.mathmechbot.logicstates.GroupCheckState;
 import ru.urfu.mathmechbot.logicstates.MMBCoreState;
-import ru.urfu.mathmechbot.logicstates.MenCheckState;
-import ru.urfu.mathmechbot.logicstates.SpecialtyCheckState;
-import ru.urfu.mathmechbot.logicstates.YearCheckState;
 import ru.urfu.mathmechbot.logicstates.YesNoBackState;
 import ru.urfu.mathmechbot.logicstates.YesNoState;
+import ru.urfu.mathmechbot.logicstates.checkers.FullNameCheckState;
+import ru.urfu.mathmechbot.logicstates.checkers.GroupCheckState;
+import ru.urfu.mathmechbot.logicstates.checkers.MenCheckState;
+import ru.urfu.mathmechbot.logicstates.checkers.SpecialtyCheckState;
+import ru.urfu.mathmechbot.logicstates.checkers.YearCheckState;
 
 /**
  * <p>Cостояние пользователя в MathMechBot.</p>

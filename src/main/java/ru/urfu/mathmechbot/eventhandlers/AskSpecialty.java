@@ -11,7 +11,7 @@ import ru.urfu.logics.localobjects.LocalMessage;
 import ru.urfu.logics.localobjects.LocalMessageBuilder;
 import ru.urfu.mathmechbot.Constants;
 import ru.urfu.mathmechbot.MMBCore;
-import ru.urfu.mathmechbot.logicstates.SpecialtyCheckState;
+import ru.urfu.mathmechbot.logicstates.checkers.SpecialtyCheckState;
 import ru.urfu.mathmechbot.models.Specialty;
 import ru.urfu.mathmechbot.models.UserEntry;
 

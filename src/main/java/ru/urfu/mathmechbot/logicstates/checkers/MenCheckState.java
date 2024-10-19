@@ -1,9 +1,10 @@
-package ru.urfu.mathmechbot.logicstates;
+package ru.urfu.mathmechbot.logicstates.checkers;
 
 import java.util.regex.Pattern;
 import org.jetbrains.annotations.NotNull;
 import ru.urfu.logics.localobjects.ContextProcessMessageRequest;
 import ru.urfu.mathmechbot.MMBCore;
+import ru.urfu.mathmechbot.logicstates.DataCheckState;
 
 
 /**
