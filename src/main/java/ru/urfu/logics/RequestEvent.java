@@ -1,6 +1,5 @@
 package ru.urfu.logics;
 
-import ru.urfu.fsm.Event;
 import ru.urfu.logics.localobjects.ContextProcessMessageRequest;
 
 /**
@@ -8,7 +7,7 @@ import ru.urfu.logics.localobjects.ContextProcessMessageRequest;
  *
  * @param <T> тип логического ядра, запрос от которого будет положен в событие.
  */
-public abstract class RequestEvent<T extends LogicCore> implements Event {
+public abstract class RequestEvent<T extends LogicCore> {
     private final ContextProcessMessageRequest<T> request;
 
     /**

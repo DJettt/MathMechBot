@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
  * @param <E> тип событий ядра.
  * @param <S> тип пользовательского состояния.
  */
-public interface FiniteStateMachine<E extends Event, S extends State> {
+public interface FiniteStateMachine<E, S> {
     /**
      * <p>Запустить событие в FSM.</p>
      *

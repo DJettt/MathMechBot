@@ -5,7 +5,7 @@ package ru.urfu.fsm;
  *
  * @param <E> тип обрабатываемого события.
  */
-public interface EventHandler<E extends Event> {
+public interface EventHandler<E> {
     /**
      * <p>Обрабатывает событие.</p>
      *

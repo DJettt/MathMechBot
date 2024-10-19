@@ -13,9 +13,7 @@ import org.slf4j.LoggerFactory;
  * @param <E> тип событий, которые провоцируют переходы.
  * @param <S> тип состояний, между которыми автомат совершает переходы.
  */
-public class FiniteStateMachineImpl<E extends Event, S extends State>
-        implements FiniteStateMachine<E, S> {
-
+public class FiniteStateMachineImpl<E, S> implements FiniteStateMachine<E, S> {
     private final static Logger LOGGER = LoggerFactory
             .getLogger(FiniteStateMachineImpl.class);
 
@@ -39,7 +37,7 @@ public class FiniteStateMachineImpl<E extends Event, S extends State>
 
     @Override
     public void dispatch(@NotNull E event) {
-        for (Transition<E, S> transition : transitions) {
+        for (final Transition<E, S> transition : transitions) {
             if (!isTransitionSuitable(transition, event)) {
                 continue;
             }
@@ -104,7 +102,7 @@ public class FiniteStateMachineImpl<E extends Event, S extends State>
      * @param event      полученное событие.
      * @return результат проверки.
      */
-    private boolean isTransitionSuitable(Transition<E, S> transition, Event event) {
+    private boolean isTransitionSuitable(Transition<E, S> transition, E event) {
         return currentState.equals(transition.source())
                 && transition.eventType().equals(event.getClass())
                 && states.contains(transition.target());

@@ -1,7 +1,6 @@
 package ru.urfu.mathmechbot;
 
 import org.jetbrains.annotations.NotNull;
-import ru.urfu.fsm.State;
 import ru.urfu.mathmechbot.logicstates.DefaultState;
 import ru.urfu.mathmechbot.logicstates.EditingChooseState;
 import ru.urfu.mathmechbot.logicstates.FullNameCheckState;
@@ -16,7 +15,7 @@ import ru.urfu.mathmechbot.logicstates.YesNoState;
 /**
  * <p>Cостояние пользователя в MathMechBot.</p>
  */
-public enum MMBUserState implements State {
+public enum MMBUserState {
     DEFAULT(new DefaultState()),
 
     REGISTRATION_NAME(new FullNameCheckState()),

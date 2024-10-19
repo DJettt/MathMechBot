@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
  * @param <E> тип событий, наследники которого должны провоцировать переход.
  * @param <S> тип состояний автомата.
  */
-final class TransitionValidator<E extends Event, S extends State> {
+final class TransitionValidator<E, S> {
     private final static Logger LOGGER = LoggerFactory
             .getLogger(TransitionValidator.class);
 

@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
  * @param <E> тип события, наследники которого будут провоцировать переход.
  * @param <S> тип состояния автомата.
  */
-public class TransitionBuilder<E extends Event, S extends State> {
+public class TransitionBuilder<E, S> {
     private String name;
     private S source;
     private S target;
