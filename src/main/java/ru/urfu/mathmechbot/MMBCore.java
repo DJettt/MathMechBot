@@ -1,7 +1,5 @@
 package ru.urfu.mathmechbot;
 
-import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 import org.jetbrains.annotations.NotNull;
 import ru.urfu.fsm.FiniteStateMachine;
@@ -28,10 +26,7 @@ public final class MMBCore implements LogicCore {
      */
     public MMBCore(@NotNull MathMechStorage storage) {
         this.storage = storage;
-        this.fsm = new MMBFiniteUserStateMachine(
-                new HashSet<>(List.of(MMBUserState.values())),
-                MMBUserState.DEFAULT,
-                storage.getUsers());
+        this.fsm = new MMBFiniteUserStateMachine(storage.getUsers());
     }
 
     @Override

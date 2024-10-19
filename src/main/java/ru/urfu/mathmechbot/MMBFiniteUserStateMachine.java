@@ -1,6 +1,7 @@
 package ru.urfu.mathmechbot;
 
-import java.util.Set;
+import java.util.HashSet;
+import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import ru.urfu.fsm.FiniteStateMachineImpl;
 import ru.urfu.logics.RequestEvent;
@@ -46,16 +47,13 @@ public final class MMBFiniteUserStateMachine
     /**
      * <p>Конструктор.</p>
      *
-     * @param states       набор состояний.
-     * @param initialState изначальное состояние.
-     * @param users        хранилище пользователей, чтобы обновлять в нём состояние пользователей.
+     * @param users хранилище пользователей, чтобы
+     *              обновлять в нём состояние пользователей.
      */
-    public MMBFiniteUserStateMachine(
-            @NotNull Set<MMBUserState> states,
-            @NotNull MMBUserState initialState,
-            @NotNull UserStorage users) {
-        super(states, initialState);
+    public MMBFiniteUserStateMachine(@NotNull UserStorage users) {
+        super(new HashSet<>(List.of(MMBUserState.values())), MMBUserState.DEFAULT);
         this.users = users;
+
         setupDefaultTransitions();
         setupRegistrationTransitions();
         setupEditingTransitions();
