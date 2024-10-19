@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
  */
 public class FiniteStateMachineImpl<E extends Event, S extends State>
         implements FiniteStateMachine<E, S> {
+
     private final static Logger LOGGER = LoggerFactory
             .getLogger(FiniteStateMachineImpl.class);
 
@@ -49,7 +50,7 @@ public class FiniteStateMachineImpl<E extends Event, S extends State>
                 }
             }
 
-            currentState = transition.targetState();
+            currentState = transition.target();
             onTransition(event);
             return;
         }
@@ -104,8 +105,8 @@ public class FiniteStateMachineImpl<E extends Event, S extends State>
      * @return результат проверки.
      */
     private boolean isTransitionSuitable(Transition<E, S> transition, Event event) {
-        return currentState.equals(transition.sourceState())
+        return currentState.equals(transition.source())
                 && transition.eventType().equals(event.getClass())
-                && states.contains(transition.targetState());
+                && states.contains(transition.target());
     }
 }

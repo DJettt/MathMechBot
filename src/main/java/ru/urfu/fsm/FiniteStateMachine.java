@@ -19,7 +19,8 @@ public interface FiniteStateMachine<E extends Event, S extends State> {
     void dispatch(@NotNull E event);
 
     /**
-     * <p>Сеттер текущего состояния.</p>
+     * <p>Сеттер текущего состояния. Полезно, когда автомат
+     * работает для нескольких пользователей параллельно.</p>
      *
      * @param state состояние, которое автомат должен принять.
      */

@@ -12,8 +12,8 @@ import org.jetbrains.annotations.NotNull;
  */
 public class TransitionBuilder<E extends Event, S extends State> {
     private String name;
-    private S sourceState;
-    private S targetState;
+    private S source;
+    private S target;
     private Class<? extends E> eventType;
     private final List<EventHandler<E>> eventHandlers;
 
@@ -39,22 +39,22 @@ public class TransitionBuilder<E extends Event, S extends State> {
     /**
      * <p>Устанавливает исходное состояние (то, откуда переход).</p>
      *
-     * @param sourceState исходное состояние.
+     * @param source исходное состояние.
      * @return себя же.
      */
-    public TransitionBuilder<E, S> sourceState(@NotNull S sourceState) {
-        this.sourceState = sourceState;
+    public TransitionBuilder<E, S> source(@NotNull S source) {
+        this.source = source;
         return this;
     }
 
     /**
      * <p>Устанавливает целевое состояние (то, куда переход).</p>
      *
-     * @param targetState целевое состояние.
+     * @param target целевое состояние.
      * @return себя же.
      */
-    public TransitionBuilder<E, S> targetState(@NotNull S targetState) {
-        this.targetState = targetState;
+    public TransitionBuilder<E, S> target(@NotNull S target) {
+        this.target = target;
         return this;
     }
 
@@ -86,6 +86,6 @@ public class TransitionBuilder<E extends Event, S extends State> {
      * @return готовый переход.
      */
     public Transition<E, S> build() {
-        return new Transition<>(name, sourceState, targetState, eventType, eventHandlers);
+        return new Transition<>(name, source, target, eventType, eventHandlers);
     }
 }

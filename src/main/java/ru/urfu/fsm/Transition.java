@@ -7,8 +7,8 @@ import org.jetbrains.annotations.NotNull;
  * <p>Переход в автомате.</p>
  *
  * @param name         имя перехода.
- * @param sourceState  входное состояние.
- * @param targetState  целевое состояние.
+ * @param source  входное состояние.
+ * @param target  целевое состояние.
  * @param eventType    класс событий, наследники которого провоцируют данный переход.
  * @param eventHandlers обработчик этих событий.
  *
@@ -17,8 +17,8 @@ import org.jetbrains.annotations.NotNull;
  */
 public record Transition<E extends Event, S extends State>(
         @NotNull String name,
-        @NotNull S sourceState,
-        @NotNull S targetState,
+        @NotNull S source,
+        @NotNull S target,
         @NotNull Class<? extends E> eventType,
         @NotNull List<EventHandler<E>> eventHandlers
 ) {

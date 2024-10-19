@@ -23,18 +23,18 @@ final class TransitionValidator<E extends Event, S extends State> {
     void validate(@NotNull Transition<E, S> transition,
                   @NotNull FiniteStateMachine<E, S> fms) {
 
-        String transitionName = transition.name();
-        S sourceState = transition.sourceState();
-        S targetState = transition.targetState();
+        String name = transition.name();
+        S source = transition.source();
+        S target = transition.target();
 
-        if (!fms.getStates().contains(sourceState)) {
+        if (!fms.getStates().contains(source)) {
             LOGGER.error("Source state '{}' is not registered in FSM states for transition '{}'",
-                    sourceState, transitionName);
+                    source, name);
             throw new IllegalArgumentException();
         }
-        if (!fms.getStates().contains(targetState)) {
+        if (!fms.getStates().contains(target)) {
             LOGGER.error("Target state '{}' is not registered in FSM states for transition '{}'",
-                    targetState, transitionName);
+                    target, name);
             throw new IllegalArgumentException();
         }
     }
