@@ -1,6 +1,5 @@
 package ru.urfu.logics.mathmechbot.states.deletion;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.jetbrains.annotations.NotNull;
@@ -51,10 +50,10 @@ public final class DeletionConfirmationState implements MathMechBotState {
 
         return new LocalMessageBuilder()
                 .text("Точно удаляем?\n\n" + userEntryOptional.get().toHumanReadable())
-                .buttons(new ArrayList<>(List.of(
+                .buttons(List.of(
                         new Constants().yesButton,
                         new Constants().noButton,
-                        new Constants().backButton)))
+                        new Constants().backButton))
                 .build();
     }
 

@@ -1,6 +1,5 @@
 package ru.urfu.logics.mathmechbot.states.editing;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 import org.jetbrains.annotations.NotNull;
@@ -22,15 +21,14 @@ public final class EditingYearState implements MathMechBotState {
     private final Pattern validYearStringPattern = Pattern.compile("^[1-6]$");
     private final LocalMessage onEnterMessage = new LocalMessageBuilder()
             .text("На каком курсе Вы обучаетесь?")
-            .buttons(new ArrayList<>(List.of(
+            .buttons(List.of(
                     new LocalButton("1 курс", "1"),
                     new LocalButton("2 курс", "2"),
                     new LocalButton("3 курс", "3"),
                     new LocalButton("4 курс", "4"),
                     new LocalButton("5 курс", "5"),
                     new LocalButton("6 курс", "6"),
-                    new Constants().backButton
-            )))
+                    new Constants().backButton))
             .build();
 
     @Override

@@ -1,6 +1,5 @@
 package ru.urfu.logics.mathmechbot.states.editing;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 import org.jetbrains.annotations.NotNull;
@@ -22,13 +21,13 @@ public final class EditingGroupState implements MathMechBotState {
     private final Pattern validGroupStringPattern = Pattern.compile("^[1-5]$");
     private final LocalMessage onEnterMessage = new LocalMessageBuilder()
             .text("Какая у Вас группа?")
-            .buttons(new ArrayList<>(List.of(
+            .buttons(List.of(
                     new LocalButton("1 группа", "1"),
                     new LocalButton("2 группа", "2"),
                     new LocalButton("3 группа", "3"),
                     new LocalButton("4 группа", "4"),
                     new LocalButton("5 группа", "5"),
-                    new Constants().backButton)))
+                    new Constants().backButton))
             .build();
 
     @Override

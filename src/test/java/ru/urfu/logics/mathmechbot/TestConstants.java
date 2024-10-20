@@ -1,6 +1,5 @@
 package ru.urfu.logics.mathmechbot;
 
-import java.util.ArrayList;
 import java.util.List;
 import ru.urfu.localobjects.LocalButton;
 import ru.urfu.localobjects.LocalMessage;
@@ -29,11 +28,11 @@ public final class TestConstants {
     public final LocalMessage backMessage = new LocalMessageBuilder().text(BACK_COMMAND).build();
     public final LocalButton backButton = new LocalButton("Назад", BACK_COMMAND);
 
-    public final List<LocalButton> yesNoBack = new ArrayList<>(List.of(
+    public final List<LocalButton> yesNoBack = List.of(
             new LocalButton("Да", ACCEPT_COMMAND),
             new LocalButton("Нет", DECLINE_COMMAND),
             backButton
-    ));
+    );
 
     public final LocalMessage infoMessage = new LocalMessageBuilder().text(INFO_COMMAND).build();
     public final LocalMessage deleteMessage = new LocalMessageBuilder().text(DELETE_COMMAND).build();
@@ -57,12 +56,12 @@ public final class TestConstants {
 
     public final LocalMessage editingChooseMessage = new LocalMessageBuilder()
             .text("Что Вы хотите изменить?")
-            .buttons(new ArrayList<>(List.of(
+            .buttons(List.of(
                     new LocalButton("ФИО", EDITING_FULL_NAME_COMMAND),
                     new LocalButton("Курс", EDITING_YEAR_COMMAND),
                     new LocalButton("Направление", EDITING_SPECIALITY_COMMAND),
                     new LocalButton("Группа", EDITING_GROUP_COMMAND),
                     new LocalButton("МЕН", EDITING_MEN_COMMAND),
-                    new Constants().backButton)))
+                    new Constants().backButton))
             .build();
 }

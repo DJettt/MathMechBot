@@ -1,6 +1,5 @@
 package ru.urfu.logics.mathmechbot.states.editing;
 
-import java.util.ArrayList;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import ru.urfu.localobjects.LocalButton;
@@ -27,13 +26,13 @@ public final class EditingChooseState implements MathMechBotState {
 
     private final LocalMessage onEnterMessage = new LocalMessageBuilder()
             .text("Что Вы хотите изменить?")
-            .buttons(new ArrayList<>(List.of(
+            .buttons(List.of(
                     new LocalButton("ФИО", EDITING_FULL_NAME),
                     new LocalButton("Курс", EDITING_YEAR),
                     new LocalButton("Направление", EDITING_SPECIALITY),
                     new LocalButton("Группа", EDITING_GROUP),
                     new LocalButton("МЕН", EDITING_MEN),
-                    new Constants().backButton)))
+                    new Constants().backButton))
             .build();
 
     @Override

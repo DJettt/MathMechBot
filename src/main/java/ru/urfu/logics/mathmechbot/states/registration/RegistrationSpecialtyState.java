@@ -59,13 +59,13 @@ public final class RegistrationSpecialtyState implements MathMechBotState {
     @NotNull
     private List<Specialty> allowedSpecialties(int year) {
         if (year == 1) {
-            return new ArrayList<>(List.of(
+            return List.of(
                     Specialty.KNMO, Specialty.MMP, Specialty.KB, Specialty.FT
-            ));
+            );
         }
-        return new ArrayList<>(List.of(
-                Specialty.KN, Specialty.MO, Specialty.MH, Specialty.MT, Specialty.PM, Specialty.KB, Specialty.FT
-        ));
+        return List.of(
+                Specialty.KN, Specialty.MO, Specialty.MH, Specialty.MT,
+                Specialty.PM, Specialty.KB, Specialty.FT);
     }
 
     @Override

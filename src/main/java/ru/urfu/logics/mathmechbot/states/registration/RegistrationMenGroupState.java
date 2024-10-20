@@ -1,6 +1,5 @@
 package ru.urfu.logics.mathmechbot.states.registration;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 import org.jetbrains.annotations.NotNull;
@@ -35,7 +34,7 @@ public final class RegistrationMenGroupState implements MathMechBotState {
     public LocalMessage enterMessage(@NotNull MathMechBotCore context, @NotNull Request request) {
         return new LocalMessageBuilder()
                 .text("Введите свою академическую группу в формате:\nМЕН-123456")
-                .buttons(new ArrayList<>(List.of(new Constants().backButton)))
+                .buttons(List.of(new Constants().backButton))
                 .build();
     }
 

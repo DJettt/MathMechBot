@@ -1,6 +1,5 @@
 package ru.urfu;
 
-import ru.urfu.bots.DiscordBot;
 import ru.urfu.bots.TelegramBot;
 import ru.urfu.logics.LogicCore;
 import ru.urfu.logics.mathmechbot.MathMechBotCore;
@@ -29,8 +28,8 @@ final public class Main {
                 System.getenv("TGMATHMECHBOT_TOKEN"), logicCore);
         telegramBot.start();
 
-        final DiscordBot discordBot = new DiscordBot(
-                System.getenv("DISCORDBOT_TOKEN"), logicCore);
-        discordBot.start();
+//        final DiscordBot discordBot = new DiscordBot(
+//                System.getenv("DISCORDBOT_TOKEN"), logicCore);
+//        discordBot.start();
     }
 }

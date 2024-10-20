@@ -1,6 +1,5 @@
 package ru.urfu.logics.mathmechbot.states.editing;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 import org.jetbrains.annotations.NotNull;
@@ -25,7 +24,7 @@ public final class EditingFullNameState implements MathMechBotState {
                         Введите свое ФИО в формате:
                         Иванов Артём Иванович
                         Без дополнительных пробелов и с буквой ё, если нужно.""")
-            .buttons(new ArrayList<>(List.of(new Constants().backButton)))
+            .buttons(List.of(new Constants().backButton))
             .build();
 
     private final Pattern validFullNamePattern =

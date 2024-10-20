@@ -1,6 +1,5 @@
 package ru.urfu.logics.mathmechbot;
 
-import java.util.ArrayList;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import ru.urfu.localobjects.LocalMessage;
@@ -39,7 +38,7 @@ public final class TestUtils {
      * @param men       группа в формате МЕН.
      */
     public void registerUser(long id, String fullName, int year, String specialty, int group, String men) {
-        final ArrayList<LocalMessage> messages = new ArrayList<>(List.of(
+        final List<LocalMessage> messages = List.of(
                 new TestConstants().registerMessage,
                 new LocalMessageBuilder().text(fullName).build(),
                 new LocalMessageBuilder().text(String.valueOf(year)).build(),
@@ -48,7 +47,7 @@ public final class TestUtils {
                 new LocalMessageBuilder().text(men).build(),
                 new TestConstants().acceptMessage,
                 new TestConstants().infoMessage
-        ));
+        );
 
         for (final LocalMessage message : messages) {
             logic.processMessage(makeRequestFromMessage(message, id));
