@@ -5,7 +5,6 @@ import java.util.List;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
-import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -55,7 +54,6 @@ public final class DiscordBot extends ListenerAdapter implements Bot {
                         )
                 )
                 .setStatus(OnlineStatus.ONLINE)
-                .setActivity(Activity.playing("IDEA Intellij"))
                 .build();
 
         logger.info("Discord bot successfully started!");
