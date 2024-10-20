@@ -18,22 +18,23 @@ import ru.urfu.logics.mathmechbot.states.MathMechBotState;
 public enum EditingFullNameState implements MathMechBotState {
     INSTANCE;
 
-    private final static LocalMessage ON_ENTER_MESSAGE = new LocalMessageBuilder()
+    private final static int NUMBER_OF_WORDS_IN_FULL_NAME_WITH_PATRONYM = 3;
+
+    private final LocalMessage onEnterMessage = new LocalMessageBuilder()
             .text("""
                         Введите свое ФИО в формате:
                         Иванов Артём Иванович
                         Без дополнительных пробелов и с буквой ё, если нужно.""")
-            .buttons(new ArrayList<>(List.of(Constants.BACK_BUTTON)))
+            .buttons(new ArrayList<>(List.of(new Constants().backButton)))
             .build();
-    private final static int NUMBER_OF_WORDS_IN_FULL_NAME_WITH_PATRONYM = 3;
-    private final static Pattern VALID_FULL_NAME_PATTERN =
+    private final Pattern validFullNamePattern =
             Pattern.compile("^[А-ЯЁ][а-яё]+\\s+[А-ЯЁ][а-яё]+(\\s+[А-ЯЁ][а-яё]+)?$");
 
     @Override
     public void processMessage(@NotNull MathMechBotCore context, @NotNull Request request) {
         switch (request.message().text()) {
             case Constants.BACK_COMMAND -> backCommandHandler(context, request);
-            case null -> request.bot().sendMessage(Constants.TRY_AGAIN, request.id());
+            case null -> request.bot().sendMessage(new Constants().tryAgain, request.id());
             default -> textHandler(context, request);
         }
     }
@@ -41,7 +42,7 @@ public enum EditingFullNameState implements MathMechBotState {
     @NotNull
     @Override
     public LocalMessage enterMessage(@NotNull MathMechBotCore context, @NotNull Request request) {
-        return ON_ENTER_MESSAGE;
+        return onEnterMessage;
     }
 
     /**
@@ -61,7 +62,7 @@ public enum EditingFullNameState implements MathMechBotState {
      */
     public boolean validateFullName(String str) {
         // TODO: Проверить более сложные имена, содержащие дефисы или несколько слов.
-        return VALID_FULL_NAME_PATTERN.matcher(str).matches();
+        return validFullNamePattern.matcher(str).matches();
     }
 
     /**
@@ -74,7 +75,7 @@ public enum EditingFullNameState implements MathMechBotState {
         final String trimmedText = request.message().text().trim();
 
         if (!validateFullName(trimmedText)) {
-            request.bot().sendMessage(Constants.TRY_AGAIN, request.id());
+            request.bot().sendMessage(new Constants().tryAgain, request.id());
             return;
         }
 

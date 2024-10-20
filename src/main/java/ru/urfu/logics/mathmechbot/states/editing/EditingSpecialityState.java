@@ -22,7 +22,8 @@ import ru.urfu.logics.mathmechbot.states.MathMechBotState;
  */
 public enum EditingSpecialityState implements MathMechBotState {
     INSTANCE;
-    private final static Logger LOGGER = LoggerFactory.getLogger(EditingSpecialityState.class);
+
+    private final Logger logger = LoggerFactory.getLogger(EditingSpecialityState.class);
 
     /**
      * Достаёт год пользователя из хранилища.
@@ -35,10 +36,10 @@ public enum EditingSpecialityState implements MathMechBotState {
         final Optional<UserEntry> userEntryOptional = context.getStorage().getUserEntries().get(request.id());
 
         if (userEntryOptional.isEmpty()) {
-            LOGGER.error("User without entry managed to reach editing_specialty state.");
+            logger.error("User without entry managed to reach editing_specialty state.");
             throw new RuntimeException();
         } else if (userEntryOptional.get().year() == null) {
-            LOGGER.error("User without set year managed to reach editing_specialty state.");
+            logger.error("User without set year managed to reach editing_specialty state.");
             throw new RuntimeException();
         }
 
@@ -69,7 +70,7 @@ public enum EditingSpecialityState implements MathMechBotState {
         switch (request.message().text()) {
             case Constants.BACK_COMMAND -> backCommandHandler(context, request);
             case null -> {
-                request.bot().sendMessage(Constants.TRY_AGAIN, request.id());
+                request.bot().sendMessage(new Constants().tryAgain, request.id());
                 request.bot().sendMessage(enterMessage(context, request), request.id());
             }
             default -> textHandler(context, request);
@@ -83,7 +84,7 @@ public enum EditingSpecialityState implements MathMechBotState {
         for (Specialty specialty : allowedSpecialties(getUserEntryYear(context, request))) {
             buttons.add(new LocalButton(specialty.getAbbreviation(), specialty.getAbbreviation()));
         }
-        buttons.add(Constants.BACK_BUTTON);
+        buttons.add(new Constants().backButton);
         return new LocalMessageBuilder().text("""
                 На каком направлении?
                 Если Вы не видите свое направление, то, возможно, Вы выбрали не тот курс.
@@ -117,7 +118,7 @@ public enum EditingSpecialityState implements MathMechBotState {
                 .map(Specialty::getAbbreviation)
                 .toList()
                 .contains(request.message().text())) {
-            request.bot().sendMessage(Constants.TRY_AGAIN, request.id());
+            request.bot().sendMessage(new Constants().tryAgain, request.id());
             request.bot().sendMessage(enterMessage(context, request), request.id());
             return;
         }

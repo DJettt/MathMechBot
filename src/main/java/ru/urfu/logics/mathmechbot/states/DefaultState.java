@@ -88,7 +88,7 @@ public enum DefaultState implements MathMechBotState {
     public void infoCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
         final Optional<UserEntry> userEntryOptional = context.getStorage().getUserEntries().get(request.id());
         if (userEntryOptional.isEmpty()) {
-            request.bot().sendMessage(Constants.ASK_FOR_REGISTRATION, request.id());
+            request.bot().sendMessage(new Constants().askForRegistration, request.id());
             return;
         }
         final LocalMessage answer = new LocalMessageBuilder()
@@ -109,11 +109,9 @@ public enum DefaultState implements MathMechBotState {
             context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.EDITING_CHOOSE);
 
             final LocalMessage msg = EditingChooseState.INSTANCE.enterMessage(context, request);
-            if (msg != null) {
-                request.bot().sendMessage(msg, request.id());
-            }
+            request.bot().sendMessage(msg, request.id());
         } else {
-            request.bot().sendMessage(Constants.ASK_FOR_REGISTRATION, request.id());
+            request.bot().sendMessage(new Constants().askForRegistration, request.id());
         }
     }
 
@@ -133,7 +131,7 @@ public enum DefaultState implements MathMechBotState {
                 request.bot().sendMessage(msg, request.id());
             }
         } else {
-            request.bot().sendMessage(Constants.ASK_FOR_REGISTRATION, request.id());
+            request.bot().sendMessage(new Constants().askForRegistration, request.id());
         }
     }
 

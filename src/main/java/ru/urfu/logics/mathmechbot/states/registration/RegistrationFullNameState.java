@@ -23,7 +23,8 @@ public enum RegistrationFullNameState implements MathMechBotState {
     INSTANCE;
 
     private final static int NUMBER_OF_WORDS_IN_FULL_NAME_WITH_PATRONYM = 3;
-    private final static Pattern VALID_FULL_NAME_PATTERN =
+
+    private final Pattern validFullNamePattern =
             Pattern.compile("^[А-ЯЁ][а-яё]+\\s+[А-ЯЁ][а-яё]+(\\s+[А-ЯЁ][а-яё]+)?$");
 
     /**
@@ -34,14 +35,14 @@ public enum RegistrationFullNameState implements MathMechBotState {
      */
     public boolean validateFullName(String str) {
         // TODO: Проверить более сложные имена, содержащие дефисы или несколько слов.
-        return VALID_FULL_NAME_PATTERN.matcher(str).matches();
+        return validFullNamePattern.matcher(str).matches();
     }
 
     @Override
     public void processMessage(@NotNull MathMechBotCore context, @NotNull Request request) {
         switch (request.message().text()) {
             case Constants.BACK_COMMAND -> backCommandHandler(context, request);
-            case null -> request.bot().sendMessage(Constants.TRY_AGAIN, request.id());
+            case null -> request.bot().sendMessage(new Constants().tryAgain, request.id());
             default -> textHandler(context, request);
         }
     }
@@ -84,7 +85,7 @@ public enum RegistrationFullNameState implements MathMechBotState {
         final String trimmedText = request.message().text().trim();
 
         if (!validateFullName(trimmedText)) {
-            request.bot().sendMessage(Constants.TRY_AGAIN, request.id());
+            request.bot().sendMessage(new Constants().tryAgain, request.id());
             return;
         }
 

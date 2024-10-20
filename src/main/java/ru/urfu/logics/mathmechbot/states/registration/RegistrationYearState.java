@@ -21,8 +21,8 @@ import ru.urfu.logics.mathmechbot.states.MathMechBotState;
 public enum RegistrationYearState implements MathMechBotState {
     INSTANCE;
 
-    private final static Pattern VALID_YEAR_STRING_PATTERN = Pattern.compile("^[1-6]$");
-    private final static LocalMessage ON_ENTER_MESSAGE = new LocalMessageBuilder()
+    private final Pattern validYearStringPattern = Pattern.compile("^[1-6]$");
+    private final LocalMessage onEnterMessage = new LocalMessageBuilder()
             .text("На каком курсе Вы обучаетесь?")
             .buttons(new ArrayList<>(List.of(
                     new LocalButton("1 курс", "1"),
@@ -31,7 +31,7 @@ public enum RegistrationYearState implements MathMechBotState {
                     new LocalButton("4 курс", "4"),
                     new LocalButton("5 курс", "5"),
                     new LocalButton("6 курс", "6"),
-                    Constants.BACK_BUTTON
+                    new Constants().backButton
             )))
             .build();
 
@@ -40,8 +40,8 @@ public enum RegistrationYearState implements MathMechBotState {
         switch (request.message().text()) {
             case Constants.BACK_COMMAND -> backCommandHandler(context, request);
             case null -> {
-                request.bot().sendMessage(Constants.TRY_AGAIN, request.id());
-                request.bot().sendMessage(ON_ENTER_MESSAGE, request.id());
+                request.bot().sendMessage(new Constants().tryAgain, request.id());
+                request.bot().sendMessage(onEnterMessage, request.id());
             }
             default -> textHandler(context, request);
         }
@@ -50,7 +50,7 @@ public enum RegistrationYearState implements MathMechBotState {
     @Override
     @NotNull
     public LocalMessage enterMessage(@NotNull MathMechBotCore context, @NotNull Request request) {
-        return ON_ENTER_MESSAGE;
+        return onEnterMessage;
     }
 
     /**
@@ -79,20 +79,20 @@ public enum RegistrationYearState implements MathMechBotState {
         try {
             year = Integer.parseInt(request.message().text().trim());
         } catch (NumberFormatException e) {
-            request.bot().sendMessage(Constants.TRY_AGAIN, request.id());
-            request.bot().sendMessage(ON_ENTER_MESSAGE, request.id());
+            request.bot().sendMessage(new Constants().tryAgain, request.id());
+            request.bot().sendMessage(onEnterMessage, request.id());
             return;
         }
 
-        if (VALID_YEAR_STRING_PATTERN.matcher(request.message().text()).matches()) {
+        if (validYearStringPattern.matcher(request.message().text()).matches()) {
             context.getStorage().getUserEntries().changeUserEntryYear(request.id(), year);
             context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.REGISTRATION_SPECIALTY);
 
             final LocalMessage msg = RegistrationSpecialtyState.INSTANCE.enterMessage(context, request);
             request.bot().sendMessage(msg, request.id());
         } else {
-            request.bot().sendMessage(Constants.TRY_AGAIN, request.id());
-            request.bot().sendMessage(ON_ENTER_MESSAGE, request.id());
+            request.bot().sendMessage(new Constants().tryAgain, request.id());
+            request.bot().sendMessage(onEnterMessage, request.id());
         }
     }
 }

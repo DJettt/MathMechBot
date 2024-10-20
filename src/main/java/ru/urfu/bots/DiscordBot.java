@@ -26,7 +26,7 @@ import ru.urfu.logics.LogicCore;
  * в зависимости от переданного ему при создании логического ядра (logicCore).
  */
 public final class DiscordBot extends ListenerAdapter implements Bot {
-    private static final Logger LOGGER = LoggerFactory.getLogger(DiscordBot.class);
+    private final Logger logger = LoggerFactory.getLogger(DiscordBot.class);
     private final LogicCore logicCore;
     private final String botToken;
     private JDA jda;
@@ -58,7 +58,7 @@ public final class DiscordBot extends ListenerAdapter implements Bot {
                 .setActivity(Activity.playing("IDEA Intellij"))
                 .build();
 
-        LOGGER.info("Discord bot successfully started!");
+        logger.info("Discord bot successfully started!");
     }
 
     /**
@@ -102,7 +102,7 @@ public final class DiscordBot extends ListenerAdapter implements Bot {
             channel = jda.getPrivateChannelById(id);
         }
         if (channel == null) {
-            LOGGER.warn("Couldn't find channel to send message to. Given ID: {}", id);
+            logger.warn("Couldn't find channel to send message to. Given ID: {}", id);
             return;
         }
         if (message.text() != null) {
@@ -125,7 +125,7 @@ public final class DiscordBot extends ListenerAdapter implements Bot {
                 messageCreateAction.queue();
             }
         } else {
-            LOGGER.warn("Unknown message source!");
+            logger.warn("Unknown message source!");
         }
     }
 

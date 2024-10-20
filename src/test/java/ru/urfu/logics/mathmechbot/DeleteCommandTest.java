@@ -14,21 +14,20 @@ import ru.urfu.logics.mathmechbot.models.MathMechBotUserState;
 import ru.urfu.logics.mathmechbot.models.UserBuilder;
 import ru.urfu.logics.mathmechbot.models.UserEntry;
 import ru.urfu.logics.mathmechbot.storages.MathMechStorage;
-import ru.urfu.logics.mathmechbot.storages.UserArrayStorage;
-import ru.urfu.logics.mathmechbot.storages.UserEntryArrayStorage;
 
 /**
  * Тесты для команды удаления.
  */
 @DisplayName("[/delete] Состояние: ожидание подтверждения")
 final class DeleteCommandTest {
-    private final static LocalMessage ASK_CONFIRMATION = new LocalMessageBuilder().text("""
+    private final LocalMessage askConfirmation = new LocalMessageBuilder().text("""
                     Точно удаляем?
 
                     ФИО: Иванов Иван Иванович
                     Группа: ММП-102 (МЕН-123456)""")
             .buttons(TestConstants.YES_NO_BACK)
             .build();
+
     private TestUtils utils;
     private MathMechStorage storage;
     private MathMechBotCore logic;
@@ -41,7 +40,7 @@ final class DeleteCommandTest {
      */
     @BeforeEach
     void setupTest() {
-        storage = new MathMechStorage(new UserArrayStorage(), new UserEntryArrayStorage());
+        storage = new MathMechStorage();
         logic = new MathMechBotCore(storage);
         bot = new DummyBot();
         utils = new TestUtils(logic, bot);
@@ -69,7 +68,7 @@ final class DeleteCommandTest {
     @Test
     @DisplayName("Кнопка 'Да'")
     void testRegisteredUserSaysYes() {
-        Assertions.assertEquals(ASK_CONFIRMATION, bot.getOutcomingMessageList().getFirst());
+        Assertions.assertEquals(askConfirmation, bot.getOutcomingMessageList().getFirst());
 
         logic.processMessage(utils.makeRequestFromMessage(TestConstants.ACCEPT_MESSAGE));
         Assertions.assertEquals(
@@ -172,6 +171,6 @@ final class DeleteCommandTest {
                 userEntryBeforeDelete,
                 storage.getUserEntries().get(0L).orElseThrow());
         Assertions.assertEquals(TestConstants.TRY_AGAIN, bot.getOutcomingMessageList().get(1));
-        Assertions.assertEquals(ASK_CONFIRMATION, bot.getOutcomingMessageList().get(2));
+        Assertions.assertEquals(askConfirmation, bot.getOutcomingMessageList().get(2));
     }
 }

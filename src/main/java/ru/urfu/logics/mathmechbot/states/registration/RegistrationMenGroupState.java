@@ -20,13 +20,13 @@ public enum RegistrationMenGroupState implements MathMechBotState {
     INSTANCE;
 
     // TODO: Проверить более сложные имена, содержащие дефисы или несколько слов.
-    private final static Pattern VALID_MEN_GROUP_STRING = Pattern.compile("^МЕН-\\d{6}$");
+    private final Pattern validMenGroupString = Pattern.compile("^МЕН-\\d{6}$");
 
     @Override
     public void processMessage(@NotNull MathMechBotCore context, @NotNull Request request) {
         switch (request.message().text()) {
             case Constants.BACK_COMMAND -> backCommandHandler(context, request);
-            case null -> request.bot().sendMessage(Constants.TRY_AGAIN, request.id());
+            case null -> request.bot().sendMessage(new Constants().tryAgain, request.id());
             default -> textHandler(context, request);
         }
     }
@@ -35,7 +35,7 @@ public enum RegistrationMenGroupState implements MathMechBotState {
     public LocalMessage enterMessage(@NotNull MathMechBotCore context, @NotNull Request request) {
         return new LocalMessageBuilder()
                 .text("Введите свою академическую группу в формате:\nМЕН-123456")
-                .buttons(new ArrayList<>(List.of(Constants.BACK_BUTTON)))
+                .buttons(new ArrayList<>(List.of(new Constants().backButton)))
                 .build();
     }
 
@@ -60,8 +60,8 @@ public enum RegistrationMenGroupState implements MathMechBotState {
         assert request.message().text() != null;
 
         final String trimmedText = request.message().text().trim();
-        if (!VALID_MEN_GROUP_STRING.matcher(trimmedText).matches()) {
-            request.bot().sendMessage(Constants.TRY_AGAIN, request.id());
+        if (!validMenGroupString.matcher(trimmedText).matches()) {
+            request.bot().sendMessage(new Constants().tryAgain, request.id());
             return;
         }
 

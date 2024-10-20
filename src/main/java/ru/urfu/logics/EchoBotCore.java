@@ -11,8 +11,8 @@ import ru.urfu.localobjects.Request;
  * Обрабатывает команды /help и /start, отвечая на них справкой.
  */
 public final class EchoBotCore implements LogicCore {
-    final static String START_COMMAND = "/start";
-    final static String HELP_COMMAND = "/help";
+    private final static String START_COMMAND = "/start";
+    private final static String HELP_COMMAND = "/help";
 
     /**
      * Обрабатывает всю информацию, полученную с ботов.

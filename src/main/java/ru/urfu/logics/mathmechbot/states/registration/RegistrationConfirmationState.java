@@ -24,8 +24,9 @@ import ru.urfu.logics.mathmechbot.states.MathMechBotState;
 public enum RegistrationConfirmationState implements MathMechBotState {
     INSTANCE;
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(RegistrationConfirmationState.class);
     private final static String ENTER_MESSAGE_PREFIX = "Всё верно?\n\n";
+
+    private final Logger logger = LoggerFactory.getLogger(RegistrationConfirmationState.class);
 
     @Override
     public void processMessage(@NotNull MathMechBotCore context, @NotNull Request request) {
@@ -33,7 +34,7 @@ public enum RegistrationConfirmationState implements MathMechBotState {
             case Constants.BACK_COMMAND -> backCommandHandler(context, request);
             case Constants.ACCEPT_COMMAND -> acceptCommandHandler(context, request);
             case Constants.DECLINE_COMMAND -> declineCommandHandler(context, request);
-            case null, default -> request.bot().sendMessage(Constants.TRY_AGAIN, request.id());
+            case null, default -> request.bot().sendMessage(new Constants().tryAgain, request.id());
         }
     }
 
@@ -43,13 +44,16 @@ public enum RegistrationConfirmationState implements MathMechBotState {
         final Optional<UserEntry> userEntryOptional = context.getStorage().getUserEntries().get(request.id());
 
         if (userEntryOptional.isEmpty()) {
-            LOGGER.error("User without entry reached registration end");
+            logger.error("User without entry reached registration end");
             return null;
         }
 
         return new LocalMessageBuilder()
                 .text(ENTER_MESSAGE_PREFIX + userEntryOptional.get().toHumanReadable())
-                .buttons(new ArrayList<>(List.of(Constants.YES_BUTTON, Constants.NO_BUTTON, Constants.BACK_BUTTON)))
+                .buttons(new ArrayList<>(List.of(
+                        new Constants().yesButton,
+                        new Constants().noButton,
+                        new Constants().backButton)))
                 .build();
     }
 

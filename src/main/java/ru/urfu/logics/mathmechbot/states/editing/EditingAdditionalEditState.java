@@ -18,11 +18,11 @@ import ru.urfu.logics.mathmechbot.states.MathMechBotState;
 public enum EditingAdditionalEditState implements MathMechBotState {
     INSTANCE;
 
-    private final static LocalMessage ON_ENTER_MESSAGE = new LocalMessageBuilder()
+    private final LocalMessage onEnterMessage = new LocalMessageBuilder()
             .text("Хотите изменить что-нибудь еще?")
             .buttons(new ArrayList<>(List.of(
-                    Constants.YES_BUTTON,
-                    Constants.NO_BUTTON)))
+                    new Constants().yesButton,
+                    new Constants().noButton)))
             .build();
 
     @Override
@@ -41,13 +41,13 @@ public enum EditingAdditionalEditState implements MathMechBotState {
                 DefaultState.INSTANCE.infoCommandHandler(context, request);
                 request.bot().sendMessage(DefaultState.INSTANCE.enterMessage(context, request), request.id());
             }
-            default -> request.bot().sendMessage(Constants.TRY_AGAIN, request.id());
+            case null, default -> request.bot().sendMessage(new Constants().tryAgain, request.id());
         }
     }
 
     @NotNull
     @Override
     public LocalMessage enterMessage(@NotNull MathMechBotCore context, @NotNull Request request) {
-        return ON_ENTER_MESSAGE;
+        return onEnterMessage;
     }
 }

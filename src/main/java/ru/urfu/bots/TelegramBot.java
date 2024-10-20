@@ -26,7 +26,7 @@ import ru.urfu.logics.LogicCore;
  * в зависимости от переданного ему при создании логического ядра (logicCore).
  */
 public final class TelegramBot implements Bot, LongPollingSingleThreadUpdateConsumer {
-    private static final Logger LOGGER = LoggerFactory.getLogger(TelegramBot.class);
+    private final Logger logger = LoggerFactory.getLogger(TelegramBot.class);
     private final TelegramClient telegramClient;
     private final LogicCore logicCore;
     private final String botToken;
@@ -51,11 +51,11 @@ public final class TelegramBot implements Bot, LongPollingSingleThreadUpdateCons
         new Thread(() -> {
             try {
                 botsApplication.registerBot(botToken, this);
-                LOGGER.info("Telegram bot successfully started!");
+                logger.info("Telegram bot successfully started!");
 
                 Thread.currentThread().join();
             } catch (Exception e) {
-                LOGGER.error("Bot didn't get registered and didn't run.", e);
+                logger.error("Bot didn't get registered and didn't run.", e);
             }
         }).start();
     }
@@ -72,7 +72,7 @@ public final class TelegramBot implements Bot, LongPollingSingleThreadUpdateCons
                 telegramClient.execute(createSendMessage(msg, id));
             }
         } catch (TelegramApiException e) {
-            LOGGER.error("Couldn't send message", e);
+            logger.error("Couldn't send message", e);
         }
     }
 
@@ -186,7 +186,7 @@ public final class TelegramBot implements Bot, LongPollingSingleThreadUpdateCons
             msg = convertTelegramMessage(update.getMessage());
             chatId = update.getMessage().getChatId();
         } else {
-            LOGGER.error("Unknown message type!");
+            logger.error("Unknown message type!");
             return;
         }
         logicCore.processMessage(new Request(chatId, msg, this));

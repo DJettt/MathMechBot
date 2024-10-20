@@ -8,8 +8,6 @@ import org.junit.jupiter.params.provider.ValueSource;
 import ru.urfu.localobjects.LocalMessageBuilder;
 import ru.urfu.logics.DummyBot;
 import ru.urfu.logics.mathmechbot.storages.MathMechStorage;
-import ru.urfu.logics.mathmechbot.storages.UserArrayStorage;
-import ru.urfu.logics.mathmechbot.storages.UserEntryArrayStorage;
 
 /**
  * Тесты для дефолтного состояния.
@@ -25,7 +23,7 @@ final class DefaultStateTest {
      */
     @BeforeEach
     void setupTest() {
-        final MathMechStorage storage = new MathMechStorage(new UserArrayStorage(), new UserEntryArrayStorage());
+        final MathMechStorage storage = new MathMechStorage();
         logic = new MathMechBotCore(storage);
         bot = new DummyBot();
         utils = new TestUtils(logic, bot);

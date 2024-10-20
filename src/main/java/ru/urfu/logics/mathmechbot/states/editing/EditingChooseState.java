@@ -20,12 +20,13 @@ public enum EditingChooseState implements MathMechBotState {
     INSTANCE;
 
     //TODO: поменять местоположение констант.
-    private final static String EDITING_FULL_NAME = "full_name";
-    private final static String EDITING_YEAR = "year";
-    private final static String EDITING_SPECIALITY = "speciality";
-    private final static String EDITING_GROUP = "number_of_group";
-    private final static String EDITING_MEN = "men";
-    private final static LocalMessage ON_ENTER_MESSAGE = new LocalMessageBuilder()
+    private static final String EDITING_FULL_NAME = "full_name";
+    private static final String EDITING_YEAR = "year";
+    private static final String EDITING_SPECIALITY = "speciality";
+    private static final String EDITING_GROUP = "number_of_group";
+    private static final String EDITING_MEN = "men";
+
+    private final LocalMessage onEnterMessage = new LocalMessageBuilder()
             .text("Что Вы хотите изменить?")
             .buttons(new ArrayList<>(List.of(
                     new LocalButton("ФИО", EDITING_FULL_NAME),
@@ -33,7 +34,7 @@ public enum EditingChooseState implements MathMechBotState {
                     new LocalButton("Направление", EDITING_SPECIALITY),
                     new LocalButton("Группа", EDITING_GROUP),
                     new LocalButton("МЕН", EDITING_MEN),
-                    Constants.BACK_BUTTON)))
+                    new Constants().backButton)))
             .build();
 
     @Override
@@ -65,14 +66,14 @@ public enum EditingChooseState implements MathMechBotState {
                         MathMechBotUserState.EDITING_MEN);
                 request.bot().sendMessage(EditingMenState.INSTANCE.enterMessage(context, request), request.id());
             }
-            default -> request.bot().sendMessage(Constants.TRY_AGAIN, request.id());
+            case null, default -> request.bot().sendMessage(new Constants().tryAgain, request.id());
         }
     }
 
     @Override
     @NotNull
     public LocalMessage enterMessage(@NotNull MathMechBotCore context, @NotNull Request request) {
-        return ON_ENTER_MESSAGE;
+        return onEnterMessage;
     }
 
     /**

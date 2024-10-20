@@ -19,8 +19,8 @@ import ru.urfu.logics.mathmechbot.states.MathMechBotState;
 public enum EditingGroupState implements MathMechBotState {
     INSTANCE;
 
-    private final static Pattern VALID_GROUP_STRING_PATTERN = Pattern.compile("^[1-5]$");
-    private final static LocalMessage ON_ENTER_MESSAGE = new LocalMessageBuilder()
+    private final Pattern validGroupStringPattern = Pattern.compile("^[1-5]$");
+    private final LocalMessage onEnterMessage = new LocalMessageBuilder()
             .text("Какая у Вас группа?")
             .buttons(new ArrayList<>(List.of(
                     new LocalButton("1 группа", "1"),
@@ -28,14 +28,14 @@ public enum EditingGroupState implements MathMechBotState {
                     new LocalButton("3 группа", "3"),
                     new LocalButton("4 группа", "4"),
                     new LocalButton("5 группа", "5"),
-                    Constants.BACK_BUTTON)))
+                    new Constants().backButton)))
             .build();
 
     @Override
     public void processMessage(@NotNull MathMechBotCore context, @NotNull Request request) {
         switch (request.message().text()) {
             case Constants.BACK_COMMAND -> backCommandHandler(context, request);
-            case null -> request.bot().sendMessage(Constants.TRY_AGAIN, request.id());
+            case null -> request.bot().sendMessage(new Constants().tryAgain, request.id());
             default -> textCommandHandler(context, request);
         }
     }
@@ -43,7 +43,7 @@ public enum EditingGroupState implements MathMechBotState {
     @Override
     @NotNull
     public LocalMessage enterMessage(@NotNull MathMechBotCore context, @NotNull Request request) {
-        return ON_ENTER_MESSAGE;
+        return onEnterMessage;
     }
 
     /**
@@ -67,9 +67,9 @@ public enum EditingGroupState implements MathMechBotState {
     private void textCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
         assert request.message().text() != null;
 
-        if (!VALID_GROUP_STRING_PATTERN.matcher(request.message().text()).matches()) {
-            request.bot().sendMessage(Constants.TRY_AGAIN, request.id());
-            request.bot().sendMessage(ON_ENTER_MESSAGE, request.id());
+        if (!validGroupStringPattern.matcher(request.message().text()).matches()) {
+            request.bot().sendMessage(new Constants().tryAgain, request.id());
+            request.bot().sendMessage(onEnterMessage, request.id());
             return;
         }
 
