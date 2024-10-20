@@ -29,10 +29,10 @@ final class SpecialtyTest {
     private MathMechBotCore logic;
     private DummyBot bot;
 
-    User currentFirstYearUser;
-    UserEntry currentFirstYearUserEntry;
-    User currentSecondYearUser;
-    UserEntry currentSecondYearUserEntry;
+    private User currentFirstYearUser;
+    private UserEntry currentFirstYearUserEntry;
+    private User currentSecondYearUser;
+    private UserEntry currentSecondYearUserEntry;
 
     /**
      * Создаём объект логики, ложного бота и утилиты для каждого теста,

@@ -32,8 +32,7 @@ final class DeleteCommandTest {
     private MathMechStorage storage;
     private MathMechBotCore logic;
     private DummyBot bot;
-
-    UserEntry userEntryBeforeDelete;
+    private UserEntry userEntryBeforeDelete;
 
     /**
      * Создаём объект логики и ложного бота для каждого теста, регистрируем человека и отправляем /delete.

@@ -30,8 +30,8 @@ final class YearStateTest {
     private MathMechBotCore logic;
     private DummyBot bot;
 
-    User currentUser;
-    UserEntry currentUserEntry;
+    private User currentUser;
+    private UserEntry currentUserEntry;
 
     /**
      * Создаём объект логики, ложного бота и утилиты для каждого теста, выполняем все предыдущие шаги регистрации.

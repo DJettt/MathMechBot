@@ -11,9 +11,7 @@ import ru.urfu.logics.mathmechbot.MathMechBotCore;
 import ru.urfu.logics.mathmechbot.TestConstants;
 import ru.urfu.logics.mathmechbot.TestUtils;
 import ru.urfu.logics.mathmechbot.models.MathMechBotUserState;
-import ru.urfu.logics.mathmechbot.models.User;
 import ru.urfu.logics.mathmechbot.models.UserBuilder;
-import ru.urfu.logics.mathmechbot.models.UserEntry;
 import ru.urfu.logics.mathmechbot.storages.MathMechStorage;
 
 /**
@@ -25,9 +23,6 @@ final class EditingTest {
     private MathMechStorage storage;
     private MathMechBotCore logic;
     private DummyBot bot;
-
-    User currentUser;
-    UserEntry currentUserEntry;
 
     /**
      * Создаём объект логики, ложного бота и утилиты для каждого теста, регистрируемся.
@@ -52,9 +47,6 @@ final class EditingTest {
                 utils.makeRequestFromMessage(new LocalMessageBuilder().text("МЕН-162534").build()));
         logic.processMessage(
                 utils.makeRequestFromMessage(new LocalMessageBuilder().text(TestConstants.ACCEPT_COMMAND).build()));
-
-        currentUser = storage.getUsers().get(0L).orElseThrow();
-        currentUserEntry = storage.getUserEntries().get(0L).orElseThrow();
 
         bot.getOutcomingMessageList().clear();
     }
