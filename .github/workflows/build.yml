@@ -32,7 +32,7 @@ jobs:
         run: mvn --batch-mode test
 
 
-  # Checks code's styles
+  # Checks code styles
   checkstyle:
     name: Check code style
     runs-on: ubuntu-24.04
