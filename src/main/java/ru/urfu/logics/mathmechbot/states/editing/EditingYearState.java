@@ -12,6 +12,8 @@ import ru.urfu.logics.mathmechbot.Constants;
 import ru.urfu.logics.mathmechbot.MathMechBotCore;
 import ru.urfu.logics.mathmechbot.models.MathMechBotUserState;
 import ru.urfu.logics.mathmechbot.states.MathMechBotState;
+import ru.urfu.logics.mathmechbot.storages.UserEntryStorage;
+import ru.urfu.logics.mathmechbot.storages.UserStorage;
 
 /**
  * Состояние изменения курса обучения.
@@ -65,6 +67,9 @@ public final class EditingYearState implements MathMechBotState {
     private void textHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
         assert request.message().text() != null;
 
+        final UserStorage userStorage = context.getStorage().getUsers();
+        final UserEntryStorage userEntryStorage = context.getStorage().getUserEntries();
+
         int year;
         try {
             year = Integer.parseInt(request.message().text().trim());
@@ -75,8 +80,8 @@ public final class EditingYearState implements MathMechBotState {
         }
 
         if (validYearStringPattern.matcher(request.message().text()).matches()) {
-            context.getStorage().getUserEntries().changeUserEntryYear(request.id(), year);
-            context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.EDITING_ADDITIONAL_EDIT);
+            userEntryStorage.changeUserEntryYear(request.id(), year);
+            userStorage.changeUserState(request.id(), MathMechBotUserState.EDITING_ADDITIONAL_EDIT);
 
             final LocalMessage msg = new EditingAdditionalEditState().enterMessage(context, request);
             request.bot().sendMessage(msg, request.id());

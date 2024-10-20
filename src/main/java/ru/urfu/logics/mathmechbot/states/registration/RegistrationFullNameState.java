@@ -14,6 +14,8 @@ import ru.urfu.logics.mathmechbot.models.MathMechBotUserState;
 import ru.urfu.logics.mathmechbot.models.UserEntry;
 import ru.urfu.logics.mathmechbot.states.DefaultState;
 import ru.urfu.logics.mathmechbot.states.MathMechBotState;
+import ru.urfu.logics.mathmechbot.storages.UserEntryStorage;
+import ru.urfu.logics.mathmechbot.storages.UserStorage;
 
 
 /**
@@ -66,7 +68,7 @@ public final class RegistrationFullNameState implements MathMechBotState {
         final Optional<UserEntry> userEntryOptional = context.getStorage().getUserEntries().get(request.id());
         userEntryOptional.ifPresent(context.getStorage().getUserEntries()::delete);
         context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.DEFAULT);
-        request.bot().sendMessage(DefaultState.INSTANCE.enterMessage(context, request), request.id());
+        request.bot().sendMessage(new DefaultState().enterMessage(context, request), request.id());
     }
 
     /**
@@ -80,6 +82,10 @@ public final class RegistrationFullNameState implements MathMechBotState {
      */
     public void textHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
         assert request.message().text() != null;
+
+        final UserStorage userStorage = context.getStorage().getUsers();
+        final UserEntryStorage userEntryStorage = context.getStorage().getUserEntries();
+
         final String trimmedText = request.message().text().trim();
 
         if (!validateFullName(trimmedText)) {
@@ -90,10 +96,10 @@ public final class RegistrationFullNameState implements MathMechBotState {
         final List<String> strings = List.of(trimmedText.split("\\s+"));
         final boolean hasPatronym = strings.size() == NUMBER_OF_WORDS_IN_FULL_NAME_WITH_PATRONYM;
 
-        context.getStorage().getUserEntries().add(new UserEntry(
+        userEntryStorage.add(new UserEntry(
                 request.id(), strings.get(0), strings.get(1), (hasPatronym) ? strings.get(2) : null,
                 null, null, null, null, request.id()));
-        context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.REGISTRATION_YEAR);
+        userStorage.changeUserState(request.id(), MathMechBotUserState.REGISTRATION_YEAR);
 
         final LocalMessage msg = new RegistrationYearState().enterMessage(context, request);
         request.bot().sendMessage(msg, request.id());

@@ -16,6 +16,8 @@ import ru.urfu.logics.mathmechbot.models.MathMechBotUserState;
 import ru.urfu.logics.mathmechbot.models.Specialty;
 import ru.urfu.logics.mathmechbot.models.UserEntry;
 import ru.urfu.logics.mathmechbot.states.MathMechBotState;
+import ru.urfu.logics.mathmechbot.storages.UserEntryStorage;
+import ru.urfu.logics.mathmechbot.storages.UserStorage;
 
 /**
  * Состояние изменения информации о направлении.
@@ -111,6 +113,9 @@ public final class EditingSpecialityState implements MathMechBotState {
     private void textHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
         assert request.message().text() != null;
 
+        final UserStorage userStorage = context.getStorage().getUsers();
+        final UserEntryStorage userEntryStorage = context.getStorage().getUserEntries();
+
         if (!allowedSpecialties(getUserEntryYear(context, request))
                 .stream()
                 .map(Specialty::getAbbreviation)
@@ -121,8 +126,8 @@ public final class EditingSpecialityState implements MathMechBotState {
             return;
         }
 
-        context.getStorage().getUserEntries().changeUserEntrySpecialty(request.id(), request.message().text());
-        context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.EDITING_ADDITIONAL_EDIT);
+        userEntryStorage.changeUserEntrySpecialty(request.id(), request.message().text());
+        userStorage.changeUserState(request.id(), MathMechBotUserState.EDITING_ADDITIONAL_EDIT);
         request.bot().sendMessage(new EditingAdditionalEditState().enterMessage(context, request), request.id());
     }
 }

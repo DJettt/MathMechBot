@@ -25,7 +25,7 @@ public final class MathMechBotCore implements LogicCore {
      */
     public MathMechBotCore(@NotNull MathMechStorage storage) {
         this.storage = storage;
-        currentState = DefaultState.INSTANCE;
+        currentState = new DefaultState();
     }
 
     @Override

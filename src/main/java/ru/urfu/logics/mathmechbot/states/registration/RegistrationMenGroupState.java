@@ -11,6 +11,8 @@ import ru.urfu.logics.mathmechbot.Constants;
 import ru.urfu.logics.mathmechbot.MathMechBotCore;
 import ru.urfu.logics.mathmechbot.models.MathMechBotUserState;
 import ru.urfu.logics.mathmechbot.states.MathMechBotState;
+import ru.urfu.logics.mathmechbot.storages.UserEntryStorage;
+import ru.urfu.logics.mathmechbot.storages.UserStorage;
 
 
 /**
@@ -57,14 +59,17 @@ public final class RegistrationMenGroupState implements MathMechBotState {
     private void textHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
         assert request.message().text() != null;
 
+        final UserStorage userStorage = context.getStorage().getUsers();
+        final UserEntryStorage userEntryStorage = context.getStorage().getUserEntries();
+
         final String trimmedText = request.message().text().trim();
         if (!validMenGroupString.matcher(trimmedText).matches()) {
             request.bot().sendMessage(new Constants().tryAgain, request.id());
             return;
         }
 
-        context.getStorage().getUserEntries().changeUserEntryMen(request.id(), trimmedText);
-        context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.REGISTRATION_CONFIRMATION);
+        userEntryStorage.changeUserEntryMen(request.id(), trimmedText);
+        userStorage.changeUserState(request.id(), MathMechBotUserState.REGISTRATION_CONFIRMATION);
 
         final LocalMessage message = new RegistrationConfirmationState().enterMessage(context, request);
         if (message != null) {

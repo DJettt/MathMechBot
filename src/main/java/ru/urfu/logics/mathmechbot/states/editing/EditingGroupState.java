@@ -12,6 +12,8 @@ import ru.urfu.logics.mathmechbot.Constants;
 import ru.urfu.logics.mathmechbot.MathMechBotCore;
 import ru.urfu.logics.mathmechbot.models.MathMechBotUserState;
 import ru.urfu.logics.mathmechbot.states.MathMechBotState;
+import ru.urfu.logics.mathmechbot.storages.UserEntryStorage;
+import ru.urfu.logics.mathmechbot.storages.UserStorage;
 
 /**
  * Состояние при котором пользователь меняет номер группы.
@@ -65,15 +67,17 @@ public final class EditingGroupState implements MathMechBotState {
     private void textCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
         assert request.message().text() != null;
 
+        final UserStorage userStorage = context.getStorage().getUsers();
+        final UserEntryStorage userEntryStorage = context.getStorage().getUserEntries();
+
         if (!validGroupStringPattern.matcher(request.message().text()).matches()) {
             request.bot().sendMessage(new Constants().tryAgain, request.id());
             request.bot().sendMessage(onEnterMessage, request.id());
             return;
         }
 
-        context.getStorage().getUserEntries().changeUserEntryGroup(request.id(),
-                Integer.parseInt(request.message().text()));
-        context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.EDITING_ADDITIONAL_EDIT);
+        userEntryStorage.changeUserEntryGroup(request.id(), Integer.parseInt(request.message().text()));
+        userStorage.changeUserState(request.id(), MathMechBotUserState.EDITING_ADDITIONAL_EDIT);
 
         final LocalMessage msg = new EditingAdditionalEditState().enterMessage(context, request);
         request.bot().sendMessage(msg, request.id());

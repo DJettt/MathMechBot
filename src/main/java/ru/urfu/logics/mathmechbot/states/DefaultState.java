@@ -18,9 +18,7 @@ import ru.urfu.logics.mathmechbot.states.registration.RegistrationFullNameState;
 /**
  * Состояние, в котором изначально пребывает пользователь.
  */
-public enum DefaultState implements MathMechBotState {
-    INSTANCE;
-
+public final class DefaultState implements MathMechBotState {
     private final static String START_COMMAND = "/start";
     private final static String HELP_COMMAND = "/help";
     private final static String REGISTER_COMMAND = "/register";

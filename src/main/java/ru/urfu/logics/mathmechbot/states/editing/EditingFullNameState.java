@@ -11,6 +11,8 @@ import ru.urfu.logics.mathmechbot.Constants;
 import ru.urfu.logics.mathmechbot.MathMechBotCore;
 import ru.urfu.logics.mathmechbot.models.MathMechBotUserState;
 import ru.urfu.logics.mathmechbot.states.MathMechBotState;
+import ru.urfu.logics.mathmechbot.storages.UserEntryStorage;
+import ru.urfu.logics.mathmechbot.storages.UserStorage;
 
 /**
  * Состояние изменения ФИО.
@@ -25,6 +27,7 @@ public final class EditingFullNameState implements MathMechBotState {
                         Без дополнительных пробелов и с буквой ё, если нужно.""")
             .buttons(new ArrayList<>(List.of(new Constants().backButton)))
             .build();
+
     private final Pattern validFullNamePattern =
             Pattern.compile("^[А-ЯЁ][а-яё]+\\s+[А-ЯЁ][а-яё]+(\\s+[А-ЯЁ][а-яё]+)?$");
 
@@ -69,6 +72,9 @@ public final class EditingFullNameState implements MathMechBotState {
      * @param request запрос
      */
     private void textHandler(MathMechBotCore context, Request request) {
+        final UserStorage userStorage = context.getStorage().getUsers();
+        final UserEntryStorage userEntryStorage = context.getStorage().getUserEntries();
+
         assert request.message().text() != null;
         final String trimmedText = request.message().text().trim();
 
@@ -79,14 +85,14 @@ public final class EditingFullNameState implements MathMechBotState {
 
         final List<String> strings = List.of(trimmedText.split("\\s+"));
 
-        context.getStorage().getUserEntries().changeUserEntrySurname(request.id(), strings.get(0));
-        context.getStorage().getUserEntries().changeUserEntryName(request.id(), strings.get(1));
+        userEntryStorage.changeUserEntrySurname(request.id(), strings.get(0));
+        userEntryStorage.changeUserEntryName(request.id(), strings.get(1));
         if (strings.size() == NUMBER_OF_WORDS_IN_FULL_NAME_WITH_PATRONYM) {
-            context.getStorage().getUserEntries().changeUserEntryPatronym(request.id(), strings.get(2));
+            userEntryStorage.changeUserEntryPatronym(request.id(), strings.get(2));
         } else {
-            context.getStorage().getUserEntries().changeUserEntryPatronym(request.id(), null);
+            userEntryStorage.changeUserEntryPatronym(request.id(), null);
         }
-        context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.EDITING_ADDITIONAL_EDIT);
+        userStorage.changeUserState(request.id(), MathMechBotUserState.EDITING_ADDITIONAL_EDIT);
         request.bot().sendMessage(new LocalMessageBuilder().text("Данные сохранены.").build(), request.id());
 
         final LocalMessage msg = new EditingAdditionalEditState().enterMessage(context, request);

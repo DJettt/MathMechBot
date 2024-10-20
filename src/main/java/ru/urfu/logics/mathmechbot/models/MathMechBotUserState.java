@@ -22,7 +22,7 @@ import ru.urfu.logics.mathmechbot.states.registration.RegistrationYearState;
  * Cостояние пользователя в MathMechBot.
  */
 public enum MathMechBotUserState implements UserState {
-    DEFAULT(DefaultState.INSTANCE),
+    DEFAULT(new DefaultState()),
 
     REGISTRATION_NAME(new RegistrationFullNameState()),
     REGISTRATION_YEAR(new RegistrationYearState()),

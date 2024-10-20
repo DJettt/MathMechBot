@@ -16,6 +16,8 @@ import ru.urfu.logics.mathmechbot.models.MathMechBotUserState;
 import ru.urfu.logics.mathmechbot.models.UserEntry;
 import ru.urfu.logics.mathmechbot.states.DefaultState;
 import ru.urfu.logics.mathmechbot.states.MathMechBotState;
+import ru.urfu.logics.mathmechbot.storages.UserEntryStorage;
+import ru.urfu.logics.mathmechbot.storages.UserStorage;
 
 
 /**
@@ -64,7 +66,7 @@ public final class DeletionConfirmationState implements MathMechBotState {
      */
     private void backCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
         context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.DEFAULT);
-        request.bot().sendMessage(DefaultState.INSTANCE.enterMessage(context, request), request.id());
+        request.bot().sendMessage(new DefaultState().enterMessage(context, request), request.id());
     }
 
     /**
@@ -74,12 +76,15 @@ public final class DeletionConfirmationState implements MathMechBotState {
      * @param request запрос.
      */
     private void acceptCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
-        final Optional<UserEntry> userEntryOptional = context.getStorage().getUserEntries().get(request.id());
-        userEntryOptional.ifPresent(context.getStorage().getUserEntries()::delete);
+        final UserStorage userStorage = context.getStorage().getUsers();
+        final UserEntryStorage userEntryStorage = context.getStorage().getUserEntries();
 
-        context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.DEFAULT);
+        final Optional<UserEntry> userEntryOptional = userEntryStorage.get(request.id());
+        userEntryOptional.ifPresent(userEntryStorage::delete);
+
+        userStorage.changeUserState(request.id(), MathMechBotUserState.DEFAULT);
         request.bot().sendMessage(new LocalMessageBuilder().text("Удаляем...").build(), request.id());
-        request.bot().sendMessage(DefaultState.INSTANCE.enterMessage(context, request), request.id());
+        request.bot().sendMessage(new DefaultState().enterMessage(context, request), request.id());
     }
 
     /**
@@ -91,6 +96,6 @@ public final class DeletionConfirmationState implements MathMechBotState {
     private void declineCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
         context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.DEFAULT);
         request.bot().sendMessage(new LocalMessageBuilder().text("Отмена...").build(), request.id());
-        request.bot().sendMessage(DefaultState.INSTANCE.enterMessage(context, request), request.id());
+        request.bot().sendMessage(new DefaultState().enterMessage(context, request), request.id());
     }
 }
