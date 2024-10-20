@@ -25,7 +25,7 @@ final class DeleteCommandTest {
 
                     ФИО: Иванов Иван Иванович
                     Группа: ММП-102 (МЕН-123456)""")
-            .buttons(TestConstants.YES_NO_BACK)
+            .buttons(new TestConstants().yesNoBack)
             .build();
 
     private TestUtils utils;
@@ -47,7 +47,7 @@ final class DeleteCommandTest {
 
         utils.registerUser(0L, "Иванов Иван Иванович", 1, "ММП", 2, "МЕН-123456");
         userEntryBeforeDelete = storage.getUserEntries().get(0L).orElseThrow();
-        logic.processMessage(utils.makeRequestFromMessage(TestConstants.DELETE_MESSAGE));
+        logic.processMessage(utils.makeRequestFromMessage(new TestConstants().deleteMessage));
     }
 
     /**
@@ -70,7 +70,7 @@ final class DeleteCommandTest {
     void testRegisteredUserSaysYes() {
         Assertions.assertEquals(askConfirmation, bot.getOutcomingMessageList().getFirst());
 
-        logic.processMessage(utils.makeRequestFromMessage(TestConstants.ACCEPT_MESSAGE));
+        logic.processMessage(utils.makeRequestFromMessage(new TestConstants().acceptMessage));
         Assertions.assertEquals(
                 new LocalMessageBuilder().text("Удаляем...").build(),
                 bot.getOutcomingMessageList().get(1));
@@ -79,7 +79,7 @@ final class DeleteCommandTest {
         Assertions.assertEquals(
                 new UserBuilder(0L, MathMechBotUserState.DEFAULT).build(),
                 storage.getUsers().get(0L).orElseThrow());
-        Assertions.assertEquals(TestConstants.HELP, bot.getOutcomingMessageList().get(2));
+        Assertions.assertEquals(new TestConstants().help, bot.getOutcomingMessageList().get(2));
     }
 
     /**
@@ -99,7 +99,7 @@ final class DeleteCommandTest {
     @Test
     @DisplayName("Нажата кнопка 'Нет' во время подтверждения удаления данных")
     void testRegisteredUserSaysNo() {
-        logic.processMessage(utils.makeRequestFromMessage(TestConstants.DECLINE_MESSAGE));
+        logic.processMessage(utils.makeRequestFromMessage(new TestConstants().declineMessage));
         Assertions.assertEquals(
                 new LocalMessageBuilder().text("Отмена...").build(),
                 bot.getOutcomingMessageList().get(1));
@@ -110,7 +110,7 @@ final class DeleteCommandTest {
         Assertions.assertEquals(
                 userEntryBeforeDelete,
                 storage.getUserEntries().get(0L).orElseThrow());
-        Assertions.assertEquals(TestConstants.HELP, bot.getOutcomingMessageList().get(2));
+        Assertions.assertEquals(new TestConstants().help, bot.getOutcomingMessageList().get(2));
     }
 
     /**
@@ -129,7 +129,7 @@ final class DeleteCommandTest {
     @Test
     @DisplayName("Нажата кнопка 'Назад' во время подтверждения удаления данных")
     void testRegisteredUserSaysBack() {
-        logic.processMessage(utils.makeRequestFromMessage(TestConstants.BACK_MESSAGE));
+        logic.processMessage(utils.makeRequestFromMessage(new TestConstants().backMessage));
 
         Assertions.assertEquals(
                 new UserBuilder(0L, MathMechBotUserState.DEFAULT).build(),
@@ -137,7 +137,7 @@ final class DeleteCommandTest {
         Assertions.assertEquals(
                 userEntryBeforeDelete,
                 storage.getUserEntries().get(0L).orElseThrow());
-        Assertions.assertEquals(TestConstants.HELP, bot.getOutcomingMessageList().get(1));
+        Assertions.assertEquals(new TestConstants().help, bot.getOutcomingMessageList().get(1));
     }
 
     /**
@@ -170,7 +170,7 @@ final class DeleteCommandTest {
         Assertions.assertEquals(
                 userEntryBeforeDelete,
                 storage.getUserEntries().get(0L).orElseThrow());
-        Assertions.assertEquals(TestConstants.TRY_AGAIN, bot.getOutcomingMessageList().get(1));
+        Assertions.assertEquals(new TestConstants().tryAgain, bot.getOutcomingMessageList().get(1));
         Assertions.assertEquals(askConfirmation, bot.getOutcomingMessageList().get(2));
     }
 }

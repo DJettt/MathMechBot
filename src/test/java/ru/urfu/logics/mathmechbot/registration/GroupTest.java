@@ -42,7 +42,7 @@ final class GroupTest {
         bot = new DummyBot();
         utils = new TestUtils(logic, bot);
 
-        logic.processMessage(utils.makeRequestFromMessage(TestConstants.REGISTER_MESSAGE));
+        logic.processMessage(utils.makeRequestFromMessage(new TestConstants().registerMessage));
         logic.processMessage(
                 utils.makeRequestFromMessage(new LocalMessageBuilder().text("Максимов Андрей").build()));
         logic.processMessage(
@@ -79,7 +79,7 @@ final class GroupTest {
         Assertions.assertEquals(
                 new UserEntryBuilder(currentUserEntry).group(Integer.parseInt(group)).build(),
                 storage.getUserEntries().get(0L).orElseThrow());
-        Assertions.assertEquals(RegistrationConstants.ASK_MEN, bot.getOutcomingMessageList().getLast());
+        Assertions.assertEquals(new RegistrationConstants().askMen, bot.getOutcomingMessageList().getLast());
     }
 
     /**
@@ -104,7 +104,7 @@ final class GroupTest {
 
         Assertions.assertEquals(currentUser, storage.getUsers().get(0L).orElseThrow());
         Assertions.assertEquals(currentUserEntry, storage.getUserEntries().get(0L).orElseThrow());
-        Assertions.assertEquals(TestConstants.TRY_AGAIN, bot.getOutcomingMessageList().getFirst());
+        Assertions.assertEquals(new TestConstants().tryAgain, bot.getOutcomingMessageList().getFirst());
     }
 
     /**
@@ -119,7 +119,7 @@ final class GroupTest {
     @Test
     @DisplayName("Кнопка 'Назад'")
     void testBackCommand() {
-        logic.processMessage(utils.makeRequestFromMessage(TestConstants.BACK_MESSAGE));
+        logic.processMessage(utils.makeRequestFromMessage(new TestConstants().backMessage));
         Assertions.assertEquals(
                 new UserBuilder(0L, MathMechBotUserState.REGISTRATION_SPECIALTY).build(),
                 storage.getUsers().get(0L).orElseThrow());

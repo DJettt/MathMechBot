@@ -78,8 +78,8 @@ final class FullNameTest {
     @MethodSource
     @ParameterizedTest(name = "\"{0}\" - сообщение, содержащее корректное ФИО")
     void testCorrectData(String incomingMessageText, String surname, String name, String patronym) {
-        logic.processMessage(utils.makeRequestFromMessage(TestConstants.REGISTER_MESSAGE));
-        Assertions.assertEquals(RegistrationConstants.ASK_FULL_NAME, bot.getOutcomingMessageList().getFirst());
+        logic.processMessage(utils.makeRequestFromMessage(new TestConstants().registerMessage));
+        Assertions.assertEquals(new RegistrationConstants().askFullName, bot.getOutcomingMessageList().getFirst());
 
         logic.processMessage(
                 utils.makeRequestFromMessage(new LocalMessageBuilder().text(incomingMessageText).build()));
@@ -92,7 +92,7 @@ final class FullNameTest {
                 new UserBuilder(0L, MathMechBotUserState.REGISTRATION_YEAR).build(),
                 storage.getUsers().get(0L).orElseThrow()
         );
-        Assertions.assertEquals(RegistrationConstants.ASK_YEAR, bot.getOutcomingMessageList().get(1));
+        Assertions.assertEquals(new RegistrationConstants().askYear, bot.getOutcomingMessageList().get(1));
     }
 
     /**
@@ -117,7 +117,7 @@ final class FullNameTest {
     })
     @ParameterizedTest(name = "\"{0}\" не содержит корректное ФИО")
     void testIncorrectData(String text) {
-        logic.processMessage(utils.makeRequestFromMessage(TestConstants.REGISTER_MESSAGE));
+        logic.processMessage(utils.makeRequestFromMessage(new TestConstants().registerMessage));
         logic.processMessage(
                 utils.makeRequestFromMessage(new LocalMessageBuilder().text(text).build()));
 
@@ -126,7 +126,7 @@ final class FullNameTest {
                 new UserBuilder(0L, MathMechBotUserState.REGISTRATION_NAME).build(),
                 storage.getUsers().get(0L).orElseThrow()
         );
-        Assertions.assertEquals(TestConstants.TRY_AGAIN, bot.getOutcomingMessageList().getLast());
+        Assertions.assertEquals(new TestConstants().tryAgain, bot.getOutcomingMessageList().getLast());
     }
 
     /**
@@ -143,10 +143,10 @@ final class FullNameTest {
     @Test
     @DisplayName("Кнопка 'Назад'")
     void testBackCommand() {
-        logic.processMessage(utils.makeRequestFromMessage(TestConstants.REGISTER_MESSAGE));
-        logic.processMessage(utils.makeRequestFromMessage(TestConstants.BACK_MESSAGE));
+        logic.processMessage(utils.makeRequestFromMessage(new TestConstants().registerMessage));
+        logic.processMessage(utils.makeRequestFromMessage(new TestConstants().backMessage));
 
-        Assertions.assertEquals(TestConstants.HELP, bot.getOutcomingMessageList().get(1));
+        Assertions.assertEquals(new TestConstants().help, bot.getOutcomingMessageList().get(1));
         Assertions.assertTrue(storage.getUserEntries().get(0L).isEmpty());
         Assertions.assertEquals(
                 new UserBuilder(0L, MathMechBotUserState.DEFAULT).build(),

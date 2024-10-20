@@ -40,14 +40,14 @@ public final class TestUtils {
      */
     public void registerUser(long id, String fullName, int year, String specialty, int group, String men) {
         final ArrayList<LocalMessage> messages = new ArrayList<>(List.of(
-                TestConstants.REGISTER_MESSAGE,
+                new TestConstants().registerMessage,
                 new LocalMessageBuilder().text(fullName).build(),
                 new LocalMessageBuilder().text(String.valueOf(year)).build(),
                 new LocalMessageBuilder().text(specialty).build(),
                 new LocalMessageBuilder().text(String.valueOf(group)).build(),
                 new LocalMessageBuilder().text(men).build(),
-                TestConstants.ACCEPT_MESSAGE,
-                TestConstants.INFO_MESSAGE
+                new TestConstants().acceptMessage,
+                new TestConstants().infoMessage
         ));
 
         for (final LocalMessage message : messages) {

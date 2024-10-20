@@ -43,7 +43,7 @@ final class MenTest {
         bot = new DummyBot();
         utils = new TestUtils(logic, bot);
 
-        logic.processMessage(utils.makeRequestFromMessage(TestConstants.REGISTER_MESSAGE));
+        logic.processMessage(utils.makeRequestFromMessage(new TestConstants().registerMessage));
         logic.processMessage(
                 utils.makeRequestFromMessage(new LocalMessageBuilder().text("Максимов Андрей").build()));
         logic.processMessage(
@@ -85,7 +85,7 @@ final class MenTest {
                 new LocalMessageBuilder()
                         .text(RegistrationConstants.CONFIRMATION_PREFIX
                                 + new UserEntryBuilder(currentUserEntry).men(men.trim()).build().toHumanReadable())
-                        .buttons(TestConstants.YES_NO_BACK)
+                        .buttons(new TestConstants().yesNoBack)
                         .build(),
                 bot.getOutcomingMessageList().getLast());
 
@@ -117,7 +117,7 @@ final class MenTest {
         logic.processMessage(
                 utils.makeRequestFromMessage(new LocalMessageBuilder().text(text).build()));
 
-        Assertions.assertEquals(TestConstants.TRY_AGAIN, bot.getOutcomingMessageList().getFirst());
+        Assertions.assertEquals(new TestConstants().tryAgain, bot.getOutcomingMessageList().getFirst());
         Assertions.assertEquals(currentUser, storage.getUsers().get(0L).orElseThrow());
         Assertions.assertEquals(currentUserEntry, storage.getUserEntries().get(0L).orElseThrow());
     }
@@ -134,7 +134,7 @@ final class MenTest {
     @Test
     @DisplayName("Кнопка 'Назад'")
     void testBackCommand() {
-        logic.processMessage(utils.makeRequestFromMessage(TestConstants.BACK_MESSAGE));
+        logic.processMessage(utils.makeRequestFromMessage(new TestConstants().backMessage));
         Assertions.assertEquals(
                 new UserBuilder(0L, MathMechBotUserState.REGISTRATION_GROUP).build(),
                 storage.getUsers().get(0L).orElseThrow());
