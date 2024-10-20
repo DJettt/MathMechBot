@@ -24,22 +24,22 @@ import ru.urfu.logics.mathmechbot.states.registration.RegistrationYearState;
 public enum MathMechBotUserState implements UserState {
     DEFAULT(DefaultState.INSTANCE),
 
-    REGISTRATION_NAME(RegistrationFullNameState.INSTANCE),
-    REGISTRATION_YEAR(RegistrationYearState.INSTANCE),
-    REGISTRATION_SPECIALTY(RegistrationSpecialtyState.INSTANCE),
-    REGISTRATION_GROUP(RegistrationGroupState.INSTANCE),
-    REGISTRATION_MEN(RegistrationMenGroupState.INSTANCE),
-    REGISTRATION_CONFIRMATION(RegistrationConfirmationState.INSTANCE),
+    REGISTRATION_NAME(new RegistrationFullNameState()),
+    REGISTRATION_YEAR(new RegistrationYearState()),
+    REGISTRATION_SPECIALTY(new RegistrationSpecialtyState()),
+    REGISTRATION_GROUP(new RegistrationGroupState()),
+    REGISTRATION_MEN(new RegistrationMenGroupState()),
+    REGISTRATION_CONFIRMATION(new RegistrationConfirmationState()),
 
-    EDITING_CHOOSE(EditingChooseState.INSTANCE),
-    EDITING_FULL_NAME(EditingFullNameState.INSTANCE),
-    EDITING_ADDITIONAL_EDIT(EditingAdditionalEditState.INSTANCE),
-    EDITING_YEAR(EditingYearState.INSTANCE),
-    EDITING_SPECIALITY(EditingSpecialityState.INSTANCE),
-    EDITING_GROUP(EditingGroupState.INSTANCE),
-    EDITING_MEN(EditingMenState.INSTANCE),
+    EDITING_CHOOSE(new EditingChooseState()),
+    EDITING_FULL_NAME(new EditingFullNameState()),
+    EDITING_ADDITIONAL_EDIT(new EditingAdditionalEditState()),
+    EDITING_YEAR(new EditingYearState()),
+    EDITING_SPECIALITY(new EditingSpecialityState()),
+    EDITING_GROUP(new EditingGroupState()),
+    EDITING_MEN(new EditingMenState()),
 
-    DELETION_CONFIRMATION(DeletionConfirmationState.INSTANCE);
+    DELETION_CONFIRMATION(new DeletionConfirmationState());
 
 
     private final MathMechBotState stateInstance;

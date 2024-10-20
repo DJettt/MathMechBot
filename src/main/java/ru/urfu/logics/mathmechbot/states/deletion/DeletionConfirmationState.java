@@ -21,9 +21,7 @@ import ru.urfu.logics.mathmechbot.states.MathMechBotState;
 /**
  * Состояние ожидания подтверждения удаления данных.
  */
-public enum DeletionConfirmationState implements MathMechBotState {
-    INSTANCE;
-
+public final class DeletionConfirmationState implements MathMechBotState {
     private final Logger logger = LoggerFactory.getLogger(DeletionConfirmationState.class);
 
     @Override

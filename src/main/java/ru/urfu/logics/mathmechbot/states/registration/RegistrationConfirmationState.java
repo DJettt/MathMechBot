@@ -21,9 +21,7 @@ import ru.urfu.logics.mathmechbot.states.MathMechBotState;
 /**
  * Состояние подтверждения введённых данных во время регистрации.
  */
-public enum RegistrationConfirmationState implements MathMechBotState {
-    INSTANCE;
-
+public final class RegistrationConfirmationState implements MathMechBotState {
     private final static String ENTER_MESSAGE_PREFIX = "Всё верно?\n\n";
 
     private final Logger logger = LoggerFactory.getLogger(RegistrationConfirmationState.class);
@@ -66,7 +64,7 @@ public enum RegistrationConfirmationState implements MathMechBotState {
     private void backCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
         context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.REGISTRATION_MEN);
         request.bot().sendMessage(
-                RegistrationMenGroupState.INSTANCE.enterMessage(context, request),
+                new RegistrationMenGroupState().enterMessage(context, request),
                 request.id());
     }
 

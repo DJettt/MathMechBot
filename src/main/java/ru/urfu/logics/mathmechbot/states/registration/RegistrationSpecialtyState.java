@@ -23,9 +23,7 @@ import ru.urfu.logics.mathmechbot.states.MathMechBotState;
  * Предлагает пользователю направление подготовки
  * из списка, который возвращает метод allowedSpecialties.
  */
-public enum RegistrationSpecialtyState implements MathMechBotState {
-    INSTANCE;
-
+public final class RegistrationSpecialtyState implements MathMechBotState {
     private final Logger logger = LoggerFactory.getLogger(RegistrationSpecialtyState.class);
 
     /**
@@ -99,7 +97,7 @@ public enum RegistrationSpecialtyState implements MathMechBotState {
      */
     private void backCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
         context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.REGISTRATION_YEAR);
-        request.bot().sendMessage(RegistrationYearState.INSTANCE.enterMessage(context, request), request.id());
+        request.bot().sendMessage(new RegistrationYearState().enterMessage(context, request), request.id());
     }
 
     /**
@@ -125,6 +123,6 @@ public enum RegistrationSpecialtyState implements MathMechBotState {
 
         context.getStorage().getUserEntries().changeUserEntrySpecialty(request.id(), request.message().text());
         context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.REGISTRATION_GROUP);
-        request.bot().sendMessage(RegistrationGroupState.INSTANCE.enterMessage(context, request), request.id());
+        request.bot().sendMessage(new RegistrationGroupState().enterMessage(context, request), request.id());
     }
 }

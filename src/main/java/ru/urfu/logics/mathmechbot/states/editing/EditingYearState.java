@@ -16,9 +16,7 @@ import ru.urfu.logics.mathmechbot.states.MathMechBotState;
 /**
  * Состояние изменения курса обучения.
  */
-public enum EditingYearState implements MathMechBotState {
-    INSTANCE;
-
+public final class EditingYearState implements MathMechBotState {
     private final Pattern validYearStringPattern = Pattern.compile("^[1-6]$");
     private final LocalMessage onEnterMessage = new LocalMessageBuilder()
             .text("На каком курсе Вы обучаетесь?")
@@ -55,7 +53,7 @@ public enum EditingYearState implements MathMechBotState {
      */
     private void backCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
         context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.EDITING_CHOOSE);
-        request.bot().sendMessage(EditingChooseState.INSTANCE.enterMessage(context, request), request.id());
+        request.bot().sendMessage(new EditingChooseState().enterMessage(context, request), request.id());
     }
 
     /**
@@ -80,7 +78,7 @@ public enum EditingYearState implements MathMechBotState {
             context.getStorage().getUserEntries().changeUserEntryYear(request.id(), year);
             context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.EDITING_ADDITIONAL_EDIT);
 
-            final LocalMessage msg = EditingAdditionalEditState.INSTANCE.enterMessage(context, request);
+            final LocalMessage msg = new EditingAdditionalEditState().enterMessage(context, request);
             request.bot().sendMessage(msg, request.id());
         } else {
             request.bot().sendMessage(new Constants().tryAgain, request.id());

@@ -16,9 +16,7 @@ import ru.urfu.logics.mathmechbot.states.MathMechBotState;
 /**
  * Состояние в котором пользователь выбирает, какую информацию он хочет изменить.
  */
-public enum EditingChooseState implements MathMechBotState {
-    INSTANCE;
-
+public final class EditingChooseState implements MathMechBotState {
     //TODO: поменять местоположение констант.
     private static final String EDITING_FULL_NAME = "full_name";
     private static final String EDITING_YEAR = "year";
@@ -44,27 +42,27 @@ public enum EditingChooseState implements MathMechBotState {
             case EDITING_FULL_NAME -> {
                 context.getStorage().getUsers().changeUserState(request.id(),
                         MathMechBotUserState.EDITING_FULL_NAME);
-                request.bot().sendMessage(EditingFullNameState.INSTANCE.enterMessage(context, request), request.id());
+                request.bot().sendMessage(new EditingFullNameState().enterMessage(context, request), request.id());
             }
             case EDITING_YEAR -> {
                 context.getStorage().getUsers().changeUserState(request.id(),
                         MathMechBotUserState.EDITING_YEAR);
-                request.bot().sendMessage(EditingYearState.INSTANCE.enterMessage(context, request), request.id());
+                request.bot().sendMessage(new EditingYearState().enterMessage(context, request), request.id());
             }
             case EDITING_SPECIALITY -> {
                 context.getStorage().getUsers().changeUserState(request.id(),
                         MathMechBotUserState.EDITING_SPECIALITY);
-                request.bot().sendMessage(EditingSpecialityState.INSTANCE.enterMessage(context, request), request.id());
+                request.bot().sendMessage(new EditingSpecialityState().enterMessage(context, request), request.id());
             }
             case EDITING_GROUP -> {
                 context.getStorage().getUsers().changeUserState(request.id(),
                         MathMechBotUserState.EDITING_GROUP);
-                request.bot().sendMessage(EditingGroupState.INSTANCE.enterMessage(context, request), request.id());
+                request.bot().sendMessage(new EditingGroupState().enterMessage(context, request), request.id());
             }
             case EDITING_MEN -> {
                 context.getStorage().getUsers().changeUserState(request.id(),
                         MathMechBotUserState.EDITING_MEN);
-                request.bot().sendMessage(EditingMenState.INSTANCE.enterMessage(context, request), request.id());
+                request.bot().sendMessage(new EditingMenState().enterMessage(context, request), request.id());
             }
             case null, default -> request.bot().sendMessage(new Constants().tryAgain, request.id());
         }

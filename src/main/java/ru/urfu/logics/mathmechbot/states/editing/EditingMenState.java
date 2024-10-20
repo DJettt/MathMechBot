@@ -15,9 +15,7 @@ import ru.urfu.logics.mathmechbot.states.MathMechBotState;
 /**
  * Состояние изменения академической группы (МЕН-123456).
  */
-public enum EditingMenState implements MathMechBotState {
-    INSTANCE;
-
+public final class EditingMenState implements MathMechBotState {
     private final Pattern validMenGroupString = Pattern.compile("^МЕН-\\d{6}$");
 
     @Override
@@ -45,7 +43,7 @@ public enum EditingMenState implements MathMechBotState {
      */
     private void backCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
         context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.EDITING_CHOOSE);
-        request.bot().sendMessage(EditingChooseState.INSTANCE.enterMessage(context, request), request.id());
+        request.bot().sendMessage(new EditingChooseState().enterMessage(context, request), request.id());
     }
 
     /**
@@ -66,7 +64,7 @@ public enum EditingMenState implements MathMechBotState {
         context.getStorage().getUserEntries().changeUserEntryMen(request.id(), trimmedText);
         context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.EDITING_ADDITIONAL_EDIT);
 
-        final LocalMessage message = EditingAdditionalEditState.INSTANCE.enterMessage(context, request);
+        final LocalMessage message = new EditingAdditionalEditState().enterMessage(context, request);
         request.bot().sendMessage(message, request.id());
     }
 }

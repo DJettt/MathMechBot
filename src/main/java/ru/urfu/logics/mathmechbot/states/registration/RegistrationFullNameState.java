@@ -19,9 +19,7 @@ import ru.urfu.logics.mathmechbot.states.MathMechBotState;
 /**
  * Состояние ожидания ввода ФИО во время регистрации.
  */
-public enum RegistrationFullNameState implements MathMechBotState {
-    INSTANCE;
-
+public final class RegistrationFullNameState implements MathMechBotState {
     private final static int NUMBER_OF_WORDS_IN_FULL_NAME_WITH_PATRONYM = 3;
 
     private final Pattern validFullNamePattern =
@@ -97,7 +95,7 @@ public enum RegistrationFullNameState implements MathMechBotState {
                 null, null, null, null, request.id()));
         context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.REGISTRATION_YEAR);
 
-        final LocalMessage msg = RegistrationYearState.INSTANCE.enterMessage(context, request);
+        final LocalMessage msg = new RegistrationYearState().enterMessage(context, request);
         request.bot().sendMessage(msg, request.id());
     }
 }

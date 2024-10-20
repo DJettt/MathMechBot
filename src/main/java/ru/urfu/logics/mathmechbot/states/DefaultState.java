@@ -73,7 +73,7 @@ public enum DefaultState implements MathMechBotState {
         final Optional<UserEntry> userEntryOptional = context.getStorage().getUserEntries().get(request.id());
         if (userEntryOptional.isEmpty()) {
             context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.REGISTRATION_NAME);
-            request.bot().sendMessage(RegistrationFullNameState.INSTANCE.enterMessage(context, request), request.id());
+            request.bot().sendMessage(new RegistrationFullNameState().enterMessage(context, request), request.id());
         } else {
             alreadyRegistered(request.id(), request.bot());
         }
@@ -108,7 +108,7 @@ public enum DefaultState implements MathMechBotState {
         if (userEntryOptional.isPresent()) {
             context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.EDITING_CHOOSE);
 
-            final LocalMessage msg = EditingChooseState.INSTANCE.enterMessage(context, request);
+            final LocalMessage msg = new EditingChooseState().enterMessage(context, request);
             request.bot().sendMessage(msg, request.id());
         } else {
             request.bot().sendMessage(new Constants().askForRegistration, request.id());
@@ -126,7 +126,7 @@ public enum DefaultState implements MathMechBotState {
         if (userEntryOptional.isPresent()) {
             context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.DELETION_CONFIRMATION);
 
-            final LocalMessage msg = DeletionConfirmationState.INSTANCE.enterMessage(context, request);
+            final LocalMessage msg = new DeletionConfirmationState().enterMessage(context, request);
             if (msg != null) {
                 request.bot().sendMessage(msg, request.id());
             }

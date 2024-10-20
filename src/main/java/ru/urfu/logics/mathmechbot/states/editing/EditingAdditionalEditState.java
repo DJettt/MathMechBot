@@ -15,9 +15,7 @@ import ru.urfu.logics.mathmechbot.states.MathMechBotState;
 /**
  * Состояние, в котором пользователь уточняет, хочет ли он изменить информацию о себе или нет.
  */
-public enum EditingAdditionalEditState implements MathMechBotState {
-    INSTANCE;
-
+public final class EditingAdditionalEditState implements MathMechBotState {
     private final LocalMessage onEnterMessage = new LocalMessageBuilder()
             .text("Хотите изменить что-нибудь еще?")
             .buttons(new ArrayList<>(List.of(
@@ -31,7 +29,7 @@ public enum EditingAdditionalEditState implements MathMechBotState {
             case Constants.ACCEPT_COMMAND -> {
                 context.getStorage().getUsers().changeUserState(request.id(),
                         MathMechBotUserState.EDITING_CHOOSE);
-                request.bot().sendMessage(EditingChooseState.INSTANCE.enterMessage(context, request), request.id());
+                request.bot().sendMessage(new EditingChooseState().enterMessage(context, request), request.id());
             }
             case Constants.DECLINE_COMMAND -> {
                 context.getStorage().getUsers().changeUserState(request.id(),

@@ -16,9 +16,7 @@ import ru.urfu.logics.mathmechbot.states.MathMechBotState;
 /**
  * Состояние при котором пользователь меняет номер группы.
  */
-public enum EditingGroupState implements MathMechBotState {
-    INSTANCE;
-
+public final class EditingGroupState implements MathMechBotState {
     private final Pattern validGroupStringPattern = Pattern.compile("^[1-5]$");
     private final LocalMessage onEnterMessage = new LocalMessageBuilder()
             .text("Какая у Вас группа?")
@@ -54,7 +52,7 @@ public enum EditingGroupState implements MathMechBotState {
      */
     private void backCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
         context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.EDITING_CHOOSE);
-        final LocalMessage message = EditingChooseState.INSTANCE.enterMessage(context, request);
+        final LocalMessage message = new EditingChooseState().enterMessage(context, request);
         request.bot().sendMessage(message, request.id());
     }
 
@@ -77,7 +75,7 @@ public enum EditingGroupState implements MathMechBotState {
                 Integer.parseInt(request.message().text()));
         context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.EDITING_ADDITIONAL_EDIT);
 
-        final LocalMessage msg = EditingAdditionalEditState.INSTANCE.enterMessage(context, request);
+        final LocalMessage msg = new EditingAdditionalEditState().enterMessage(context, request);
         request.bot().sendMessage(msg, request.id());
     }
 }

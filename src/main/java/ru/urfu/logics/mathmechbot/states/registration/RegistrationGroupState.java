@@ -18,9 +18,7 @@ import ru.urfu.logics.mathmechbot.states.MathMechBotState;
 /**
  * Состояние запроса номера группы во время регистрации.
  */
-public enum RegistrationGroupState implements MathMechBotState {
-    INSTANCE;
-
+public final class RegistrationGroupState implements MathMechBotState {
     private final Pattern validGroupStringPattern = Pattern.compile("^[1-5]$");
     private final LocalMessage onEnterMessage = new LocalMessageBuilder()
             .text("Какая у Вас группа?")
@@ -56,7 +54,7 @@ public enum RegistrationGroupState implements MathMechBotState {
      */
     private void backCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
         context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.REGISTRATION_SPECIALTY);
-        final LocalMessage message = RegistrationSpecialtyState.INSTANCE.enterMessage(context, request);
+        final LocalMessage message = new RegistrationSpecialtyState().enterMessage(context, request);
         request.bot().sendMessage(message, request.id());
     }
 
@@ -79,7 +77,7 @@ public enum RegistrationGroupState implements MathMechBotState {
                 Integer.parseInt(request.message().text()));
         context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.REGISTRATION_MEN);
 
-        final LocalMessage msg = RegistrationMenGroupState.INSTANCE.enterMessage(context, request);
+        final LocalMessage msg = new RegistrationMenGroupState().enterMessage(context, request);
         request.bot().sendMessage(msg, request.id());
     }
 }

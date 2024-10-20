@@ -20,9 +20,7 @@ import ru.urfu.logics.mathmechbot.states.MathMechBotState;
 /**
  * Состояние изменения информации о направлении.
  */
-public enum EditingSpecialityState implements MathMechBotState {
-    INSTANCE;
-
+public final class EditingSpecialityState implements MathMechBotState {
     private final Logger logger = LoggerFactory.getLogger(EditingSpecialityState.class);
 
     /**
@@ -99,7 +97,7 @@ public enum EditingSpecialityState implements MathMechBotState {
      */
     private void backCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
         context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.EDITING_CHOOSE);
-        request.bot().sendMessage(EditingChooseState.INSTANCE.enterMessage(context, request), request.id());
+        request.bot().sendMessage(new EditingChooseState().enterMessage(context, request), request.id());
     }
 
     /**
@@ -125,6 +123,6 @@ public enum EditingSpecialityState implements MathMechBotState {
 
         context.getStorage().getUserEntries().changeUserEntrySpecialty(request.id(), request.message().text());
         context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.EDITING_ADDITIONAL_EDIT);
-        request.bot().sendMessage(EditingAdditionalEditState.INSTANCE.enterMessage(context, request), request.id());
+        request.bot().sendMessage(new EditingAdditionalEditState().enterMessage(context, request), request.id());
     }
 }

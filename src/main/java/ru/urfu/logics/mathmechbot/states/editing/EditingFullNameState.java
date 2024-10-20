@@ -15,9 +15,7 @@ import ru.urfu.logics.mathmechbot.states.MathMechBotState;
 /**
  * Состояние изменения ФИО.
  */
-public enum EditingFullNameState implements MathMechBotState {
-    INSTANCE;
-
+public final class EditingFullNameState implements MathMechBotState {
     private final static int NUMBER_OF_WORDS_IN_FULL_NAME_WITH_PATRONYM = 3;
 
     private final LocalMessage onEnterMessage = new LocalMessageBuilder()
@@ -52,7 +50,7 @@ public enum EditingFullNameState implements MathMechBotState {
      */
     private void backCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
         context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.EDITING_CHOOSE);
-        request.bot().sendMessage(EditingChooseState.INSTANCE.enterMessage(context, request), request.id());
+        request.bot().sendMessage(new EditingChooseState().enterMessage(context, request), request.id());
     }
 
     /**
@@ -91,7 +89,7 @@ public enum EditingFullNameState implements MathMechBotState {
         context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.EDITING_ADDITIONAL_EDIT);
         request.bot().sendMessage(new LocalMessageBuilder().text("Данные сохранены.").build(), request.id());
 
-        final LocalMessage msg = EditingAdditionalEditState.INSTANCE.enterMessage(context, request);
+        final LocalMessage msg = new EditingAdditionalEditState().enterMessage(context, request);
         request.bot().sendMessage(msg, request.id());
     }
 }

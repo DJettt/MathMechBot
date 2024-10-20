@@ -16,9 +16,7 @@ import ru.urfu.logics.mathmechbot.states.MathMechBotState;
 /**
  * Состояние ожидания ввода академической группы в формате МЕН во время регистрации.
  */
-public enum RegistrationMenGroupState implements MathMechBotState {
-    INSTANCE;
-
+public final class RegistrationMenGroupState implements MathMechBotState {
     // TODO: Проверить более сложные имена, содержащие дефисы или несколько слов.
     private final Pattern validMenGroupString = Pattern.compile("^МЕН-\\d{6}$");
 
@@ -47,7 +45,7 @@ public enum RegistrationMenGroupState implements MathMechBotState {
      */
     private void backCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
         context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.REGISTRATION_GROUP);
-        request.bot().sendMessage(RegistrationGroupState.INSTANCE.enterMessage(context, request), request.id());
+        request.bot().sendMessage(new RegistrationGroupState().enterMessage(context, request), request.id());
     }
 
     /**
@@ -68,7 +66,7 @@ public enum RegistrationMenGroupState implements MathMechBotState {
         context.getStorage().getUserEntries().changeUserEntryMen(request.id(), trimmedText);
         context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.REGISTRATION_CONFIRMATION);
 
-        final LocalMessage message = RegistrationConfirmationState.INSTANCE.enterMessage(context, request);
+        final LocalMessage message = new RegistrationConfirmationState().enterMessage(context, request);
         if (message != null) {
             request.bot().sendMessage(message, request.id());
         }
