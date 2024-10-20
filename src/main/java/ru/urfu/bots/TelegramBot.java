@@ -34,8 +34,9 @@ public final class TelegramBot implements Bot, LongPollingSingleThreadUpdateCons
 
     /**
      * Конструктор.
+     *
      * @param token строка, содержащая токен для бота
-     * @param core логическое ядро, обрабатывающее сообщения
+     * @param core  логическое ядро, обрабатывающее сообщения
      */
     public TelegramBot(@NotNull String token, @NotNull LogicCore core) {
         telegramClient = new OkHttpTelegramClient(token);
@@ -45,26 +46,19 @@ public final class TelegramBot implements Bot, LongPollingSingleThreadUpdateCons
     }
 
     /**
-     * Запуск бота в отдельном потоке.
+     * Запуск бота в отдельном потоке (по умолчанию запускается в текущем).
      */
     public void start() {
         new Thread(() -> {
             try {
-                botsApplication.registerBot(botToken, this);
-                logger.info("Telegram bot successfully started!");
-
-                Thread.currentThread().join();
-            } catch (Exception e) {
-                logger.error("Bot didn't get registered and didn't run.", e);
+                botsApplication.registerBot(botToken, this).start();
+            } catch (TelegramApiException e) {
+                throw new RuntimeException(e);
             }
+            logger.info("Telegram bot successfully started!");
         }).start();
     }
 
-    /**
-     * Отправление сообщения, формат которого содержится в msg.
-     * @param msg вся информация о том, что должно содержаться в сообщении
-     * @param id id пользователя
-     */
     @Override
     public void sendMessage(@NotNull LocalMessage msg, @NotNull Long id) {
         try {
@@ -77,8 +71,9 @@ public final class TelegramBot implements Bot, LongPollingSingleThreadUpdateCons
     }
 
     /**
-     *  Разделяет список кнопок на строки кнопок определенного размера для более аккуратного вывода кнопок.
-     * @param buttons список кнопок
+     * Разделяет список кнопок на строки кнопок определенного размера для более аккуратного вывода кнопок.
+     *
+     * @param buttons      список кнопок
      * @param sizeOfSquare количество кнопок, которое должно быть в строчке
      * @return возвращает сетку кнопок нужного для вывода формата.
      */
@@ -97,7 +92,8 @@ public final class TelegramBot implements Bot, LongPollingSingleThreadUpdateCons
     }
 
     /**
-     *  Подсчитывает сколько кнопок должно быть в ряду в сообщении.
+     * Подсчитывает сколько кнопок должно быть в ряду в сообщении.
+     *
      * @param listSize все кнопки, которые нужно добавить
      * @return возвращает количество кнопок должно быть в ряду в сообщении.
      */
@@ -108,6 +104,7 @@ public final class TelegramBot implements Bot, LongPollingSingleThreadUpdateCons
 
     /**
      * Создание кнопок после сообщения.
+     *
      * @param localButton информация об одной кнопке, которую нужно создать в сообщении
      * @return возвращает кнопку формата Telegram бота
      */
@@ -119,6 +116,7 @@ public final class TelegramBot implements Bot, LongPollingSingleThreadUpdateCons
 
     /**
      * Создание ряда кнопок.
+     *
      * @param localButtonList контейнер кнопок, который нужно создать
      * @return возвращает готовый контейнер кнопок
      */
@@ -132,6 +130,7 @@ public final class TelegramBot implements Bot, LongPollingSingleThreadUpdateCons
 
     /**
      * Создание сетки кнопок.
+     *
      * @param localButtons информация о кнопках, которые нужно вставить в сообщение
      * @return возвращает сетку кнопок
      */
@@ -148,7 +147,8 @@ public final class TelegramBot implements Bot, LongPollingSingleThreadUpdateCons
     /**
      * Превращает LocalMessage в SendMessage.
      * Стоит использовать в тех случаях, когда нет картинок.
-     * @param msg  объект сообщения
+     *
+     * @param msg    объект сообщения
      * @param chatId id чата, куда надо отправить сообщение
      * @return объект SendMessage, который можно отправлять
      */
@@ -166,6 +166,7 @@ public final class TelegramBot implements Bot, LongPollingSingleThreadUpdateCons
 
     /**
      * Переводит Telegram-сообщения в наши сообщения.
+     *
      * @param message объект сообщения из TelegramBots
      * @return объект нашего универсального сообщения
      */
@@ -186,7 +187,7 @@ public final class TelegramBot implements Bot, LongPollingSingleThreadUpdateCons
             msg = convertTelegramMessage(update.getMessage());
             chatId = update.getMessage().getChatId();
         } else {
-            logger.error("Unknown message type!");
+            logger.error("Unknown message type! Received update: {}", update);
             return;
         }
         logicCore.processMessage(new Request(chatId, msg, this));
