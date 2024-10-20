@@ -1,5 +1,4 @@
-package ru.urfu.logics.mathmechbot.states.registration;
-
+package ru.urfu.logics.mathmechbot.states.editing;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,11 +13,10 @@ import ru.urfu.logics.mathmechbot.MathMechBotCore;
 import ru.urfu.logics.mathmechbot.models.MathMechBotUserState;
 import ru.urfu.logics.mathmechbot.states.MathMechBotState;
 
-
 /**
- * Состояние ожидания ответа на запрос года обучения во время регистрации.
+ * Состояние изменения курса обучения.
  */
-public enum RegistrationYearState implements MathMechBotState {
+public enum EditingYearState implements MathMechBotState {
     INSTANCE;
 
     private final static Pattern VALID_YEAR_STRING_PATTERN = Pattern.compile("^[1-6]$");
@@ -39,40 +37,34 @@ public enum RegistrationYearState implements MathMechBotState {
     public void processMessage(@NotNull MathMechBotCore context, @NotNull Request request) {
         switch (request.message().text()) {
             case Constants.BACK_COMMAND -> backCommandHandler(context, request);
-            case null -> {
-                request.bot().sendMessage(Constants.TRY_AGAIN, request.id());
-                request.bot().sendMessage(ON_ENTER_MESSAGE, request.id());
-            }
+            case null -> request.bot().sendMessage(Constants.TRY_AGAIN, request.id());
             default -> textHandler(context, request);
         }
     }
 
-    @Override
     @NotNull
+    @Override
     public LocalMessage enterMessage(@NotNull MathMechBotCore context, @NotNull Request request) {
         return ON_ENTER_MESSAGE;
     }
 
     /**
-     * Возвращаем пользователя на шаг назад, то есть на запрос ФИО.
-     *
-     * @param context логического ядро (контекст для состояния).
-     * @param request запрос.
+     * Обработка кнопки "назад".
+     * @param context ядро
+     * @param request запрос
      */
     private void backCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
-        context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.REGISTRATION_NAME);
-        request.bot().sendMessage(RegistrationFullNameState.INSTANCE.enterMessage(context, request), request.id());
+        context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.EDITING_CHOOSE);
+        request.bot().sendMessage(EditingChooseState.INSTANCE.enterMessage(context, request), request.id());
     }
 
     /**
-     * Проверяем различные текстовые сообщения.
-     * Если текстовое сообщение является числом от 1 до 6 (проходит валидацию),
-     * пользователь перемещается на следующее состояние, то есть запрос специальности.
+     * Обработка входящей информации от пользователя.
      *
-     * @param context логического ядро (контекст для состояния).
-     * @param request запрос.
+     * @param context логическое ядро
+     * @param request запрос
      */
-    public void textHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
+    private void textHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
         assert request.message().text() != null;
 
         int year;
@@ -86,9 +78,9 @@ public enum RegistrationYearState implements MathMechBotState {
 
         if (VALID_YEAR_STRING_PATTERN.matcher(request.message().text()).matches()) {
             context.getStorage().getUserEntries().changeUserEntryYear(request.id(), year);
-            context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.REGISTRATION_SPECIALTY);
+            context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.EDITING_ADDITIONAL_EDIT);
 
-            final LocalMessage msg = RegistrationSpecialtyState.INSTANCE.enterMessage(context, request);
+            final LocalMessage msg = EditingAdditionalEditState.INSTANCE.enterMessage(context, request);
             request.bot().sendMessage(msg, request.id());
         } else {
             request.bot().sendMessage(Constants.TRY_AGAIN, request.id());

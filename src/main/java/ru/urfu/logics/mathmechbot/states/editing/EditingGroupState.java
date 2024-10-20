@@ -1,5 +1,4 @@
-package ru.urfu.logics.mathmechbot.states.registration;
-
+package ru.urfu.logics.mathmechbot.states.editing;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,11 +13,10 @@ import ru.urfu.logics.mathmechbot.MathMechBotCore;
 import ru.urfu.logics.mathmechbot.models.MathMechBotUserState;
 import ru.urfu.logics.mathmechbot.states.MathMechBotState;
 
-
 /**
- * Состояние запроса номера группы во время регистрации.
+ * Состояние при котором пользователь меняет номер группы.
  */
-public enum RegistrationGroupState implements MathMechBotState {
+public enum EditingGroupState implements MathMechBotState {
     INSTANCE;
 
     private final static Pattern VALID_GROUP_STRING_PATTERN = Pattern.compile("^[1-5]$");
@@ -49,14 +47,14 @@ public enum RegistrationGroupState implements MathMechBotState {
     }
 
     /**
-     * Возвращаем пользователя на шаг назад, то есть на запрос года обучения.
+     * Возвращаем пользователя на этап выбора поля, которое нужно изменить.
      *
      * @param context логического ядро (контекст для состояния).
      * @param request запрос.
      */
     private void backCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
-        context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.REGISTRATION_SPECIALTY);
-        final LocalMessage message = RegistrationSpecialtyState.INSTANCE.enterMessage(context, request);
+        context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.EDITING_CHOOSE);
+        final LocalMessage message = EditingChooseState.INSTANCE.enterMessage(context, request);
         request.bot().sendMessage(message, request.id());
     }
 
@@ -77,9 +75,9 @@ public enum RegistrationGroupState implements MathMechBotState {
 
         context.getStorage().getUserEntries().changeUserEntryGroup(request.id(),
                 Integer.parseInt(request.message().text()));
-        context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.REGISTRATION_MEN);
+        context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.EDITING_ADDITIONAL_EDIT);
 
-        final LocalMessage msg = RegistrationMenGroupState.INSTANCE.enterMessage(context, request);
+        final LocalMessage msg = EditingAdditionalEditState.INSTANCE.enterMessage(context, request);
         request.bot().sendMessage(msg, request.id());
     }
 }

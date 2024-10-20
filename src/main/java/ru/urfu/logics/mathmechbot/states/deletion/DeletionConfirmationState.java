@@ -42,7 +42,7 @@ public enum DeletionConfirmationState implements MathMechBotState {
     @Override
     @Nullable
     public LocalMessage enterMessage(@NotNull MathMechBotCore context, @NotNull Request request) {
-        final Optional<UserEntry> userEntryOptional = context.storage.userEntries.get(request.id());
+        final Optional<UserEntry> userEntryOptional = context.getStorage().getUserEntries().get(request.id());
 
         if (userEntryOptional.isEmpty()) {
             LOGGER.error("User without entry reached deletion confirmation state");
@@ -62,7 +62,7 @@ public enum DeletionConfirmationState implements MathMechBotState {
      * @param request запрос.
      */
     private void backCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
-        context.storage.users.changeUserState(request.id(), MathMechBotUserState.DEFAULT);
+        context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.DEFAULT);
         request.bot().sendMessage(DefaultState.INSTANCE.enterMessage(context, request), request.id());
     }
 
@@ -73,10 +73,10 @@ public enum DeletionConfirmationState implements MathMechBotState {
      * @param request запрос.
      */
     private void acceptCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
-        final Optional<UserEntry> userEntryOptional = context.storage.userEntries.get(request.id());
-        userEntryOptional.ifPresent(context.storage.userEntries::delete);
+        final Optional<UserEntry> userEntryOptional = context.getStorage().getUserEntries().get(request.id());
+        userEntryOptional.ifPresent(context.getStorage().getUserEntries()::delete);
 
-        context.storage.users.changeUserState(request.id(), MathMechBotUserState.DEFAULT);
+        context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.DEFAULT);
         request.bot().sendMessage(new LocalMessageBuilder().text("Удаляем...").build(), request.id());
         request.bot().sendMessage(DefaultState.INSTANCE.enterMessage(context, request), request.id());
     }
@@ -88,7 +88,7 @@ public enum DeletionConfirmationState implements MathMechBotState {
      * @param request запрос.
      */
     private void declineCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
-        context.storage.users.changeUserState(request.id(), MathMechBotUserState.DEFAULT);
+        context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.DEFAULT);
         request.bot().sendMessage(new LocalMessageBuilder().text("Отмена...").build(), request.id());
         request.bot().sendMessage(DefaultState.INSTANCE.enterMessage(context, request), request.id());
     }
