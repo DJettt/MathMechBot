@@ -1,6 +1,5 @@
 package ru.urfu.logics.mathmechbot.storages;
 
-import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import ru.urfu.logics.mathmechbot.models.UserEntry;
@@ -11,19 +10,6 @@ import ru.urfu.storages.Storage;
  * Хранилище объектов модели UserEntry, предоставляющее методы по изменению отдельных полей.
  */
 public interface UserEntryStorage extends Storage<UserEntry, Long> {
-
-    /**
-     * Меняет поля name, surname.
-     * @param id идентификатор записи в хранилище.
-     * @param strings ФИО
-     */
-    default void changeUserEntryNameSurname(@NotNull Long id, @NotNull List<String> strings) {
-        get(id).ifPresent(userEntry -> update(new UserEntryBuilder(userEntry)
-                .surname(strings.get(0))
-                .name(strings.get(1))
-                .build()));
-    }
-
     /**
      * Меняет поле name.
      * @param id идентификатор записи в хранилище.
