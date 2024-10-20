@@ -12,4 +12,9 @@ public record User(
         @NotNull Long id,
         @NotNull MathMechBotUserState currentState
 ) implements Identifiable<Long> {
+
+    @Override
+    public Long getId() {
+        return this.id;
+    }
 }
