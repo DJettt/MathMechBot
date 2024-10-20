@@ -89,7 +89,7 @@ final class DeleteCommandTest {
      * <ol>
      *     <li>Регистрируемся.</li>
      *     <li>Запускаем команду <code>/delete</code>.</li>
-     *     <li>Нажимаем кнопку "Неа".</li>
+     *     <li>Нажимаем кнопку "Нет".</li>
      *     <li>Проверяем, что бот подтвердил не удаление данных.</li>
      *     <li>Проверяем, что пользователь вернулся в дефолтное состояние.</li>
      *     <li>Проверяем, что данные не удалились.</li>
@@ -97,7 +97,7 @@ final class DeleteCommandTest {
      * </ol>
      */
     @Test
-    @DisplayName("Нажата кнопка 'Неа' во время подтверждения удаления данных")
+    @DisplayName("Нажата кнопка 'Нет' во время подтверждения удаления данных")
     void testRegisteredUserSaysNo() {
         logic.processMessage(utils.makeRequestFromMessage(TestConstants.DECLINE_MESSAGE));
         Assertions.assertEquals(
