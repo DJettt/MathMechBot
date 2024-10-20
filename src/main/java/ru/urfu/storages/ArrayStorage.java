@@ -11,7 +11,7 @@ import java.util.Optional;
  * @param <I> тип идентификатора у хранимых объектов.
  */
 public class ArrayStorage<T extends Identifiable<I>, I> implements Storage<T, I> {
-    private final ArrayList<T> array;
+    private final List<T> array;
 
     /**
      * Конструктор.
