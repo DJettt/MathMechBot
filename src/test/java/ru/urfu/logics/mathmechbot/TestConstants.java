@@ -28,7 +28,7 @@ public final class TestConstants {
 
     public final static List<LocalButton> YES_NO_BACK = new ArrayList<>(List.of(
             new LocalButton("Да", ACCEPT_COMMAND),
-            new LocalButton("Неа", DECLINE_COMMAND),
+            new LocalButton("Нет", DECLINE_COMMAND),
             BACK_BUTTON
     ));
 

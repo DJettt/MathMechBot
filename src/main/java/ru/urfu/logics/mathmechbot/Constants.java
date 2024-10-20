@@ -13,7 +13,7 @@ public final class Constants {
     public final static String BACK_COMMAND = "/back";
 
     public final LocalButton yesButton = new LocalButton("Да", ACCEPT_COMMAND);
-    public final LocalButton noButton = new LocalButton("Неа", DECLINE_COMMAND);
+    public final LocalButton noButton = new LocalButton("Нет", DECLINE_COMMAND);
     public final LocalButton backButton = new LocalButton("Назад", BACK_COMMAND);
 
     public final LocalMessage tryAgain = new LocalMessageBuilder().text("Попробуйте снова.").build();
