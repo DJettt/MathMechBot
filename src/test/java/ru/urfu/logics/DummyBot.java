@@ -1,7 +1,7 @@
 package ru.urfu.logics;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Stack;
 import org.jetbrains.annotations.NotNull;
 import ru.urfu.bots.Bot;
 import ru.urfu.localobjects.LocalMessage;
@@ -16,7 +16,7 @@ public final class DummyBot implements Bot {
      * Конструктор.
      */
     public DummyBot() {
-        outcomingMessageList = new Stack<>();
+        outcomingMessageList = new ArrayList<>();
     }
 
     /**
