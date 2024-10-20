@@ -29,9 +29,6 @@ public final class DummyBot implements Bot {
     }
 
     @Override
-    public void start() {}
-
-    @Override
     public void sendMessage(@NotNull LocalMessage msg, @NotNull Long id) {
         outcomingMessageList.add(msg);
     }

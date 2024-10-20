@@ -47,7 +47,6 @@ public final class TelegramBot implements Bot, LongPollingSingleThreadUpdateCons
     /**
      * Запуск бота в отдельном потоке.
      */
-    @Override
     public void start() {
         new Thread(() -> {
             try {

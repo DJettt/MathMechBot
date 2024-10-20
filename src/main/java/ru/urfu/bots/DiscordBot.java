@@ -44,7 +44,6 @@ public final class DiscordBot extends ListenerAdapter implements Bot {
     /**
      * Запускает бота.
      */
-    @Override
     public void start() {
         //TODO: проверить на возникновение исключений
         jda = JDABuilder.createLight(botToken)
