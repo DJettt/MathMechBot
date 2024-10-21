@@ -19,8 +19,6 @@ import ru.urfu.logics.mathmechbot.models.UserBuilder;
 import ru.urfu.logics.mathmechbot.models.UserEntry;
 import ru.urfu.logics.mathmechbot.models.UserEntryBuilder;
 import ru.urfu.logics.mathmechbot.storages.MathMechStorage;
-import ru.urfu.logics.mathmechbot.storages.UserArrayStorage;
-import ru.urfu.logics.mathmechbot.storages.UserEntryArrayStorage;
 
 /**
  * Тесты для команды регистрации в состоянии запроса года обучения.
@@ -32,20 +30,20 @@ final class YearStateTest {
     private MathMechBotCore logic;
     private DummyBot bot;
 
-    User currentUser;
-    UserEntry currentUserEntry;
+    private User currentUser;
+    private UserEntry currentUserEntry;
 
     /**
      * Создаём объект логики, ложного бота и утилиты для каждого теста, выполняем все предыдущие шаги регистрации.
      */
     @BeforeEach
     void setupTest() {
-        storage = new MathMechStorage(new UserArrayStorage(), new UserEntryArrayStorage());
+        storage = new MathMechStorage();
         logic = new MathMechBotCore(storage);
         bot = new DummyBot();
         utils = new TestUtils(logic, bot);
 
-        logic.processMessage(utils.makeRequestFromMessage(TestConstants.REGISTER_MESSAGE));
+        logic.processMessage(utils.makeRequestFromMessage(new TestConstants().registerMessage));
         logic.processMessage(
                 utils.makeRequestFromMessage(new LocalMessageBuilder().text("Иванов Артём Иванович").build()));
 
@@ -84,11 +82,11 @@ final class YearStateTest {
 
         if (Objects.equals(year, "1")) {
             Assertions.assertEquals(
-                    RegistrationConstants.ASK_FIRST_YEAR_SPECIALTY,
+                    new RegistrationConstants().askFirstYearSpecialty,
                     bot.getOutcomingMessageList().getFirst());
         } else {
             Assertions.assertEquals(
-                    RegistrationConstants.ASK_LATER_YEAR_SPECIALTY,
+                    new RegistrationConstants().askLaterYearSpecialty,
                     bot.getOutcomingMessageList().getFirst());
         }
         Assertions.assertEquals(
@@ -118,8 +116,8 @@ final class YearStateTest {
         Assertions.assertEquals(currentUser, storage.getUsers().get(0L).orElseThrow());
         Assertions.assertEquals(currentUserEntry, storage.getUserEntries().get(0L).orElseThrow());
 
-        Assertions.assertEquals(TestConstants.TRY_AGAIN, bot.getOutcomingMessageList().getFirst());
-        Assertions.assertEquals(RegistrationConstants.ASK_YEAR, bot.getOutcomingMessageList().getLast());
+        Assertions.assertEquals(new TestConstants().tryAgain, bot.getOutcomingMessageList().getFirst());
+        Assertions.assertEquals(new RegistrationConstants().askYear, bot.getOutcomingMessageList().getLast());
     }
 
     /**
@@ -133,7 +131,7 @@ final class YearStateTest {
     @Test
     @DisplayName("Кнопка 'Назад'")
     void testBackCommand() {
-        logic.processMessage(utils.makeRequestFromMessage(TestConstants.BACK_MESSAGE));
+        logic.processMessage(utils.makeRequestFromMessage(new TestConstants().backMessage));
         Assertions.assertEquals(
                 new UserBuilder(0L, MathMechBotUserState.REGISTRATION_NAME).build(),
                 storage.getUsers().get(0L).orElseThrow());

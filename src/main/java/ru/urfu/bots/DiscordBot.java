@@ -5,7 +5,6 @@ import java.util.List;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
-import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -26,7 +25,9 @@ import ru.urfu.logics.LogicCore;
  * в зависимости от переданного ему при создании логического ядра (logicCore).
  */
 public final class DiscordBot extends ListenerAdapter implements Bot {
-    private static final Logger LOGGER = LoggerFactory.getLogger(DiscordBot.class);
+    private final static int MAX_BUTTONS_IN_MESSAGE = 5;
+
+    private final Logger logger = LoggerFactory.getLogger(DiscordBot.class);
     private final LogicCore logicCore;
     private final String botToken;
     private JDA jda;
@@ -44,7 +45,6 @@ public final class DiscordBot extends ListenerAdapter implements Bot {
     /**
      * Запускает бота.
      */
-    @Override
     public void start() {
         //TODO: проверить на возникновение исключений
         jda = JDABuilder.createLight(botToken)
@@ -56,10 +56,9 @@ public final class DiscordBot extends ListenerAdapter implements Bot {
                         )
                 )
                 .setStatus(OnlineStatus.ONLINE)
-                .setActivity(Activity.playing("IDEA Intellij"))
                 .build();
 
-        LOGGER.info("Discord bot successfully started!");
+        logger.info("Discord bot successfully started!");
     }
 
     /**
@@ -70,16 +69,19 @@ public final class DiscordBot extends ListenerAdapter implements Bot {
     private List<List<LocalButton>> splitButtons(LocalMessage message) {
         assert message.buttons() != null;
 
-        final int maxSize = 5;
         List<List<LocalButton>> arrayOfButtons = new ArrayList<>();
 
-        if (message.buttons().size() <= maxSize) {
+        if (message.buttons().size() <= MAX_BUTTONS_IN_MESSAGE) {
             arrayOfButtons.add(message.buttons());
         } else {
             int buttonIndex = 0;
             while (buttonIndex < message.buttons().size()) {
                 List<LocalButton> localListOfFiveButtons = new ArrayList<>();
-                for (int i = 0; i < maxSize  && buttonIndex < message.buttons().size(); i++, buttonIndex++) {
+
+                for (int i = 0;
+                     i < MAX_BUTTONS_IN_MESSAGE && buttonIndex < message.buttons().size();
+                     i++, buttonIndex++) {
+
                     localListOfFiveButtons.add(message.buttons().get(buttonIndex));
                 }
                 arrayOfButtons.add(localListOfFiveButtons);
@@ -88,14 +90,6 @@ public final class DiscordBot extends ListenerAdapter implements Bot {
         return arrayOfButtons;
     }
 
-    /**
-     * Для бота сообщение в текстовом канале НА СЕРВЕРЕ используется TextChannel
-     * а для использования в ЛИЧНОМ СООБЩЕНИИ используется PrivateChannel
-     * (я до конца не разобрался почему именно сейчас это работает только так,
-     * так как до этого мы использовали только TextChannel и все работало корректно и там и там).
-     * @param message LocalMessage со всей информацией о сообщении, которое нужно отправить.
-     * @param id id чата куда нужно отправить сообщение.
-     */
     @Override
     public void sendMessage(@NotNull LocalMessage message, @NotNull Long id) {
         MessageChannel channel = jda.getTextChannelById(id);
@@ -103,7 +97,7 @@ public final class DiscordBot extends ListenerAdapter implements Bot {
             channel = jda.getPrivateChannelById(id);
         }
         if (channel == null) {
-            LOGGER.warn("Couldn't find channel to send message to. Given ID: {}", id);
+            logger.warn("Couldn't find channel to send message to. Given ID: {}", id);
             return;
         }
         if (message.text() != null) {
@@ -126,7 +120,7 @@ public final class DiscordBot extends ListenerAdapter implements Bot {
                 messageCreateAction.queue();
             }
         } else {
-            LOGGER.warn("Unknown message source!");
+            logger.warn("Unknown message source!");
         }
     }
 
@@ -161,10 +155,6 @@ public final class DiscordBot extends ListenerAdapter implements Bot {
         return buttons;
     }
 
-    /**
-     * Отслеживает отправление сообщения от пользователя боту.
-     * @param event содержит всю информацию об обновлениях в чате.
-     */
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
         if (event.getAuthor().isBot()) {
@@ -174,10 +164,6 @@ public final class DiscordBot extends ListenerAdapter implements Bot {
         logicCore.processMessage(new Request(event.getChannel().getIdLong(), msg, this));
     }
 
-    /**
-     * Отслеживает взаимодействия с кнопками.
-     * @param event содержит всю информацию об обновлениях.
-     */
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {
         LocalMessage msg = new LocalMessage(event.getButton().getId(), null);

@@ -11,7 +11,7 @@ import ru.urfu.bots.Bot;
  * @param bot     бот, принявший сообщение.
  */
 public record Request(
-        long id,
+        @NotNull Long id,
         @NotNull LocalMessage message,
         @NotNull Bot bot
 ) {

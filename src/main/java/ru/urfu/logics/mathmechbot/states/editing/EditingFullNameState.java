@@ -1,6 +1,5 @@
 package ru.urfu.logics.mathmechbot.states.editing;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 import org.jetbrains.annotations.NotNull;
@@ -11,47 +10,49 @@ import ru.urfu.logics.mathmechbot.Constants;
 import ru.urfu.logics.mathmechbot.MathMechBotCore;
 import ru.urfu.logics.mathmechbot.models.MathMechBotUserState;
 import ru.urfu.logics.mathmechbot.states.MathMechBotState;
+import ru.urfu.logics.mathmechbot.storages.UserEntryStorage;
+import ru.urfu.logics.mathmechbot.storages.UserStorage;
 
 /**
  * Состояние изменения ФИО.
  */
-public enum EditingFullNameState implements MathMechBotState {
-    INSTANCE;
+public final class EditingFullNameState implements MathMechBotState {
+    private final static int NUMBER_OF_WORDS_IN_FULL_NAME_WITH_PATRONYM = 3;
 
-    private final static LocalMessage ON_ENTER_MESSAGE = new LocalMessageBuilder()
+    private final LocalMessage onEnterMessage = new LocalMessageBuilder()
             .text("""
                         Введите свое ФИО в формате:
                         Иванов Артём Иванович
                         Без дополнительных пробелов и с буквой ё, если нужно.""")
-            .buttons(new ArrayList<>(List.of(Constants.BACK_BUTTON)))
+            .buttons(List.of(new Constants().backButton))
             .build();
-    private final static int NUMBER_OF_WORDS_IN_FULL_NAME_WITH_PATRONYM = 3;
-    private final static Pattern VALID_FULL_NAME_PATTERN =
+
+    private final Pattern validFullNamePattern =
             Pattern.compile("^[А-ЯЁ][а-яё]+\\s+[А-ЯЁ][а-яё]+(\\s+[А-ЯЁ][а-яё]+)?$");
 
     @Override
-    public void processMessage(@NotNull MathMechBotCore context, @NotNull Request request) {
+    public void processMessage(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
         switch (request.message().text()) {
-            case Constants.BACK_COMMAND -> backCommandHandler(context, request);
-            case null -> request.bot().sendMessage(Constants.TRY_AGAIN, request.id());
-            default -> textHandler(context, request);
+            case Constants.BACK_COMMAND -> backCommandHandler(contextCore, request);
+            case null -> request.bot().sendMessage(new Constants().tryAgain, request.id());
+            default -> textHandler(contextCore, request);
         }
     }
 
     @NotNull
     @Override
-    public LocalMessage enterMessage(@NotNull MathMechBotCore context, @NotNull Request request) {
-        return ON_ENTER_MESSAGE;
+    public LocalMessage enterMessage(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
+        return onEnterMessage;
     }
 
     /**
      * Обработка кнопки "назад".
-     * @param context ядро
+     * @param contextCore ядро
      * @param request запрос
      */
-    private void backCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
-        context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.EDITING_CHOOSE);
-        request.bot().sendMessage(EditingChooseState.INSTANCE.enterMessage(context, request), request.id());
+    private void backCommandHandler(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
+        contextCore.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.EDITING_CHOOSE);
+        request.bot().sendMessage(new EditingChooseState().enterMessage(contextCore, request), request.id());
     }
 
     /**
@@ -61,36 +62,39 @@ public enum EditingFullNameState implements MathMechBotState {
      */
     public boolean validateFullName(String str) {
         // TODO: Проверить более сложные имена, содержащие дефисы или несколько слов.
-        return VALID_FULL_NAME_PATTERN.matcher(str).matches();
+        return validFullNamePattern.matcher(str).matches();
     }
 
     /**
      * Обработка текста.
-     * @param context ядро
+     * @param contextCore ядро
      * @param request запрос
      */
-    private void textHandler(MathMechBotCore context, Request request) {
+    private void textHandler(MathMechBotCore contextCore, Request request) {
+        final UserStorage userStorage = contextCore.getStorage().getUsers();
+        final UserEntryStorage userEntryStorage = contextCore.getStorage().getUserEntries();
+
         assert request.message().text() != null;
         final String trimmedText = request.message().text().trim();
 
         if (!validateFullName(trimmedText)) {
-            request.bot().sendMessage(Constants.TRY_AGAIN, request.id());
+            request.bot().sendMessage(new Constants().tryAgain, request.id());
             return;
         }
 
         final List<String> strings = List.of(trimmedText.split("\\s+"));
 
-        context.getStorage().getUserEntries().changeUserEntrySurname(request.id(), strings.get(0));
-        context.getStorage().getUserEntries().changeUserEntryName(request.id(), strings.get(1));
+        userEntryStorage.changeUserEntrySurname(request.id(), strings.get(0));
+        userEntryStorage.changeUserEntryName(request.id(), strings.get(1));
         if (strings.size() == NUMBER_OF_WORDS_IN_FULL_NAME_WITH_PATRONYM) {
-            context.getStorage().getUserEntries().changeUserEntryPatronym(request.id(), strings.get(2));
+            userEntryStorage.changeUserEntryPatronym(request.id(), strings.get(2));
         } else {
-            context.getStorage().getUserEntries().changeUserEntryPatronym(request.id(), null);
+            userEntryStorage.changeUserEntryPatronym(request.id(), null);
         }
-        context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.EDITING_ADDITIONAL_EDIT);
+        userStorage.changeUserState(request.id(), MathMechBotUserState.EDITING_ADDITIONAL_EDIT);
         request.bot().sendMessage(new LocalMessageBuilder().text("Данные сохранены.").build(), request.id());
 
-        final LocalMessage msg = EditingAdditionalEditState.INSTANCE.enterMessage(context, request);
+        final LocalMessage msg = new EditingAdditionalEditState().enterMessage(contextCore, request);
         request.bot().sendMessage(msg, request.id());
     }
 }

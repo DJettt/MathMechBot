@@ -8,8 +8,6 @@ import org.junit.jupiter.params.provider.ValueSource;
 import ru.urfu.localobjects.LocalMessageBuilder;
 import ru.urfu.logics.DummyBot;
 import ru.urfu.logics.mathmechbot.storages.MathMechStorage;
-import ru.urfu.logics.mathmechbot.storages.UserArrayStorage;
-import ru.urfu.logics.mathmechbot.storages.UserEntryArrayStorage;
 
 /**
  * Тесты для дефолтного состояния.
@@ -25,7 +23,7 @@ final class DefaultStateTest {
      */
     @BeforeEach
     void setupTest() {
-        final MathMechStorage storage = new MathMechStorage(new UserArrayStorage(), new UserEntryArrayStorage());
+        final MathMechStorage storage = new MathMechStorage();
         logic = new MathMechBotCore(storage);
         bot = new DummyBot();
         utils = new TestUtils(logic, bot);
@@ -46,7 +44,7 @@ final class DefaultStateTest {
     @ParameterizedTest(name = "{0} - команда, недоступная незарегистрированному пользователю")
     void testUnregisteredUser(String command) {
         logic.processMessage(utils.makeRequestFromMessage(new LocalMessageBuilder().text(command).build()));
-        Assertions.assertEquals(TestConstants.ASK_FOR_REGISTRATION, bot.getOutcomingMessageList().getLast());
+        Assertions.assertEquals(new TestConstants().askForRegistration, bot.getOutcomingMessageList().getLast());
     }
 
     /**
@@ -60,11 +58,11 @@ final class DefaultStateTest {
     @ValueSource(strings = {"Ильин Илья Ильич", "Ильин Илья"})
     @ParameterizedTest(name = "\"{0}\" - различные конфигурации ФИО")
     void testInfoExist(String fullName) {
-        logic.processMessage(utils.makeRequestFromMessage(TestConstants.INFO_MESSAGE));
-        Assertions.assertEquals(TestConstants.ASK_FOR_REGISTRATION, bot.getOutcomingMessageList().getFirst());
+        logic.processMessage(utils.makeRequestFromMessage(new TestConstants().infoMessage));
+        Assertions.assertEquals(new TestConstants().askForRegistration, bot.getOutcomingMessageList().getFirst());
 
         utils.registerUser(0L, fullName, 2, "КН", 2, "МЕН-654321");
-        logic.processMessage(utils.makeRequestFromMessage(TestConstants.INFO_MESSAGE));
+        logic.processMessage(utils.makeRequestFromMessage(new TestConstants().infoMessage));
         Assertions.assertEquals(new LocalMessageBuilder()
                         .text("""
                                 Данные о Вас:

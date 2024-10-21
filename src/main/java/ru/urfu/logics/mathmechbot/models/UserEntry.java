@@ -38,4 +38,9 @@ public record UserEntry(
                 specialty, year, group, men
         );
     }
+
+    @Override
+    public Long getId() {
+        return this.id;
+    }
 }

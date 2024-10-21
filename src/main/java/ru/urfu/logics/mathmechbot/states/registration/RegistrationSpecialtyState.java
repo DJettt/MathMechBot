@@ -16,6 +16,8 @@ import ru.urfu.logics.mathmechbot.models.MathMechBotUserState;
 import ru.urfu.logics.mathmechbot.models.Specialty;
 import ru.urfu.logics.mathmechbot.models.UserEntry;
 import ru.urfu.logics.mathmechbot.states.MathMechBotState;
+import ru.urfu.logics.mathmechbot.storages.UserEntryStorage;
+import ru.urfu.logics.mathmechbot.storages.UserStorage;
 
 
 /**
@@ -23,26 +25,24 @@ import ru.urfu.logics.mathmechbot.states.MathMechBotState;
  * Предлагает пользователю направление подготовки
  * из списка, который возвращает метод allowedSpecialties.
  */
-public enum RegistrationSpecialtyState implements MathMechBotState {
-    INSTANCE;
-
-    private final static Logger LOGGER = LoggerFactory.getLogger(RegistrationSpecialtyState.class);
+public final class RegistrationSpecialtyState implements MathMechBotState {
+    private final Logger logger = LoggerFactory.getLogger(RegistrationSpecialtyState.class);
 
     /**
      * Достаёт год пользователя из хранилища.
      *
-     * @param context контекст.
+     * @param contextCore контекст.
      * @param request запрос.
      * @return год для записи данного пользователя.
      */
-    private int getUserEntryYear(@NotNull MathMechBotCore context, @NotNull Request request) {
-        final Optional<UserEntry> userEntryOptional = context.getStorage().getUserEntries().get(request.id());
+    private int getUserEntryYear(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
+        final Optional<UserEntry> userEntryOptional = contextCore.getStorage().getUserEntries().get(request.id());
 
         if (userEntryOptional.isEmpty()) {
-            LOGGER.error("User without entry managed to reach registration_specialty state.");
+            logger.error("User without entry managed to reach registration_specialty state.");
             throw new RuntimeException();
         } else if (userEntryOptional.get().year() == null) {
-            LOGGER.error("User without set year managed to reach registration_specialty state.");
+            logger.error("User without set year managed to reach registration_specialty state.");
             throw new RuntimeException();
         }
 
@@ -59,47 +59,47 @@ public enum RegistrationSpecialtyState implements MathMechBotState {
     @NotNull
     private List<Specialty> allowedSpecialties(int year) {
         if (year == 1) {
-            return new ArrayList<>(List.of(
+            return List.of(
                     Specialty.KNMO, Specialty.MMP, Specialty.KB, Specialty.FT
-            ));
+            );
         }
-        return new ArrayList<>(List.of(
-                Specialty.KN, Specialty.MO, Specialty.MH, Specialty.MT, Specialty.PM, Specialty.KB, Specialty.FT
-        ));
+        return List.of(
+                Specialty.KN, Specialty.MO, Specialty.MH, Specialty.MT,
+                Specialty.PM, Specialty.KB, Specialty.FT);
     }
 
     @Override
-    public void processMessage(@NotNull MathMechBotCore context, @NotNull Request request) {
+    public void processMessage(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
         switch (request.message().text()) {
-            case Constants.BACK_COMMAND -> backCommandHandler(context, request);
+            case Constants.BACK_COMMAND -> backCommandHandler(contextCore, request);
             case null -> {
-                request.bot().sendMessage(Constants.TRY_AGAIN, request.id());
-                request.bot().sendMessage(enterMessage(context, request), request.id());
+                request.bot().sendMessage(new Constants().tryAgain, request.id());
+                request.bot().sendMessage(enterMessage(contextCore, request), request.id());
             }
-            default -> textHandler(context, request);
+            default -> textHandler(contextCore, request);
         }
     }
 
     @Override
     @NotNull
-    public LocalMessage enterMessage(@NotNull MathMechBotCore context, @NotNull Request request) {
+    public LocalMessage enterMessage(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
         List<LocalButton> buttons = new ArrayList<>();
-        for (Specialty specialty : allowedSpecialties(getUserEntryYear(context, request))) {
+        for (Specialty specialty : allowedSpecialties(getUserEntryYear(contextCore, request))) {
             buttons.add(new LocalButton(specialty.getAbbreviation(), specialty.getAbbreviation()));
         }
-        buttons.add(Constants.BACK_BUTTON);
+        buttons.add(new Constants().backButton);
         return new LocalMessageBuilder().text("На каком направлении?").buttons(buttons).build();
     }
 
     /**
      * Возвращаем пользователя на шаг назад, то есть на запрос года обучения.
      *
-     * @param context логического ядро (контекст для состояния).
+     * @param contextCore логического ядро (контекст для состояния).
      * @param request запрос.
      */
-    private void backCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
-        context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.REGISTRATION_YEAR);
-        request.bot().sendMessage(RegistrationYearState.INSTANCE.enterMessage(context, request), request.id());
+    private void backCommandHandler(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
+        contextCore.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.REGISTRATION_YEAR);
+        request.bot().sendMessage(new RegistrationYearState().enterMessage(contextCore, request), request.id());
     }
 
     /**
@@ -107,24 +107,27 @@ public enum RegistrationSpecialtyState implements MathMechBotState {
      * В частности, проверяем, что пользователь отправил аббревиатуру одной из разрешённых специальностей.
      * В противном случае просим пользователя повторить ввод.
      *
-     * @param context логического ядро (контекст для состояния).
+     * @param contextCore логического ядро (контекст для состояния).
      * @param request запрос.
      */
-    private void textHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
+    private void textHandler(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
         assert request.message().text() != null;
 
-        if (!allowedSpecialties(getUserEntryYear(context, request))
+        final UserStorage userStorage = contextCore.getStorage().getUsers();
+        final UserEntryStorage userEntryStorage = contextCore.getStorage().getUserEntries();
+
+        if (!allowedSpecialties(getUserEntryYear(contextCore, request))
                 .stream()
                 .map(Specialty::getAbbreviation)
                 .toList()
                 .contains(request.message().text())) {
-            request.bot().sendMessage(Constants.TRY_AGAIN, request.id());
-            request.bot().sendMessage(enterMessage(context, request), request.id());
+            request.bot().sendMessage(new Constants().tryAgain, request.id());
+            request.bot().sendMessage(enterMessage(contextCore, request), request.id());
             return;
         }
 
-        context.getStorage().getUserEntries().changeUserEntrySpecialty(request.id(), request.message().text());
-        context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.REGISTRATION_GROUP);
-        request.bot().sendMessage(RegistrationGroupState.INSTANCE.enterMessage(context, request), request.id());
+        userEntryStorage.changeUserEntrySpecialty(request.id(), request.message().text());
+        userStorage.changeUserState(request.id(), MathMechBotUserState.REGISTRATION_GROUP);
+        request.bot().sendMessage(new RegistrationGroupState().enterMessage(contextCore, request), request.id());
     }
 }

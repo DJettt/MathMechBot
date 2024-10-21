@@ -17,8 +17,6 @@ import ru.urfu.logics.mathmechbot.models.User;
 import ru.urfu.logics.mathmechbot.models.UserBuilder;
 import ru.urfu.logics.mathmechbot.models.UserEntry;
 import ru.urfu.logics.mathmechbot.storages.MathMechStorage;
-import ru.urfu.logics.mathmechbot.storages.UserArrayStorage;
-import ru.urfu.logics.mathmechbot.storages.UserEntryArrayStorage;
 
 /**
  * Тесты для состояния ожидания подтверждения регистрационных данных.
@@ -30,20 +28,20 @@ final class ConfirmationTest {
     private MathMechBotCore logic;
     private DummyBot bot;
 
-    User currentUser;
-    UserEntry currentUserEntry;
+    private User currentUser;
+    private UserEntry currentUserEntry;
 
     /**
      * Создаём объект логики, ложного бота и утилиты для каждого теста, выполняем все предыдущие шаги регистрации.
      */
     @BeforeEach
     void setupTest() {
-        storage = new MathMechStorage(new UserArrayStorage(), new UserEntryArrayStorage());
+        storage = new MathMechStorage();
         logic = new MathMechBotCore(storage);
         bot = new DummyBot();
         utils = new TestUtils(logic, bot);
 
-        logic.processMessage(utils.makeRequestFromMessage(TestConstants.REGISTER_MESSAGE));
+        logic.processMessage(utils.makeRequestFromMessage(new TestConstants().registerMessage));
         logic.processMessage(
                 utils.makeRequestFromMessage(new LocalMessageBuilder().text("Денисов Денис Денисович").build()));
         logic.processMessage(
@@ -74,12 +72,12 @@ final class ConfirmationTest {
     @Test
     @DisplayName("Кнопка 'Нет'")
     void testYes() {
-        logic.processMessage(utils.makeRequestFromMessage(TestConstants.ACCEPT_MESSAGE));
+        logic.processMessage(utils.makeRequestFromMessage(new TestConstants().acceptMessage));
 
         Assertions.assertEquals(
                 new LocalMessageBuilder().text("Сохранил...").build(),
                 bot.getOutcomingMessageList().getFirst());
-        Assertions.assertEquals(TestConstants.HELP, bot.getOutcomingMessageList().get(1));
+        Assertions.assertEquals(new TestConstants().help, bot.getOutcomingMessageList().get(1));
 
         Assertions.assertEquals(
                 new UserBuilder(0L, MathMechBotUserState.DEFAULT).build(),
@@ -100,12 +98,12 @@ final class ConfirmationTest {
     @Test
     @DisplayName("Кнопка 'Нет'")
     void testNo() {
-        logic.processMessage(utils.makeRequestFromMessage(TestConstants.DECLINE_MESSAGE));
+        logic.processMessage(utils.makeRequestFromMessage(new TestConstants().declineMessage));
 
         Assertions.assertEquals(
                 new LocalMessageBuilder().text("Отмена...").build(),
                 bot.getOutcomingMessageList().getFirst());
-        Assertions.assertEquals(TestConstants.HELP, bot.getOutcomingMessageList().get(1));
+        Assertions.assertEquals(new TestConstants().help, bot.getOutcomingMessageList().get(1));
 
         Assertions.assertEquals(
                 new UserBuilder(0L, MathMechBotUserState.DEFAULT).build(),
@@ -125,9 +123,9 @@ final class ConfirmationTest {
     @Test
     @DisplayName("Кнопка 'Назад'")
     void testBack() {
-        logic.processMessage(utils.makeRequestFromMessage(TestConstants.BACK_MESSAGE));
+        logic.processMessage(utils.makeRequestFromMessage(new TestConstants().backMessage));
         Assertions.assertEquals(
-                RegistrationConstants.ASK_MEN,
+                new RegistrationConstants().askMen,
                 bot.getOutcomingMessageList().getFirst()
         );
         Assertions.assertEquals(
@@ -153,7 +151,7 @@ final class ConfirmationTest {
     void testSomethingElse(String text) {
         logic.processMessage(utils.makeRequestFromMessage(new LocalMessageBuilder().text(text).build()));
         Assertions.assertEquals(
-                TestConstants.TRY_AGAIN,
+                new TestConstants().tryAgain,
                 bot.getOutcomingMessageList().getFirst()
         );
         Assertions.assertEquals(currentUser, storage.getUsers().get(0L).orElseThrow());
