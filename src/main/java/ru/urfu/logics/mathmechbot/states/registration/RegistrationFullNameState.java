@@ -6,7 +6,6 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 import org.jetbrains.annotations.NotNull;
 import ru.urfu.localobjects.LocalMessage;
-import ru.urfu.localobjects.LocalMessageBuilder;
 import ru.urfu.localobjects.Request;
 import ru.urfu.logics.mathmechbot.Constants;
 import ru.urfu.logics.mathmechbot.MathMechBotCore;
@@ -50,12 +49,10 @@ public final class RegistrationFullNameState implements MathMechBotState {
     @Override
     @NotNull
     public LocalMessage enterMessage(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
-        return new LocalMessageBuilder()
-                .text("""
+        return new LocalMessage("""
                         Введите свое ФИО в формате:
                         Иванов Артём Иванович
-                        Без дополнительных пробелов и с буквой ё, если нужно.""")
-                .build();
+                        Без дополнительных пробелов и с буквой ё, если нужно.""");
     }
 
     /**

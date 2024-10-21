@@ -4,7 +4,6 @@ import java.util.Optional;
 import org.jetbrains.annotations.NotNull;
 import ru.urfu.bots.Bot;
 import ru.urfu.localobjects.LocalMessage;
-import ru.urfu.localobjects.LocalMessageBuilder;
 import ru.urfu.localobjects.Request;
 import ru.urfu.logics.mathmechbot.Constants;
 import ru.urfu.logics.mathmechbot.MathMechBotCore;
@@ -48,7 +47,7 @@ public final class DefaultState implements MathMechBotState {
                 %s - изменить информацию
                 %s - удалить информацию о Вас"""
                 .formatted(START_COMMAND, HELP_COMMAND, REGISTER_COMMAND, INFO_COMMAND, EDIT_COMMAND, DELETE_COMMAND);
-        return new LocalMessageBuilder().text(HELP_MESSAGE).build();
+        return new LocalMessage(HELP_MESSAGE);
     }
 
     /**
@@ -89,9 +88,8 @@ public final class DefaultState implements MathMechBotState {
             request.bot().sendMessage(new Constants().askForRegistration, request.id());
             return;
         }
-        final LocalMessage answer = new LocalMessageBuilder()
-                .text("Данные о Вас:\n\n" + userEntryOptional.get().toHumanReadable())
-                .build();
+        final LocalMessage answer = new LocalMessage("Данные о Вас:\n\n"
+                + userEntryOptional.get().toHumanReadable());
         request.bot().sendMessage(answer, request.id());
     }
 
@@ -141,9 +139,8 @@ public final class DefaultState implements MathMechBotState {
      * @param bot     бот, от которого пришло сообщение
      */
     private void alreadyRegistered(long chatId, Bot bot) {
-        final LocalMessage answer = new LocalMessageBuilder()
-                .text("Вы уже зарегистрированы. Пока что регистрировать можно только одного человека.")
-                .build();
+        final LocalMessage answer =
+                new LocalMessage("Вы уже зарегистрированы. Пока что регистрировать можно только одного человека.");
         bot.sendMessage(answer, chatId);
     }
 }
