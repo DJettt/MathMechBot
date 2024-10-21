@@ -33,14 +33,16 @@ public final class RegistrationTest {
             backButton
     );
 
-    private final LocalMessage askForRegistration = new LocalMessage("Сперва нужно зарегистрироваться.");
+    private final LocalMessage askForRegistration =
+            new LocalMessage("Сперва нужно зарегистрироваться.");
 
     private final LocalMessage askFullName = new LocalMessageBuilder()
             .text("""
                     Введите свое ФИО в формате:
                     Иванов Артём Иванович
                     Без дополнительных пробелов и с буквой ё, если нужно.""")
-            .buttons(List.of(new LocalButton("Отменить регистрацию", Constants.BACK_COMMAND)))
+            .buttons(List.of(
+                    new LocalButton("Отменить регистрацию", BACK_COMMAND)))
             .build();
 
     private final LocalMessage askYear = new LocalMessageBuilder()
@@ -119,8 +121,8 @@ public final class RegistrationTest {
      * вводит корректные данные, а в конце подтверждает регистрацию.</p>
      */
     @Test
-    @DisplayName("Тест всей регистрации первокурсника с подтверждением в конце.")
-    void wholeRegistrationFirstYearAcceptTest() {
+    @DisplayName("Первокурсник с подтверждением в конце")
+    void firstYearAcceptTest() {
         logic.processMessage(utils.makeRequestFromMessage(
                 new LocalMessage(REGISTER_COMMAND)));
         Assertions.assertEquals(askFullName, bot.getOutcomingMessageList().getFirst());
@@ -173,8 +175,8 @@ public final class RegistrationTest {
      * вводит корректные данные, в конце подтверждает регистрацию.</p>
      */
     @Test
-    @DisplayName("Тест всей регистрации старшекурсника с подтверждением в конце.")
-    void wholeRegistrationLaterYearAcceptTest() {
+    @DisplayName("Старшекурсник с подтверждением в конце")
+    void laterYearAcceptTest() {
         logic.processMessage(utils.makeRequestFromMessage(
                 new LocalMessage(REGISTER_COMMAND)));
         logic.processMessage(utils.makeRequestFromMessage(
@@ -206,12 +208,51 @@ public final class RegistrationTest {
                 new LocalMessage(ACCEPT_COMMAND)));
         logic.processMessage(utils.makeRequestFromMessage(
                 new LocalMessage(INFO_COMMAND)));
-
         Assertions.assertEquals(new LocalMessage("""
                         Данные о Вас:
 
                         ФИО: Артёмов Артём Артёмович
                         Группа: МО-301 (МЕН-999999)"""),
+                bot.getOutcomingMessageList().get(8));
+    }
+
+    /**
+     * <p>Тестируем случай, где пользователь-четверокурсник последовательно
+     * вводит корректные данные, но в конце отказывается от регистрации.
+     * В конце проверяем, что на команду /info пользователь получает просьбу
+     * о регистрации (то есть никакие данные сохранены не были).</p>
+     */
+    @Test
+    @DisplayName("Отказ в конце")
+    void declineTest() {
+        logic.processMessage(utils.makeRequestFromMessage(
+                new LocalMessage(REGISTER_COMMAND)));
+        logic.processMessage(utils.makeRequestFromMessage(
+                new LocalMessage("Джун Даянч Даянчевич")));
+        logic.processMessage(utils.makeRequestFromMessage(
+                new LocalMessage("4")));
+        logic.processMessage(utils.makeRequestFromMessage(
+                new LocalMessage("КБ")));
+        logic.processMessage(utils.makeRequestFromMessage(
+                new LocalMessage("4")));
+        logic.processMessage(utils.makeRequestFromMessage(
+                new LocalMessage("МЕН-240104")));
+
+        Assertions.assertEquals(new LocalMessageBuilder()
+                        .text("""
+                                Всё верно?
+
+                                ФИО: Джун Даянч Даянчевич
+                                Группа: КБ-404 (МЕН-240104)""")
+                        .buttons(yesNoBack)
+                        .build(),
+                bot.getOutcomingMessageList().get(5));
+
+        logic.processMessage(utils.makeRequestFromMessage(
+                new LocalMessage(DECLINE_COMMAND)));
+        logic.processMessage(utils.makeRequestFromMessage(
+                new LocalMessage(INFO_COMMAND)));
+        Assertions.assertEquals(askForRegistration,
                 bot.getOutcomingMessageList().get(8));
     }
 
@@ -223,8 +264,8 @@ public final class RegistrationTest {
      * сохранены не были).</p>
      */
     @Test
-    @DisplayName("Тест всей регистрации, а затем пошаговый возврат.")
-    void wholeRegistrationThenAlwaysBackTest() {
+    @DisplayName("Пошаговый возврат до выхода")
+    void backTest() {
         logic.processMessage(utils.makeRequestFromMessage(
                 new LocalMessage(REGISTER_COMMAND)));
         logic.processMessage(utils.makeRequestFromMessage(
