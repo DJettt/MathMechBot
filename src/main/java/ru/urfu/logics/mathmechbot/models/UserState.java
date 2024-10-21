@@ -5,7 +5,6 @@ import ru.urfu.logics.mathmechbot.states.MathMechBotState;
 
 /**
  * Состояние пользователя (на каком этапе диалога он находится).
- * TODO: отделить этот интерфейс от MathMechBot.
  */
 public interface UserState {
 
