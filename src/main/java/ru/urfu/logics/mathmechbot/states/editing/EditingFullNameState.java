@@ -97,7 +97,7 @@ public final class EditingFullNameState implements MathMechBotState {
             userEntryStorage.changeUserEntryPatronym(request.id(), null);
         }
         userStorage.changeUserState(request.id(), MathMechBotUserState.EDITING_ADDITIONAL_EDIT);
-        request.bot().sendMessage(new LocalMessageBuilder().text("Данные сохранены.").build(), request.id());
+        request.bot().sendMessage(new LocalMessage("Данные сохранены."), request.id());
 
         final LocalMessage msg = new EditingAdditionalEditState().enterMessage(contextCore, request);
         request.bot().sendMessage(msg, request.id());

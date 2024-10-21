@@ -14,7 +14,6 @@ import ru.urfu.logics.mathmechbot.TestConstants;
 import ru.urfu.logics.mathmechbot.TestUtils;
 import ru.urfu.logics.mathmechbot.models.MathMechBotUserState;
 import ru.urfu.logics.mathmechbot.models.User;
-import ru.urfu.logics.mathmechbot.models.UserBuilder;
 import ru.urfu.logics.mathmechbot.models.UserEntry;
 import ru.urfu.logics.mathmechbot.storages.MathMechStorage;
 
@@ -80,7 +79,7 @@ final class ConfirmationTest {
         Assertions.assertEquals(new TestConstants().help, bot.getOutcomingMessageList().get(1));
 
         Assertions.assertEquals(
-                new UserBuilder(0L, MathMechBotUserState.DEFAULT).build(),
+                new User(0L, MathMechBotUserState.DEFAULT),
                 storage.getUsers().get(0L).orElseThrow());
         Assertions.assertEquals(currentUserEntry, storage.getUserEntries().get(0L).orElseThrow());
     }
@@ -106,7 +105,7 @@ final class ConfirmationTest {
         Assertions.assertEquals(new TestConstants().help, bot.getOutcomingMessageList().get(1));
 
         Assertions.assertEquals(
-                new UserBuilder(0L, MathMechBotUserState.DEFAULT).build(),
+                new User(0L, MathMechBotUserState.DEFAULT),
                 storage.getUsers().get(0L).orElseThrow());
         Assertions.assertTrue(storage.getUserEntries().get(0L).isEmpty());
     }
@@ -129,7 +128,7 @@ final class ConfirmationTest {
                 bot.getOutcomingMessageList().getFirst()
         );
         Assertions.assertEquals(
-                new UserBuilder(0L, MathMechBotUserState.REGISTRATION_MEN).build(),
+                new User(0L, MathMechBotUserState.REGISTRATION_MEN),
                 storage.getUsers().get(0L).orElseThrow());
     }
 

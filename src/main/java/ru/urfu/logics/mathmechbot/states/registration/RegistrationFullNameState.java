@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
 import org.jetbrains.annotations.NotNull;
+import ru.urfu.localobjects.LocalButton;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
 import ru.urfu.localobjects.Request;
@@ -58,6 +59,7 @@ public final class RegistrationFullNameState implements MathMechBotState {
                         Введите свое ФИО в формате:
                         Иванов Артём Иванович
                         Без дополнительных пробелов и с буквой ё, если нужно.""")
+                .buttons(List.of(new LocalButton("Отменить регистрацию", Constants.BACK_COMMAND)))
                 .build();
     }
 

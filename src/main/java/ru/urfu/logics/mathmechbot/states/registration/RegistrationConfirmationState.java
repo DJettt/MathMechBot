@@ -77,7 +77,7 @@ public final class RegistrationConfirmationState implements MathMechBotState {
      */
     private void acceptCommandHandler(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
         contextCore.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.DEFAULT);
-        request.bot().sendMessage(new LocalMessageBuilder().text("Сохранил...").build(), request.id());
+        request.bot().sendMessage(new LocalMessage("Сохранил..."), request.id());
         request.bot().sendMessage(new DefaultState().enterMessage(contextCore, request), request.id());
     }
 
@@ -91,7 +91,7 @@ public final class RegistrationConfirmationState implements MathMechBotState {
         final Optional<UserEntry> userEntryOptional = contextCore.getStorage().getUserEntries().get(request.id());
         userEntryOptional.ifPresent(contextCore.getStorage().getUserEntries()::delete);
         contextCore.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.DEFAULT);
-        request.bot().sendMessage(new LocalMessageBuilder().text("Отмена...").build(), request.id());
+        request.bot().sendMessage(new LocalMessage("Отмена..."), request.id());
         request.bot().sendMessage(new DefaultState().enterMessage(contextCore, request), request.id());
     }
 }

@@ -37,8 +37,7 @@ public final class EditingAdditionalEditState implements MathMechBotState {
             }
             case Constants.DECLINE_COMMAND -> {
                 userStorage.changeUserState(request.id(), MathMechBotUserState.DEFAULT);
-                request.bot().sendMessage(new LocalMessageBuilder()
-                        .text("Изменения успешно сохранены.").build(), request.id());
+                request.bot().sendMessage(new LocalMessage("Изменения успешно сохранены."), request.id());
                 new DefaultState().infoCommandHandler(contextCore, request);
                 request.bot().sendMessage(new DefaultState().enterMessage(contextCore, request), request.id());
             }
