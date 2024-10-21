@@ -44,12 +44,14 @@ final class DefaultStateTest {
      * </ol>
      * @param command тестируемая команда
      */
-    @DisplayName("Незарегистрированный пользователь вызывает команду для зарегистрированных пользователей")
+    @DisplayName("Команды, недоступные незарегистрированному пользователю")
     @ValueSource(strings = {INFO_COMMAND, "/delete"})
     @ParameterizedTest(name = "{0} - команда, недоступная незарегистрированному пользователю")
     void testUnregisteredUser(final String command) {
-        logic.processMessage(utils.makeRequestFromMessage(new LocalMessage(command)));
-        Assertions.assertEquals(askForRegistration, bot.getOutcomingMessageList().getFirst());
+        logic.processMessage(utils.makeRequestFromMessage(
+                new LocalMessage(command)));
+        Assertions.assertEquals(askForRegistration,
+                bot.getOutcomingMessageList().getFirst());
     }
 
     /**
@@ -63,11 +65,15 @@ final class DefaultStateTest {
     @ValueSource(strings = {"Ильин Илья Ильич", "Ильин Илья"})
     @ParameterizedTest(name = "\"{0}\" - различные конфигурации ФИО")
     void testInfoExist(String fullName) {
-        logic.processMessage(utils.makeRequestFromMessage(new LocalMessage(INFO_COMMAND)));
-        Assertions.assertEquals(askForRegistration, bot.getOutcomingMessageList().getFirst());
+        logic.processMessage(utils.makeRequestFromMessage(
+                new LocalMessage(INFO_COMMAND)));
+        Assertions.assertEquals(askForRegistration,
+                bot.getOutcomingMessageList().getFirst());
 
-        utils.registerUser(0L, fullName, 2, "КН", 2, "МЕН-654321");
-        logic.processMessage(utils.makeRequestFromMessage(new LocalMessage(INFO_COMMAND)));
+        utils.registerUser(0L, fullName, 2,
+                "КН", 2, "МЕН-654321");
+        logic.processMessage(utils.makeRequestFromMessage(
+                new LocalMessage(INFO_COMMAND)));
 
         Assertions.assertEquals(new LocalMessageBuilder()
                         .text("""
