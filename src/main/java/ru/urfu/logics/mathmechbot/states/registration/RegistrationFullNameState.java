@@ -25,7 +25,9 @@ public final class RegistrationFullNameState implements MathMechBotState {
     private final static int NUMBER_OF_WORDS_IN_FULL_NAME_WITH_PATRONYM = 3;
 
     private final Pattern validFullNamePattern =
-            Pattern.compile("^[А-ЯЁ][а-яё]+\\s+[А-ЯЁ][а-яё]+(\\s+[А-ЯЁ][а-яё]+)?$");
+            Pattern.compile("^[А-ЯЁ][а-яё]+(-[А-ЯЁ][а-яё]+)?\\s+"
+                    + "[А-ЯЁ][а-яё]+(-[А-ЯЁ][а-яё]+)?"
+                    + "(\\s+[А-ЯЁ][а-яё]+)?$");
 
     /**
      * Проверяет корректность введенного ФИО.
@@ -34,7 +36,6 @@ public final class RegistrationFullNameState implements MathMechBotState {
      * @return корректна ли строка.
      */
     public boolean validateFullName(String str) {
-        // TODO: Проверить более сложные имена, содержащие дефисы или несколько слов.
         return validFullNamePattern.matcher(str).matches();
     }
 

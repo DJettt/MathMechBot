@@ -28,7 +28,9 @@ public final class EditingFullNameState implements MathMechBotState {
             .build();
 
     private final Pattern validFullNamePattern =
-            Pattern.compile("^[А-ЯЁ][а-яё]+\\s+[А-ЯЁ][а-яё]+(\\s+[А-ЯЁ][а-яё]+)?$");
+            Pattern.compile("^[А-ЯЁ][а-яё]+(-[А-ЯЁ][а-яё]+)?\\s+"
+                    + "[А-ЯЁ][а-яё]+(-[А-ЯЁ][а-яё]+)?"
+                    + "(\\s+[А-ЯЁ][а-яё]+)?$");
 
     @Override
     public void processMessage(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
