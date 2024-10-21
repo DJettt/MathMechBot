@@ -13,7 +13,7 @@ import org.junit.jupiter.params.provider.MethodSource;
  * <p>SuppressWarnings: считаю, что в данном случае повторения делают тесты прозрачнее.</p>
  */
 @SuppressWarnings({"MagicNumber", "MultipleStringLiterals"})
-@DisplayName("Тесты различных реализаций хранилищ (Storage)")
+@DisplayName("Реализации хранилищ (Storage)")
 final class StorageTest {
     /**
      * <p>Добавляет в хранилище элементы для тестов.</p>

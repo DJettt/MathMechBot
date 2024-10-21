@@ -28,7 +28,7 @@ public final class RegistrationConfirmationState implements MathMechBotState {
     private final LocalButton yesButton = new LocalButton("Да", Constants.ACCEPT_COMMAND);
     private final LocalButton noButton = new LocalButton("Нет", Constants.DECLINE_COMMAND);
     private final LocalButton backButton = new LocalButton("Назад", Constants.BACK_COMMAND);
-    private final LocalMessage tryAgain = new LocalMessageBuilder().text("Попробуйте снова.").build();
+    private final LocalMessage tryAgain = new LocalMessage("Попробуйте снова.");
 
     @Override
     public void processMessage(@NotNull MathMechBotCore contextCore, @NotNull Request request) {

@@ -1,5 +1,6 @@
 package ru.urfu.logics.mathmechbot;
 
+import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -7,46 +8,66 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
+import ru.urfu.localobjects.LocalButton;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
 import ru.urfu.logics.DummyBot;
-import ru.urfu.logics.mathmechbot.models.MathMechBotUserState;
-import ru.urfu.logics.mathmechbot.models.User;
-import ru.urfu.logics.mathmechbot.models.UserEntry;
 import ru.urfu.logics.mathmechbot.storages.MathMechStorage;
 
 /**
- * Тесты для команды удаления.
+ * <p>Тесты удаления данных.</p>
+ *
+ * <p>@SuppressWarnings("MagicNumber"), потому
+ * что это не магические цифры, а индексы.</p>
  */
-@DisplayName("[/delete] Состояние: ожидание подтверждения")
-final class DeleteCommandTest {
-    private final LocalMessage askConfirmation = new LocalMessageBuilder().text("""
+@DisplayName("Удаление данных")
+@SuppressWarnings("MagicNumber")
+final class DeletionTest {
+    private final static String ACCEPT_COMMAND = "/yes";
+    private final static String DECLINE_COMMAND = "/no";
+    private final static String BACK_COMMAND = "/back";
+    private final static String INFO_COMMAND = "/info";
+
+    private final LocalButton backButton = new LocalButton("Назад", BACK_COMMAND);
+    private final List<LocalButton> yesNoBack = List.of(
+            new LocalButton("Да", ACCEPT_COMMAND),
+            new LocalButton("Нет", DECLINE_COMMAND),
+            backButton
+    );
+
+
+    private final LocalMessage askForRegistration = new LocalMessage("Сперва нужно зарегистрироваться.");
+    private final LocalMessage tryAgain = new LocalMessage("Попробуйте снова.");
+
+    private final LocalMessage askConfirmation = new LocalMessageBuilder()
+            .text("""
                     Точно удаляем?
 
                     ФИО: Иванов Иван Иванович
                     Группа: ММП-102 (МЕН-123456)""")
-            .buttons(new TestConstants().yesNoBack)
+            .buttons(yesNoBack)
             .build();
+    private final LocalMessage userInfo = new LocalMessage("""
+            Данные о Вас:
+
+            ФИО: Иванов Иван Иванович
+            Группа: ММП-102 (МЕН-123456)""");
 
     private TestUtils utils;
-    private MathMechStorage storage;
     private MathMechBotCore logic;
     private DummyBot bot;
-    private UserEntry userEntryBeforeDelete;
 
     /**
      * Создаём объект логики и ложного бота для каждого теста, регистрируем человека и отправляем /delete.
      */
     @BeforeEach
     void setupTest() {
-        storage = new MathMechStorage();
-        logic = new MathMechBotCore(storage);
+        logic = new MathMechBotCore(new MathMechStorage());
         bot = new DummyBot();
         utils = new TestUtils(logic, bot);
 
         utils.registerUser(0L, "Иванов Иван Иванович", 1, "ММП", 2, "МЕН-123456");
-        userEntryBeforeDelete = storage.getUserEntries().get(0L).orElseThrow();
-        logic.processMessage(utils.makeRequestFromMessage(new TestConstants().deleteMessage));
+        logic.processMessage(utils.makeRequestFromMessage(new LocalMessage("/delete")));
     }
 
     /**
@@ -69,16 +90,11 @@ final class DeleteCommandTest {
     void testRegisteredUserSaysYes() {
         Assertions.assertEquals(askConfirmation, bot.getOutcomingMessageList().getFirst());
 
-        logic.processMessage(utils.makeRequestFromMessage(new TestConstants().acceptMessage));
-        Assertions.assertEquals(
-                new LocalMessageBuilder().text("Удаляем...").build(),
-                bot.getOutcomingMessageList().get(1));
+        logic.processMessage(utils.makeRequestFromMessage(new LocalMessage(ACCEPT_COMMAND)));
+        Assertions.assertEquals(new LocalMessage("Удаляем..."), bot.getOutcomingMessageList().get(1));
 
-        Assertions.assertTrue(storage.getUserEntries().get(0L).isEmpty());
-        Assertions.assertEquals(
-                new User(0L, MathMechBotUserState.DEFAULT),
-                storage.getUsers().get(0L).orElseThrow());
-        Assertions.assertEquals(new TestConstants().help, bot.getOutcomingMessageList().get(2));
+        logic.processMessage(utils.makeRequestFromMessage(new LocalMessage(INFO_COMMAND)));
+        Assertions.assertEquals(askForRegistration, bot.getOutcomingMessageList().get(3));
     }
 
     /**
@@ -96,20 +112,13 @@ final class DeleteCommandTest {
      * </ol>
      */
     @Test
-    @DisplayName("Нажата кнопка 'Нет' во время подтверждения удаления данных")
+    @DisplayName("Кнопка 'Нет'")
     void testRegisteredUserSaysNo() {
-        logic.processMessage(utils.makeRequestFromMessage(new TestConstants().declineMessage));
-        Assertions.assertEquals(
-                new LocalMessageBuilder().text("Отмена...").build(),
-                bot.getOutcomingMessageList().get(1));
+        logic.processMessage(utils.makeRequestFromMessage(new LocalMessage(DECLINE_COMMAND)));
+        Assertions.assertEquals(new LocalMessage("Отмена..."), bot.getOutcomingMessageList().get(1));
 
-        Assertions.assertEquals(
-                new User(0L, MathMechBotUserState.DEFAULT),
-                storage.getUsers().get(0L).orElseThrow());
-        Assertions.assertEquals(
-                userEntryBeforeDelete,
-                storage.getUserEntries().get(0L).orElseThrow());
-        Assertions.assertEquals(new TestConstants().help, bot.getOutcomingMessageList().get(2));
+        logic.processMessage(utils.makeRequestFromMessage(new LocalMessage(INFO_COMMAND)));
+        Assertions.assertEquals(userInfo, bot.getOutcomingMessageList().get(3));
     }
 
     /**
@@ -126,17 +135,11 @@ final class DeleteCommandTest {
      * </ol>
      */
     @Test
-    @DisplayName("Нажата кнопка 'Назад' во время подтверждения удаления данных")
+    @DisplayName("Кнопка 'Назад'")
     void testRegisteredUserSaysBack() {
-        logic.processMessage(utils.makeRequestFromMessage(new TestConstants().backMessage));
-
-        Assertions.assertEquals(
-                new User(0L, MathMechBotUserState.DEFAULT),
-                storage.getUsers().get(0L).orElseThrow());
-        Assertions.assertEquals(
-                userEntryBeforeDelete,
-                storage.getUserEntries().get(0L).orElseThrow());
-        Assertions.assertEquals(new TestConstants().help, bot.getOutcomingMessageList().get(1));
+        logic.processMessage(utils.makeRequestFromMessage(new LocalMessage(BACK_COMMAND)));
+        logic.processMessage(utils.makeRequestFromMessage(new LocalMessage(INFO_COMMAND)));
+        Assertions.assertEquals(userInfo, bot.getOutcomingMessageList().get(2));
     }
 
     /**
@@ -160,16 +163,13 @@ final class DeleteCommandTest {
     @ValueSource(strings = {"SomeString"})
     @ParameterizedTest(name = "\"{0}\" - не корректный ввод")
     void testRegisteredUserSaysSomethingElse(String text) {
-        logic.processMessage(
-                utils.makeRequestFromMessage(new LocalMessageBuilder().text(text).build()));
-
-        Assertions.assertEquals(
-                new User(0L, MathMechBotUserState.DELETION_CONFIRMATION),
-                storage.getUsers().get(0L).orElseThrow());
-        Assertions.assertEquals(
-                userEntryBeforeDelete,
-                storage.getUserEntries().get(0L).orElseThrow());
-        Assertions.assertEquals(new TestConstants().tryAgain, bot.getOutcomingMessageList().get(1));
+        // Используем билдер, чтобы иметь возможность передать null.
+        logic.processMessage(utils.makeRequestFromMessage(new LocalMessageBuilder().text(text).build()));
+        Assertions.assertEquals(tryAgain, bot.getOutcomingMessageList().get(1));
         Assertions.assertEquals(askConfirmation, bot.getOutcomingMessageList().get(2));
+
+        logic.processMessage(utils.makeRequestFromMessage(new LocalMessage(DECLINE_COMMAND)));
+        logic.processMessage(utils.makeRequestFromMessage(new LocalMessage(INFO_COMMAND)));
+        Assertions.assertEquals(userInfo, bot.getOutcomingMessageList().get(5));
     }
 }

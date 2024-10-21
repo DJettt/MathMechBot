@@ -24,8 +24,7 @@ public final class DefaultState implements MathMechBotState {
     private final static String EDIT_COMMAND = "/edit";
     private final static String DELETE_COMMAND = "/delete";
 
-    private final LocalMessage askForRegistration = new LocalMessageBuilder()
-            .text("Сперва нужно зарегистрироваться.").build();
+    private final LocalMessage askForRegistration = new LocalMessage("Сперва нужно зарегистрироваться.");
 
     @Override
     public void processMessage(@NotNull MathMechBotCore contextCore, @NotNull Request request) {

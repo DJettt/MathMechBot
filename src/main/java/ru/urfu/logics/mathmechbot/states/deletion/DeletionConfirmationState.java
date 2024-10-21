@@ -31,7 +31,6 @@ public final class DeletionConfirmationState implements MathMechBotState {
     private final LocalButton backButton = new LocalButton("Назад", Constants.BACK_COMMAND);
     private final LocalMessage tryAgain = new LocalMessageBuilder().text("Попробуйте снова.").build();
 
-
     @Override
     public void processMessage(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
         switch (request.message().text()) {
