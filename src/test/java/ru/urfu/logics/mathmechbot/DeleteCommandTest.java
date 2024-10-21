@@ -11,7 +11,7 @@ import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
 import ru.urfu.logics.DummyBot;
 import ru.urfu.logics.mathmechbot.models.MathMechBotUserState;
-import ru.urfu.logics.mathmechbot.models.UserBuilder;
+import ru.urfu.logics.mathmechbot.models.User;
 import ru.urfu.logics.mathmechbot.models.UserEntry;
 import ru.urfu.logics.mathmechbot.storages.MathMechStorage;
 
@@ -76,7 +76,7 @@ final class DeleteCommandTest {
 
         Assertions.assertTrue(storage.getUserEntries().get(0L).isEmpty());
         Assertions.assertEquals(
-                new UserBuilder(0L, MathMechBotUserState.DEFAULT).build(),
+                new User(0L, MathMechBotUserState.DEFAULT),
                 storage.getUsers().get(0L).orElseThrow());
         Assertions.assertEquals(new TestConstants().help, bot.getOutcomingMessageList().get(2));
     }
@@ -104,7 +104,7 @@ final class DeleteCommandTest {
                 bot.getOutcomingMessageList().get(1));
 
         Assertions.assertEquals(
-                new UserBuilder(0L, MathMechBotUserState.DEFAULT).build(),
+                new User(0L, MathMechBotUserState.DEFAULT),
                 storage.getUsers().get(0L).orElseThrow());
         Assertions.assertEquals(
                 userEntryBeforeDelete,
@@ -131,7 +131,7 @@ final class DeleteCommandTest {
         logic.processMessage(utils.makeRequestFromMessage(new TestConstants().backMessage));
 
         Assertions.assertEquals(
-                new UserBuilder(0L, MathMechBotUserState.DEFAULT).build(),
+                new User(0L, MathMechBotUserState.DEFAULT),
                 storage.getUsers().get(0L).orElseThrow());
         Assertions.assertEquals(
                 userEntryBeforeDelete,
@@ -164,7 +164,7 @@ final class DeleteCommandTest {
                 utils.makeRequestFromMessage(new LocalMessageBuilder().text(text).build()));
 
         Assertions.assertEquals(
-                new UserBuilder(0L, MathMechBotUserState.DELETION_CONFIRMATION).build(),
+                new User(0L, MathMechBotUserState.DELETION_CONFIRMATION),
                 storage.getUsers().get(0L).orElseThrow());
         Assertions.assertEquals(
                 userEntryBeforeDelete,

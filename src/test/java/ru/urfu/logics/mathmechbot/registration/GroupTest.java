@@ -14,7 +14,6 @@ import ru.urfu.logics.mathmechbot.TestConstants;
 import ru.urfu.logics.mathmechbot.TestUtils;
 import ru.urfu.logics.mathmechbot.models.MathMechBotUserState;
 import ru.urfu.logics.mathmechbot.models.User;
-import ru.urfu.logics.mathmechbot.models.UserBuilder;
 import ru.urfu.logics.mathmechbot.models.UserEntry;
 import ru.urfu.logics.mathmechbot.models.UserEntryBuilder;
 import ru.urfu.logics.mathmechbot.storages.MathMechStorage;
@@ -74,7 +73,7 @@ final class GroupTest {
                 utils.makeRequestFromMessage(new LocalMessageBuilder().text(group).build()));
 
         Assertions.assertEquals(
-                new UserBuilder(0L, MathMechBotUserState.REGISTRATION_MEN).build(),
+                new User(0L, MathMechBotUserState.REGISTRATION_MEN),
                 storage.getUsers().get(0L).orElseThrow());
         Assertions.assertEquals(
                 new UserEntryBuilder(currentUserEntry).group(Integer.parseInt(group)).build(),
@@ -121,7 +120,7 @@ final class GroupTest {
     void testBackCommand() {
         logic.processMessage(utils.makeRequestFromMessage(new TestConstants().backMessage));
         Assertions.assertEquals(
-                new UserBuilder(0L, MathMechBotUserState.REGISTRATION_SPECIALTY).build(),
+                new User(0L, MathMechBotUserState.REGISTRATION_SPECIALTY),
                 storage.getUsers().get(0L).orElseThrow());
     }
 }
