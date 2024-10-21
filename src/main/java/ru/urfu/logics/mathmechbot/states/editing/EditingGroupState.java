@@ -31,43 +31,43 @@ public final class EditingGroupState implements MathMechBotState {
             .build();
 
     @Override
-    public void processMessage(@NotNull MathMechBotCore context, @NotNull Request request) {
+    public void processMessage(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
         switch (request.message().text()) {
-            case Constants.BACK_COMMAND -> backCommandHandler(context, request);
+            case Constants.BACK_COMMAND -> backCommandHandler(contextCore, request);
             case null -> request.bot().sendMessage(new Constants().tryAgain, request.id());
-            default -> textCommandHandler(context, request);
+            default -> textCommandHandler(contextCore, request);
         }
     }
 
     @Override
     @NotNull
-    public LocalMessage enterMessage(@NotNull MathMechBotCore context, @NotNull Request request) {
+    public LocalMessage enterMessage(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
         return onEnterMessage;
     }
 
     /**
      * Возвращаем пользователя на этап выбора поля, которое нужно изменить.
      *
-     * @param context логического ядро (контекст для состояния).
+     * @param contextCore логического ядро (контекст для состояния).
      * @param request запрос.
      */
-    private void backCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
-        context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.EDITING_CHOOSE);
-        final LocalMessage message = new EditingChooseState().enterMessage(context, request);
+    private void backCommandHandler(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
+        contextCore.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.EDITING_CHOOSE);
+        final LocalMessage message = new EditingChooseState().enterMessage(contextCore, request);
         request.bot().sendMessage(message, request.id());
     }
 
     /**
      * Проверяем различные текстовые сообщения.
      *
-     * @param context логического ядро (контекст для состояния).
+     * @param contextCore логического ядро (контекст для состояния).
      * @param request запрос.
      */
-    private void textCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
+    private void textCommandHandler(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
         assert request.message().text() != null;
 
-        final UserStorage userStorage = context.getStorage().getUsers();
-        final UserEntryStorage userEntryStorage = context.getStorage().getUserEntries();
+        final UserStorage userStorage = contextCore.getStorage().getUsers();
+        final UserEntryStorage userEntryStorage = contextCore.getStorage().getUserEntries();
 
         if (!validGroupStringPattern.matcher(request.message().text()).matches()) {
             request.bot().sendMessage(new Constants().tryAgain, request.id());
@@ -78,7 +78,7 @@ public final class EditingGroupState implements MathMechBotState {
         userEntryStorage.changeUserEntryGroup(request.id(), Integer.parseInt(request.message().text()));
         userStorage.changeUserState(request.id(), MathMechBotUserState.EDITING_ADDITIONAL_EDIT);
 
-        final LocalMessage msg = new EditingAdditionalEditState().enterMessage(context, request);
+        final LocalMessage msg = new EditingAdditionalEditState().enterMessage(contextCore, request);
         request.bot().sendMessage(msg, request.id());
     }
 }

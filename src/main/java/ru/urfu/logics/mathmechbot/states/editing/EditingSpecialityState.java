@@ -28,12 +28,12 @@ public final class EditingSpecialityState implements MathMechBotState {
     /**
      * Достаёт год пользователя из хранилища.
      *
-     * @param context контекст.
+     * @param contextCore контекст.
      * @param request запрос.
      * @return год для записи данного пользователя.
      */
-    private int getUserEntryYear(@NotNull MathMechBotCore context, @NotNull Request request) {
-        final Optional<UserEntry> userEntryOptional = context.getStorage().getUserEntries().get(request.id());
+    private int getUserEntryYear(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
+        final Optional<UserEntry> userEntryOptional = contextCore.getStorage().getUserEntries().get(request.id());
 
         if (userEntryOptional.isEmpty()) {
             logger.error("User without entry managed to reach editing_specialty state.");
@@ -65,22 +65,22 @@ public final class EditingSpecialityState implements MathMechBotState {
     }
 
     @Override
-    public void processMessage(@NotNull MathMechBotCore context, @NotNull Request request) {
+    public void processMessage(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
         switch (request.message().text()) {
-            case Constants.BACK_COMMAND -> backCommandHandler(context, request);
+            case Constants.BACK_COMMAND -> backCommandHandler(contextCore, request);
             case null -> {
                 request.bot().sendMessage(new Constants().tryAgain, request.id());
-                request.bot().sendMessage(enterMessage(context, request), request.id());
+                request.bot().sendMessage(enterMessage(contextCore, request), request.id());
             }
-            default -> textHandler(context, request);
+            default -> textHandler(contextCore, request);
         }
     }
 
     @Override
     @NotNull
-    public LocalMessage enterMessage(@NotNull MathMechBotCore context, @NotNull Request request) {
+    public LocalMessage enterMessage(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
         List<LocalButton> buttons = new ArrayList<>();
-        for (Specialty specialty : allowedSpecialties(getUserEntryYear(context, request))) {
+        for (Specialty specialty : allowedSpecialties(getUserEntryYear(contextCore, request))) {
             buttons.add(new LocalButton(specialty.getAbbreviation(), specialty.getAbbreviation()));
         }
         buttons.add(new Constants().backButton);
@@ -93,12 +93,12 @@ public final class EditingSpecialityState implements MathMechBotState {
     /**
      * Возвращаем пользователя на шаг назад, то есть на запрос года обучения.
      *
-     * @param context логического ядро (контекст для состояния).
+     * @param contextCore логического ядро (контекст для состояния).
      * @param request запрос.
      */
-    private void backCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
-        context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.EDITING_CHOOSE);
-        request.bot().sendMessage(new EditingChooseState().enterMessage(context, request), request.id());
+    private void backCommandHandler(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
+        contextCore.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.EDITING_CHOOSE);
+        request.bot().sendMessage(new EditingChooseState().enterMessage(contextCore, request), request.id());
     }
 
     /**
@@ -106,27 +106,27 @@ public final class EditingSpecialityState implements MathMechBotState {
      * В частности, проверяем, что пользователь отправил аббревиатуру одной из разрешённых специальностей.
      * В противном случае просим пользователя повторить ввод.
      *
-     * @param context логического ядро (контекст для состояния).
+     * @param contextCore логического ядро (контекст для состояния).
      * @param request запрос.
      */
-    private void textHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
+    private void textHandler(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
         assert request.message().text() != null;
 
-        final UserStorage userStorage = context.getStorage().getUsers();
-        final UserEntryStorage userEntryStorage = context.getStorage().getUserEntries();
+        final UserStorage userStorage = contextCore.getStorage().getUsers();
+        final UserEntryStorage userEntryStorage = contextCore.getStorage().getUserEntries();
 
-        if (!allowedSpecialties(getUserEntryYear(context, request))
+        if (!allowedSpecialties(getUserEntryYear(contextCore, request))
                 .stream()
                 .map(Specialty::getAbbreviation)
                 .toList()
                 .contains(request.message().text())) {
             request.bot().sendMessage(new Constants().tryAgain, request.id());
-            request.bot().sendMessage(enterMessage(context, request), request.id());
+            request.bot().sendMessage(enterMessage(contextCore, request), request.id());
             return;
         }
 
         userEntryStorage.changeUserEntrySpecialty(request.id(), request.message().text());
         userStorage.changeUserState(request.id(), MathMechBotUserState.EDITING_ADDITIONAL_EDIT);
-        request.bot().sendMessage(new EditingAdditionalEditState().enterMessage(context, request), request.id());
+        request.bot().sendMessage(new EditingAdditionalEditState().enterMessage(contextCore, request), request.id());
     }
 }

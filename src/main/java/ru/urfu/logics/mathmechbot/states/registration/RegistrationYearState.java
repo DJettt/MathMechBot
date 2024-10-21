@@ -35,32 +35,32 @@ public final class RegistrationYearState implements MathMechBotState {
             .build();
 
     @Override
-    public void processMessage(@NotNull MathMechBotCore context, @NotNull Request request) {
+    public void processMessage(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
         switch (request.message().text()) {
-            case Constants.BACK_COMMAND -> backCommandHandler(context, request);
+            case Constants.BACK_COMMAND -> backCommandHandler(contextCore, request);
             case null -> {
                 request.bot().sendMessage(new Constants().tryAgain, request.id());
                 request.bot().sendMessage(onEnterMessage, request.id());
             }
-            default -> textHandler(context, request);
+            default -> textHandler(contextCore, request);
         }
     }
 
     @Override
     @NotNull
-    public LocalMessage enterMessage(@NotNull MathMechBotCore context, @NotNull Request request) {
+    public LocalMessage enterMessage(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
         return onEnterMessage;
     }
 
     /**
      * Возвращаем пользователя на шаг назад, то есть на запрос ФИО.
      *
-     * @param context логического ядро (контекст для состояния).
+     * @param contextCore логического ядро (контекст для состояния).
      * @param request запрос.
      */
-    private void backCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
-        context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.REGISTRATION_NAME);
-        request.bot().sendMessage(new RegistrationFullNameState().enterMessage(context, request), request.id());
+    private void backCommandHandler(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
+        contextCore.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.REGISTRATION_NAME);
+        request.bot().sendMessage(new RegistrationFullNameState().enterMessage(contextCore, request), request.id());
     }
 
     /**
@@ -68,14 +68,14 @@ public final class RegistrationYearState implements MathMechBotState {
      * Если текстовое сообщение является числом от 1 до 6 (проходит валидацию),
      * пользователь перемещается на следующее состояние, то есть запрос специальности.
      *
-     * @param context логического ядро (контекст для состояния).
+     * @param contextCore логического ядро (контекст для состояния).
      * @param request запрос.
      */
-    public void textHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
+    public void textHandler(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
         assert request.message().text() != null;
 
-        final UserStorage userStorage = context.getStorage().getUsers();
-        final UserEntryStorage userEntryStorage = context.getStorage().getUserEntries();
+        final UserStorage userStorage = contextCore.getStorage().getUsers();
+        final UserEntryStorage userEntryStorage = contextCore.getStorage().getUserEntries();
 
         int year;
         try {
@@ -90,7 +90,7 @@ public final class RegistrationYearState implements MathMechBotState {
             userEntryStorage.changeUserEntryYear(request.id(), year);
             userStorage.changeUserState(request.id(), MathMechBotUserState.REGISTRATION_SPECIALTY);
 
-            final LocalMessage msg = new RegistrationSpecialtyState().enterMessage(context, request);
+            final LocalMessage msg = new RegistrationSpecialtyState().enterMessage(contextCore, request);
             request.bot().sendMessage(msg, request.id());
         } else {
             request.bot().sendMessage(new Constants().tryAgain, request.id());

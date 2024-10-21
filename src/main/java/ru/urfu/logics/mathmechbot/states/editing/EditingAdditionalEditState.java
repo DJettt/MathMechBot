@@ -24,20 +24,20 @@ public final class EditingAdditionalEditState implements MathMechBotState {
             .build();
 
     @Override
-    public void processMessage(@NotNull MathMechBotCore context, @NotNull Request request) {
-        final UserStorage userStorage = context.getStorage().getUsers();
+    public void processMessage(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
+        final UserStorage userStorage = contextCore.getStorage().getUsers();
 
         switch (request.message().text()) {
             case Constants.ACCEPT_COMMAND -> {
                 userStorage.changeUserState(request.id(), MathMechBotUserState.EDITING_CHOOSE);
-                request.bot().sendMessage(new EditingChooseState().enterMessage(context, request), request.id());
+                request.bot().sendMessage(new EditingChooseState().enterMessage(contextCore, request), request.id());
             }
             case Constants.DECLINE_COMMAND -> {
                 userStorage.changeUserState(request.id(), MathMechBotUserState.DEFAULT);
                 request.bot().sendMessage(new LocalMessageBuilder()
                         .text("Изменения успешно сохранены.").build(), request.id());
-                new DefaultState().infoCommandHandler(context, request);
-                request.bot().sendMessage(new DefaultState().enterMessage(context, request), request.id());
+                new DefaultState().infoCommandHandler(contextCore, request);
+                request.bot().sendMessage(new DefaultState().enterMessage(contextCore, request), request.id());
             }
             case null, default -> request.bot().sendMessage(new Constants().tryAgain, request.id());
         }
@@ -45,7 +45,7 @@ public final class EditingAdditionalEditState implements MathMechBotState {
 
     @NotNull
     @Override
-    public LocalMessage enterMessage(@NotNull MathMechBotCore context, @NotNull Request request) {
+    public LocalMessage enterMessage(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
         return onEnterMessage;
     }
 }

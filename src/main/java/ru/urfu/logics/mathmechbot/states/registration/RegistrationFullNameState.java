@@ -39,17 +39,17 @@ public final class RegistrationFullNameState implements MathMechBotState {
     }
 
     @Override
-    public void processMessage(@NotNull MathMechBotCore context, @NotNull Request request) {
+    public void processMessage(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
         switch (request.message().text()) {
-            case Constants.BACK_COMMAND -> backCommandHandler(context, request);
+            case Constants.BACK_COMMAND -> backCommandHandler(contextCore, request);
             case null -> request.bot().sendMessage(new Constants().tryAgain, request.id());
-            default -> textHandler(context, request);
+            default -> textHandler(contextCore, request);
         }
     }
 
     @Override
     @NotNull
-    public LocalMessage enterMessage(@NotNull MathMechBotCore context, @NotNull Request request) {
+    public LocalMessage enterMessage(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
         return new LocalMessageBuilder()
                 .text("""
                         Введите свое ФИО в формате:
@@ -61,14 +61,14 @@ public final class RegistrationFullNameState implements MathMechBotState {
     /**
      * Возвращаем пользователя на шаг назад, то есть в основное состояние.
      *
-     * @param context логического ядро (контекст для состояния).
+     * @param contextCore логического ядро (контекст для состояния).
      * @param request запрос.
      */
-    private void backCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
-        final Optional<UserEntry> userEntryOptional = context.getStorage().getUserEntries().get(request.id());
-        userEntryOptional.ifPresent(context.getStorage().getUserEntries()::delete);
-        context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.DEFAULT);
-        request.bot().sendMessage(new DefaultState().enterMessage(context, request), request.id());
+    private void backCommandHandler(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
+        final Optional<UserEntry> userEntryOptional = contextCore.getStorage().getUserEntries().get(request.id());
+        userEntryOptional.ifPresent(contextCore.getStorage().getUserEntries()::delete);
+        contextCore.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.DEFAULT);
+        request.bot().sendMessage(new DefaultState().enterMessage(contextCore, request), request.id());
     }
 
     /**
@@ -77,14 +77,14 @@ public final class RegistrationFullNameState implements MathMechBotState {
      * пользователь перемещается на следующее состояние, то есть запрос года обучения.
      * В противном случае просим пользователя повторить ввод.
      *
-     * @param context логического ядро (контекст для состояния).
+     * @param contextCore логического ядро (контекст для состояния).
      * @param request запрос.
      */
-    public void textHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
+    public void textHandler(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
         assert request.message().text() != null;
 
-        final UserStorage userStorage = context.getStorage().getUsers();
-        final UserEntryStorage userEntryStorage = context.getStorage().getUserEntries();
+        final UserStorage userStorage = contextCore.getStorage().getUsers();
+        final UserEntryStorage userEntryStorage = contextCore.getStorage().getUserEntries();
 
         final String trimmedText = request.message().text().trim();
 
@@ -101,7 +101,7 @@ public final class RegistrationFullNameState implements MathMechBotState {
                 null, null, null, null, request.id()));
         userStorage.changeUserState(request.id(), MathMechBotUserState.REGISTRATION_YEAR);
 
-        final LocalMessage msg = new RegistrationYearState().enterMessage(context, request);
+        final LocalMessage msg = new RegistrationYearState().enterMessage(contextCore, request);
         request.bot().sendMessage(msg, request.id());
     }
 }
