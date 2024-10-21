@@ -17,12 +17,14 @@ import ru.urfu.logics.mathmechbot.storages.UserStorage;
  * Состояние в котором пользователь выбирает, какую информацию он хочет изменить.
  */
 public final class EditingChooseState implements MathMechBotState {
-    //TODO: поменять местоположение констант.
     private static final String EDITING_FULL_NAME = "full_name";
     private static final String EDITING_YEAR = "year";
     private static final String EDITING_SPECIALITY = "speciality";
     private static final String EDITING_GROUP = "number_of_group";
     private static final String EDITING_MEN = "men";
+
+    private final LocalButton backButton = new LocalButton("Назад", Constants.BACK_COMMAND);
+    private final LocalMessage tryAgain = new LocalMessageBuilder().text("Попробуйте снова.").build();
 
     private final LocalMessage onEnterMessage = new LocalMessageBuilder()
             .text("Что Вы хотите изменить?")
@@ -32,7 +34,7 @@ public final class EditingChooseState implements MathMechBotState {
                     new LocalButton("Направление", EDITING_SPECIALITY),
                     new LocalButton("Группа", EDITING_GROUP),
                     new LocalButton("МЕН", EDITING_MEN),
-                    new Constants().backButton))
+                    backButton))
             .build();
 
     @Override
@@ -62,7 +64,7 @@ public final class EditingChooseState implements MathMechBotState {
                 userStorage.changeUserState(request.id(), MathMechBotUserState.EDITING_MEN);
                 request.bot().sendMessage(new EditingMenState().enterMessage(contextCore, request), request.id());
             }
-            case null, default -> request.bot().sendMessage(new Constants().tryAgain, request.id());
+            case null, default -> request.bot().sendMessage(tryAgain, request.id());
         }
     }
 

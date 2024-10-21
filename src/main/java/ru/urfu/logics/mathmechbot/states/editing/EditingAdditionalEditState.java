@@ -2,6 +2,7 @@ package ru.urfu.logics.mathmechbot.states.editing;
 
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
+import ru.urfu.localobjects.LocalButton;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
 import ru.urfu.localobjects.Request;
@@ -16,11 +17,13 @@ import ru.urfu.logics.mathmechbot.storages.UserStorage;
  * Состояние, в котором пользователь уточняет, хочет ли он изменить информацию о себе или нет.
  */
 public final class EditingAdditionalEditState implements MathMechBotState {
+    private final LocalButton yesButton = new LocalButton("Да", Constants.ACCEPT_COMMAND);
+    private final LocalButton noButton = new LocalButton("Нет", Constants.DECLINE_COMMAND);
+    private final LocalMessage tryAgain = new LocalMessageBuilder().text("Попробуйте снова.").build();
+
     private final LocalMessage onEnterMessage = new LocalMessageBuilder()
             .text("Хотите изменить что-нибудь еще?")
-            .buttons(List.of(
-                    new Constants().yesButton,
-                    new Constants().noButton))
+            .buttons(List.of(yesButton, noButton))
             .build();
 
     @Override
@@ -38,7 +41,7 @@ public final class EditingAdditionalEditState implements MathMechBotState {
                 new DefaultState().infoCommandHandler(contextCore, request);
                 request.bot().sendMessage(new DefaultState().enterMessage(contextCore, request), request.id());
             }
-            case null, default -> request.bot().sendMessage(new Constants().tryAgain, request.id());
+            case null, default -> request.bot().sendMessage(tryAgain, request.id());
         }
     }
 

@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
 import ru.urfu.logics.DummyBot;
 import ru.urfu.logics.mathmechbot.storages.MathMechStorage;
@@ -12,19 +13,23 @@ import ru.urfu.logics.mathmechbot.storages.MathMechStorage;
 /**
  * Тесты для дефолтного состояния.
  */
-@DisplayName("[default] Состояние: по умолчанию")
+@DisplayName("Состояние по умолчанию")
 final class DefaultStateTest {
+    private final static String INFO_COMMAND = "/info";
+
+    private final LocalMessage askForRegistration =
+            new LocalMessage("Сперва нужно зарегистрироваться.");
+
     private TestUtils utils;
     private MathMechBotCore logic;
     private DummyBot bot;
 
     /**
-     * Создаём объект логики, ложного бота и утилиты для каждого теста.
+     * <p>Создаём объект логики, ложного бота и утилиты для каждого теста.</p>
      */
     @BeforeEach
     void setupTest() {
-        final MathMechStorage storage = new MathMechStorage();
-        logic = new MathMechBotCore(storage);
+        logic = new MathMechBotCore(new MathMechStorage());
         bot = new DummyBot();
         utils = new TestUtils(logic, bot);
     }
@@ -39,12 +44,14 @@ final class DefaultStateTest {
      * </ol>
      * @param command тестируемая команда
      */
-    @DisplayName("Незарегистрированный пользователь вызывает команду для зарегистрированных пользователей")
-    @ValueSource(strings = {TestConstants.INFO_COMMAND, TestConstants.DELETE_COMMAND})
+    @DisplayName("Команды, недоступные незарегистрированному пользователю")
+    @ValueSource(strings = {INFO_COMMAND, "/delete"})
     @ParameterizedTest(name = "{0} - команда, недоступная незарегистрированному пользователю")
-    void testUnregisteredUser(String command) {
-        logic.processMessage(utils.makeRequestFromMessage(new LocalMessageBuilder().text(command).build()));
-        Assertions.assertEquals(new TestConstants().askForRegistration, bot.getOutcomingMessageList().getLast());
+    void testUnregisteredUser(final String command) {
+        logic.processMessage(utils.makeRequestFromMessage(
+                new LocalMessage(command)));
+        Assertions.assertEquals(askForRegistration,
+                bot.getOutcomingMessageList().getFirst());
     }
 
     /**
@@ -54,15 +61,20 @@ final class DefaultStateTest {
      *
      * @param fullName ФИО
      */
-    @DisplayName("Тестирование команды " + TestConstants.INFO_COMMAND)
+    @DisplayName("Тестирование команды /info")
     @ValueSource(strings = {"Ильин Илья Ильич", "Ильин Илья"})
     @ParameterizedTest(name = "\"{0}\" - различные конфигурации ФИО")
     void testInfoExist(String fullName) {
-        logic.processMessage(utils.makeRequestFromMessage(new TestConstants().infoMessage));
-        Assertions.assertEquals(new TestConstants().askForRegistration, bot.getOutcomingMessageList().getFirst());
+        logic.processMessage(utils.makeRequestFromMessage(
+                new LocalMessage(INFO_COMMAND)));
+        Assertions.assertEquals(askForRegistration,
+                bot.getOutcomingMessageList().getFirst());
 
-        utils.registerUser(0L, fullName, 2, "КН", 2, "МЕН-654321");
-        logic.processMessage(utils.makeRequestFromMessage(new TestConstants().infoMessage));
+        utils.registerUser(0L, fullName, 2,
+                "КН", 2, "МЕН-654321");
+        logic.processMessage(utils.makeRequestFromMessage(
+                new LocalMessage(INFO_COMMAND)));
+
         Assertions.assertEquals(new LocalMessageBuilder()
                         .text("""
                                 Данные о Вас:

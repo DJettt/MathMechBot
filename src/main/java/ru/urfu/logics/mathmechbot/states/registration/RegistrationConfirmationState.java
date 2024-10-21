@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.urfu.localobjects.LocalButton;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
 import ru.urfu.localobjects.Request;
@@ -24,6 +25,10 @@ public final class RegistrationConfirmationState implements MathMechBotState {
     private final static String ENTER_MESSAGE_PREFIX = "Всё верно?\n\n";
 
     private final Logger logger = LoggerFactory.getLogger(RegistrationConfirmationState.class);
+    private final LocalButton yesButton = new LocalButton("Да", Constants.ACCEPT_COMMAND);
+    private final LocalButton noButton = new LocalButton("Нет", Constants.DECLINE_COMMAND);
+    private final LocalButton backButton = new LocalButton("Назад", Constants.BACK_COMMAND);
+    private final LocalMessage tryAgain = new LocalMessage("Попробуйте снова.");
 
     @Override
     public void processMessage(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
@@ -31,7 +36,7 @@ public final class RegistrationConfirmationState implements MathMechBotState {
             case Constants.BACK_COMMAND -> backCommandHandler(contextCore, request);
             case Constants.ACCEPT_COMMAND -> acceptCommandHandler(contextCore, request);
             case Constants.DECLINE_COMMAND -> declineCommandHandler(contextCore, request);
-            case null, default -> request.bot().sendMessage(new Constants().tryAgain, request.id());
+            case null, default -> request.bot().sendMessage(tryAgain, request.id());
         }
     }
 
@@ -47,10 +52,7 @@ public final class RegistrationConfirmationState implements MathMechBotState {
 
         return new LocalMessageBuilder()
                 .text(ENTER_MESSAGE_PREFIX + userEntryOptional.get().toHumanReadable())
-                .buttons(List.of(
-                        new Constants().yesButton,
-                        new Constants().noButton,
-                        new Constants().backButton))
+                .buttons(List.of(yesButton, noButton, backButton))
                 .build();
     }
 

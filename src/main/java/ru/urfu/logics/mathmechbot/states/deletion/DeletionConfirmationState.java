@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.urfu.localobjects.LocalButton;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
 import ru.urfu.localobjects.Request;
@@ -25,6 +26,11 @@ import ru.urfu.logics.mathmechbot.storages.UserStorage;
 public final class DeletionConfirmationState implements MathMechBotState {
     private final Logger logger = LoggerFactory.getLogger(DeletionConfirmationState.class);
 
+    private final LocalButton yesButton = new LocalButton("Да", Constants.ACCEPT_COMMAND);
+    private final LocalButton noButton = new LocalButton("Нет", Constants.DECLINE_COMMAND);
+    private final LocalButton backButton = new LocalButton("Назад", Constants.BACK_COMMAND);
+    private final LocalMessage tryAgain = new LocalMessageBuilder().text("Попробуйте снова.").build();
+
     @Override
     public void processMessage(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
         switch (request.message().text()) {
@@ -32,7 +38,7 @@ public final class DeletionConfirmationState implements MathMechBotState {
             case Constants.ACCEPT_COMMAND -> acceptCommandHandler(contextCore, request);
             case Constants.DECLINE_COMMAND -> declineCommandHandler(contextCore, request);
             case null, default -> {
-                request.bot().sendMessage(new Constants().tryAgain, request.id());
+                request.bot().sendMessage(tryAgain, request.id());
                 request.bot().sendMessage(enterMessage(contextCore, request), request.id());
             }
         }
@@ -50,10 +56,7 @@ public final class DeletionConfirmationState implements MathMechBotState {
 
         return new LocalMessageBuilder()
                 .text("Точно удаляем?\n\n" + userEntryOptional.get().toHumanReadable())
-                .buttons(List.of(
-                        new Constants().yesButton,
-                        new Constants().noButton,
-                        new Constants().backButton))
+                .buttons(List.of(yesButton, noButton, backButton))
                 .build();
     }
 

@@ -1,4 +1,4 @@
-package ru.urfu.logics.mathmechbot.editing;
+package ru.urfu.logics.mathmechbot;
 
 
 import org.junit.jupiter.api.Assertions;
@@ -7,9 +7,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ru.urfu.localobjects.LocalMessageBuilder;
 import ru.urfu.logics.DummyBot;
-import ru.urfu.logics.mathmechbot.MathMechBotCore;
-import ru.urfu.logics.mathmechbot.TestConstants;
-import ru.urfu.logics.mathmechbot.TestUtils;
 import ru.urfu.logics.mathmechbot.models.MathMechBotUserState;
 import ru.urfu.logics.mathmechbot.models.User;
 import ru.urfu.logics.mathmechbot.storages.MathMechStorage;

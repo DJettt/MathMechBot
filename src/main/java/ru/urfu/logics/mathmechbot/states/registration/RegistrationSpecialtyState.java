@@ -28,6 +28,9 @@ import ru.urfu.logics.mathmechbot.storages.UserStorage;
 public final class RegistrationSpecialtyState implements MathMechBotState {
     private final Logger logger = LoggerFactory.getLogger(RegistrationSpecialtyState.class);
 
+    private final LocalButton backButton = new LocalButton("Назад", Constants.BACK_COMMAND);
+    private final LocalMessage tryAgain = new LocalMessageBuilder().text("Попробуйте снова.").build();
+
     /**
      * Достаёт год пользователя из хранилища.
      *
@@ -73,7 +76,7 @@ public final class RegistrationSpecialtyState implements MathMechBotState {
         switch (request.message().text()) {
             case Constants.BACK_COMMAND -> backCommandHandler(contextCore, request);
             case null -> {
-                request.bot().sendMessage(new Constants().tryAgain, request.id());
+                request.bot().sendMessage(tryAgain, request.id());
                 request.bot().sendMessage(enterMessage(contextCore, request), request.id());
             }
             default -> textHandler(contextCore, request);
@@ -87,7 +90,7 @@ public final class RegistrationSpecialtyState implements MathMechBotState {
         for (Specialty specialty : allowedSpecialties(getUserEntryYear(contextCore, request))) {
             buttons.add(new LocalButton(specialty.getAbbreviation(), specialty.getAbbreviation()));
         }
-        buttons.add(new Constants().backButton);
+        buttons.add(backButton);
         return new LocalMessageBuilder().text("На каком направлении?").buttons(buttons).build();
     }
 
@@ -121,7 +124,7 @@ public final class RegistrationSpecialtyState implements MathMechBotState {
                 .map(Specialty::getAbbreviation)
                 .toList()
                 .contains(request.message().text())) {
-            request.bot().sendMessage(new Constants().tryAgain, request.id());
+            request.bot().sendMessage(tryAgain, request.id());
             request.bot().sendMessage(enterMessage(contextCore, request), request.id());
             return;
         }

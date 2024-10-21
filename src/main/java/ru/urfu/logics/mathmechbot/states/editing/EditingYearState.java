@@ -19,6 +19,10 @@ import ru.urfu.logics.mathmechbot.storages.UserStorage;
  */
 public final class EditingYearState implements MathMechBotState {
     private final Pattern validYearStringPattern = Pattern.compile("^[1-6]$");
+
+    private final LocalButton backButton = new LocalButton("Назад", Constants.BACK_COMMAND);
+    private final LocalMessage tryAgain = new LocalMessageBuilder().text("Попробуйте снова.").build();
+
     private final LocalMessage onEnterMessage = new LocalMessageBuilder()
             .text("На каком курсе Вы обучаетесь?")
             .buttons(List.of(
@@ -28,14 +32,14 @@ public final class EditingYearState implements MathMechBotState {
                     new LocalButton("4 курс", "4"),
                     new LocalButton("5 курс", "5"),
                     new LocalButton("6 курс", "6"),
-                    new Constants().backButton))
+                    backButton))
             .build();
 
     @Override
     public void processMessage(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
         switch (request.message().text()) {
             case Constants.BACK_COMMAND -> backCommandHandler(contextCore, request);
-            case null -> request.bot().sendMessage(new Constants().tryAgain, request.id());
+            case null -> request.bot().sendMessage(tryAgain, request.id());
             default -> textHandler(contextCore, request);
         }
     }
@@ -72,7 +76,7 @@ public final class EditingYearState implements MathMechBotState {
         try {
             year = Integer.parseInt(request.message().text().trim());
         } catch (NumberFormatException e) {
-            request.bot().sendMessage(new Constants().tryAgain, request.id());
+            request.bot().sendMessage(tryAgain, request.id());
             request.bot().sendMessage(onEnterMessage, request.id());
             return;
         }
@@ -84,7 +88,7 @@ public final class EditingYearState implements MathMechBotState {
             final LocalMessage msg = new EditingAdditionalEditState().enterMessage(contextCore, request);
             request.bot().sendMessage(msg, request.id());
         } else {
-            request.bot().sendMessage(new Constants().tryAgain, request.id());
+            request.bot().sendMessage(tryAgain, request.id());
             request.bot().sendMessage(onEnterMessage, request.id());
         }
     }
