@@ -3,6 +3,7 @@ package ru.urfu.logics.mathmechbot.states.editing;
 import java.util.List;
 import java.util.regex.Pattern;
 import org.jetbrains.annotations.NotNull;
+import ru.urfu.localobjects.LocalButton;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
 import ru.urfu.localobjects.Request;
@@ -19,11 +20,14 @@ import ru.urfu.logics.mathmechbot.storages.UserStorage;
 public final class EditingMenState implements MathMechBotState {
     private final Pattern validMenGroupString = Pattern.compile("^МЕН-\\d{6}$");
 
+    private final LocalButton backButton = new LocalButton("Назад", Constants.BACK_COMMAND);
+    private final LocalMessage tryAgain = new LocalMessageBuilder().text("Попробуйте снова.").build();
+
     @Override
     public void processMessage(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
         switch (request.message().text()) {
             case Constants.BACK_COMMAND -> backCommandHandler(contextCore, request);
-            case null -> request.bot().sendMessage(new Constants().tryAgain, request.id());
+            case null -> request.bot().sendMessage(tryAgain, request.id());
             default -> textHandler(contextCore, request);
         }
     }
@@ -32,7 +36,7 @@ public final class EditingMenState implements MathMechBotState {
     public LocalMessage enterMessage(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
         return new LocalMessageBuilder()
                 .text("Введите свою академическую группу в формате:\nМЕН-123456")
-                .buttons(List.of(new Constants().backButton))
+                .buttons(List.of(backButton))
                 .build();
     }
 
@@ -61,7 +65,7 @@ public final class EditingMenState implements MathMechBotState {
 
         final String trimmedText = request.message().text().trim();
         if (!validMenGroupString.matcher(trimmedText).matches()) {
-            request.bot().sendMessage(new Constants().tryAgain, request.id());
+            request.bot().sendMessage(tryAgain, request.id());
             return;
         }
 

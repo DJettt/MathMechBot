@@ -6,7 +6,6 @@ import ru.urfu.bots.Bot;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
 import ru.urfu.localobjects.Request;
-import ru.urfu.logics.mathmechbot.Constants;
 import ru.urfu.logics.mathmechbot.MathMechBotCore;
 import ru.urfu.logics.mathmechbot.models.MathMechBotUserState;
 import ru.urfu.logics.mathmechbot.models.UserEntry;
@@ -25,6 +24,9 @@ public final class DefaultState implements MathMechBotState {
     private final static String INFO_COMMAND = "/info";
     private final static String EDIT_COMMAND = "/edit";
     private final static String DELETE_COMMAND = "/delete";
+
+    private final LocalMessage askForRegistration = new LocalMessageBuilder()
+            .text("Сперва нужно зарегистрироваться.").build();
 
     @Override
     public void processMessage(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
@@ -86,7 +88,7 @@ public final class DefaultState implements MathMechBotState {
     public void infoCommandHandler(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
         final Optional<UserEntry> userEntryOptional = contextCore.getStorage().getUserEntries().get(request.id());
         if (userEntryOptional.isEmpty()) {
-            request.bot().sendMessage(new Constants().askForRegistration, request.id());
+            request.bot().sendMessage(askForRegistration, request.id());
             return;
         }
         final LocalMessage answer = new LocalMessageBuilder()
@@ -109,7 +111,7 @@ public final class DefaultState implements MathMechBotState {
             final LocalMessage msg = new EditingChooseState().enterMessage(contextCore, request);
             request.bot().sendMessage(msg, request.id());
         } else {
-            request.bot().sendMessage(new Constants().askForRegistration, request.id());
+            request.bot().sendMessage(askForRegistration, request.id());
         }
     }
 
@@ -130,7 +132,7 @@ public final class DefaultState implements MathMechBotState {
                 request.bot().sendMessage(msg, request.id());
             }
         } else {
-            request.bot().sendMessage(new Constants().askForRegistration, request.id());
+            request.bot().sendMessage(askForRegistration, request.id());
         }
     }
 

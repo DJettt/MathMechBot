@@ -19,6 +19,10 @@ import ru.urfu.logics.mathmechbot.storages.UserStorage;
  */
 public final class EditingGroupState implements MathMechBotState {
     private final Pattern validGroupStringPattern = Pattern.compile("^[1-5]$");
+
+    private final LocalButton backButton = new LocalButton("Назад", Constants.BACK_COMMAND);
+    private final LocalMessage tryAgain = new LocalMessageBuilder().text("Попробуйте снова.").build();
+
     private final LocalMessage onEnterMessage = new LocalMessageBuilder()
             .text("Какая у Вас группа?")
             .buttons(List.of(
@@ -27,14 +31,14 @@ public final class EditingGroupState implements MathMechBotState {
                     new LocalButton("3 группа", "3"),
                     new LocalButton("4 группа", "4"),
                     new LocalButton("5 группа", "5"),
-                    new Constants().backButton))
+                    backButton))
             .build();
 
     @Override
     public void processMessage(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
         switch (request.message().text()) {
             case Constants.BACK_COMMAND -> backCommandHandler(contextCore, request);
-            case null -> request.bot().sendMessage(new Constants().tryAgain, request.id());
+            case null -> request.bot().sendMessage(tryAgain, request.id());
             default -> textCommandHandler(contextCore, request);
         }
     }
@@ -70,7 +74,7 @@ public final class EditingGroupState implements MathMechBotState {
         final UserEntryStorage userEntryStorage = contextCore.getStorage().getUserEntries();
 
         if (!validGroupStringPattern.matcher(request.message().text()).matches()) {
-            request.bot().sendMessage(new Constants().tryAgain, request.id());
+            request.bot().sendMessage(tryAgain, request.id());
             request.bot().sendMessage(onEnterMessage, request.id());
             return;
         }

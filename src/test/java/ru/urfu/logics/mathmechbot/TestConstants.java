@@ -62,6 +62,6 @@ public final class TestConstants {
                     new LocalButton("Направление", EDITING_SPECIALITY_COMMAND),
                     new LocalButton("Группа", EDITING_GROUP_COMMAND),
                     new LocalButton("МЕН", EDITING_MEN_COMMAND),
-                    new Constants().backButton))
+                    backButton))
             .build();
 }
