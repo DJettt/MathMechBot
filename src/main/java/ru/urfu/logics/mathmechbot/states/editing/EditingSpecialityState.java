@@ -84,10 +84,13 @@ public final class EditingSpecialityState implements MathMechBotState {
             buttons.add(new LocalButton(specialty.getAbbreviation(), specialty.getAbbreviation()));
         }
         buttons.add(new Constants().backButton);
-        return new LocalMessageBuilder().text("""
+        return new LocalMessageBuilder()
+                .text("""
                 На каком направлении?
                 Если Вы не видите свое направление, то, возможно, Вы выбрали не тот курс.
-                """).buttons(buttons).build();
+                """)
+                .buttons(buttons)
+                .build();
     }
 
     /**

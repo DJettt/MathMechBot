@@ -20,6 +20,7 @@ public final class RegistrationConstants {
                     Введите свое ФИО в формате:
                     Иванов Артём Иванович
                     Без дополнительных пробелов и с буквой ё, если нужно.""")
+            .buttons(List.of(new LocalButton("Отменить регистрацию", TestConstants.BACK_COMMAND)))
             .build();
 
     final LocalMessage askYear = new LocalMessageBuilder()

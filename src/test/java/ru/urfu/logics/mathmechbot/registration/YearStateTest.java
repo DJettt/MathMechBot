@@ -15,7 +15,6 @@ import ru.urfu.logics.mathmechbot.TestConstants;
 import ru.urfu.logics.mathmechbot.TestUtils;
 import ru.urfu.logics.mathmechbot.models.MathMechBotUserState;
 import ru.urfu.logics.mathmechbot.models.User;
-import ru.urfu.logics.mathmechbot.models.UserBuilder;
 import ru.urfu.logics.mathmechbot.models.UserEntry;
 import ru.urfu.logics.mathmechbot.models.UserEntryBuilder;
 import ru.urfu.logics.mathmechbot.storages.MathMechStorage;
@@ -77,7 +76,7 @@ final class YearStateTest {
         logic.processMessage(
                 utils.makeRequestFromMessage(new LocalMessageBuilder().text(year).build()));
         Assertions.assertEquals(
-                new UserBuilder(0L, MathMechBotUserState.REGISTRATION_SPECIALTY).build(),
+                new User(0L, MathMechBotUserState.REGISTRATION_SPECIALTY),
                 storage.getUsers().get(0L).orElseThrow());
 
         if (Objects.equals(year, "1")) {
@@ -133,7 +132,7 @@ final class YearStateTest {
     void testBackCommand() {
         logic.processMessage(utils.makeRequestFromMessage(new TestConstants().backMessage));
         Assertions.assertEquals(
-                new UserBuilder(0L, MathMechBotUserState.REGISTRATION_NAME).build(),
+                new User(0L, MathMechBotUserState.REGISTRATION_NAME),
                 storage.getUsers().get(0L).orElseThrow());
     }
 }

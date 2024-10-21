@@ -82,7 +82,7 @@ public final class DeletionConfirmationState implements MathMechBotState {
         userEntryOptional.ifPresent(userEntryStorage::delete);
 
         userStorage.changeUserState(request.id(), MathMechBotUserState.DEFAULT);
-        request.bot().sendMessage(new LocalMessageBuilder().text("Удаляем...").build(), request.id());
+        request.bot().sendMessage(new LocalMessage("Удаляем..."), request.id());
         request.bot().sendMessage(new DefaultState().enterMessage(contextCore, request), request.id());
     }
 
@@ -94,7 +94,7 @@ public final class DeletionConfirmationState implements MathMechBotState {
      */
     private void declineCommandHandler(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
         contextCore.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.DEFAULT);
-        request.bot().sendMessage(new LocalMessageBuilder().text("Отмена...").build(), request.id());
+        request.bot().sendMessage(new LocalMessage("Отмена..."), request.id());
         request.bot().sendMessage(new DefaultState().enterMessage(contextCore, request), request.id());
     }
 }
