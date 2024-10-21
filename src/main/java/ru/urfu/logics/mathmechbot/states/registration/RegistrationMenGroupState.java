@@ -22,16 +22,16 @@ public final class RegistrationMenGroupState implements MathMechBotState {
     private final Pattern validMenGroupString = Pattern.compile("^МЕН-\\d{6}$");
 
     @Override
-    public void processMessage(@NotNull MathMechBotCore context, @NotNull Request request) {
+    public void processMessage(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
         switch (request.message().text()) {
-            case Constants.BACK_COMMAND -> backCommandHandler(context, request);
+            case Constants.BACK_COMMAND -> backCommandHandler(contextCore, request);
             case null -> request.bot().sendMessage(new Constants().tryAgain, request.id());
-            default -> textHandler(context, request);
+            default -> textHandler(contextCore, request);
         }
     }
 
     @Override
-    public LocalMessage enterMessage(@NotNull MathMechBotCore context, @NotNull Request request) {
+    public LocalMessage enterMessage(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
         return new LocalMessageBuilder()
                 .text("Введите свою академическую группу в формате:\nМЕН-123456")
                 .buttons(List.of(new Constants().backButton))
@@ -41,25 +41,25 @@ public final class RegistrationMenGroupState implements MathMechBotState {
     /**
      * Возвращает пользователя на шаг назад, то есть на этап запроса группы.
      *
-     * @param context контекст состояния.
+     * @param contextCore контекст состояния.
      * @param request запрос.
      */
-    private void backCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
-        context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.REGISTRATION_GROUP);
-        request.bot().sendMessage(new RegistrationGroupState().enterMessage(context, request), request.id());
+    private void backCommandHandler(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
+        contextCore.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.REGISTRATION_GROUP);
+        request.bot().sendMessage(new RegistrationGroupState().enterMessage(contextCore, request), request.id());
     }
 
     /**
      * Обработчик текстовых сообщений.
      *
-     * @param context контекст состояния.
+     * @param contextCore контекст состояния.
      * @param request запрос.
      */
-    private void textHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
+    private void textHandler(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
         assert request.message().text() != null;
 
-        final UserStorage userStorage = context.getStorage().getUsers();
-        final UserEntryStorage userEntryStorage = context.getStorage().getUserEntries();
+        final UserStorage userStorage = contextCore.getStorage().getUsers();
+        final UserEntryStorage userEntryStorage = contextCore.getStorage().getUserEntries();
 
         final String trimmedText = request.message().text().trim();
         if (!validMenGroupString.matcher(trimmedText).matches()) {
@@ -70,7 +70,7 @@ public final class RegistrationMenGroupState implements MathMechBotState {
         userEntryStorage.changeUserEntryMen(request.id(), trimmedText);
         userStorage.changeUserState(request.id(), MathMechBotUserState.REGISTRATION_CONFIRMATION);
 
-        final LocalMessage message = new RegistrationConfirmationState().enterMessage(context, request);
+        final LocalMessage message = new RegistrationConfirmationState().enterMessage(contextCore, request);
         if (message != null) {
             request.bot().sendMessage(message, request.id());
         }

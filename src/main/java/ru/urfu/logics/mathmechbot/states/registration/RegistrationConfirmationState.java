@@ -26,19 +26,19 @@ public final class RegistrationConfirmationState implements MathMechBotState {
     private final Logger logger = LoggerFactory.getLogger(RegistrationConfirmationState.class);
 
     @Override
-    public void processMessage(@NotNull MathMechBotCore context, @NotNull Request request) {
+    public void processMessage(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
         switch (request.message().text()) {
-            case Constants.BACK_COMMAND -> backCommandHandler(context, request);
-            case Constants.ACCEPT_COMMAND -> acceptCommandHandler(context, request);
-            case Constants.DECLINE_COMMAND -> declineCommandHandler(context, request);
+            case Constants.BACK_COMMAND -> backCommandHandler(contextCore, request);
+            case Constants.ACCEPT_COMMAND -> acceptCommandHandler(contextCore, request);
+            case Constants.DECLINE_COMMAND -> declineCommandHandler(contextCore, request);
             case null, default -> request.bot().sendMessage(new Constants().tryAgain, request.id());
         }
     }
 
     @Override
     @Nullable
-    public LocalMessage enterMessage(@NotNull MathMechBotCore context, @NotNull Request request) {
-        final Optional<UserEntry> userEntryOptional = context.getStorage().getUserEntries().get(request.id());
+    public LocalMessage enterMessage(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
+        final Optional<UserEntry> userEntryOptional = contextCore.getStorage().getUserEntries().get(request.id());
 
         if (userEntryOptional.isEmpty()) {
             logger.error("User without entry reached registration end");
@@ -57,39 +57,39 @@ public final class RegistrationConfirmationState implements MathMechBotState {
     /**
      * Возвращаем пользователя на шаг назад, то есть в состояние запрос МЕН-группы.
      *
-     * @param context логического ядро (контекст для состояния).
+     * @param contextCore логического ядро (контекст для состояния).
      * @param request запрос.
      */
-    private void backCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
-        context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.REGISTRATION_MEN);
+    private void backCommandHandler(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
+        contextCore.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.REGISTRATION_MEN);
         request.bot().sendMessage(
-                new RegistrationMenGroupState().enterMessage(context, request),
+                new RegistrationMenGroupState().enterMessage(contextCore, request),
                 request.id());
     }
 
     /**
      * Обрабатывает команду согласия: сохраняет данные пользователя, переносит в дефолтное состояние.
      *
-     * @param context логического ядро (контекст для состояния).
+     * @param contextCore логического ядро (контекст для состояния).
      * @param request запрос.
      */
-    private void acceptCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
-        context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.DEFAULT);
+    private void acceptCommandHandler(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
+        contextCore.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.DEFAULT);
         request.bot().sendMessage(new LocalMessageBuilder().text("Сохранил...").build(), request.id());
-        request.bot().sendMessage(new DefaultState().enterMessage(context, request), request.id());
+        request.bot().sendMessage(new DefaultState().enterMessage(contextCore, request), request.id());
     }
 
     /**
      * Обрабатывает команду несогласия: удаляет данные пользователя, переносит в дефолтное состояние.
      *
-     * @param context логического ядро (контекст для состояния).
+     * @param contextCore логического ядро (контекст для состояния).
      * @param request запрос.
      */
-    private void declineCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
-        final Optional<UserEntry> userEntryOptional = context.getStorage().getUserEntries().get(request.id());
-        userEntryOptional.ifPresent(context.getStorage().getUserEntries()::delete);
-        context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.DEFAULT);
+    private void declineCommandHandler(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
+        final Optional<UserEntry> userEntryOptional = contextCore.getStorage().getUserEntries().get(request.id());
+        userEntryOptional.ifPresent(contextCore.getStorage().getUserEntries()::delete);
+        contextCore.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.DEFAULT);
         request.bot().sendMessage(new LocalMessageBuilder().text("Отмена...").build(), request.id());
-        request.bot().sendMessage(new DefaultState().enterMessage(context, request), request.id());
+        request.bot().sendMessage(new DefaultState().enterMessage(contextCore, request), request.id());
     }
 }

@@ -31,28 +31,28 @@ public final class EditingFullNameState implements MathMechBotState {
             Pattern.compile("^[А-ЯЁ][а-яё]+\\s+[А-ЯЁ][а-яё]+(\\s+[А-ЯЁ][а-яё]+)?$");
 
     @Override
-    public void processMessage(@NotNull MathMechBotCore context, @NotNull Request request) {
+    public void processMessage(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
         switch (request.message().text()) {
-            case Constants.BACK_COMMAND -> backCommandHandler(context, request);
+            case Constants.BACK_COMMAND -> backCommandHandler(contextCore, request);
             case null -> request.bot().sendMessage(new Constants().tryAgain, request.id());
-            default -> textHandler(context, request);
+            default -> textHandler(contextCore, request);
         }
     }
 
     @NotNull
     @Override
-    public LocalMessage enterMessage(@NotNull MathMechBotCore context, @NotNull Request request) {
+    public LocalMessage enterMessage(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
         return onEnterMessage;
     }
 
     /**
      * Обработка кнопки "назад".
-     * @param context ядро
+     * @param contextCore ядро
      * @param request запрос
      */
-    private void backCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
-        context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.EDITING_CHOOSE);
-        request.bot().sendMessage(new EditingChooseState().enterMessage(context, request), request.id());
+    private void backCommandHandler(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
+        contextCore.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.EDITING_CHOOSE);
+        request.bot().sendMessage(new EditingChooseState().enterMessage(contextCore, request), request.id());
     }
 
     /**
@@ -67,12 +67,12 @@ public final class EditingFullNameState implements MathMechBotState {
 
     /**
      * Обработка текста.
-     * @param context ядро
+     * @param contextCore ядро
      * @param request запрос
      */
-    private void textHandler(MathMechBotCore context, Request request) {
-        final UserStorage userStorage = context.getStorage().getUsers();
-        final UserEntryStorage userEntryStorage = context.getStorage().getUserEntries();
+    private void textHandler(MathMechBotCore contextCore, Request request) {
+        final UserStorage userStorage = contextCore.getStorage().getUsers();
+        final UserEntryStorage userEntryStorage = contextCore.getStorage().getUserEntries();
 
         assert request.message().text() != null;
         final String trimmedText = request.message().text().trim();
@@ -94,7 +94,7 @@ public final class EditingFullNameState implements MathMechBotState {
         userStorage.changeUserState(request.id(), MathMechBotUserState.EDITING_ADDITIONAL_EDIT);
         request.bot().sendMessage(new LocalMessageBuilder().text("Данные сохранены.").build(), request.id());
 
-        final LocalMessage msg = new EditingAdditionalEditState().enterMessage(context, request);
+        final LocalMessage msg = new EditingAdditionalEditState().enterMessage(contextCore, request);
         request.bot().sendMessage(msg, request.id());
     }
 }

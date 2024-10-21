@@ -33,43 +33,43 @@ public final class RegistrationGroupState implements MathMechBotState {
             .build();
 
     @Override
-    public void processMessage(@NotNull MathMechBotCore context, @NotNull Request request) {
+    public void processMessage(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
         switch (request.message().text()) {
-            case Constants.BACK_COMMAND -> backCommandHandler(context, request);
+            case Constants.BACK_COMMAND -> backCommandHandler(contextCore, request);
             case null -> request.bot().sendMessage(new Constants().tryAgain, request.id());
-            default -> textCommandHandler(context, request);
+            default -> textCommandHandler(contextCore, request);
         }
     }
 
     @Override
     @NotNull
-    public LocalMessage enterMessage(@NotNull MathMechBotCore context, @NotNull Request request) {
+    public LocalMessage enterMessage(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
         return onEnterMessage;
     }
 
     /**
      * Возвращаем пользователя на шаг назад, то есть на запрос года обучения.
      *
-     * @param context логического ядро (контекст для состояния).
+     * @param contextCore логического ядро (контекст для состояния).
      * @param request запрос.
      */
-    private void backCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
-        context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.REGISTRATION_SPECIALTY);
-        final LocalMessage message = new RegistrationSpecialtyState().enterMessage(context, request);
+    private void backCommandHandler(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
+        contextCore.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.REGISTRATION_SPECIALTY);
+        final LocalMessage message = new RegistrationSpecialtyState().enterMessage(contextCore, request);
         request.bot().sendMessage(message, request.id());
     }
 
     /**
      * Проверяем различные текстовые сообщения.
      *
-     * @param context логического ядро (контекст для состояния).
+     * @param contextCore логического ядро (контекст для состояния).
      * @param request запрос.
      */
-    private void textCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
+    private void textCommandHandler(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
         assert request.message().text() != null;
 
-        final UserStorage userStorage = context.getStorage().getUsers();
-        final UserEntryStorage userEntryStorage = context.getStorage().getUserEntries();
+        final UserStorage userStorage = contextCore.getStorage().getUsers();
+        final UserEntryStorage userEntryStorage = contextCore.getStorage().getUserEntries();
 
         if (!validGroupStringPattern.matcher(request.message().text()).matches()) {
             request.bot().sendMessage(new Constants().tryAgain, request.id());
@@ -81,7 +81,7 @@ public final class RegistrationGroupState implements MathMechBotState {
                 Integer.parseInt(request.message().text()));
         userStorage.changeUserState(request.id(), MathMechBotUserState.REGISTRATION_MEN);
 
-        final LocalMessage msg = new RegistrationMenGroupState().enterMessage(context, request);
+        final LocalMessage msg = new RegistrationMenGroupState().enterMessage(contextCore, request);
         request.bot().sendMessage(msg, request.id());
     }
 }

@@ -36,30 +36,30 @@ public final class EditingChooseState implements MathMechBotState {
             .build();
 
     @Override
-    public void processMessage(@NotNull MathMechBotCore context, @NotNull Request request) {
-        final UserStorage userStorage = context.getStorage().getUsers();
+    public void processMessage(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
+        final UserStorage userStorage = contextCore.getStorage().getUsers();
 
         switch (request.message().text()) {
-            case Constants.BACK_COMMAND -> backCommandHandler(context, request);
+            case Constants.BACK_COMMAND -> backCommandHandler(contextCore, request);
             case EDITING_FULL_NAME -> {
                 userStorage.changeUserState(request.id(), MathMechBotUserState.EDITING_FULL_NAME);
-                request.bot().sendMessage(new EditingFullNameState().enterMessage(context, request), request.id());
+                request.bot().sendMessage(new EditingFullNameState().enterMessage(contextCore, request), request.id());
             }
             case EDITING_YEAR -> {
                 userStorage.changeUserState(request.id(), MathMechBotUserState.EDITING_YEAR);
-                request.bot().sendMessage(new EditingYearState().enterMessage(context, request), request.id());
+                request.bot().sendMessage(new EditingYearState().enterMessage(contextCore, request), request.id());
             }
             case EDITING_SPECIALITY -> {
                 userStorage.changeUserState(request.id(), MathMechBotUserState.EDITING_SPECIALITY);
-                request.bot().sendMessage(new EditingSpecialityState().enterMessage(context, request), request.id());
+                request.bot().sendMessage(new EditingSpecialityState().enterMessage(contextCore, request), request.id());
             }
             case EDITING_GROUP -> {
                 userStorage.changeUserState(request.id(), MathMechBotUserState.EDITING_GROUP);
-                request.bot().sendMessage(new EditingGroupState().enterMessage(context, request), request.id());
+                request.bot().sendMessage(new EditingGroupState().enterMessage(contextCore, request), request.id());
             }
             case EDITING_MEN -> {
                 userStorage.changeUserState(request.id(), MathMechBotUserState.EDITING_MEN);
-                request.bot().sendMessage(new EditingMenState().enterMessage(context, request), request.id());
+                request.bot().sendMessage(new EditingMenState().enterMessage(contextCore, request), request.id());
             }
             case null, default -> request.bot().sendMessage(new Constants().tryAgain, request.id());
         }
@@ -67,17 +67,17 @@ public final class EditingChooseState implements MathMechBotState {
 
     @Override
     @NotNull
-    public LocalMessage enterMessage(@NotNull MathMechBotCore context, @NotNull Request request) {
+    public LocalMessage enterMessage(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
         return onEnterMessage;
     }
 
     /**
      * Обработка кнопки "назад".
-     * @param context логическое ядро
+     * @param contextCore логическое ядро
      * @param request запрос
      */
-    private void backCommandHandler(@NotNull MathMechBotCore context, @NotNull Request request) {
-        context.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.DEFAULT);
-        request.bot().sendMessage(new DefaultState().enterMessage(context, request), request.id());
+    private void backCommandHandler(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
+        contextCore.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.DEFAULT);
+        request.bot().sendMessage(new DefaultState().enterMessage(contextCore, request), request.id());
     }
 }

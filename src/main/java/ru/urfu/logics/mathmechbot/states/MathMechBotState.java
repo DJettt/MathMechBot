@@ -15,19 +15,19 @@ public interface MathMechBotState {
      *
      * <p>В процессе обработки может вызывать методы ботов, чтобы, например, отправлять сообщения.</p>
      *
-     * @param context логического ядро (контекст для состояния).
+     * @param contextCore логического ядро (контекст для состояния).
      * @param request запрос.
      */
-    void processMessage(@NotNull MathMechBotCore context, @NotNull Request request);
+    void processMessage(@NotNull MathMechBotCore contextCore, @NotNull Request request);
 
     /**
      * <p>Вызывать этот метод, чтобы отправилось сообщение, которое должно отправлять при переходе в состояние.</p>
      * TODO: сделать умнее.
      *
-     * @param context логического ядро (контекст для состояния).
+     * @param contextCore логического ядро (контекст для состояния).
      * @param request запрос.
      * @return сообщение, которое нужно отправить пользователю при переходе в это состояние.
      */
     @Nullable
-    LocalMessage enterMessage(@NotNull MathMechBotCore context, @NotNull Request request);
+    LocalMessage enterMessage(@NotNull MathMechBotCore contextCore, @NotNull Request request);
 }
