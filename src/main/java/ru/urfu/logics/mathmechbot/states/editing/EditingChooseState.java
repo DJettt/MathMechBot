@@ -51,7 +51,8 @@ public final class EditingChooseState implements MathMechBotState {
             }
             case EDITING_SPECIALITY -> {
                 userStorage.changeUserState(request.id(), MathMechBotUserState.EDITING_SPECIALITY);
-                request.bot().sendMessage(new EditingSpecialityState().enterMessage(contextCore, request), request.id());
+                request.bot().sendMessage(new EditingSpecialityState()
+                        .enterMessage(contextCore, request), request.id());
             }
             case EDITING_GROUP -> {
                 userStorage.changeUserState(request.id(), MathMechBotUserState.EDITING_GROUP);

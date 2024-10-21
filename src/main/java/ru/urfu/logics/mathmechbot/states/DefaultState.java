@@ -122,7 +122,8 @@ public final class DefaultState implements MathMechBotState {
     private void deleteCommandHandler(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
         final Optional<UserEntry> userEntryOptional = contextCore.getStorage().getUserEntries().get(request.id());
         if (userEntryOptional.isPresent()) {
-            contextCore.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.DELETION_CONFIRMATION);
+            contextCore.getStorage().getUsers().changeUserState(request.id(),
+                    MathMechBotUserState.DELETION_CONFIRMATION);
 
             final LocalMessage msg = new DeletionConfirmationState().enterMessage(contextCore, request);
             if (msg != null) {
