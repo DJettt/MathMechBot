@@ -12,7 +12,7 @@ import java.util.Optional;
  * @param <I> тип идентификатора у хранимых объектов.
  */
 public class ArrayStorage<T extends Identifiable<I>, I> implements Storage<T, I> {
-    private final ArrayList<T> array;
+    private final List<T> array;
 
     /**
      * <p>Конструктор.</p>
@@ -24,7 +24,7 @@ public class ArrayStorage<T extends Identifiable<I>, I> implements Storage<T, I>
     @Override
     public Optional<T> get(I id) {
         for (final T t : array) {
-            if (t.id().equals(id)) {
+            if (t.getId().equals(id)) {
                 return Optional.of(t);
             }
         }
@@ -40,7 +40,7 @@ public class ArrayStorage<T extends Identifiable<I>, I> implements Storage<T, I>
 
     @Override
     public void add(T member) throws IllegalArgumentException {
-        if (get(member.id()).isPresent()) {
+        if (get(member.getId()).isPresent()) {
             throw new IllegalArgumentException("Storage already has this element.");
         }
         array.add(member);
@@ -50,7 +50,7 @@ public class ArrayStorage<T extends Identifiable<I>, I> implements Storage<T, I>
     public void update(T member) {
         int index = 0;
         for (final T t : array) {
-            if (t.id().equals(member.id())) {
+            if (t.getId().equals(member.getId())) {
                 array.set(index, member);
             }
             ++index;
@@ -59,6 +59,6 @@ public class ArrayStorage<T extends Identifiable<I>, I> implements Storage<T, I>
 
     @Override
     public void delete(T member) {
-        array.removeIf(storedMember -> Objects.equals(storedMember.id(), member.id()));
+        array.removeIf(storedMember -> Objects.equals(storedMember.getId(), member.getId()));
     }
 }

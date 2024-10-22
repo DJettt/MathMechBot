@@ -8,11 +8,6 @@ import ru.urfu.logics.localobjects.LocalMessage;
  */
 public interface Bot {
     /**
-     * <p>Запускает бота.</p>
-     */
-    void start();
-
-    /**
      * <p>Отправляет сообщение.</p>
      *
      * @param msg сообщение, которое требуется отправить

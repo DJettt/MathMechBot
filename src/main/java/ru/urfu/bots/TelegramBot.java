@@ -27,7 +27,7 @@ import ru.urfu.logics.localobjects.LocalMessage;
  * в зависимости от переданного ему при создании логического ядра (logicCore).</p>
  */
 public final class TelegramBot implements Bot, LongPollingSingleThreadUpdateConsumer {
-    private static final Logger LOGGER = LoggerFactory.getLogger(TelegramBot.class);
+    private final Logger logger = LoggerFactory.getLogger(TelegramBot.class);
     private final TelegramClient telegramClient;
     private final LogicCore logicCore;
     private final String botToken;
@@ -37,7 +37,7 @@ public final class TelegramBot implements Bot, LongPollingSingleThreadUpdateCons
      * <p>Конструктор.</p>
      *
      * @param token строка, содержащая токен для бота
-     * @param core логическое ядро, обрабатывающее сообщения
+     * @param core  логическое ядро, обрабатывающее сообщения
      */
     public TelegramBot(@NotNull String token, @NotNull LogicCore core) {
         telegramClient = new OkHttpTelegramClient(token);
@@ -47,19 +47,16 @@ public final class TelegramBot implements Bot, LongPollingSingleThreadUpdateCons
     }
 
     /**
-     * <p>Запуск бота в отдельном потоке.</p>
+     * <p>Запуск бота в отдельном потоке (по умолчанию запускается в текущем).</p>
      */
-    @Override
     public void start() {
         new Thread(() -> {
             try {
-                botsApplication.registerBot(botToken, this);
-                LOGGER.info("Telegram bot successfully started!");
-
-                Thread.currentThread().join();
-            } catch (Exception e) {
-                LOGGER.error("Bot didn't get registered and didn't run.", e);
+                botsApplication.registerBot(botToken, this).start();
+            } catch (TelegramApiException e) {
+                throw new RuntimeException(e);
             }
+            logger.info("Telegram bot successfully started!");
         }).start();
     }
 
@@ -76,7 +73,7 @@ public final class TelegramBot implements Bot, LongPollingSingleThreadUpdateCons
                 telegramClient.execute(createSendMessage(msg, id));
             }
         } catch (TelegramApiException e) {
-            LOGGER.error("Couldn't send message", e);
+            logger.error("Couldn't send message", e);
         }
     }
 
@@ -84,9 +81,9 @@ public final class TelegramBot implements Bot, LongPollingSingleThreadUpdateCons
      * <p>Разделяет список кнопок на строки кнопок определенного
      * размера для более аккуратного вывода кнопок.</p>
      *
-     * @param buttons список кнопок
+     * @param buttons      список кнопок
      * @param sizeOfSquare количество кнопок, которое должно быть в строчке
-     * @return возвращает сетку кнопок нужного для вывода формата.
+     * @return возвращает  сетку кнопок нужного для вывода формата.
      */
     private List<List<LocalButton>> splitButtonList(List<LocalButton> buttons, int sizeOfSquare) {
         List<List<LocalButton>> splitedButtonList = new ArrayList<>();
@@ -202,7 +199,7 @@ public final class TelegramBot implements Bot, LongPollingSingleThreadUpdateCons
             msg = convertTelegramMessage(update.getMessage());
             chatId = update.getMessage().getChatId();
         } else {
-            LOGGER.error("Unknown message type!");
+            logger.error("Unknown message type! Received update: {}", update);
             return;
         }
         logicCore.processMessage(new BotProcessMessageRequest(chatId, msg, this));

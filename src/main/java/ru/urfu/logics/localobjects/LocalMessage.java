@@ -1,6 +1,7 @@
 package ru.urfu.logics.localobjects;
 
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -10,6 +11,15 @@ import org.jetbrains.annotations.Nullable;
  * @param buttons кнопки сообщения.
  */
 public record LocalMessage(@Nullable String text, @Nullable List<LocalButton> buttons) {
+
+    /**
+     * <p>Конструктор LocalMessage с одной переменной.</p>
+     *
+     * @param text строка, которую нужно сохранить.
+     */
+    public LocalMessage(@NotNull String text) {
+        this(text, null);
+    }
 
     /**
      * <p>Проверка на наличие кнопок.</p>

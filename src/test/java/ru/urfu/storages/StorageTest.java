@@ -1,6 +1,5 @@
 package ru.urfu.storages;
 
-import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -14,7 +13,7 @@ import org.junit.jupiter.params.provider.MethodSource;
  * <p>SuppressWarnings: считаю, что в данном случае повторения делают тесты прозрачнее.</p>
  */
 @SuppressWarnings({"MagicNumber", "MultipleStringLiterals"})
-@DisplayName("Тесты различных реализаций хранилищ (Storage)")
+@DisplayName("Реализации хранилищ (Storage)")
 final class StorageTest {
     /**
      * <p>Добавляет в хранилище элементы для тестов.</p>
@@ -64,26 +63,26 @@ final class StorageTest {
     @MethodSource("storages")
     @ParameterizedTest
     void testAddAndGetAll(Storage<StringWithId, Integer> storage) {
-        Assertions.assertEquals(new ArrayList<>(), storage.getAll());
+        Assertions.assertEquals(List.of(), storage.getAll());
 
         addElements(storage);
 
-        Assertions.assertEquals(new ArrayList<>(List.of(
+        Assertions.assertEquals(List.of(
                         new StringWithId(1, "String 1"),
                         new StringWithId(34, "String 34"),
                         new StringWithId(5, "String 5"),
                         new StringWithId(27, "String 27")
-                )),
+                ),
                 storage.getAll());
 
         storage.add(new StringWithId(2, "String 2"));
-        Assertions.assertEquals(new ArrayList<>(List.of(
+        Assertions.assertEquals(List.of(
                         new StringWithId(1, "String 1"),
                         new StringWithId(34, "String 34"),
                         new StringWithId(5, "String 5"),
                         new StringWithId(27, "String 27"),
                         new StringWithId(2, "String 2")
-                )),
+                ),
                 storage.getAll());
     }
 
@@ -110,12 +109,12 @@ final class StorageTest {
         Assertions.assertThrows(
                 IllegalArgumentException.class, () -> storage.add(new StringWithId(1, "Modified String 1")));
 
-        Assertions.assertEquals(new ArrayList<>(List.of(
+        Assertions.assertEquals(List.of(
                         new StringWithId(1, "String 1"),
                         new StringWithId(34, "String 34"),
                         new StringWithId(5, "String 5"),
                         new StringWithId(27, "String 27")
-                )),
+                ),
                 storage.getAll());
     }
 
@@ -180,12 +179,12 @@ final class StorageTest {
     void testUpdateExisting(Storage<StringWithId, Integer> storage) {
         addElements(storage);
         storage.update(new StringWithId(5, "Modified String 5"));
-        Assertions.assertEquals(new ArrayList<>(List.of(
+        Assertions.assertEquals(List.of(
                         new StringWithId(1, "String 1"),
                         new StringWithId(34, "String 34"),
                         new StringWithId(5, "Modified String 5"),
                         new StringWithId(27, "String 27")
-                )),
+                ),
                 storage.getAll());
     }
 
@@ -207,17 +206,17 @@ final class StorageTest {
     @ParameterizedTest
     void testUpdateNonexistent(Storage<StringWithId, Integer> storage) {
         storage.update(new StringWithId(2, "Modified String 2"));
-        Assertions.assertEquals(new ArrayList<>(), storage.getAll());
+        Assertions.assertEquals(List.of(), storage.getAll());
 
         addElements(storage);
 
         storage.update(new StringWithId(2, "Modified String 2"));
-        Assertions.assertEquals(new ArrayList<>(List.of(
+        Assertions.assertEquals(List.of(
                         new StringWithId(1, "String 1"),
                         new StringWithId(34, "String 34"),
                         new StringWithId(5, "String 5"),
                         new StringWithId(27, "String 27")
-                )),
+                ),
                 storage.getAll());
     }
 
@@ -238,11 +237,11 @@ final class StorageTest {
     void testDeleteExisting(Storage<StringWithId, Integer> storage) {
         addElements(storage);
         storage.delete(new StringWithId(5, "Modified String 5"));
-        Assertions.assertEquals(new ArrayList<>(List.of(
+        Assertions.assertEquals(List.of(
                         new StringWithId(1, "String 1"),
                         new StringWithId(34, "String 34"),
                         new StringWithId(27, "String 27")
-                )),
+                ),
                 storage.getAll());
     }
 
@@ -264,17 +263,16 @@ final class StorageTest {
     @ParameterizedTest
     void testDeleteNonexistent(Storage<StringWithId, Integer> storage) {
         storage.delete(new StringWithId(2, "Modified String 2"));
-        Assertions.assertEquals(new ArrayList<>(), storage.getAll());
+        Assertions.assertEquals(List.of(), storage.getAll());
 
         addElements(storage);
 
         storage.delete(new StringWithId(2, "Modified String 2"));
-        Assertions.assertEquals(new ArrayList<>(List.of(
+        Assertions.assertEquals(List.of(
                         new StringWithId(1, "String 1"),
                         new StringWithId(34, "String 34"),
                         new StringWithId(5, "String 5"),
-                        new StringWithId(27, "String 27")
-                )),
+                        new StringWithId(27, "String 27")),
                 storage.getAll());
     }
 }

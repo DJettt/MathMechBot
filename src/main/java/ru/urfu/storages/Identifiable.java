@@ -11,5 +11,5 @@ public interface Identifiable<I> {
      *
      * @return идентификатор.
      */
-    I id();
+    I getId();
 }

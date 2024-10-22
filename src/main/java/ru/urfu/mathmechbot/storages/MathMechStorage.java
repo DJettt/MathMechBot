@@ -1,7 +1,5 @@
 package ru.urfu.mathmechbot.storages;
 
-import org.jetbrains.annotations.NotNull;
-
 /**
  * <p>Структура, содержащая все хранилища для MathMechBot.</p>
  */
@@ -11,15 +9,10 @@ public final class MathMechStorage {
 
     /**
      * <p>Конструктор.</p>
-     *
-     * @param userStorage      хранилище User.
-     * @param userEntryStorage хранилище UserEntry.
      */
-    public MathMechStorage(
-            @NotNull UserStorage userStorage,
-            @NotNull UserEntryStorage userEntryStorage) {
-        this.users = userStorage;
-        this.userEntries = userEntryStorage;
+    public MathMechStorage() {
+        this.users = new UserArrayStorage();
+        this.userEntries = new UserEntryArrayStorage();
     }
 
     /**

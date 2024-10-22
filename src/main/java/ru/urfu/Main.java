@@ -1,56 +1,19 @@
 package ru.urfu;
 
-import java.lang.reflect.Constructor;
-import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import ru.urfu.bots.Bot;
-import ru.urfu.bots.DiscordBot;
 import ru.urfu.bots.TelegramBot;
 import ru.urfu.logics.LogicCore;
-import ru.urfu.mathmechbot.MMBCore;
-import ru.urfu.mathmechbot.storages.MathMechStorage;
-import ru.urfu.mathmechbot.storages.UserArrayStorage;
-import ru.urfu.mathmechbot.storages.UserEntryArrayStorage;
+import ru.urfu.logics.mathmechbot.MathMechBotCore;
+import ru.urfu.logics.mathmechbot.storages.MathMechStorage;
 
 /**
  * <p>Основной класс для запуска приложения.</p>
  */
-public final class Main {
-    private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
-
+final public class Main {
     /**
      * <p>Приватный конструктор, добавленный для того, чтобы явно
      * сообщить, что не нужно создавать объекты этого класса.</p>
      */
-    private Main() {}
-
-    /**
-     * <p>Запускает Telegram бота с переданным логическим ядром.</p>
-     *
-     * @param logicCore логическое ядро (обрабатывает поступающие сообщения)
-     * @param env строка, содержащая название переменной окружения,
-     *            в которой находится токен бота
-     * @param botClass класс создаваемого бота
-     */
-    private static void startBot(
-            @NotNull LogicCore logicCore,
-            String env,
-            @NotNull Class<? extends Bot> botClass) {
-
-        String botToken = System.getenv(env);
-        if (botToken == null) {
-            LOGGER.error("Couldn't retrieve bot token from {}", env);
-            return;
-        }
-        try {
-            Constructor<? extends Bot> constructor = botClass
-                    .getConstructor(String.class, LogicCore.class);
-            Bot bot = constructor.newInstance(botToken, logicCore);
-            bot.start();
-        } catch (Exception e) {
-            LOGGER.error("Error during starting of the bot", e);
-        }
+    private Main() {
     }
 
     /**
@@ -62,13 +25,15 @@ public final class Main {
      * @param args аргументы командной строки
      */
     public static void main(String[] args) {
-        final MathMechStorage storage = new MathMechStorage(
-                new UserArrayStorage(),
-                new UserEntryArrayStorage());
+        final MathMechStorage storage = new MathMechStorage();
+        final LogicCore logicCore = new MathMechBotCore(storage);
 
-        final LogicCore logicCore = new MMBCore(storage);
+        final TelegramBot telegramBot = new TelegramBot(
+                System.getenv("TGMATHMECHBOT_TOKEN"), logicCore);
+        telegramBot.start();
 
-        startBot(logicCore, "TGMATHMECHBOT_TOKEN", TelegramBot.class);
-        startBot(logicCore, "DISCORDBOT_TOKEN", DiscordBot.class);
+//        final DiscordBot discordBot = new DiscordBot(
+//                System.getenv("DISCORDBOT_TOKEN"), logicCore);
+//        discordBot.start();
     }
 }

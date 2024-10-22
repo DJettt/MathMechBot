@@ -41,7 +41,7 @@ public final class UserEntryBuilder {
      * @param userEntry объект, у которого скопировать все поля.
      */
     public UserEntryBuilder(@NotNull UserEntry userEntry) {
-        this.id = userEntry.id();
+        this.id = userEntry.getId();
         this.surname = userEntry.surname();
         this.name = userEntry.name();
         this.patronym = userEntry.patronym();

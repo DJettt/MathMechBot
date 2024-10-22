@@ -13,7 +13,7 @@ import ru.urfu.bots.Bot;
  * @param bot     бот, принявший сообщение.
  */
 public record BotProcessMessageRequest(
-        long id,
+        @NotNull Long id,
         @NotNull LocalMessage message,
         @NotNull Bot bot
 ) {

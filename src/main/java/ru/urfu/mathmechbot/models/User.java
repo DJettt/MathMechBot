@@ -14,4 +14,9 @@ public record User(
         @NotNull Long id,
         @NotNull MMBUserState currentState
 ) implements Identifiable<Long> {
+
+    @Override
+    public Long getId() {
+        return this.id;
+    }
 }

@@ -1,6 +1,5 @@
 package ru.urfu.logics.mathmechbot;
 
-import java.util.ArrayList;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import ru.urfu.logics.DummyBot;
@@ -16,6 +15,15 @@ import ru.urfu.mathmechbot.MMBCore;
 public final class TestUtils {
     private final LogicCore logic;
     private final DummyBot bot;
+
+    private final static String ACCEPT_COMMAND = "/yes";
+    private final static String INFO_COMMAND = "/info";
+    private final static String REGISTER_COMMAND = "/register";
+
+    private final LocalMessage acceptMessage = new LocalMessageBuilder().text(ACCEPT_COMMAND).build();
+
+    private final LocalMessage infoMessage = new LocalMessageBuilder().text(INFO_COMMAND).build();
+    private final LocalMessage registerMessage = new LocalMessageBuilder().text(REGISTER_COMMAND).build();
 
     /**
      * Конструктор.
@@ -40,16 +48,16 @@ public final class TestUtils {
      * @param men       группа в формате МЕН.
      */
     public void registerUser(long id, String fullName, int year, String specialty, int group, String men) {
-        final ArrayList<LocalMessage> messages = new ArrayList<>(List.of(
-                TestConstants.REGISTER_MESSAGE,
+        final List<LocalMessage> messages = List.of(
+                registerMessage,
                 new LocalMessageBuilder().text(fullName).build(),
                 new LocalMessageBuilder().text(String.valueOf(year)).build(),
                 new LocalMessageBuilder().text(specialty).build(),
                 new LocalMessageBuilder().text(String.valueOf(group)).build(),
                 new LocalMessageBuilder().text(men).build(),
-                TestConstants.ACCEPT_MESSAGE,
-                TestConstants.INFO_MESSAGE
-        ));
+                acceptMessage,
+                infoMessage
+        );
 
         for (final LocalMessage message : messages) {
             logic.processMessage(makeRequestFromMessage(message, id));
