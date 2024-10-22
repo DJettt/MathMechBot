@@ -1,49 +1,156 @@
 package ru.urfu.logics.mathmechbot;
 
-
+import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import ru.urfu.localobjects.LocalButton;
+import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
 import ru.urfu.logics.DummyBot;
-import ru.urfu.logics.mathmechbot.models.MathMechBotUserState;
-import ru.urfu.logics.mathmechbot.models.User;
 import ru.urfu.logics.mathmechbot.storages.MathMechStorage;
 
 /**
  * Тесты для команды изменения информации о себе - /edit.
  */
-@DisplayName("[/edit] Состояние: Default")
+@DisplayName("[/edit] Редактирование информации")
 final class EditingTest {
     private TestUtils utils;
-    private MathMechStorage storage;
     private MathMechBotCore logic;
     private DummyBot bot;
+
+    private final static String ACCEPT_COMMAND = "/yes";
+    private final static String DECLINE_COMMAND = "/no";
+    private final static String BACK_COMMAND = "/back";
+    private final static String INFO_COMMAND = "/info";
+    private final static String REGISTER_COMMAND = "/register";
+    private final static String EDIT_COMMAND = "/edit";
+    private final static String EDITING_FULL_NAME_COMMAND = "full_name";
+    private final static String EDITING_YEAR_COMMAND = "year";
+    private final static String EDITING_SPECIALITY_COMMAND = "speciality";
+    private final static String EDITING_GROUP_COMMAND = "number_of_group";
+    private final static String EDITING_MEN_COMMAND = "men";
+
+    private final LocalMessage registerMessage = new LocalMessage(REGISTER_COMMAND);
+    private final LocalMessage editMessage = new LocalMessage(EDIT_COMMAND);
+    private final LocalMessage acceptMessage = new LocalMessage(ACCEPT_COMMAND);
+    private final LocalMessage declineMessage = new LocalMessage(DECLINE_COMMAND);
+    private final LocalButton backButton = new LocalButton("Назад", BACK_COMMAND);
+
+    @SuppressWarnings("RegexpSingleline")
+    private final static String EDITING_FULL_TEST_CHECK_INFO = """
+            Данные о Вас:
+            
+            ФИО: Иванов Иван Иванович
+            Группа: КН-201 (МЕН-200201)""";
+    private final LocalMessage help = new LocalMessageBuilder()
+            .text("""
+                    /start - начало общения с ботом
+                    /help - выводит команды, которые принимает бот
+                    /register - регистрация
+                    /info - информация о Вас
+                    /edit - изменить информацию
+                    /delete - удалить информацию о Вас""")
+            .build();
+
+    private final List<LocalButton> editingChooseButtons = List.of(
+            new LocalButton("ФИО", EDITING_FULL_NAME_COMMAND),
+            new LocalButton("Курс", EDITING_YEAR_COMMAND),
+            new LocalButton("Направление", EDITING_SPECIALITY_COMMAND),
+            new LocalButton("Группа", EDITING_GROUP_COMMAND),
+            new LocalButton("МЕН", EDITING_MEN_COMMAND),
+            backButton);
+    private final List<LocalButton> editingYearButtons = List.of(
+            new LocalButton("1 курс", "1"),
+            new LocalButton("2 курс", "2"),
+            new LocalButton("3 курс", "3"),
+            new LocalButton("4 курс", "4"),
+            new LocalButton("5 курс", "5"),
+            new LocalButton("6 курс", "6"),
+            backButton);
+    private final List<LocalButton> editingSpecialityButtons = List.of(
+            new LocalButton("КН", "КН"),
+            new LocalButton("МО", "МО"),
+            new LocalButton("МХ", "МХ"),
+            new LocalButton("МТ", "МТ"),
+            new LocalButton("ПМ", "ПМ"),
+            new LocalButton("КБ", "КБ"),
+            new LocalButton("ФТ", "ФТ"),
+            backButton);
+    private final List<LocalButton> editingGroupButtons = List.of(
+            new LocalButton("1 группа", "1"),
+            new LocalButton("2 группа", "2"),
+            new LocalButton("3 группа", "3"),
+            new LocalButton("4 группа", "4"),
+            new LocalButton("5 группа", "5"),
+            backButton);
+    private final List<LocalButton> editingAdditionalButtons = List.of(
+            new LocalButton("Да", ACCEPT_COMMAND),
+            new LocalButton("Нет", DECLINE_COMMAND)
+    );
+    private final LocalMessage editingChooseMessage = new LocalMessageBuilder()
+            .text("Что Вы хотите изменить?")
+            .buttons(editingChooseButtons)
+            .build();
+
+    private final LocalMessage editingFullNameMessage = new LocalMessageBuilder()
+            .text("""
+                        Введите свое ФИО в формате:
+                        Иванов Артём Иванович
+                        Без дополнительных пробелов и с буквой ё, если нужно.""")
+            .buttons(List.of(backButton))
+            .build();
+
+    private final LocalMessage editingYearMessage = new LocalMessageBuilder()
+            .text("На каком курсе Вы обучаетесь?")
+            .buttons(editingYearButtons)
+            .build();
+
+    private final LocalMessage editingSpecialityMessage = new LocalMessageBuilder()
+            .text("""
+                    На каком направлении?
+                    Если Вы не видите свое направление, то, возможно, Вы выбрали не тот курс.
+                    """)
+            .buttons(editingSpecialityButtons)
+            .build();
+
+    private final LocalMessage editingGroupMessage = new LocalMessageBuilder()
+            .text("Какая у Вас группа?")
+            .buttons(editingGroupButtons)
+            .build();
+
+    private final LocalMessage editingMenMessage = new LocalMessageBuilder()
+                .text("Введите свою академическую группу в формате:\nМЕН-123456")
+                .buttons(List.of(backButton))
+            .build();
+    private final LocalMessage editingAdditionalMessage = new LocalMessageBuilder()
+            .text("Хотите изменить что-нибудь еще?")
+            .buttons(editingAdditionalButtons)
+            .build();
 
     /**
      * Создаём объект логики, ложного бота и утилиты для каждого теста, регистрируемся.
      */
     @BeforeEach
     void setupTest() {
-        storage = new MathMechStorage();
-        logic = new MathMechBotCore(storage);
+        logic = new MathMechBotCore(new MathMechStorage());
         bot = new DummyBot();
         utils = new TestUtils(logic, bot);
 
-        logic.processMessage(utils.makeRequestFromMessage(new TestConstants().registerMessage));
+        logic.processMessage(utils.makeRequestFromMessage(registerMessage));
         logic.processMessage(
-                utils.makeRequestFromMessage(new LocalMessageBuilder().text("Денисов Денис Денисович").build()));
+                utils.makeRequestFromMessage(new LocalMessage("Денисов Денис Денисович")));
         logic.processMessage(
-                utils.makeRequestFromMessage(new LocalMessageBuilder().text("4").build()));
+                utils.makeRequestFromMessage(new LocalMessage("4")));
         logic.processMessage(
-                utils.makeRequestFromMessage(new LocalMessageBuilder().text("КБ").build()));
+                utils.makeRequestFromMessage(new LocalMessage("КБ")));
         logic.processMessage(
-                utils.makeRequestFromMessage(new LocalMessageBuilder().text("2").build()));
+                utils.makeRequestFromMessage(new LocalMessage("2")));
         logic.processMessage(
-                utils.makeRequestFromMessage(new LocalMessageBuilder().text("МЕН-162534").build()));
+                utils.makeRequestFromMessage(new LocalMessage("МЕН-162534")));
         logic.processMessage(
-                utils.makeRequestFromMessage(new LocalMessageBuilder().text(TestConstants.ACCEPT_COMMAND).build()));
+                utils.makeRequestFromMessage(new LocalMessage(ACCEPT_COMMAND)));
 
         bot.getOutcomingMessageList().clear();
     }
@@ -66,21 +173,15 @@ final class EditingTest {
     @SuppressWarnings("MagicNumber")
     @DisplayName("Команда '/edit' ")
     void testEdit() {
-        logic.processMessage(utils.makeRequestFromMessage(new TestConstants().editMessage));
+        logic.processMessage(utils.makeRequestFromMessage(editMessage));
 
-        Assertions.assertEquals(
-                new TestConstants().editingChooseMessage,
+        Assertions.assertEquals(editingChooseMessage,
                 bot.getOutcomingMessageList().getFirst());
-        Assertions.assertEquals(
-                new User(0L, MathMechBotUserState.EDITING_CHOOSE),
-                storage.getUsers().get(0L).orElseThrow());
 
 
-        logic.processMessage(utils.makeRequestFromMessage(new LocalMessageBuilder()
-                .text(TestConstants.EDIT_COMMAND)
-                .build()));
+        logic.processMessage(utils.makeRequestFromMessage(new LocalMessage(EDIT_COMMAND)));
         Assertions.assertEquals(
-                new LocalMessageBuilder().text("Попробуйте снова.").build(),
+                new LocalMessage("Попробуйте снова."),
                 bot.getOutcomingMessageList().get(1));
     }
 
@@ -91,21 +192,16 @@ final class EditingTest {
     @SuppressWarnings("MagicNumber")
     @DisplayName("Изменение ФИО")
     void testFullName() {
-        logic.processMessage(utils.makeRequestFromMessage(new TestConstants().editMessage));
+        logic.processMessage(utils.makeRequestFromMessage(editMessage));
 
-        logic.processMessage(utils.makeRequestFromMessage(new LocalMessageBuilder()
-                .text(TestConstants.EDITING_FULL_NAME_COMMAND).build()));
-        Assertions.assertEquals(
-                new User(0L, MathMechBotUserState.EDITING_FULL_NAME),
-                storage.getUsers().get(0L).orElseThrow());
+        logic.processMessage(utils.makeRequestFromMessage(new LocalMessage(EDITING_FULL_NAME_COMMAND)));
+        Assertions.assertEquals(editingFullNameMessage, bot.getOutcomingMessageList().get(1));
 
 
-        logic.processMessage(utils.makeRequestFromMessage(new LocalMessageBuilder()
-                .text("Иванов Иван Сергеевич")
-                .build()));
-        Assertions.assertEquals(
-                new User(0L, MathMechBotUserState.EDITING_ADDITIONAL_EDIT),
-                storage.getUsers().get(0L).orElseThrow());
+        logic.processMessage(utils.makeRequestFromMessage(new LocalMessage("Иванов Иван Сергеевич")));
+        Assertions.assertEquals(editingAdditionalMessage, bot.getOutcomingMessageList().get(3));
+
+        logic.processMessage(utils.makeRequestFromMessage(declineMessage));
     }
 
     /**
@@ -115,15 +211,9 @@ final class EditingTest {
     @SuppressWarnings("MagicNumber")
     @DisplayName("Кнопка 'Назад'")
     void testBackButton() {
-        logic.processMessage(utils.makeRequestFromMessage(new TestConstants().editMessage));
-        logic.processMessage(utils.makeRequestFromMessage(new LocalMessageBuilder()
-                .text(TestConstants.BACK_COMMAND).build()));
-        Assertions.assertEquals(
-                new TestConstants().help,
-                bot.getOutcomingMessageList().get(1));
-        Assertions.assertEquals(
-                new User(0L, MathMechBotUserState.DEFAULT),
-                storage.getUsers().get(0L).orElseThrow());
+        logic.processMessage(utils.makeRequestFromMessage(editMessage));
+        logic.processMessage(utils.makeRequestFromMessage(new LocalMessage(BACK_COMMAND)));
+        Assertions.assertEquals(help, bot.getOutcomingMessageList().get(1));
     }
 
     /**
@@ -133,129 +223,82 @@ final class EditingTest {
     @SuppressWarnings("MagicNumber")
     @DisplayName("Полное изменение")
     void testFullCheck() {
-        final String TEST_SURNAME = "Иванов";
-        final String TEST_NAME = "Иван";
-        final String TEST_PATRONYM = "Иванович";
-        final String TEST_YEAR = "2";
-        final String TEST_SPECIALITY = "КН";
-        final String TEST_GROUP = "1";
-        final String TEST_MEN = "МЕН-200201";
-        logic.processMessage(utils.makeRequestFromMessage(new TestConstants().editMessage));
-        Assertions.assertEquals(
-                new TestConstants().editingChooseMessage,
+        final String testSurname = "Иванов";
+        final String testName = "Иван";
+        final String testPatronym = "Иванович";
+        final String testYear = "2";
+        final String testSpeciality = "КН";
+        final String testGroup = "1";
+        final String testMen = "МЕН-200201";
+
+        //Вводим /edit
+        logic.processMessage(utils.makeRequestFromMessage(editMessage));
+        Assertions.assertEquals(editingChooseMessage,
                 bot.getOutcomingMessageList().getFirst());
-        Assertions.assertEquals(
-                new User(0L, MathMechBotUserState.EDITING_CHOOSE),
-                storage.getUsers().get(0L).orElseThrow());
 
-        logic.processMessage(utils.makeRequestFromMessage(new LocalMessageBuilder()
-                .text(TestConstants.EDITING_FULL_NAME_COMMAND)
-                .build()));
-        Assertions.assertEquals(
-                new User(0L, MathMechBotUserState.EDITING_FULL_NAME),
-                storage.getUsers().get(0L).orElseThrow());
+        //Вводим изменить ФИО
+        logic.processMessage(utils.makeRequestFromMessage(new LocalMessage(EDITING_FULL_NAME_COMMAND)));
+        Assertions.assertEquals(editingFullNameMessage, bot.getOutcomingMessageList().get(1));
 
-        logic.processMessage(utils.makeRequestFromMessage(new LocalMessageBuilder()
-                .text(TEST_SURNAME + " " + TEST_NAME + " " + TEST_PATRONYM).build()));
+        //Вводим ФИО
+        logic.processMessage(utils.makeRequestFromMessage(new LocalMessage(
+                testSurname + " " + testName + " " + testPatronym)));
+        Assertions.assertEquals(editingAdditionalMessage, bot.getOutcomingMessageList().get(3));
 
-        Assertions.assertEquals(
-                new User(0L, MathMechBotUserState.EDITING_ADDITIONAL_EDIT),
-                storage.getUsers().get(0L).orElseThrow());
+        //Выбираем изменить что-то еще
+        logic.processMessage(utils.makeRequestFromMessage(acceptMessage));
+        Assertions.assertEquals(editingChooseMessage, bot.getOutcomingMessageList().get(4));
 
-        logic.processMessage(utils.makeRequestFromMessage(new TestConstants().acceptMessage));
-        Assertions.assertEquals(
-                new TestConstants().editingChooseMessage,
-                bot.getOutcomingMessageList().getFirst());
-        Assertions.assertEquals(
-                new User(0L, MathMechBotUserState.EDITING_CHOOSE),
-                storage.getUsers().get(0L).orElseThrow());
+        //Выбираем изменить курс
+        logic.processMessage(utils.makeRequestFromMessage(new LocalMessage(EDITING_YEAR_COMMAND)));
+        Assertions.assertEquals(editingYearMessage, bot.getOutcomingMessageList().get(5));
 
-        logic.processMessage(utils.makeRequestFromMessage(new LocalMessageBuilder()
-                .text(TestConstants.EDITING_YEAR_COMMAND).build()));
-        Assertions.assertEquals(
-                new User(0L, MathMechBotUserState.EDITING_YEAR),
-                storage.getUsers().get(0L).orElseThrow());
+        //Выбираем курс
+        logic.processMessage(utils.makeRequestFromMessage(new LocalMessage(testYear)));
+        Assertions.assertEquals(editingAdditionalMessage, bot.getOutcomingMessageList().get(6));
 
-        logic.processMessage(utils.makeRequestFromMessage(new LocalMessageBuilder()
-                .text(TEST_YEAR).build()));
-        Assertions.assertEquals(
-                new User(0L, MathMechBotUserState.EDITING_ADDITIONAL_EDIT),
-                storage.getUsers().get(0L).orElseThrow());
+        //Выбираем изменить что-то еще
+        logic.processMessage(utils.makeRequestFromMessage(acceptMessage));
+        Assertions.assertEquals(editingChooseMessage, bot.getOutcomingMessageList().get(7));
 
-        logic.processMessage(utils.makeRequestFromMessage(new TestConstants().acceptMessage));
-        Assertions.assertEquals(
-                new TestConstants().editingChooseMessage,
-                bot.getOutcomingMessageList().getFirst());
-        Assertions.assertEquals(
-                new User(0L, MathMechBotUserState.EDITING_CHOOSE),
-                storage.getUsers().get(0L).orElseThrow());
+        //Выбираем изменить направление
+        logic.processMessage(utils.makeRequestFromMessage(new LocalMessage(EDITING_SPECIALITY_COMMAND)));
+        Assertions.assertEquals(editingSpecialityMessage, bot.getOutcomingMessageList().get(8));
 
-        logic.processMessage(utils.makeRequestFromMessage(new LocalMessageBuilder()
-                .text(TestConstants.EDITING_SPECIALITY_COMMAND).build()));
-        Assertions.assertEquals(
-                new User(0L, MathMechBotUserState.EDITING_SPECIALITY),
-                storage.getUsers().get(0L).orElseThrow());
+        //Выбираем направление
+        logic.processMessage(utils.makeRequestFromMessage(new LocalMessage(testSpeciality)));
+        Assertions.assertEquals(editingAdditionalMessage, bot.getOutcomingMessageList().get(9));
 
-        logic.processMessage(utils.makeRequestFromMessage(new LocalMessageBuilder()
-                .text(TEST_SPECIALITY).build()));
-        Assertions.assertEquals(
-                new User(0L, MathMechBotUserState.EDITING_ADDITIONAL_EDIT),
-                storage.getUsers().get(0L).orElseThrow());
+        //Выбираем изменить что-то еще
+        logic.processMessage(utils.makeRequestFromMessage(acceptMessage));
+        Assertions.assertEquals(editingChooseMessage, bot.getOutcomingMessageList().get(10));
 
-        logic.processMessage(utils.makeRequestFromMessage(new TestConstants().acceptMessage));
-        Assertions.assertEquals(
-                new TestConstants().editingChooseMessage,
-                bot.getOutcomingMessageList().getFirst());
-        Assertions.assertEquals(
-                new User(0L, MathMechBotUserState.EDITING_CHOOSE),
-                storage.getUsers().get(0L).orElseThrow());
+        //Выбираем изменить группу
+        logic.processMessage(utils.makeRequestFromMessage(new LocalMessage(EDITING_GROUP_COMMAND)));
+        Assertions.assertEquals(editingGroupMessage, bot.getOutcomingMessageList().get(11));
 
-        logic.processMessage(utils.makeRequestFromMessage(new LocalMessageBuilder()
-                .text(TestConstants.EDITING_GROUP_COMMAND).build()));
+        //Выбираем группу
+        logic.processMessage(utils.makeRequestFromMessage(new LocalMessage(testGroup)));
+        Assertions.assertEquals(editingAdditionalMessage, bot.getOutcomingMessageList().get(12));
 
-        Assertions.assertEquals(
-                new User(0L, MathMechBotUserState.EDITING_GROUP),
-                storage.getUsers().get(0L).orElseThrow());
+        //Выбираем изменить что-то еще
+        logic.processMessage(utils.makeRequestFromMessage(acceptMessage));
+        Assertions.assertEquals(editingChooseMessage, bot.getOutcomingMessageList().get(13));
 
-        logic.processMessage(utils.makeRequestFromMessage(new LocalMessageBuilder()
-                .text(TEST_GROUP).build()));
-        Assertions.assertEquals(
-                new User(0L, MathMechBotUserState.EDITING_ADDITIONAL_EDIT),
-                storage.getUsers().get(0L).orElseThrow());
+        //Выбираем изменить МЕН
+        logic.processMessage(utils.makeRequestFromMessage(new LocalMessage(EDITING_MEN_COMMAND)));
+        Assertions.assertEquals(editingMenMessage, bot.getOutcomingMessageList().get(14));
 
-        logic.processMessage(utils.makeRequestFromMessage(new TestConstants().acceptMessage));
-        Assertions.assertEquals(
-                new TestConstants().editingChooseMessage,
-                bot.getOutcomingMessageList().getFirst());
-        Assertions.assertEquals(
-                new User(0L, MathMechBotUserState.EDITING_CHOOSE),
-                storage.getUsers().get(0L).orElseThrow());
+        //Вводим МЕН
+        logic.processMessage(utils.makeRequestFromMessage(new LocalMessage(testMen)));
+        Assertions.assertEquals(editingAdditionalMessage, bot.getOutcomingMessageList().get(15));
 
-        logic.processMessage(utils.makeRequestFromMessage(new LocalMessageBuilder()
-                .text(TestConstants.EDITING_MEN_COMMAND).build()));
-        Assertions.assertEquals(
-                new User(0L, MathMechBotUserState.EDITING_MEN),
-                storage.getUsers().get(0L).orElseThrow());
+        //Выбираем ничего не менять
+        logic.processMessage(utils.makeRequestFromMessage(declineMessage));
+        Assertions.assertEquals(help, bot.getOutcomingMessageList().get(18));
 
-        logic.processMessage(utils.makeRequestFromMessage(new LocalMessageBuilder()
-                .text(TEST_MEN)
-                .build()));
-        Assertions.assertEquals(
-                new User(0L, MathMechBotUserState.EDITING_ADDITIONAL_EDIT),
-                storage.getUsers().get(0L).orElseThrow());
-
-        logic.processMessage(utils.makeRequestFromMessage(new TestConstants().declineMessage));
-        Assertions.assertEquals(
-                new User(0L, MathMechBotUserState.DEFAULT),
-                storage.getUsers().get(0L).orElseThrow());
-
-
-        Assertions.assertEquals(storage.getUserEntries().get(0L).orElseThrow().surname(), TEST_SURNAME);
-        Assertions.assertEquals(storage.getUserEntries().get(0L).orElseThrow().name(), TEST_NAME);
-        Assertions.assertEquals(storage.getUserEntries().get(0L).orElseThrow().patronym(), TEST_PATRONYM);
-        Assertions.assertEquals(storage.getUserEntries().get(0L).orElseThrow().year(), Integer.parseInt(TEST_YEAR));
-        Assertions.assertEquals(storage.getUserEntries().get(0L).orElseThrow().specialty(), TEST_SPECIALITY);
-        Assertions.assertEquals(storage.getUserEntries().get(0L).orElseThrow().group(), Integer.parseInt(TEST_GROUP));
-        Assertions.assertEquals(storage.getUserEntries().get(0L).orElseThrow().men(), TEST_MEN);
+        //Вызываем /info
+        logic.processMessage(utils.makeRequestFromMessage(new LocalMessage(INFO_COMMAND)));
+        Assertions.assertEquals(new LocalMessage(EDITING_FULL_TEST_CHECK_INFO), bot.getOutcomingMessageList().get(19));
     }
 }
