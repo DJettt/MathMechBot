@@ -5,15 +5,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import ru.urfu.localobjects.LocalMessage;
-import ru.urfu.localobjects.LocalMessageBuilder;
 import ru.urfu.logics.DummyBot;
+import ru.urfu.logics.localobjects.LocalMessage;
 import ru.urfu.logics.localobjects.LocalMessageBuilder;
 import ru.urfu.mathmechbot.MMBCore;
 import ru.urfu.mathmechbot.storages.MathMechStorage;
-import ru.urfu.mathmechbot.storages.UserArrayStorage;
-import ru.urfu.mathmechbot.storages.UserEntryArrayStorage;
-import ru.urfu.logics.mathmechbot.storages.MathMechStorage;
 
 /**
  * Тесты для дефолтного состояния.
@@ -34,7 +30,7 @@ final class DefaultStateTest {
      */
     @BeforeEach
     void setupTest() {
-        logic = new MathMechBotCore(new MathMechStorage());
+        logic = new MMBCore(new MathMechStorage());
         bot = new DummyBot();
         utils = new TestUtils(logic, bot);
     }

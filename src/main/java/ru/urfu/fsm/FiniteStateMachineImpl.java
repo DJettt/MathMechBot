@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
  * @param <S> тип состояний, между которыми автомат совершает переходы.
  */
 public class FiniteStateMachineImpl<E, S> implements FiniteStateMachine<E, S> {
-    private final static Logger LOGGER = LoggerFactory
+    private final Logger logger = LoggerFactory
             .getLogger(FiniteStateMachineImpl.class);
 
     private final TransitionValidator<E, S> transitionValidator;
@@ -53,7 +53,7 @@ public class FiniteStateMachineImpl<E, S> implements FiniteStateMachine<E, S> {
             return;
         }
 
-        LOGGER.debug("No transition found for {}. Current state is {}",
+        logger.debug("No transition found for {}. Current state is {}",
                 event, currentState);
     }
 

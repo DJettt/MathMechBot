@@ -8,11 +8,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
-import ru.urfu.localobjects.LocalButton;
-import ru.urfu.localobjects.LocalMessage;
-import ru.urfu.localobjects.LocalMessageBuilder;
 import ru.urfu.logics.DummyBot;
-import ru.urfu.logics.mathmechbot.storages.MathMechStorage;
+import ru.urfu.logics.localobjects.LocalButton;
+import ru.urfu.logics.localobjects.LocalMessage;
+import ru.urfu.logics.localobjects.LocalMessageBuilder;
+import ru.urfu.mathmechbot.MMBCore;
+import ru.urfu.mathmechbot.storages.MathMechStorage;
 
 /**
  * <p>Тесты удаления данных.</p>
@@ -52,7 +53,7 @@ final class DeletionTest {
             Группа: ММП-102 (МЕН-123456)""");
 
     private TestUtils utils;
-    private MathMechBotCore logic;
+    private MMBCore logic;
     private DummyBot bot;
 
     /**
@@ -61,7 +62,7 @@ final class DeletionTest {
      */
     @BeforeEach
     void setupTest() {
-        logic = new MathMechBotCore(new MathMechStorage());
+        logic = new MMBCore(new MathMechStorage());
         bot = new DummyBot();
         utils = new TestUtils(logic, bot);
 

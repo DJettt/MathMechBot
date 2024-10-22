@@ -124,6 +124,7 @@ public final class MMBFiniteUserStateMachine
                 .source(MMBUserState.REGISTRATION_NAME)
                 .target(MMBUserState.DEFAULT)
                 .eventType(BackEvent.class)
+                .eventHandler(new DeleteUserEntry())
                 .eventHandler(new SendConstantMessage(Constants.HELP))
                 .build());
 

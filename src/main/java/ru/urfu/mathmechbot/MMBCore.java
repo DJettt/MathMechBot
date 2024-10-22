@@ -1,6 +1,5 @@
 package ru.urfu.mathmechbot;
 
-import java.util.Optional;
 import org.jetbrains.annotations.NotNull;
 import ru.urfu.fsm.FiniteStateMachine;
 import ru.urfu.logics.LogicCore;
@@ -9,6 +8,7 @@ import ru.urfu.logics.localobjects.BotProcessMessageRequest;
 import ru.urfu.logics.localobjects.ContextProcessMessageRequest;
 import ru.urfu.mathmechbot.models.User;
 import ru.urfu.mathmechbot.storages.MathMechStorage;
+import ru.urfu.mathmechbot.storages.UserStorage;
 
 
 /**
@@ -31,18 +31,21 @@ public final class MMBCore implements LogicCore {
 
     @Override
     public void processMessage(@NotNull BotProcessMessageRequest request) {
-        Optional<User> userOptional = getStorage().getUsers().get(request.id());
+        final UserStorage userStorage = storage.getUsers();
+        final User user = userStorage
+                .get(request.id())
+                .orElseGet(() -> {
+                    final User newUser = new User(request.id(), MMBUserState.DEFAULT);
+                    userStorage.add(newUser);
+                    return newUser;
+                });
 
-        if (userOptional.isEmpty()) {
-            getStorage().getUsers().add(new User(request.id(), MMBUserState.DEFAULT));
-            assert getStorage().getUsers().get(request.id()).isPresent();
-        }
-        final User user = getStorage().getUsers().get(request.id()).get();
         final MMBUserState currentState = user.currentState();
         fsm.setCurrentState(currentState);
 
-        currentState.logicCoreState().processMessage(new ContextProcessMessageRequest<>(
-                this, user, request.message(), request.bot()));
+        currentState.logicCoreState()
+                .processMessage(new ContextProcessMessageRequest<>(
+                        this, user, request.message(), request.bot()));
     }
 
     /**

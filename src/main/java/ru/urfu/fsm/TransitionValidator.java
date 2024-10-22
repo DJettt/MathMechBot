@@ -11,8 +11,7 @@ import org.slf4j.LoggerFactory;
  * @param <S> тип состояний автомата.
  */
 final class TransitionValidator<E, S> {
-    private final static Logger LOGGER = LoggerFactory
-            .getLogger(TransitionValidator.class);
+    private final Logger logger = LoggerFactory.getLogger(TransitionValidator.class);
 
     /**
      * <p>Проверяет корректность определённого перехода.</p>
@@ -28,12 +27,12 @@ final class TransitionValidator<E, S> {
         S target = transition.target();
 
         if (!fms.getStates().contains(source)) {
-            LOGGER.error("Source state '{}' is not registered in FSM states for transition '{}'",
+            logger.error("Source state '{}' is not registered in FSM states for transition '{}'",
                     source, name);
             throw new IllegalArgumentException();
         }
         if (!fms.getStates().contains(target)) {
-            LOGGER.error("Target state '{}' is not registered in FSM states for transition '{}'",
+            logger.error("Target state '{}' is not registered in FSM states for transition '{}'",
                     target, name);
             throw new IllegalArgumentException();
         }

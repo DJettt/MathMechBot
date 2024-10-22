@@ -1,6 +1,5 @@
-package ru.urfu.mathmechbot.logicstates.checkers;
+package ru.urfu.mathmechbot.logicstates;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.jetbrains.annotations.NotNull;
@@ -8,20 +7,26 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.urfu.logics.localobjects.ContextProcessMessageRequest;
 import ru.urfu.mathmechbot.MMBCore;
-import ru.urfu.mathmechbot.logicstates.DataCheckState;
 import ru.urfu.mathmechbot.models.Specialty;
 import ru.urfu.mathmechbot.models.UserEntry;
+import ru.urfu.mathmechbot.validators.MenValidator;
 
 
 /**
  * <p>Проверяет корректность направления подготовки.</p>
  */
 public final class SpecialtyCheckState extends DataCheckState {
-    private final static Logger LOGGER = LoggerFactory
-            .getLogger(SpecialtyCheckState.class);
+    private final Logger logger = LoggerFactory.getLogger(SpecialtyCheckState.class);
+
+    /**
+     * <p>Конструктор. TODO: надо переделать в валилатор.</p>
+     */
+    public SpecialtyCheckState() {
+        super(new MenValidator());
+    }
 
     @Override
-    protected boolean validateData(@NotNull ContextProcessMessageRequest<MMBCore> request) {
+    public boolean validateData(@NotNull ContextProcessMessageRequest<MMBCore> request) {
         final Optional<UserEntry> userEntryOptional = request
                 .context()
                 .getStorage()
@@ -29,10 +34,10 @@ public final class SpecialtyCheckState extends DataCheckState {
                 .get(request.user().id());
 
         if (userEntryOptional.isEmpty()) {
-            LOGGER.error("User without entry managed to reach registration_specialty state.");
+            logger.error("User without entry managed to reach registration_specialty state.");
             throw new RuntimeException();
         } else if (userEntryOptional.get().year() == null) {
-            LOGGER.error("User without set year managed to reach registration_specialty state.");
+            logger.error("User without set year managed to reach registration_specialty state.");
             throw new RuntimeException();
         }
 
@@ -53,13 +58,10 @@ public final class SpecialtyCheckState extends DataCheckState {
     @NotNull
     public List<Specialty> getAllowedSpecialties(int year) {
         if (year == 1) {
-            return new ArrayList<>(List.of(
-                    Specialty.KNMO, Specialty.MMP, Specialty.KB, Specialty.FT
-            ));
+            return List.of(Specialty.KNMO, Specialty.MMP, Specialty.KB, Specialty.FT);
         }
-        return new ArrayList<>(List.of(
+        return List.of(
                 Specialty.KN, Specialty.MO, Specialty.MH, Specialty.MT,
-                Specialty.PM, Specialty.KB, Specialty.FT
-        ));
+                Specialty.PM, Specialty.KB, Specialty.FT);
     }
 }

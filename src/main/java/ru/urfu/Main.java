@@ -2,8 +2,8 @@ package ru.urfu;
 
 import ru.urfu.bots.TelegramBot;
 import ru.urfu.logics.LogicCore;
-import ru.urfu.logics.mathmechbot.MathMechBotCore;
-import ru.urfu.logics.mathmechbot.storages.MathMechStorage;
+import ru.urfu.mathmechbot.MMBCore;
+import ru.urfu.mathmechbot.storages.MathMechStorage;
 
 /**
  * <p>Основной класс для запуска приложения.</p>
@@ -26,7 +26,7 @@ final public class Main {
      */
     public static void main(String[] args) {
         final MathMechStorage storage = new MathMechStorage();
-        final LogicCore logicCore = new MathMechBotCore(storage);
+        final LogicCore logicCore = new MMBCore(storage);
 
         final TelegramBot telegramBot = new TelegramBot(
                 System.getenv("TGMATHMECHBOT_TOKEN"), logicCore);

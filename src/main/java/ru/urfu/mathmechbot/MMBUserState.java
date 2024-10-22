@@ -1,16 +1,17 @@
 package ru.urfu.mathmechbot;
 
 import org.jetbrains.annotations.NotNull;
+import ru.urfu.mathmechbot.logicstates.DataCheckState;
 import ru.urfu.mathmechbot.logicstates.DefaultState;
 import ru.urfu.mathmechbot.logicstates.EditingChooseState;
 import ru.urfu.mathmechbot.logicstates.MMBCoreState;
+import ru.urfu.mathmechbot.logicstates.SpecialtyCheckState;
 import ru.urfu.mathmechbot.logicstates.YesNoBackState;
 import ru.urfu.mathmechbot.logicstates.YesNoState;
-import ru.urfu.mathmechbot.logicstates.checkers.FullNameCheckState;
-import ru.urfu.mathmechbot.logicstates.checkers.GroupCheckState;
-import ru.urfu.mathmechbot.logicstates.checkers.MenCheckState;
-import ru.urfu.mathmechbot.logicstates.checkers.SpecialtyCheckState;
-import ru.urfu.mathmechbot.logicstates.checkers.YearCheckState;
+import ru.urfu.mathmechbot.validators.FullNameValidator;
+import ru.urfu.mathmechbot.validators.GroupValidator;
+import ru.urfu.mathmechbot.validators.MenValidator;
+import ru.urfu.mathmechbot.validators.YearValidator;
 
 /**
  * <p>Cостояние пользователя в MathMechBot.</p>
@@ -18,19 +19,19 @@ import ru.urfu.mathmechbot.logicstates.checkers.YearCheckState;
 public enum MMBUserState {
     DEFAULT(new DefaultState()),
 
-    REGISTRATION_NAME(new FullNameCheckState()),
-    REGISTRATION_YEAR(new YearCheckState()),
+    REGISTRATION_NAME(new DataCheckState(new FullNameValidator())),
+    REGISTRATION_YEAR(new DataCheckState(new YearValidator())),
     REGISTRATION_SPECIALTY(new SpecialtyCheckState()),
-    REGISTRATION_GROUP(new GroupCheckState()),
-    REGISTRATION_MEN(new MenCheckState()),
+    REGISTRATION_GROUP(new DataCheckState(new GroupValidator())),
+    REGISTRATION_MEN(new DataCheckState(new MenValidator())),
     REGISTRATION_CONFIRMATION(new YesNoBackState()),
 
     EDITING_CHOOSE(new EditingChooseState()),
-    EDITING_FULL_NAME(new FullNameCheckState()),
-    EDITING_YEAR(new YearCheckState()),
+    EDITING_FULL_NAME(new DataCheckState(new FullNameValidator())),
+    EDITING_YEAR(new DataCheckState(new YearValidator())),
     EDITING_SPECIALITY(new SpecialtyCheckState()),
-    EDITING_GROUP(new GroupCheckState()),
-    EDITING_MEN(new MenCheckState()),
+    EDITING_GROUP(new DataCheckState(new GroupValidator())),
+    EDITING_MEN(new DataCheckState(new MenValidator())),
     EDITING_ADDITIONAL_EDIT(new YesNoState()),
 
     DELETION_CONFIRMATION(new YesNoBackState());

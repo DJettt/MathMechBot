@@ -11,7 +11,7 @@ import ru.urfu.logics.localobjects.LocalMessage;
 import ru.urfu.logics.localobjects.LocalMessageBuilder;
 import ru.urfu.mathmechbot.Constants;
 import ru.urfu.mathmechbot.MMBCore;
-import ru.urfu.mathmechbot.logicstates.checkers.SpecialtyCheckState;
+import ru.urfu.mathmechbot.logicstates.SpecialtyCheckState;
 import ru.urfu.mathmechbot.models.Specialty;
 import ru.urfu.mathmechbot.models.UserEntry;
 
@@ -20,7 +20,7 @@ import ru.urfu.mathmechbot.models.UserEntry;
  * выбора направления подготовки (на основе года обучения).</p>
  */
 public final class AskSpecialty implements EventHandler<RequestEvent<MMBCore>> {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AskSpecialty.class);
+    private final Logger logger = LoggerFactory.getLogger(AskSpecialty.class);
 
     @Override
     public void handleEvent(RequestEvent<MMBCore> e) {
@@ -32,7 +32,7 @@ public final class AskSpecialty implements EventHandler<RequestEvent<MMBCore>> {
                 .orElseThrow();
 
         if (userEntry.year() == null) {
-            LOGGER.error("User entry doesn't contain year but it should");
+            logger.error("User entry doesn't contain year but it should");
             return;
         }
 
@@ -43,7 +43,9 @@ public final class AskSpecialty implements EventHandler<RequestEvent<MMBCore>> {
         buttons.add(Constants.BACK_BUTTON);
 
         final LocalMessage message = new LocalMessageBuilder()
-                .text("На каком направлении?")
+                .text("""
+                        На каком направлении?
+                        Если Вы не видите свое направление, то, возможно, Вы выбрали не тот курс.""")
                 .buttons(buttons)
                 .build();
 

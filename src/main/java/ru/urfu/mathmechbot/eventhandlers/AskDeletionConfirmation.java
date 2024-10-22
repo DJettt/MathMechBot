@@ -1,6 +1,5 @@
 package ru.urfu.mathmechbot.eventhandlers;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
@@ -19,8 +18,7 @@ import ru.urfu.mathmechbot.models.UserEntry;
 public final class AskDeletionConfirmation
         implements EventHandler<RequestEvent<MMBCore>> {
 
-    private final static Logger LOGGER = LoggerFactory
-            .getLogger(AskDeletionConfirmation.class);
+    private final Logger logger = LoggerFactory.getLogger(AskDeletionConfirmation.class);
 
     @Override
     public void handleEvent(RequestEvent<MMBCore> e) {
@@ -31,16 +29,16 @@ public final class AskDeletionConfirmation
                 .get(e.request().user().id());
 
         if (userEntryOptional.isEmpty()) {
-            LOGGER.error("User without entry reached deletion confirmation state");
+            logger.error("User without entry reached deletion confirmation state");
             return;
         }
 
         final LocalMessage message = new LocalMessageBuilder()
                 .text("Точно удаляем?\n\n" + userEntryOptional.get().toHumanReadable())
-                .buttons(new ArrayList<>(List.of(
+                .buttons(List.of(
                         Constants.YES_BUTTON,
                         Constants.NO_BUTTON,
-                        Constants.BACK_BUTTON)))
+                        Constants.BACK_BUTTON))
                 .build();
         e.request().bot().sendMessage(message, e.request().user().id());
     }

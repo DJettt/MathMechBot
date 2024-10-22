@@ -5,11 +5,12 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import ru.urfu.localobjects.LocalButton;
-import ru.urfu.localobjects.LocalMessage;
-import ru.urfu.localobjects.LocalMessageBuilder;
 import ru.urfu.logics.DummyBot;
-import ru.urfu.logics.mathmechbot.storages.MathMechStorage;
+import ru.urfu.logics.localobjects.LocalButton;
+import ru.urfu.logics.localobjects.LocalMessage;
+import ru.urfu.logics.localobjects.LocalMessageBuilder;
+import ru.urfu.mathmechbot.MMBCore;
+import ru.urfu.mathmechbot.storages.MathMechStorage;
 
 /**
  * <p>Тесты регистрации.</p>
@@ -33,14 +34,15 @@ public final class RegistrationTest {
             backButton
     );
 
-    private final LocalMessage askForRegistration = new LocalMessage("Сперва нужно зарегистрироваться.");
+    private final LocalMessage askForRegistration =
+            new LocalMessage("Сперва нужно зарегистрироваться.");
 
     private final LocalMessage askFullName = new LocalMessageBuilder()
             .text("""
                     Введите свое ФИО в формате:
                     Иванов Артём Иванович
                     Без дополнительных пробелов и с буквой ё, если нужно.""")
-            .buttons(List.of(new LocalButton("Отменить регистрацию", Constants.BACK_COMMAND)))
+            .buttons(List.of(backButton))
             .build();
 
     private final LocalMessage askYear = new LocalMessageBuilder()
@@ -64,7 +66,9 @@ public final class RegistrationTest {
             backButton
     );
     private final LocalMessage askFirstYearSpecialty = new LocalMessageBuilder()
-            .text("На каком направлении?")
+            .text("""
+                    На каком направлении?
+                    Если Вы не видите свое направление, то, возможно, Вы выбрали не тот курс.""")
             .buttons(askFirstYearSpecialtyButtons)
             .build();
 
@@ -79,7 +83,9 @@ public final class RegistrationTest {
             backButton
     );
     private final LocalMessage askLaterYearSpecialty = new LocalMessageBuilder()
-            .text("На каком направлении?")
+            .text("""
+                    На каком направлении?
+                    Если Вы не видите свое направление, то, возможно, Вы выбрали не тот курс.""")
             .buttons(askLaterYearSpecialtyButtons)
             .build();
 
@@ -101,7 +107,7 @@ public final class RegistrationTest {
             .build();
 
     private TestUtils utils;
-    private MathMechBotCore logic;
+    private MMBCore logic;
     private DummyBot bot;
 
     /**
@@ -109,7 +115,7 @@ public final class RegistrationTest {
      */
     @BeforeEach
     void setupTest() {
-        logic = new MathMechBotCore(new MathMechStorage());
+        logic = new MMBCore(new MathMechStorage());
         bot = new DummyBot();
         utils = new TestUtils(logic, bot);
     }

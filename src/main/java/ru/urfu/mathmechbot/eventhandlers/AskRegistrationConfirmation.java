@@ -1,6 +1,5 @@
 package ru.urfu.mathmechbot.eventhandlers;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
@@ -19,7 +18,7 @@ import ru.urfu.mathmechbot.models.UserEntry;
 public final class AskRegistrationConfirmation
         implements EventHandler<RequestEvent<MMBCore>> {
 
-    private final static Logger LOGGER = LoggerFactory
+    private final Logger logger = LoggerFactory
             .getLogger(AskRegistrationConfirmation.class);
 
     @Override
@@ -32,7 +31,7 @@ public final class AskRegistrationConfirmation
                 .get(e.request().user().id());
 
         if (userEntryOptional.isEmpty()) {
-            LOGGER.error("User without entry reached registration end");
+            logger.error("User without entry reached registration end");
             return;
         }
 
@@ -40,10 +39,10 @@ public final class AskRegistrationConfirmation
                 .text(Constants.CONFIRM_PREFIX + userEntryOptional
                         .get()
                         .toHumanReadable())
-                .buttons(new ArrayList<>(List.of(
+                .buttons(List.of(
                         Constants.YES_BUTTON,
                         Constants.NO_BUTTON,
-                        Constants.BACK_BUTTON)))
+                        Constants.BACK_BUTTON))
                 .build();
         e.request().bot().sendMessage(message, e.request().user().id());
     }

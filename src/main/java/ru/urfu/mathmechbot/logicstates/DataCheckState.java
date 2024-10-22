@@ -9,6 +9,7 @@ import ru.urfu.mathmechbot.MMBCore;
 import ru.urfu.mathmechbot.events.BackEvent;
 import ru.urfu.mathmechbot.events.InvalidInputEvent;
 import ru.urfu.mathmechbot.events.ValidInputEvent;
+import ru.urfu.mathmechbot.validators.MessageValidator;
 
 /**
  * <p>Обрабатывает три возможных случая.</p>
@@ -19,7 +20,19 @@ import ru.urfu.mathmechbot.events.ValidInputEvent;
  *     <li>Команда возврата -- отправляет в FSM BackEvent.</li>
  * </ul>
  */
-public abstract class DataCheckState implements MMBCoreState {
+public class DataCheckState implements MMBCoreState {
+    private final MessageValidator validator;
+
+    /**
+     * <p>Конструктор.</p>
+     *
+     * @param validator валидатор, который будет использоваться
+     *                  для проверки содержимого сообщения.
+     */
+    public DataCheckState(@NotNull MessageValidator validator) {
+        this.validator = validator;
+    }
+
     @Override
     public void processMessage(@NotNull ContextProcessMessageRequest<MMBCore> request) {
         final RequestEvent<MMBCore> event = switch (request.message().text()) {
@@ -40,6 +53,7 @@ public abstract class DataCheckState implements MMBCoreState {
      * @param request запрос от ядра с сообщением.
      * @return результат проверки.
      */
-    protected abstract boolean validateData(
-            @NotNull ContextProcessMessageRequest<MMBCore> request);
+    public boolean validateData(@NotNull ContextProcessMessageRequest<MMBCore> request) {
+        return validator.validateMessageContent(request.message());
+    }
 }
