@@ -356,7 +356,7 @@
 
         <!-- https://github.com/checkstyle/checkstyle/issues/3122 -->
         <!-- https://github.com/checkstyle/checkstyle/issues/3342 -->
-        <!-- this module is broken for a long time, I'm not sure we should use it -->
+        <!-- this module is broken for a long time, I'm not sure if we should use it -->
         <!-- <module name="Indentation"/> -->
 
         <!-- <module name="OrderedProperties"/> -->
