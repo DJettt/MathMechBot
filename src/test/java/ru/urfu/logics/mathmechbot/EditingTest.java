@@ -223,13 +223,13 @@ final class EditingTest {
     @SuppressWarnings("MagicNumber")
     @DisplayName("Полное изменение")
     void testFullCheck() {
-        final String TEST_SURNAME = "Иванов";
-        final String TEST_NAME = "Иван";
-        final String TEST_PATRONYM = "Иванович";
-        final String TEST_YEAR = "2";
-        final String TEST_SPECIALITY = "КН";
-        final String TEST_GROUP = "1";
-        final String TEST_MEN = "МЕН-200201";
+        final String testSurname = "Иванов";
+        final String testName = "Иван";
+        final String testPatronym = "Иванович";
+        final String testYear = "2";
+        final String testSpeciality = "КН";
+        final String testGroup = "1";
+        final String testMen = "МЕН-200201";
 
         //Вводим /edit
         logic.processMessage(utils.makeRequestFromMessage(editMessage));
@@ -242,7 +242,7 @@ final class EditingTest {
 
         //Вводим ФИО
         logic.processMessage(utils.makeRequestFromMessage(new LocalMessage(
-                TEST_SURNAME + " " + TEST_NAME + " " + TEST_PATRONYM)));
+                testSurname + " " + testName + " " + testPatronym)));
         Assertions.assertEquals(editingAdditionalMessage, bot.getOutcomingMessageList().get(3));
 
         //Выбираем изменить что-то еще
@@ -254,7 +254,7 @@ final class EditingTest {
         Assertions.assertEquals(editingYearMessage, bot.getOutcomingMessageList().get(5));
 
         //Выбираем курс
-        logic.processMessage(utils.makeRequestFromMessage(new LocalMessage(TEST_YEAR)));
+        logic.processMessage(utils.makeRequestFromMessage(new LocalMessage(testYear)));
         Assertions.assertEquals(editingAdditionalMessage, bot.getOutcomingMessageList().get(6));
 
         //Выбираем изменить что-то еще
@@ -266,7 +266,7 @@ final class EditingTest {
         Assertions.assertEquals(editingSpecialityMessage, bot.getOutcomingMessageList().get(8));
 
         //Выбираем направление
-        logic.processMessage(utils.makeRequestFromMessage(new LocalMessage(TEST_SPECIALITY)));
+        logic.processMessage(utils.makeRequestFromMessage(new LocalMessage(testSpeciality)));
         Assertions.assertEquals(editingAdditionalMessage, bot.getOutcomingMessageList().get(9));
 
         //Выбираем изменить что-то еще
@@ -278,7 +278,7 @@ final class EditingTest {
         Assertions.assertEquals(editingGroupMessage, bot.getOutcomingMessageList().get(11));
 
         //Выбираем группу
-        logic.processMessage(utils.makeRequestFromMessage(new LocalMessage(TEST_GROUP)));
+        logic.processMessage(utils.makeRequestFromMessage(new LocalMessage(testGroup)));
         Assertions.assertEquals(editingAdditionalMessage, bot.getOutcomingMessageList().get(12));
 
         //Выбираем изменить что-то еще
@@ -290,7 +290,7 @@ final class EditingTest {
         Assertions.assertEquals(editingMenMessage, bot.getOutcomingMessageList().get(14));
 
         //Вводим МЕН
-        logic.processMessage(utils.makeRequestFromMessage(new LocalMessage(TEST_MEN)));
+        logic.processMessage(utils.makeRequestFromMessage(new LocalMessage(testMen)));
         Assertions.assertEquals(editingAdditionalMessage, bot.getOutcomingMessageList().get(15));
 
         //Выбираем ничего не менять
