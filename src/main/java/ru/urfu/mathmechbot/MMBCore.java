@@ -42,7 +42,7 @@ public final class MMBCore implements LogicCore {
                 });
 
         final MMBUserState currentState = user.currentState();
-        fsm.setCurrentState(currentState);
+        fsm.setState(currentState);
 
         currentState.logicCoreState()
                 .processMessage(new ContextProcessMessageRequest<>(

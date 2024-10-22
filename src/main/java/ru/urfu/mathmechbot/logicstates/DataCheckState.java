@@ -44,7 +44,7 @@ public class DataCheckState implements MMBCoreState {
                 yield new InvalidInputEvent(request);
             }
         };
-        request.context().getFsm().dispatch(event);
+        request.context().getFsm().sendEvent(event);
     }
 
     /**

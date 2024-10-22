@@ -28,6 +28,6 @@ public final class EditingChooseState implements MMBCoreState {
             case Constants.EDITING_MEN -> new MenChosenEvent(request);
             case null, default -> new InvalidInputEvent(request);
         };
-        request.context().getFsm().dispatch(event);
+        request.context().getFsm().sendEvent(event);
     }
 }

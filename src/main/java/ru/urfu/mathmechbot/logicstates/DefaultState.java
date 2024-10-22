@@ -60,6 +60,6 @@ public final class DefaultState implements MMBCoreState {
             case null, default -> new HelpEvent(request);
         };
 
-        request.context().getFsm().dispatch(event);
+        request.context().getFsm().sendEvent(event);
     }
 }

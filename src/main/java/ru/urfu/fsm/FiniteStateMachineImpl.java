@@ -36,7 +36,7 @@ public class FiniteStateMachineImpl<E, S> implements FiniteStateMachine<E, S> {
     }
 
     @Override
-    public void dispatch(@NotNull E event) {
+    public void sendEvent(@NotNull E event) {
         for (final Transition<E, S> transition : transitions) {
             if (!isTransitionSuitable(transition, event)) {
                 continue;
@@ -76,17 +76,14 @@ public class FiniteStateMachineImpl<E, S> implements FiniteStateMachine<E, S> {
         this.transitions.add(transition);
     }
 
-    /**
-     * <p>Геттер текущего состояния.</p>
-     *
-     * @return текущее состояние.
-     */
-    public S getCurrentState() {
+    @NotNull
+    @Override
+    public S getState() {
         return currentState;
     }
 
     @Override
-    public void setCurrentState(@NotNull S state) {
+    public void setState(@NotNull S state) {
         this.currentState = state;
     }
 

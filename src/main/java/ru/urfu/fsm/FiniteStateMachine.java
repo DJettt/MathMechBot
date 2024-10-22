@@ -16,7 +16,15 @@ public interface FiniteStateMachine<E, S> {
      *
      * @param event событие с запросом.
      */
-    void dispatch(@NotNull E event);
+    void sendEvent(@NotNull E event);
+
+    /**
+     * <p>Геттер текущего состояния.</p>
+     *
+     * @return текущее состояние автомата.
+     */
+    @NotNull
+    S getState();
 
     /**
      * <p>Сеттер текущего состояния. Полезно, когда автомат
@@ -24,7 +32,7 @@ public interface FiniteStateMachine<E, S> {
      *
      * @param state состояние, которое автомат должен принять.
      */
-    void setCurrentState(@NotNull S state);
+    void setState(@NotNull S state);
 
     /**
      * <p>Геттер всех состояний.</p>

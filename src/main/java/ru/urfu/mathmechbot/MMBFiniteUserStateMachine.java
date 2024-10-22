@@ -62,7 +62,7 @@ public final class MMBFiniteUserStateMachine
 
     @Override
     public void onTransition(@NotNull RequestEvent<MMBCore> event) {
-        users.changeUserState(event.request().user().id(), getCurrentState());
+        users.changeUserState(event.request().user().id(), getState());
     }
 
     /**

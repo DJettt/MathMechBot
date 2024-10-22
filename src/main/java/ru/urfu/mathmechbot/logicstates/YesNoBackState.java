@@ -29,6 +29,6 @@ public final class YesNoBackState implements MMBCoreState {
             case Constants.DECLINE_COMMAND -> new DeclineEvent(request);
             case null, default -> new InvalidInputEvent(request);
         };
-        request.context().getFsm().dispatch(event);
+        request.context().getFsm().sendEvent(event);
     }
 }
