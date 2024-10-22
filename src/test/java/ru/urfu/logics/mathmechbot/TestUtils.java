@@ -4,7 +4,6 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import ru.urfu.logics.DummyBot;
 import ru.urfu.logics.LogicCore;
-import ru.urfu.logics.localobjects.BotProcessMessageRequest;
 import ru.urfu.logics.localobjects.LocalMessage;
 import ru.urfu.logics.localobjects.LocalMessageBuilder;
 import ru.urfu.mathmechbot.MMBCore;
@@ -20,10 +19,9 @@ public final class TestUtils {
     private final static String INFO_COMMAND = "/info";
     private final static String REGISTER_COMMAND = "/register";
 
-    private final LocalMessage acceptMessage = new LocalMessageBuilder().text(ACCEPT_COMMAND).build();
-
-    private final LocalMessage infoMessage = new LocalMessageBuilder().text(INFO_COMMAND).build();
-    private final LocalMessage registerMessage = new LocalMessageBuilder().text(REGISTER_COMMAND).build();
+    private final LocalMessage acceptMessage = new LocalMessage(ACCEPT_COMMAND);
+    private final LocalMessage infoMessage = new LocalMessage(INFO_COMMAND);
+    private final LocalMessage registerMessage = new LocalMessage(REGISTER_COMMAND);
 
     /**
      * Конструктор.
@@ -37,8 +35,10 @@ public final class TestUtils {
     }
 
     /**
-     * Регистрирует человека со следующими данными.
-     * Нужна для быстрых тестов команд, где требуется зарегистрированный пользователь.
+     * <p>Регистрирует человека со следующими данными.</p>
+     *
+     * <p>Нужна для быстрых тестов команд, где
+     * требуется зарегистрированный пользователь.</p>
      *
      * @param id идентификатор отправителя
      * @param fullName  ФИО или ФИ
@@ -60,27 +60,27 @@ public final class TestUtils {
         );
 
         for (final LocalMessage message : messages) {
-            logic.processMessage(makeRequestFromMessage(message, id));
+            logic.processMessage(id, message, bot);
         }
         bot.getOutcomingMessageList().clear();
     }
 
     /**
-     * Оборачивает сообщение в Request с DummyBot и id=0L.
-     * @param message сообщение.
-     * @return запрос.
+     * <p>Посылает ядру сообщение на обработку. Помогает не писать все аргументы.</p>
+     *
+     * @param id идентификатор отправителя.
+     * @param message отправляемое сообщение.
      */
-    public BotProcessMessageRequest makeRequestFromMessage(@NotNull LocalMessage message) {
-        return makeRequestFromMessage(message, 0L);
+    public void sendMessageToLogic(@NotNull Long id, @NotNull LocalMessage message) {
+        logic.processMessage(id, message, bot);
     }
 
     /**
-     * Оборачивает сообщение в Request с DummyBot и переданным id.
-     * @param message сообщение.
-     * @param id идентификатор пользователя.
-     * @return запрос.
+     * <p>Посылает ядру сообщение на обработку от пользователя с id=0.</p>
+     *
+     * @param message отправляемое сообщение.
      */
-    public BotProcessMessageRequest makeRequestFromMessage(@NotNull LocalMessage message, long id) {
-        return new BotProcessMessageRequest(id, message, bot);
+    public void sendMessageToLogic(@NotNull LocalMessage message) {
+        sendMessageToLogic(0L, message);
     }
 }

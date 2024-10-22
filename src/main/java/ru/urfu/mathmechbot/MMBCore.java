@@ -1,11 +1,12 @@
 package ru.urfu.mathmechbot;
 
 import org.jetbrains.annotations.NotNull;
+import ru.urfu.bots.Bot;
 import ru.urfu.fsm.FiniteStateMachine;
 import ru.urfu.logics.LogicCore;
 import ru.urfu.logics.RequestEvent;
-import ru.urfu.logics.localobjects.BotProcessMessageRequest;
 import ru.urfu.logics.localobjects.ContextProcessMessageRequest;
+import ru.urfu.logics.localobjects.LocalMessage;
 import ru.urfu.mathmechbot.models.User;
 import ru.urfu.mathmechbot.storages.MathMechStorage;
 import ru.urfu.mathmechbot.storages.UserStorage;
@@ -30,12 +31,12 @@ public final class MMBCore implements LogicCore {
     }
 
     @Override
-    public void processMessage(@NotNull BotProcessMessageRequest request) {
+    public void processMessage(@NotNull Long id, @NotNull LocalMessage message, @NotNull Bot bot) {
         final UserStorage userStorage = storage.getUsers();
         final User user = userStorage
-                .get(request.id())
+                .get(id)
                 .orElseGet(() -> {
-                    final User newUser = new User(request.id(), MMBUserState.DEFAULT);
+                    final User newUser = new User(id, MMBUserState.DEFAULT);
                     userStorage.add(newUser);
                     return newUser;
                 });
@@ -45,7 +46,7 @@ public final class MMBCore implements LogicCore {
 
         currentState.logicCoreState()
                 .processMessage(new ContextProcessMessageRequest<>(
-                        this, user, request.message(), request.bot()));
+                        this, user, message, bot));
     }
 
     /**

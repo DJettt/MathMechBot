@@ -18,14 +18,12 @@ import ru.urfu.mathmechbot.storages.MathMechStorage;
 @DisplayName("[/edit] Редактирование информации")
 final class EditingTest {
     private TestUtils utils;
-    private MMBCore logic;
     private DummyBot bot;
 
     private final static String ACCEPT_COMMAND = "/yes";
     private final static String DECLINE_COMMAND = "/no";
     private final static String BACK_COMMAND = "/back";
     private final static String INFO_COMMAND = "/info";
-    private final static String REGISTER_COMMAND = "/register";
     private final static String EDIT_COMMAND = "/edit";
     private final static String EDITING_FULL_NAME_COMMAND = "full_name";
     private final static String EDITING_YEAR_COMMAND = "year";
@@ -34,7 +32,6 @@ final class EditingTest {
     private final static String EDITING_MEN_COMMAND = "men";
 
     private final LocalButton backButton = new LocalButton("Назад", BACK_COMMAND);
-    private final LocalMessage registerMessage = new LocalMessage(REGISTER_COMMAND);
     private final LocalMessage editMessage = new LocalMessage(EDIT_COMMAND);
     private final LocalMessage acceptMessage = new LocalMessage(ACCEPT_COMMAND);
     private final LocalMessage declineMessage = new LocalMessage(DECLINE_COMMAND);
@@ -140,24 +137,14 @@ final class EditingTest {
      * Создаём объект логики, ложного бота и утилиты для каждого теста, регистрируемся.
      */
     @BeforeEach
+    @SuppressWarnings("MagicNumber")
     void setupTest() {
-        logic = new MMBCore(new MathMechStorage());
+        final MMBCore logic = new MMBCore(new MathMechStorage());
         bot = new DummyBot();
         utils = new TestUtils(logic, bot);
 
-        logic.processMessage(utils.makeRequestFromMessage(registerMessage));
-        logic.processMessage(
-                utils.makeRequestFromMessage(new LocalMessage("Денисов Денис Денисович")));
-        logic.processMessage(
-                utils.makeRequestFromMessage(new LocalMessage("4")));
-        logic.processMessage(
-                utils.makeRequestFromMessage(new LocalMessage("КБ")));
-        logic.processMessage(
-                utils.makeRequestFromMessage(new LocalMessage("2")));
-        logic.processMessage(
-                utils.makeRequestFromMessage(new LocalMessage("МЕН-162534")));
-        logic.processMessage(
-                utils.makeRequestFromMessage(new LocalMessage(ACCEPT_COMMAND)));
+        utils.registerUser(0L, "Денисов Денис Денисович",
+                4, "КБ", 2, "МЕН-162534");
 
         bot.getOutcomingMessageList().clear();
     }
@@ -180,13 +167,11 @@ final class EditingTest {
     @SuppressWarnings("MagicNumber")
     @DisplayName("Команда '/edit' ")
     void testEdit() {
-        logic.processMessage(utils.makeRequestFromMessage(editMessage));
-
+        utils.sendMessageToLogic(editMessage);
         Assertions.assertEquals(editingChooseMessage,
                 bot.getOutcomingMessageList().getFirst());
 
-
-        logic.processMessage(utils.makeRequestFromMessage(new LocalMessage(EDIT_COMMAND)));
+        utils.sendMessageToLogic(new LocalMessage(EDIT_COMMAND));
         Assertions.assertEquals(
                 new LocalMessage("Попробуйте снова."),
                 bot.getOutcomingMessageList().get(1));
@@ -199,19 +184,17 @@ final class EditingTest {
     @SuppressWarnings("MagicNumber")
     @DisplayName("Изменение ФИО")
     void testFullName() {
-        logic.processMessage(utils.makeRequestFromMessage(editMessage));
+        utils.sendMessageToLogic(editMessage);
 
-        logic.processMessage(utils.makeRequestFromMessage(
-                new LocalMessage(EDITING_FULL_NAME_COMMAND)));
+        utils.sendMessageToLogic(new LocalMessage(EDITING_FULL_NAME_COMMAND));
         Assertions.assertEquals(editingFullNameMessage,
                 bot.getOutcomingMessageList().get(1));
 
-        logic.processMessage(utils.makeRequestFromMessage(
-                new LocalMessage("Иванов Иван Сергеевич")));
+        utils.sendMessageToLogic(new LocalMessage("Иванов Иван Сергеевич"));
         Assertions.assertEquals(editingAdditionalMessage,
                 bot.getOutcomingMessageList().get(3));
 
-        logic.processMessage(utils.makeRequestFromMessage(declineMessage));
+        utils.sendMessageToLogic(declineMessage);
     }
 
     /**
@@ -221,8 +204,8 @@ final class EditingTest {
     @SuppressWarnings("MagicNumber")
     @DisplayName("Кнопка 'Назад'")
     void testBackButton() {
-        logic.processMessage(utils.makeRequestFromMessage(editMessage));
-        logic.processMessage(utils.makeRequestFromMessage(new LocalMessage(BACK_COMMAND)));
+        utils.sendMessageToLogic(editMessage);
+        utils.sendMessageToLogic(new LocalMessage(BACK_COMMAND));
         Assertions.assertEquals(help, bot.getOutcomingMessageList().get(1));
     }
 
@@ -242,90 +225,89 @@ final class EditingTest {
         final String testMen = "МЕН-200201";
 
         //Вводим /edit
-        logic.processMessage(utils.makeRequestFromMessage(editMessage));
+        utils.sendMessageToLogic(editMessage);
         Assertions.assertEquals(editingChooseMessage,
                 bot.getOutcomingMessageList().getFirst());
 
         //Вводим изменить ФИО
-        logic.processMessage(utils.makeRequestFromMessage(new LocalMessage(EDITING_FULL_NAME_COMMAND)));
+        utils.sendMessageToLogic(new LocalMessage(EDITING_FULL_NAME_COMMAND));
         Assertions.assertEquals(editingFullNameMessage, bot.getOutcomingMessageList().get(1));
 
         //Вводим ФИО
-        logic.processMessage(utils.makeRequestFromMessage(new LocalMessage(
-                testSurname + " " + testName + " " + testPatronym)));
+        utils.sendMessageToLogic(new LocalMessage(
+                String.join(" ", testSurname, testName, testPatronym)));
         Assertions.assertEquals(editingAdditionalMessage, bot.getOutcomingMessageList().get(3));
 
         //Выбираем изменить что-то еще
-        logic.processMessage(utils.makeRequestFromMessage(declineMessage));
+        utils.sendMessageToLogic(declineMessage);
         Assertions.assertEquals(editingChooseMessage, bot.getOutcomingMessageList().get(4));
 
         //Выбираем изменить курс
-        logic.processMessage(utils.makeRequestFromMessage(new LocalMessage(EDITING_YEAR_COMMAND)));
+        utils.sendMessageToLogic(new LocalMessage(EDITING_YEAR_COMMAND));
         Assertions.assertEquals(editingYearMessage, bot.getOutcomingMessageList().get(5));
 
         //Выбираем курс
-        logic.processMessage(utils.makeRequestFromMessage(new LocalMessage(testYear)));
+        utils.sendMessageToLogic(new LocalMessage(testYear));
         Assertions.assertEquals(editingAdditionalMessage, bot.getOutcomingMessageList().get(7));
 
         //Выбираем изменить что-то еще
-        logic.processMessage(utils.makeRequestFromMessage(declineMessage));
+        utils.sendMessageToLogic(declineMessage);
         Assertions.assertEquals(
                 editingChooseMessage,
                 bot.getOutcomingMessageList().get(8));
 
         //Выбираем изменить направление
-        logic.processMessage(utils.makeRequestFromMessage(
-                new LocalMessage(EDITING_SPECIALITY_COMMAND)));
+        utils.sendMessageToLogic(new LocalMessage(EDITING_SPECIALITY_COMMAND));
         Assertions.assertEquals(
                 editingSpecialityMessage,
                 bot.getOutcomingMessageList().get(9));
 
         //Выбираем направление
-        logic.processMessage(utils.makeRequestFromMessage(
-                new LocalMessage(testSpeciality)));
+        utils.sendMessageToLogic(new LocalMessage(testSpeciality));
         Assertions.assertEquals(
                 editingAdditionalMessage,
                 bot.getOutcomingMessageList().get(11));
 
         //Выбираем изменить что-то еще
-        logic.processMessage(utils.makeRequestFromMessage(declineMessage));
+        utils.sendMessageToLogic(declineMessage);
         Assertions.assertEquals(
                 editingChooseMessage,
                 bot.getOutcomingMessageList().get(12));
 
         //Выбираем изменить группу
-        logic.processMessage(utils.makeRequestFromMessage(new LocalMessage(EDITING_GROUP_COMMAND)));
+        utils.sendMessageToLogic(new LocalMessage(EDITING_GROUP_COMMAND));
         Assertions.assertEquals(
                 editingGroupMessage,
                 bot.getOutcomingMessageList().get(13));
 
         //Выбираем группу
-        logic.processMessage(utils.makeRequestFromMessage(
-                new LocalMessage(testGroup)));
+        utils.sendMessageToLogic(new LocalMessage(testGroup));
         Assertions.assertEquals(
                 editingAdditionalMessage,
                 bot.getOutcomingMessageList().get(15));
 
         //Выбираем изменить что-то еще
-        logic.processMessage(utils.makeRequestFromMessage(declineMessage));
-        Assertions.assertEquals(editingChooseMessage, bot.getOutcomingMessageList().get(16));
+        utils.sendMessageToLogic(declineMessage);
+        Assertions.assertEquals(
+                editingChooseMessage,
+                bot.getOutcomingMessageList().get(16));
 
         //Выбираем изменить МЕН
-        logic.processMessage(utils.makeRequestFromMessage(new LocalMessage(EDITING_MEN_COMMAND)));
+        utils.sendMessageToLogic(new LocalMessage(EDITING_MEN_COMMAND));
         Assertions.assertEquals(editingMenMessage, bot.getOutcomingMessageList().get(17));
 
         //Вводим МЕН
-        logic.processMessage(utils.makeRequestFromMessage(new LocalMessage(testMen)));
+        utils.sendMessageToLogic(new LocalMessage(testMen));
         Assertions.assertEquals(
                 editingAdditionalMessage,
                 bot.getOutcomingMessageList().get(19));
 
         //Выбираем ничего не менять
-        logic.processMessage(utils.makeRequestFromMessage(acceptMessage));
+        utils.sendMessageToLogic(acceptMessage);
         Assertions.assertEquals(help, bot.getOutcomingMessageList().get(21));
 
         //Вызываем /info
-        logic.processMessage(utils.makeRequestFromMessage(new LocalMessage(INFO_COMMAND)));
+        utils.sendMessageToLogic(new LocalMessage(INFO_COMMAND));
         Assertions.assertEquals(
                 new LocalMessage(EDITING_FULL_TEST_CHECK_INFO),
                 bot.getOutcomingMessageList().get(22));

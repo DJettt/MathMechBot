@@ -17,7 +17,6 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
 import ru.urfu.logics.LogicCore;
-import ru.urfu.logics.localobjects.BotProcessMessageRequest;
 import ru.urfu.logics.localobjects.LocalButton;
 import ru.urfu.logics.localobjects.LocalMessage;
 
@@ -202,6 +201,6 @@ public final class TelegramBot implements Bot, LongPollingSingleThreadUpdateCons
             logger.error("Unknown message type! Received update: {}", update);
             return;
         }
-        logicCore.processMessage(new BotProcessMessageRequest(chatId, msg, this));
+        logicCore.processMessage(chatId, msg, this);
     }
 }
