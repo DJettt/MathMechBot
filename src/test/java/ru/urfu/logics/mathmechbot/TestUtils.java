@@ -15,6 +15,15 @@ public final class TestUtils {
     private final LogicCore logic;
     private final DummyBot bot;
 
+    private final static String ACCEPT_COMMAND = "/yes";
+    private final static String INFO_COMMAND = "/info";
+    private final static String REGISTER_COMMAND = "/register";
+
+    private final LocalMessage acceptMessage = new LocalMessageBuilder().text(ACCEPT_COMMAND).build();
+
+    private final LocalMessage infoMessage = new LocalMessageBuilder().text(INFO_COMMAND).build();
+    private final LocalMessage registerMessage = new LocalMessageBuilder().text(REGISTER_COMMAND).build();
+
     /**
      * Конструктор.
      *
@@ -39,14 +48,14 @@ public final class TestUtils {
      */
     public void registerUser(long id, String fullName, int year, String specialty, int group, String men) {
         final List<LocalMessage> messages = List.of(
-                new TestConstants().registerMessage,
+                registerMessage,
                 new LocalMessageBuilder().text(fullName).build(),
                 new LocalMessageBuilder().text(String.valueOf(year)).build(),
                 new LocalMessageBuilder().text(specialty).build(),
                 new LocalMessageBuilder().text(String.valueOf(group)).build(),
                 new LocalMessageBuilder().text(men).build(),
-                new TestConstants().acceptMessage,
-                new TestConstants().infoMessage
+                acceptMessage,
+                infoMessage
         );
 
         for (final LocalMessage message : messages) {

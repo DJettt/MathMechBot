@@ -14,7 +14,7 @@ import ru.urfu.logics.mathmechbot.storages.MathMechStorage;
 /**
  * Тесты для команды изменения информации о себе - /edit.
  */
-@DisplayName("[/edit] Состояние: Default")
+@DisplayName("[/edit] Редактирование информации")
 final class EditingTest {
     private TestUtils utils;
     private MathMechBotCore logic;
