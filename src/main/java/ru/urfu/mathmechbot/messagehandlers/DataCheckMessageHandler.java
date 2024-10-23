@@ -20,7 +20,7 @@ import ru.urfu.mathmechbot.validators.MessageValidator;
  *     <li>Команда возврата -- отправляет в FSM BackEvent.</li>
  * </ul>
  */
-public class DataCheckState implements MMBCoreState {
+public class DataCheckMessageHandler implements MMBMessageHandler {
     private final MessageValidator validator;
 
     /**
@@ -29,7 +29,7 @@ public class DataCheckState implements MMBCoreState {
      * @param validator валидатор, который будет использоваться
      *                  для проверки содержимого сообщения.
      */
-    public DataCheckState(@NotNull MessageValidator validator) {
+    public DataCheckMessageHandler(@NotNull MessageValidator validator) {
         this.validator = validator;
     }
 

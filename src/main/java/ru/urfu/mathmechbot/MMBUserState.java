@@ -1,13 +1,13 @@
 package ru.urfu.mathmechbot;
 
 import org.jetbrains.annotations.NotNull;
-import ru.urfu.mathmechbot.messagehandlers.DataCheckState;
-import ru.urfu.mathmechbot.messagehandlers.DefaultState;
-import ru.urfu.mathmechbot.messagehandlers.EditingChooseState;
-import ru.urfu.mathmechbot.messagehandlers.MMBCoreState;
-import ru.urfu.mathmechbot.messagehandlers.SpecialtyCheckState;
-import ru.urfu.mathmechbot.messagehandlers.YesNoBackState;
-import ru.urfu.mathmechbot.messagehandlers.YesNoState;
+import ru.urfu.mathmechbot.messagehandlers.DataCheckMessageHandler;
+import ru.urfu.mathmechbot.messagehandlers.DefaultStateHandler;
+import ru.urfu.mathmechbot.messagehandlers.EditingChooseHandler;
+import ru.urfu.mathmechbot.messagehandlers.MMBMessageHandler;
+import ru.urfu.mathmechbot.messagehandlers.SpecialtyHandler;
+import ru.urfu.mathmechbot.messagehandlers.YesNoBackHandler;
+import ru.urfu.mathmechbot.messagehandlers.YesNoHandler;
 import ru.urfu.mathmechbot.validators.FullNameValidator;
 import ru.urfu.mathmechbot.validators.GroupValidator;
 import ru.urfu.mathmechbot.validators.MenValidator;
@@ -17,26 +17,26 @@ import ru.urfu.mathmechbot.validators.YearValidator;
  * <p>Cостояние пользователя в MathMechBot.</p>
  */
 public enum MMBUserState {
-    DEFAULT(new DefaultState()),
+    DEFAULT(new DefaultStateHandler()),
 
-    REGISTRATION_NAME(new DataCheckState(new FullNameValidator())),
-    REGISTRATION_YEAR(new DataCheckState(new YearValidator())),
-    REGISTRATION_SPECIALTY(new SpecialtyCheckState()),
-    REGISTRATION_GROUP(new DataCheckState(new GroupValidator())),
-    REGISTRATION_MEN(new DataCheckState(new MenValidator())),
-    REGISTRATION_CONFIRMATION(new YesNoBackState()),
+    REGISTRATION_NAME(new DataCheckMessageHandler(new FullNameValidator())),
+    REGISTRATION_YEAR(new DataCheckMessageHandler(new YearValidator())),
+    REGISTRATION_SPECIALTY(new SpecialtyHandler()),
+    REGISTRATION_GROUP(new DataCheckMessageHandler(new GroupValidator())),
+    REGISTRATION_MEN(new DataCheckMessageHandler(new MenValidator())),
+    REGISTRATION_CONFIRMATION(new YesNoBackHandler()),
 
-    EDITING_CHOOSE(new EditingChooseState()),
-    EDITING_FULL_NAME(new DataCheckState(new FullNameValidator())),
-    EDITING_YEAR(new DataCheckState(new YearValidator())),
-    EDITING_SPECIALITY(new SpecialtyCheckState()),
-    EDITING_GROUP(new DataCheckState(new GroupValidator())),
-    EDITING_MEN(new DataCheckState(new MenValidator())),
-    EDITING_ADDITIONAL_EDIT(new YesNoState()),
+    EDITING_CHOOSE(new EditingChooseHandler()),
+    EDITING_FULL_NAME(new DataCheckMessageHandler(new FullNameValidator())),
+    EDITING_YEAR(new DataCheckMessageHandler(new YearValidator())),
+    EDITING_SPECIALITY(new SpecialtyHandler()),
+    EDITING_GROUP(new DataCheckMessageHandler(new GroupValidator())),
+    EDITING_MEN(new DataCheckMessageHandler(new MenValidator())),
+    EDITING_ADDITIONAL_EDIT(new YesNoHandler()),
 
-    DELETION_CONFIRMATION(new YesNoBackState());
+    DELETION_CONFIRMATION(new YesNoBackHandler());
 
-    private final MMBCoreState stateInstance;
+    private final MMBMessageHandler stateInstance;
 
     /**
      * <p>Устанавливает состояние логического ядра, которое должно
@@ -44,7 +44,7 @@ public enum MMBUserState {
      *
      * @param stateInstance состояние логического ядра.
      */
-    MMBUserState(@NotNull MMBCoreState stateInstance) {
+    MMBUserState(@NotNull MMBMessageHandler stateInstance) {
         this.stateInstance = stateInstance;
     }
 
@@ -54,7 +54,7 @@ public enum MMBUserState {
      * @return состояние логического ядра.
      */
     @NotNull
-    public MMBCoreState logicCoreState() {
+    public MMBMessageHandler logicCoreState() {
         return stateInstance;
     }
 }

@@ -16,7 +16,7 @@ import ru.urfu.mathmechbot.events.editing.YearChosenEvent;
 /**
  * <p>Состояние в котором пользователь выбирает, какую информацию он хочет изменить.</p>
  */
-public final class EditingChooseState implements MMBCoreState {
+public final class EditingChooseHandler implements MMBMessageHandler {
     @Override
     public RequestEvent<MMBCore> processMessage(@NotNull ContextProcessMessageRequest<MMBCore> request) {
         return switch (request.message().text()) {

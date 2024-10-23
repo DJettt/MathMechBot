@@ -17,7 +17,7 @@ import ru.urfu.mathmechbot.events.InvalidInputEvent;
  *     <li>Команда несогласия -- отправляет в FSM DeclineEvent</li>
  *     <li>Всё остальное -- отправляет в FSM InvalidInputEvent</li>
  * </ul> */
-public final class YesNoState implements MMBCoreState {
+public final class YesNoHandler implements MMBMessageHandler {
     @Override
     public RequestEvent<MMBCore> processMessage(@NotNull ContextProcessMessageRequest<MMBCore> request) {
         return switch (request.message().text()) {

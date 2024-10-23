@@ -11,7 +11,7 @@ import ru.urfu.logics.localobjects.LocalMessage;
 import ru.urfu.logics.localobjects.LocalMessageBuilder;
 import ru.urfu.mathmechbot.Constants;
 import ru.urfu.mathmechbot.MMBCore;
-import ru.urfu.mathmechbot.messagehandlers.SpecialtyCheckState;
+import ru.urfu.mathmechbot.messagehandlers.SpecialtyHandler;
 import ru.urfu.mathmechbot.models.Specialty;
 import ru.urfu.mathmechbot.models.UserEntry;
 
@@ -37,7 +37,7 @@ public final class AskSpecialty implements EventHandler<RequestEvent<MMBCore>> {
         }
 
         final List<LocalButton> buttons = new ArrayList<>();
-        for (Specialty specialty : new SpecialtyCheckState().getAllowedSpecialties(userEntry.year())) {
+        for (Specialty specialty : new SpecialtyHandler().getAllowedSpecialties(userEntry.year())) {
             buttons.add(new LocalButton(specialty.getAbbreviation(), specialty.getAbbreviation()));
         }
         buttons.add(Constants.BACK_BUTTON);

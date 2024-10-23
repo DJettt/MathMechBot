@@ -19,7 +19,7 @@ import ru.urfu.mathmechbot.models.UserEntry;
 /**
  * <p>Состояние, в котором изначально пребывает пользователь.</p>
  */
-public final class DefaultState implements MMBCoreState {
+public final class DefaultStateHandler implements MMBMessageHandler {
     @Override
     public RequestEvent<MMBCore> processMessage(@NotNull ContextProcessMessageRequest<MMBCore> request) {
         final Optional<UserEntry> userEntryOptional = request

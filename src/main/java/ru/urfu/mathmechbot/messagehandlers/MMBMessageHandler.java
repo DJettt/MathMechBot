@@ -7,5 +7,6 @@ import ru.urfu.mathmechbot.MMBCore;
 /**
  * <p>Интерфейс состояний для MathMechBot.</p>
  */
-public interface MMBCoreState extends MessageHandler<MMBCore, RequestEvent<MMBCore>> {
+public interface MMBMessageHandler
+        extends MessageHandler<MMBCore, RequestEvent<MMBCore>> {
 }

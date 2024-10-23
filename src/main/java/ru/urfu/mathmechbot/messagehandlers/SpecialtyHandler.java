@@ -15,13 +15,13 @@ import ru.urfu.mathmechbot.validators.MenValidator;
 /**
  * <p>Проверяет корректность направления подготовки.</p>
  */
-public final class SpecialtyCheckState extends DataCheckState {
-    private final Logger logger = LoggerFactory.getLogger(SpecialtyCheckState.class);
+public final class SpecialtyHandler extends DataCheckMessageHandler {
+    private final Logger logger = LoggerFactory.getLogger(SpecialtyHandler.class);
 
     /**
      * <p>Конструктор. TODO: надо переделать в валилатор.</p>
      */
-    public SpecialtyCheckState() {
+    public SpecialtyHandler() {
         super(new MenValidator());
     }
 
