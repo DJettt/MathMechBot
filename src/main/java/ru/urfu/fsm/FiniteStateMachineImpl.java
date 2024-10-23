@@ -36,7 +36,7 @@ public class FiniteStateMachineImpl<E, S> implements FiniteStateMachine<E, S> {
     }
 
     @Override
-    public void sendEvent(@NotNull E event) {
+    public S sendEvent(@NotNull E event) {
         for (final Transition<E, S> transition : transitions) {
             if (!isTransitionSuitable(transition, event)) {
                 continue;
@@ -47,23 +47,13 @@ public class FiniteStateMachineImpl<E, S> implements FiniteStateMachine<E, S> {
                     eventHandler.handleEvent(event);
                 }
             }
-
             currentState = transition.target();
-            onTransition(event);
-            return;
+            return currentState;
         }
 
         logger.debug("No transition found for {}. Current state is {}",
                 event, currentState);
-    }
-
-    /**
-     * <p>Фрагмент кода, который будет выполняться
-     * при переходе в другое состояние.</p>
-     *
-     * @param event событие, которое спровоцировало переход.
-     */
-    public void onTransition(@NotNull E event) {
+        return currentState;
     }
 
     /**
@@ -74,6 +64,19 @@ public class FiniteStateMachineImpl<E, S> implements FiniteStateMachine<E, S> {
     public void registerTransition(@NotNull Transition<E, S> transition) {
         transitionValidator.validate(transition, this);
         this.transitions.add(transition);
+    }
+
+    /**
+     * <p>Проверка того, может ли данный переход обработать данное событие.</p>
+     *
+     * @param transition проверяемый переход.
+     * @param event      полученное событие.
+     * @return результат проверки.
+     */
+    private boolean isTransitionSuitable(Transition<E, S> transition, E event) {
+        return currentState.equals(transition.source())
+                && transition.eventType().equals(event.getClass())
+                && states.contains(transition.target());
     }
 
     @NotNull
@@ -90,18 +93,5 @@ public class FiniteStateMachineImpl<E, S> implements FiniteStateMachine<E, S> {
     @Override
     public Set<S> getStates() {
         return states;
-    }
-
-    /**
-     * <p>Проверка того, может ли данный переход обработать данное событие.</p>
-     *
-     * @param transition проверяемый переход.
-     * @param event      полученное событие.
-     * @return результат проверки.
-     */
-    private boolean isTransitionSuitable(Transition<E, S> transition, E event) {
-        return currentState.equals(transition.source())
-                && transition.eventType().equals(event.getClass())
-                && states.contains(transition.target());
     }
 }

@@ -1,6 +1,8 @@
 package ru.urfu.mathmechbot;
 
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.urfu.bots.Bot;
 import ru.urfu.fsm.FiniteStateMachine;
 import ru.urfu.logics.LogicCore;
@@ -17,6 +19,7 @@ import ru.urfu.mathmechbot.storages.UserStorage;
  * Telegram-каналов на предмет упоминания студентов.<p/>
  */
 public final class MMBCore implements LogicCore {
+    private final Logger logger = LoggerFactory.getLogger(MMBCore.class);
     private final MathMechStorage storage;
     private final FiniteStateMachine<RequestEvent<MMBCore>, MMBUserState> fsm;
 
@@ -27,7 +30,7 @@ public final class MMBCore implements LogicCore {
      */
     public MMBCore(@NotNull MathMechStorage storage) {
         this.storage = storage;
-        this.fsm = new MMBFiniteUserStateMachine(storage.getUsers());
+        this.fsm = new MMBFiniteUserStateMachine();
     }
 
     @Override
@@ -40,13 +43,14 @@ public final class MMBCore implements LogicCore {
                     userStorage.add(newUser);
                     return newUser;
                 });
+        logger.trace(user.toString());
 
         final MMBUserState currentState = user.currentState();
         fsm.setState(currentState);
 
-        currentState.logicCoreState()
-                .processMessage(new ContextProcessMessageRequest<>(
-                        this, user, message, bot));
+        currentState.logicCoreState().processMessage(
+                new ContextProcessMessageRequest<>(this, user, message, bot));
+        userStorage.changeUserState(user.id(), fsm.getState());
     }
 
     /**

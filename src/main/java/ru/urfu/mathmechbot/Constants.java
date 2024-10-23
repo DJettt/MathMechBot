@@ -37,11 +37,11 @@ public final class Constants {
     public final static LocalMessage DELETED = new LocalMessage("Удаляем...");
 
     public final static LocalMessage HELP = new LocalMessage("""
-                    /start - начало общения с ботом
-                    /help - выводит команды, которые принимает бот
-                    /register - регистрация
-                    /info - информация о Вас
-                    /edit - изменить информацию
+            /start - начало общения с ботом
+            /help - выводит команды, которые принимает бот
+            /register - регистрация
+            /info - информация о Вас
+            /edit - изменить информацию
             /delete - удалить информацию о Вас""");
 
     public final static LocalMessage FULL_NAME = new LocalMessageBuilder()

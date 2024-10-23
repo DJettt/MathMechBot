@@ -2,7 +2,6 @@ package ru.urfu.mathmechbot;
 
 import java.util.HashSet;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
 import ru.urfu.fsm.FiniteStateMachineImpl;
 import ru.urfu.logics.RequestEvent;
 import ru.urfu.mathmechbot.eventhandlers.AskDeletionConfirmation;
@@ -35,34 +34,23 @@ import ru.urfu.mathmechbot.events.editing.GroupChosenEvent;
 import ru.urfu.mathmechbot.events.editing.MenChosenEvent;
 import ru.urfu.mathmechbot.events.editing.SpecialtyChosenEvent;
 import ru.urfu.mathmechbot.events.editing.YearChosenEvent;
-import ru.urfu.mathmechbot.storages.UserStorage;
 
 /**
  * <p>FSM, настроенный для работы с MathMechBot.</p>
  */
 public final class MMBFiniteUserStateMachine
         extends FiniteStateMachineImpl<RequestEvent<MMBCore>, MMBUserState> {
-    private final UserStorage users;
 
     /**
      * <p>Конструктор.</p>
-     *
-     * @param users хранилище пользователей, чтобы
-     *              обновлять в нём состояние пользователей.
      */
-    public MMBFiniteUserStateMachine(@NotNull UserStorage users) {
+    public MMBFiniteUserStateMachine() {
         super(new HashSet<>(List.of(MMBUserState.values())), MMBUserState.DEFAULT);
-        this.users = users;
 
         setupDefaultTransitions();
         setupRegistrationTransitions();
         setupEditingTransitions();
         setupDeletionTransitions();
-    }
-
-    @Override
-    public void onTransition(@NotNull RequestEvent<MMBCore> event) {
-        users.changeUserState(event.request().user().id(), getState());
     }
 
     /**

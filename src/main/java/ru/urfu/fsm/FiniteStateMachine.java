@@ -15,8 +15,9 @@ public interface FiniteStateMachine<E, S> {
      * <p>Запустить событие в FSM.</p>
      *
      * @param event событие с запросом.
+     * @return состояние, которое автомат принял после обработки события.
      */
-    void sendEvent(@NotNull E event);
+    S sendEvent(@NotNull E event);
 
     /**
      * <p>Геттер текущего состояния.</p>
