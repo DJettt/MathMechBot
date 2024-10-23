@@ -27,35 +27,22 @@ public final class Constants {
     public final static LocalButton NO_BUTTON = new LocalButton("Нет", DECLINE_COMMAND);
     public final static LocalButton BACK_BUTTON = new LocalButton("Назад", BACK_COMMAND);
 
-    public final static LocalMessage REGISTER_FIRST = new LocalMessageBuilder()
-            .text("Сперва нужно зарегистрироваться.")
-            .build();
-    public final static LocalMessage ALREADY_REGISTERED = new LocalMessageBuilder()
-            .text("Вы уже зарегистрированы. Пока что регистрировать можно только одного человека.")
-            .build();
+    public final static LocalMessage REGISTER_FIRST = new LocalMessage("Сперва нужно зарегистрироваться.");
+    public final static LocalMessage ALREADY_REGISTERED = new LocalMessage(
+            "Вы уже зарегистрированы. Пока что регистрировать можно только одного человека.");
 
-    public final static LocalMessage TRY_AGAIN = new LocalMessageBuilder()
-            .text("Попробуйте снова.")
-            .build();
-    public final static LocalMessage SAVED = new LocalMessageBuilder()
-            .text("Данные сохранены.")
-            .build();
-    public final static LocalMessage CANCEL = new LocalMessageBuilder()
-            .text("Отмена...")
-            .build();
-    public final static LocalMessage DELETED = new LocalMessageBuilder()
-            .text("Удаляем...")
-            .build();
+    public final static LocalMessage TRY_AGAIN = new LocalMessage("Попробуйте снова.");
+    public final static LocalMessage SAVED = new LocalMessage("Данные сохранены.");
+    public final static LocalMessage CANCEL = new LocalMessage("Отмена...");
+    public final static LocalMessage DELETED = new LocalMessage("Удаляем...");
 
-    public final static LocalMessage HELP = new LocalMessageBuilder()
-            .text("""
+    public final static LocalMessage HELP = new LocalMessage("""
                     /start - начало общения с ботом
                     /help - выводит команды, которые принимает бот
                     /register - регистрация
                     /info - информация о Вас
                     /edit - изменить информацию
-                    /delete - удалить информацию о Вас""")
-            .build();
+            /delete - удалить информацию о Вас""");
 
     public final static LocalMessage FULL_NAME = new LocalMessageBuilder()
             .text("""
@@ -87,6 +74,7 @@ public final class Constants {
                     new LocalButton("5 группа", "5"),
                     Constants.BACK_BUTTON))
             .build();
+
     public final static LocalMessage MEN = new LocalMessageBuilder()
             .text("Введите свою академическую группу в формате:\nМЕН-123456")
             .buttons(List.of(Constants.BACK_BUTTON))
