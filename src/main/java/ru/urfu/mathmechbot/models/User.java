@@ -1,7 +1,7 @@
 package ru.urfu.mathmechbot.models;
 
 import org.jetbrains.annotations.NotNull;
-import ru.urfu.mathmechbot.MMBUserState;
+import ru.urfu.mathmechbot.UserState;
 import ru.urfu.storages.Identifiable;
 
 /**
@@ -12,7 +12,7 @@ import ru.urfu.storages.Identifiable;
  */
 public record User(
         @NotNull Long id,
-        @NotNull MMBUserState currentState
+        @NotNull UserState currentState
 ) implements Identifiable<Long> {
 
     @Override

@@ -1,6 +1,6 @@
 package ru.urfu.mathmechbot;
 
-public enum MMBEvent {
+public enum Event {
     ACCEPT,
     DECLINE,
     BACK,

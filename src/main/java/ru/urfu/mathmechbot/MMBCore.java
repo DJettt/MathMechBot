@@ -17,7 +17,7 @@ import ru.urfu.mathmechbot.storages.UserStorage;
  */
 public final class MMBCore implements LogicCore {
     private final MathMechStorage storage;
-    private final FiniteStateMachine<MMBUserState, MMBEvent, EventContext> fsm;
+    private final FiniteStateMachine<UserState, Event, EventContext> fsm;
 
     /**
      * <p>Конструктор.</p>
@@ -35,15 +35,15 @@ public final class MMBCore implements LogicCore {
         final User user = userStorage
                 .get(id)
                 .orElseGet(() -> {
-                    final User newUser = new User(id, MMBUserState.DEFAULT);
+                    final User newUser = new User(id, UserState.DEFAULT);
                     userStorage.add(newUser);
                     return newUser;
                 });
 
-        final MMBUserState currentState = user.currentState();
+        final UserState currentState = user.currentState();
         fsm.setState(currentState);
 
-        final MMBEvent event = currentState.logicCoreState().processMessage(
+        final Event event = currentState.logicCoreState().processMessage(
                         new ContextProcessMessageRequest<>(this, user, message, bot));
 
         final EventContext context = new EventContext(user, message, bot);

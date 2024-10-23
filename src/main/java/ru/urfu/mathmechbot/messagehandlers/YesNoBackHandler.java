@@ -3,8 +3,8 @@ package ru.urfu.mathmechbot.messagehandlers;
 import org.jetbrains.annotations.NotNull;
 import ru.urfu.logics.localobjects.ContextProcessMessageRequest;
 import ru.urfu.mathmechbot.Constants;
+import ru.urfu.mathmechbot.Event;
 import ru.urfu.mathmechbot.MMBCore;
-import ru.urfu.mathmechbot.MMBEvent;
 
 /**
  * <p>Состояние логического ядра, обрабатывающее четыре возможных типа сообщения.</p>
@@ -18,12 +18,12 @@ import ru.urfu.mathmechbot.MMBEvent;
  */
 public final class YesNoBackHandler implements MMBMessageHandler {
     @Override
-    public MMBEvent processMessage(@NotNull ContextProcessMessageRequest<MMBCore> request) {
+    public Event processMessage(@NotNull ContextProcessMessageRequest<MMBCore> request) {
         return switch (request.message().text()) {
-            case Constants.BACK_COMMAND -> MMBEvent.BACK;
-            case Constants.ACCEPT_COMMAND -> MMBEvent.ACCEPT;
-            case Constants.DECLINE_COMMAND -> MMBEvent.DECLINE;
-            case null, default -> MMBEvent.INVALID_INPUT;
+            case Constants.BACK_COMMAND -> Event.BACK;
+            case Constants.ACCEPT_COMMAND -> Event.ACCEPT;
+            case Constants.DECLINE_COMMAND -> Event.DECLINE;
+            case null, default -> Event.INVALID_INPUT;
         };
     }
 }

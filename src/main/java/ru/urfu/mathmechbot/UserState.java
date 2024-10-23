@@ -16,7 +16,7 @@ import ru.urfu.mathmechbot.validators.YearValidator;
 /**
  * <p>Cостояние пользователя в MathMechBot.</p>
  */
-public enum MMBUserState {
+public enum UserState {
     DEFAULT(new DefaultStateHandler()),
 
     REGISTRATION_NAME(new DataCheckMessageHandler(new FullNameValidator())),
@@ -44,7 +44,7 @@ public enum MMBUserState {
      *
      * @param stateInstance состояние логического ядра.
      */
-    MMBUserState(@NotNull MMBMessageHandler stateInstance) {
+    UserState(@NotNull MMBMessageHandler stateInstance) {
         this.stateInstance = stateInstance;
     }
 

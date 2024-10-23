@@ -4,8 +4,8 @@ package ru.urfu.mathmechbot.messagehandlers;
 import org.jetbrains.annotations.NotNull;
 import ru.urfu.logics.localobjects.ContextProcessMessageRequest;
 import ru.urfu.mathmechbot.Constants;
+import ru.urfu.mathmechbot.Event;
 import ru.urfu.mathmechbot.MMBCore;
-import ru.urfu.mathmechbot.MMBEvent;
 import ru.urfu.mathmechbot.validators.MessageValidator;
 
 /**
@@ -31,14 +31,14 @@ public class DataCheckMessageHandler implements MMBMessageHandler {
     }
 
     @Override
-    public MMBEvent processMessage(@NotNull ContextProcessMessageRequest<MMBCore> request) {
+    public Event processMessage(@NotNull ContextProcessMessageRequest<MMBCore> request) {
         return switch (request.message().text()) {
-            case Constants.BACK_COMMAND -> MMBEvent.BACK;
+            case Constants.BACK_COMMAND -> Event.BACK;
             case null, default -> {
                 if (validateData(request)) {
-                    yield MMBEvent.VALID_INPUT;
+                    yield Event.VALID_INPUT;
                 }
-                yield MMBEvent.INVALID_INPUT;
+                yield Event.INVALID_INPUT;
             }
         };
     }

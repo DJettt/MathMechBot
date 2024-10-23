@@ -1,7 +1,7 @@
 package ru.urfu.mathmechbot.storages;
 
 import org.jetbrains.annotations.NotNull;
-import ru.urfu.mathmechbot.MMBUserState;
+import ru.urfu.mathmechbot.UserState;
 import ru.urfu.mathmechbot.models.User;
 import ru.urfu.storages.Storage;
 
@@ -18,5 +18,5 @@ public interface UserStorage
      * @param id    идентификатор пользователя в хранилище.
      * @param state новое текущее состояние.
      */
-    void changeUserState(@NotNull Long id, @NotNull MMBUserState state);
+    void changeUserState(@NotNull Long id, @NotNull UserState state);
 }
