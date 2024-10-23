@@ -1,4 +1,4 @@
-package ru.urfu.mathmechbot.logicstates;
+package ru.urfu.mathmechbot.messagehandlers;
 
 import java.util.List;
 import java.util.Optional;

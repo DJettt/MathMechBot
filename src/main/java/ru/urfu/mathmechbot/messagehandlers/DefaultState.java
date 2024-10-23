@@ -1,4 +1,4 @@
-package ru.urfu.mathmechbot.logicstates;
+package ru.urfu.mathmechbot.messagehandlers;
 
 import java.util.Optional;
 import org.jetbrains.annotations.NotNull;
@@ -21,14 +21,14 @@ import ru.urfu.mathmechbot.models.UserEntry;
  */
 public final class DefaultState implements MMBCoreState {
     @Override
-    public void processMessage(@NotNull ContextProcessMessageRequest<MMBCore> request) {
+    public RequestEvent<MMBCore> processMessage(@NotNull ContextProcessMessageRequest<MMBCore> request) {
         final Optional<UserEntry> userEntryOptional = request
                 .context()
                 .getStorage()
                 .getUserEntries()
                 .get(request.user().id());
 
-        final RequestEvent<MMBCore> event = switch (request.message().text()) {
+        return switch (request.message().text()) {
             case Constants.REGISTER_COMMAND -> {
                 if (userEntryOptional.isPresent()) {
                     yield new AlreadyRegisteredEvent(request);
@@ -59,7 +59,5 @@ public final class DefaultState implements MMBCoreState {
             }
             case null, default -> new HelpEvent(request);
         };
-
-        request.context().getFsm().sendEvent(event);
     }
 }

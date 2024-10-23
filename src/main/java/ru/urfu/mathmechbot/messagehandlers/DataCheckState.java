@@ -1,4 +1,4 @@
-package ru.urfu.mathmechbot.logicstates;
+package ru.urfu.mathmechbot.messagehandlers;
 
 
 import org.jetbrains.annotations.NotNull;
@@ -34,8 +34,8 @@ public class DataCheckState implements MMBCoreState {
     }
 
     @Override
-    public void processMessage(@NotNull ContextProcessMessageRequest<MMBCore> request) {
-        final RequestEvent<MMBCore> event = switch (request.message().text()) {
+    public RequestEvent<MMBCore> processMessage(@NotNull ContextProcessMessageRequest<MMBCore> request) {
+        return switch (request.message().text()) {
             case Constants.BACK_COMMAND -> new BackEvent(request);
             case null, default -> {
                 if (validateData(request)) {
@@ -44,7 +44,6 @@ public class DataCheckState implements MMBCoreState {
                 yield new InvalidInputEvent(request);
             }
         };
-        request.context().getFsm().sendEvent(event);
     }
 
     /**

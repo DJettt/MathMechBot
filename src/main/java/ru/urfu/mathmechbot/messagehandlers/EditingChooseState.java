@@ -1,4 +1,4 @@
-package ru.urfu.mathmechbot.logicstates;
+package ru.urfu.mathmechbot.messagehandlers;
 
 import org.jetbrains.annotations.NotNull;
 import ru.urfu.logics.RequestEvent;
@@ -18,8 +18,8 @@ import ru.urfu.mathmechbot.events.editing.YearChosenEvent;
  */
 public final class EditingChooseState implements MMBCoreState {
     @Override
-    public void processMessage(@NotNull ContextProcessMessageRequest<MMBCore> request) {
-        final RequestEvent<MMBCore> event = switch (request.message().text()) {
+    public RequestEvent<MMBCore> processMessage(@NotNull ContextProcessMessageRequest<MMBCore> request) {
+        return switch (request.message().text()) {
             case Constants.BACK_COMMAND -> new BackEvent(request);
             case Constants.EDITING_FULL_NAME -> new FullNameChosenEvent(request);
             case Constants.EDITING_YEAR -> new YearChosenEvent(request);
@@ -28,6 +28,5 @@ public final class EditingChooseState implements MMBCoreState {
             case Constants.EDITING_MEN -> new MenChosenEvent(request);
             case null, default -> new InvalidInputEvent(request);
         };
-        request.context().getFsm().sendEvent(event);
     }
 }

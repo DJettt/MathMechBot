@@ -48,9 +48,11 @@ public final class MMBCore implements LogicCore {
         final MMBUserState currentState = user.currentState();
         fsm.setState(currentState);
 
-        currentState.logicCoreState().processMessage(
-                new ContextProcessMessageRequest<>(this, user, message, bot));
-        userStorage.changeUserState(user.id(), fsm.getState());
+        final RequestEvent<MMBCore> event = currentState
+                .logicCoreState()
+                .processMessage(
+                        new ContextProcessMessageRequest<>(this, user, message, bot));
+        userStorage.changeUserState(user.id(), fsm.sendEvent(event));
     }
 
     /**
@@ -60,14 +62,5 @@ public final class MMBCore implements LogicCore {
      */
     public MathMechStorage getStorage() {
         return storage;
-    }
-
-    /**
-     * <p>Геттер поля fsm.</p>
-     *
-     * @return fsm (конечный автомат).
-     */
-    public FiniteStateMachine<RequestEvent<MMBCore>, MMBUserState> getFsm() {
-        return fsm;
     }
 }
