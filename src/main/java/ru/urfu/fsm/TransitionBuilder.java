@@ -7,22 +7,23 @@ import org.jetbrains.annotations.NotNull;
 /**
  * <p>Билдер перехода автомата.</p>
  *
- * @param <E> тип события, наследники которого будут провоцировать переход.
  * @param <S> тип состояния автомата.
+ * @param <E> тип события.
+ * @param <C> тип контекста.
  */
-public class TransitionBuilder<E, S> {
+public class TransitionBuilder<S, E, C> {
     private String name;
     private S source;
     private S target;
-    private Class<? extends E> eventType;
-    private final List<EventHandler<E>> eventHandlers;
+    private E event;
+    private final List<Action<C>> actions;
 
     /**
      * <p>Конструктор.</p>
      */
     public TransitionBuilder() {
         this.name = "noname";
-        this.eventHandlers = new ArrayList<>();
+        this.actions = new ArrayList<>();
     }
 
     /**
@@ -31,7 +32,7 @@ public class TransitionBuilder<E, S> {
      * @param name имя перехода.
      * @return себя же.
      */
-    public TransitionBuilder<E, S> name(@NotNull String name) {
+    public TransitionBuilder<S, E, C> name(@NotNull String name) {
         this.name = name;
         return this;
     }
@@ -42,7 +43,7 @@ public class TransitionBuilder<E, S> {
      * @param source исходное состояние.
      * @return себя же.
      */
-    public TransitionBuilder<E, S> source(@NotNull S source) {
+    public TransitionBuilder<S, E, C> source(@NotNull S source) {
         this.source = source;
         return this;
     }
@@ -53,30 +54,30 @@ public class TransitionBuilder<E, S> {
      * @param target целевое состояние.
      * @return себя же.
      */
-    public TransitionBuilder<E, S> target(@NotNull S target) {
+    public TransitionBuilder<S, E, C> target(@NotNull S target) {
         this.target = target;
         return this;
     }
 
     /**
-     * <p>Тип события, которое должно провоцировать автомат.</p>
+     * <p>Событие, которое должно провоцировать автомат.</p>
      *
-     * @param eventType тип события.
+     * @param event события.
      * @return себя же.
      */
-    public TransitionBuilder<E, S> eventType(@NotNull Class<? extends E> eventType) {
-        this.eventType = eventType;
+    public TransitionBuilder<S, E, C> event(@NotNull E event) {
+        this.event = event;
         return this;
     }
 
     /**
-     * <p>Обработчик событий, который будет запускаться после перехода.</p>
+     * <p>Действие, которое запускается при переходе.</p>
      *
-     * @param eventHandler обработчик.
+     * @param action действие.
      * @return себя же.
      */
-    public TransitionBuilder<E, S> eventHandler(@NotNull EventHandler<E> eventHandler) {
-        this.eventHandlers.add(eventHandler);
+    public TransitionBuilder<S, E, C> action(@NotNull Action<C> action) {
+        this.actions.add(action);
         return this;
     }
 
@@ -85,7 +86,7 @@ public class TransitionBuilder<E, S> {
      *
      * @return готовый переход.
      */
-    public Transition<E, S> build() {
-        return new Transition<>(name, source, target, eventType, eventHandlers);
+    public Transition<S, E, C> build() {
+        return new Transition<>(name, source, target, event, actions);
     }
 }

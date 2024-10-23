@@ -13,13 +13,12 @@ import org.slf4j.LoggerFactory;
  * @param <E> тип событий, которые провоцируют переходы.
  * @param <S> тип состояний, между которыми автомат совершает переходы.
  */
-public class FiniteStateMachineImpl<E, S> implements FiniteStateMachine<E, S> {
-    private final Logger logger = LoggerFactory
-            .getLogger(FiniteStateMachineImpl.class);
+public class FiniteStateMachineImpl<S, E, C> implements FiniteStateMachine<S, E, C> {
+    private final Logger logger = LoggerFactory.getLogger(FiniteStateMachineImpl.class);
 
-    private final TransitionValidator<E, S> transitionValidator;
+    private final TransitionValidator<S, E, C> transitionValidator;
     private final Set<S> states;
-    private final Set<Transition<E, S>> transitions;
+    private final Set<Transition<S, E, C>> transitions;
     private S currentState;
 
     /**
@@ -28,7 +27,7 @@ public class FiniteStateMachineImpl<E, S> implements FiniteStateMachine<E, S> {
      * @param states       набор состояний.
      * @param initialState изначальное состояние.
      */
-    public FiniteStateMachineImpl(Set<S> states, S initialState) {
+    public FiniteStateMachineImpl(@NotNull Set<S> states, @NotNull S initialState) {
         currentState = initialState;
         this.states = states;
         transitions = new HashSet<>();
@@ -36,23 +35,20 @@ public class FiniteStateMachineImpl<E, S> implements FiniteStateMachine<E, S> {
     }
 
     @Override
-    public S sendEvent(@NotNull E event) {
-        for (final Transition<E, S> transition : transitions) {
+    public synchronized S sendEvent(@NotNull E event, @NotNull C context) {
+        for (final Transition<S, E, C> transition : transitions) {
             if (!isTransitionSuitable(transition, event)) {
                 continue;
             }
 
-            for (final EventHandler<E> eventHandler : transition.eventHandlers()) {
-                if (eventHandler != null) {
-                    eventHandler.handleEvent(event);
-                }
+            for (final Action<C> action : transition.actions()) {
+                action.execute(context);
             }
             currentState = transition.target();
             return currentState;
         }
 
-        logger.debug("No transition found for {}. Current state is {}",
-                event, currentState);
+        logger.debug("No transition found for {}. Current state is {}", event, currentState);
         return currentState;
     }
 
@@ -61,7 +57,7 @@ public class FiniteStateMachineImpl<E, S> implements FiniteStateMachine<E, S> {
      *
      * @param transition переход.
      */
-    public void registerTransition(@NotNull Transition<E, S> transition) {
+    public void registerTransition(@NotNull Transition<S, E, C> transition) {
         transitionValidator.validate(transition, this);
         this.transitions.add(transition);
     }
@@ -73,16 +69,8 @@ public class FiniteStateMachineImpl<E, S> implements FiniteStateMachine<E, S> {
      * @param event      полученное событие.
      * @return результат проверки.
      */
-    private boolean isTransitionSuitable(Transition<E, S> transition, E event) {
-        return currentState.equals(transition.source())
-                && transition.eventType().equals(event.getClass())
-                && states.contains(transition.target());
-    }
-
-    @NotNull
-    @Override
-    public S getState() {
-        return currentState;
+    private boolean isTransitionSuitable(Transition<S, E, C> transition, E event) {
+        return currentState.equals(transition.source()) && transition.event().equals(event);
     }
 
     @Override

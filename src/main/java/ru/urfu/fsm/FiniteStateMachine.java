@@ -10,22 +10,14 @@ import org.jetbrains.annotations.NotNull;
  * @param <E> тип событий ядра.
  * @param <S> тип пользовательского состояния.
  */
-public interface FiniteStateMachine<E, S> {
+public interface FiniteStateMachine<S, E, C> {
     /**
      * <p>Запустить событие в FSM.</p>
      *
      * @param event событие с запросом.
      * @return состояние, которое автомат принял после обработки события.
      */
-    S sendEvent(@NotNull E event);
-
-    /**
-     * <p>Геттер текущего состояния.</p>
-     *
-     * @return текущее состояние автомата.
-     */
-    @NotNull
-    S getState();
+    S sendEvent(@NotNull E event, @NotNull C context);
 
     /**
      * <p>Сеттер текущего состояния. Полезно, когда автомат

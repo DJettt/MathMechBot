@@ -2,17 +2,10 @@ package ru.urfu.mathmechbot.messagehandlers;
 
 import java.util.Optional;
 import org.jetbrains.annotations.NotNull;
-import ru.urfu.logics.RequestEvent;
 import ru.urfu.logics.localobjects.ContextProcessMessageRequest;
 import ru.urfu.mathmechbot.Constants;
 import ru.urfu.mathmechbot.MMBCore;
-import ru.urfu.mathmechbot.events.AlreadyRegisteredEvent;
-import ru.urfu.mathmechbot.events.DeleteEvent;
-import ru.urfu.mathmechbot.events.EditEvent;
-import ru.urfu.mathmechbot.events.HelpEvent;
-import ru.urfu.mathmechbot.events.InfoEvent;
-import ru.urfu.mathmechbot.events.NotRegisteredEvent;
-import ru.urfu.mathmechbot.events.RegisterEvent;
+import ru.urfu.mathmechbot.MMBEvent;
 import ru.urfu.mathmechbot.models.UserEntry;
 
 
@@ -21,7 +14,7 @@ import ru.urfu.mathmechbot.models.UserEntry;
  */
 public final class DefaultStateHandler implements MMBMessageHandler {
     @Override
-    public RequestEvent<MMBCore> processMessage(@NotNull ContextProcessMessageRequest<MMBCore> request) {
+    public MMBEvent processMessage(@NotNull ContextProcessMessageRequest<MMBCore> request) {
         final Optional<UserEntry> userEntryOptional = request
                 .context()
                 .getStorage()
@@ -31,33 +24,33 @@ public final class DefaultStateHandler implements MMBMessageHandler {
         return switch (request.message().text()) {
             case Constants.REGISTER_COMMAND -> {
                 if (userEntryOptional.isPresent()) {
-                    yield new AlreadyRegisteredEvent(request);
+                    yield MMBEvent.ALREADY_REGISTERED;
                 } else {
-                    yield new RegisterEvent(request);
+                    yield MMBEvent.REGISTER;
                 }
             }
             case Constants.INFO_COMMAND -> {
                 if (userEntryOptional.isPresent()) {
-                    yield new InfoEvent(request);
+                    yield MMBEvent.INFO;
                 } else {
-                    yield new NotRegisteredEvent(request);
+                    yield MMBEvent.NOT_REGISTERED;
                 }
             }
             case Constants.DELETE_COMMAND -> {
                 if (userEntryOptional.isPresent()) {
-                    yield new DeleteEvent(request);
+                    yield MMBEvent.DELETE;
                 } else {
-                    yield new NotRegisteredEvent(request);
+                    yield MMBEvent.NOT_REGISTERED;
                 }
             }
             case Constants.EDIT_COMMAND -> {
                 if (userEntryOptional.isPresent()) {
-                    yield new EditEvent(request);
+                    yield MMBEvent.EDIT;
                 } else {
-                    yield new NotRegisteredEvent(request);
+                    yield MMBEvent.NOT_REGISTERED;
                 }
             }
-            case null, default -> new HelpEvent(request);
+            case null, default -> MMBEvent.HELP;
         };
     }
 }

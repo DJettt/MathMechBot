@@ -1,15 +1,14 @@
-package ru.urfu.mathmechbot.eventhandlers;
+package ru.urfu.mathmechbot.actions;
 
 import org.jetbrains.annotations.NotNull;
-import ru.urfu.fsm.EventHandler;
-import ru.urfu.logics.RequestEvent;
+import ru.urfu.fsm.Action;
 import ru.urfu.logics.localobjects.LocalMessage;
-import ru.urfu.mathmechbot.MMBCore;
+import ru.urfu.mathmechbot.EventContext;
 
 /**
  * <p>Отправляет определённое на этапе создания сообщение.</p>
  */
-public final class SendConstantMessage implements EventHandler<RequestEvent<MMBCore>> {
+public final class SendConstantMessage implements Action<EventContext> {
     private final LocalMessage message;
 
     /**
@@ -22,7 +21,7 @@ public final class SendConstantMessage implements EventHandler<RequestEvent<MMBC
     }
 
     @Override
-    public void handleEvent(RequestEvent<MMBCore> e) {
-        e.request().bot().sendMessage(this.message, e.request().user().id());
+    public void execute(@NotNull EventContext context) {
+        context.bot().sendMessage(this.message, context.user().id());
     }
 }

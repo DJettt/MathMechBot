@@ -7,31 +7,32 @@ import org.slf4j.LoggerFactory;
 /**
  * <p>Валидатор перехода.</p>
  *
- * @param <E> тип событий, наследники которого должны провоцировать переход.
+ * @param <E> тип событий.
  * @param <S> тип состояний автомата.
+ * @param <C> тип контекста.
  */
-final class TransitionValidator<E, S> {
+final class TransitionValidator<S, E, C> {
     private final Logger logger = LoggerFactory.getLogger(TransitionValidator.class);
 
     /**
      * <p>Проверяет корректность определённого перехода.</p>
      *
      * @param transition проверяемое состояния.
-     * @param fms        автомат, для которого проверяется корректность перехода.
+     * @param fsm        автомат, для которого проверяется корректность перехода.
      */
-    void validate(@NotNull Transition<E, S> transition,
-                  @NotNull FiniteStateMachine<E, S> fms) {
+    void validate(@NotNull Transition<S, E, C> transition,
+                  @NotNull FiniteStateMachine<S, E, C> fsm) {
 
         String name = transition.name();
         S source = transition.source();
         S target = transition.target();
 
-        if (!fms.getStates().contains(source)) {
+        if (!fsm.getStates().contains(source)) {
             logger.error("Source state '{}' is not registered in FSM states for transition '{}'",
                     source, name);
             throw new IllegalArgumentException();
         }
-        if (!fms.getStates().contains(target)) {
+        if (!fsm.getStates().contains(target)) {
             logger.error("Target state '{}' is not registered in FSM states for transition '{}'",
                     target, name);
             throw new IllegalArgumentException();
