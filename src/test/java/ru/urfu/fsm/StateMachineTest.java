@@ -1,5 +1,6 @@
 package ru.urfu.fsm;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -18,7 +19,7 @@ public class StateMachineTest {
     private final static String PUSH = "Push";
     private final static String COIN = "Coin";
 
-    private StateMachine<String, String, String> fsm;
+    private StateMachine<String, String, List<String>> fsm;
 
     /**
      * <p>Создаём автомат из распространённого примера с
@@ -41,13 +42,13 @@ public class StateMachineTest {
         final Set<String> states = new HashSet<>(List.of(LOCKED, UNLOCKED));
         this.fsm = new StateMachineImpl<>(states, LOCKED);
 
-        fsm.registerTransition(new TransitionBuilder<String, String, String>()
+        fsm.registerTransition(new TransitionBuilder<String, String, List<String>>()
                 .source(LOCKED).target(LOCKED).event(PUSH).build());
-        fsm.registerTransition(new TransitionBuilder<String, String, String>()
+        fsm.registerTransition(new TransitionBuilder<String, String, List<String>>()
                 .source(LOCKED).target(UNLOCKED).event(COIN).build());
-        fsm.registerTransition(new TransitionBuilder<String, String, String>()
+        fsm.registerTransition(new TransitionBuilder<String, String, List<String>>()
                 .source(UNLOCKED).target(UNLOCKED).event(COIN).build());
-        fsm.registerTransition(new TransitionBuilder<String, String, String>()
+        fsm.registerTransition(new TransitionBuilder<String, String, List<String>>()
                 .source(UNLOCKED).target(LOCKED).event(PUSH).build());
     }
 
@@ -58,21 +59,67 @@ public class StateMachineTest {
     @Test
     @DisplayName("Корректность работы переходов")
     void testTransitions() {
-        fsm.sendEvent(COIN, "");
+        fsm.sendEvent(COIN, List.of());
         Assertions.assertEquals(UNLOCKED, fsm.getState());
 
-        fsm.sendEvent(COIN, "");
+        fsm.sendEvent(COIN, List.of());
         Assertions.assertEquals(UNLOCKED, fsm.getState());
 
-        fsm.sendEvent(PUSH, "");
+        fsm.sendEvent(PUSH, List.of());
         Assertions.assertEquals(LOCKED, fsm.getState());
 
-        fsm.sendEvent(PUSH, "");
+        fsm.sendEvent(PUSH, List.of());
         Assertions.assertEquals(LOCKED, fsm.getState());
     }
 
     /**
-     * <p>Тестируем добавление в автомат некорректно определённых переходов.</p>
+     * <p>Тестируем возникновение события, для которого нет
+     * перехода. Состояние автомата измениться не должно.</p>
+     */
+    @Test
+    @DisplayName("Событие без перехода")
+    void testUnknownEvent() {
+        final String unknownEvent = "Unknown";
+        fsm.sendEvent(unknownEvent, List.of());
+        Assertions.assertEquals(LOCKED, fsm.getState());
+    }
+
+    /**
+     * <p>Тестируем работу действий на переходах.</p>
+     *
+     * <ol>
+     *     <li>Создаём новое действие, которое будет ложить строку
+     *     "Hack" в массив строк, выступающий в роли контекста событий.</li>
+     *     <li>Добавляем переход из LOCKED в UNLOCKED под действием события Hack,
+     *     с созданным ранее действием.</li>
+     *     <li>Отправляем в автомат событие Hack.</li>
+     *     <li>Проверяем, что состояние автомата сменилось.</li>
+     *     <li>Проверяем, что действие при переходе выполнилось.</li>
+     * </ol>
+     */
+    @Test
+    @DisplayName("Действия")
+    void testActions() {
+        final String hack = "Hack";
+        final Action<List<String>> hackAction = context -> context.add(hack);
+
+        fsm.registerTransition(new TransitionBuilder<String, String, List<String>>()
+                .source(LOCKED)
+                .target(UNLOCKED)
+                .event(hack)
+                .action(hackAction)
+                .build());
+
+        final List<String> strings = new ArrayList<>();
+        fsm.sendEvent(hack, strings);
+
+        Assertions.assertEquals(UNLOCKED, fsm.getState());
+        Assertions.assertIterableEquals(List.of(hack), strings);
+    }
+
+    /**
+     * <p>Тестируем добавление в автомат некорректно определённых
+     * переходов, которые должны вызвать исключение.</p>
      *
      * <ol>
      *     <li>Исходное состояние не содержится в множестве состояний автомата.</li>
@@ -86,18 +133,20 @@ public class StateMachineTest {
 
         Assertions.assertThrows(
                 IllegalArgumentException.class,
-                () -> fsm.registerTransition(new TransitionBuilder<String, String, String>()
-                        .source(invalid)
-                        .target(LOCKED)
-                        .event(COIN)
-                        .build()));
+                () -> fsm.registerTransition(
+                        new TransitionBuilder<String, String, List<String>>()
+                                .source(invalid)
+                                .target(LOCKED)
+                                .event(COIN)
+                                .build()));
 
         Assertions.assertThrows(
                 IllegalArgumentException.class,
-                () -> fsm.registerTransition(new TransitionBuilder<String, String, String>()
-                        .source(LOCKED)
-                        .target(invalid)
-                        .event(COIN)
-                        .build()));
+                () -> fsm.registerTransition(
+                        new TransitionBuilder<String, String, List<String>>()
+                                .source(LOCKED)
+                                .target(invalid)
+                                .event(COIN)
+                                .build()));
     }
 }
