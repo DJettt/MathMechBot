@@ -28,17 +28,9 @@ import ru.urfu.mathmechbot.storages.UserEntryStorage;
 public final class StateMachineConfig {
     private final Utils utils = new Utils();
 
-    private final LocalMessage registerFirst =
-            new LocalMessage("Сперва нужно зарегистрироваться.");
-    private final LocalMessage alreadyRegistered =
-            new LocalMessage("Вы уже зарегистрированы. Пока что " +
-                    "регистрировать можно только одного человека.");
-
     private final LocalMessage tryAgain = new LocalMessage("Попробуйте снова.");
     private final LocalMessage saved = new LocalMessage("Данные сохранены.");
     private final LocalMessage cancel = new LocalMessage("Отмена...");
-    private final LocalMessage deleted = new LocalMessage("Удаляем...");
-
     private final LocalMessage help = new LocalMessage("""
             /start - начало общения с ботом
             /help - выводит команды, которые принимает бот
@@ -46,7 +38,6 @@ public final class StateMachineConfig {
             /info - информация о Вас
             /edit - изменить информацию
             /delete - удалить информацию о Вас""");
-
     private final LocalMessage fullName = new LocalMessageBuilder()
             .text("""
                     Введите свое ФИО в формате:
@@ -54,7 +45,6 @@ public final class StateMachineConfig {
                     Без дополнительных пробелов и с буквой ё, если нужно.""")
             .buttons(List.of(utils.makeBackButton()))
             .build();
-
     private final LocalMessage year = new LocalMessageBuilder()
             .text("На каком курсе Вы обучаетесь?")
             .buttons(List.of(
@@ -66,7 +56,6 @@ public final class StateMachineConfig {
                     new LocalButton("6 курс", "6"),
                     utils.makeBackButton()))
             .build();
-
     private final LocalMessage group = new LocalMessageBuilder()
             .text("Какая у Вас группа?")
             .buttons(List.of(
@@ -77,21 +66,9 @@ public final class StateMachineConfig {
                     new LocalButton("5 группа", "5"),
                     utils.makeBackButton()))
             .build();
-
     private final LocalMessage men = new LocalMessageBuilder()
             .text("Введите свою академическую группу в формате:\nМЕН-123456")
             .buttons(List.of(utils.makeBackButton()))
-            .build();
-
-    private final LocalMessage editChoose = new LocalMessageBuilder()
-            .text("Что Вы хотите изменить?")
-            .buttons(List.of(
-                    new LocalButton("ФИО", Constants.EDITING_FULL_NAME),
-                    new LocalButton("Курс", Constants.EDITING_YEAR),
-                    new LocalButton("Направление", Constants.EDITING_SPECIALITY),
-                    new LocalButton("Группа", Constants.EDITING_GROUP),
-                    new LocalButton("МЕН", Constants.EDITING_MEN),
-                    utils.makeBackButton()))
             .build();
 
     private final StateMachine<UserState, Event, EventContext> fsm;
@@ -101,7 +78,7 @@ public final class StateMachineConfig {
     /**
      * <p>Конструктор.</p>
      *
-     * @param fsm настраиваемый конечный автомат. 
+     * @param fsm     настраиваемый конечный автомат.
      * @param storage хранилище пользовательских записей,
      *                требуется для некоторых действий.
      */
@@ -124,16 +101,15 @@ public final class StateMachineConfig {
     }
 
     /**
-     * <p>Билдер объектов Transition с предустановленными типами для MathMechBot.</p>
-     */
-    private final class MMBTransitionBuilder
-            extends TransitionBuilder<UserState, Event, EventContext> {
-    }
-
-    /**
      * <p>Добавляем все переходы, действующие в рамках дефолтного состояния.</p>
      */
     private void setupDefaultTransitions() {
+        final LocalMessage registerFirst =
+                new LocalMessage("Сперва нужно зарегистрироваться.");
+        final LocalMessage alreadyRegistered =
+                new LocalMessage("Вы уже зарегистрированы. Пока что "
+                        + "регистрировать можно только одного человека.");
+
         fsm.registerTransition(new MMBTransitionBuilder()
                 .source(UserState.DEFAULT)
                 .target(UserState.DEFAULT)
@@ -211,6 +187,7 @@ public final class StateMachineConfig {
                 .source(UserState.REGISTRATION_YEAR)
                 .target(UserState.REGISTRATION_NAME)
                 .event(Event.BACK)
+                .action(new DeleteUserEntry(userEntryStorage))
                 .action(new SendConstantMessage(fullName))
                 .build());
 
@@ -312,6 +289,17 @@ public final class StateMachineConfig {
      */
     @SuppressWarnings("MethodLength")
     private void setupEditingTransitions() {
+        final LocalMessage editChoose = new LocalMessageBuilder()
+                .text("Что Вы хотите изменить?")
+                .buttons(List.of(
+                        new LocalButton("ФИО", Constants.EDITING_FULL_NAME),
+                        new LocalButton("Курс", Constants.EDITING_YEAR),
+                        new LocalButton("Направление", Constants.EDITING_SPECIALITY),
+                        new LocalButton("Группа", Constants.EDITING_GROUP),
+                        new LocalButton("МЕН", Constants.EDITING_MEN),
+                        utils.makeBackButton()))
+                .build();
+
         fsm.registerTransition(new MMBTransitionBuilder()
                 .source(UserState.DEFAULT)
                 .target(UserState.EDITING_CHOOSE)
@@ -490,6 +478,8 @@ public final class StateMachineConfig {
      * <p>Добавляем все переходы, связанные с удалением.</p>
      */
     private void setupDeletionTransitions() {
+        final LocalMessage deleted = new LocalMessage("Удаляем...");
+
         fsm.registerTransition(new MMBTransitionBuilder()
                 .source(UserState.DEFAULT)
                 .target(UserState.DELETION_CONFIRMATION)
@@ -525,5 +515,12 @@ public final class StateMachineConfig {
                 .event(Event.BACK)
                 .action(new SendConstantMessage(help))
                 .build());
+    }
+
+    /**
+     * <p>Билдер объектов Transition с предустановленными типами для MathMechBot.</p>
+     */
+    private final class MMBTransitionBuilder
+            extends TransitionBuilder<UserState, Event, EventContext> {
     }
 }

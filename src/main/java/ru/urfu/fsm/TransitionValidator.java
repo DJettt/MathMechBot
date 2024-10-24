@@ -21,7 +21,8 @@ final class TransitionValidator<S, E, C> {
      * @param fsm        автомат, для которого проверяется корректность перехода.
      */
     void validate(@NotNull Transition<S, E, C> transition,
-                  @NotNull StateMachine<S, E, C> fsm) {
+                  @NotNull StateMachine<S, E, C> fsm)
+            throws IllegalArgumentException {
 
         String name = transition.name();
         S source = transition.source();

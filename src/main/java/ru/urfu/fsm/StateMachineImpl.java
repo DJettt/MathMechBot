@@ -55,7 +55,7 @@ public class StateMachineImpl<S, E, C> implements StateMachine<S, E, C> {
     }
 
     @Override
-    public void registerTransition(@NotNull Transition<S, E, C> transition) {
+    public void registerTransition(@NotNull Transition<S, E, C> transition) throws IllegalArgumentException {
         transitionValidator.validate(transition, this);
         this.transitions.add(transition);
     }
@@ -74,6 +74,11 @@ public class StateMachineImpl<S, E, C> implements StateMachine<S, E, C> {
     @Override
     public void setState(@NotNull S state) {
         this.currentState = state;
+    }
+
+    @Override
+    public S getState() {
+        return currentState;
     }
 
     @Override

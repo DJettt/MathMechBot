@@ -11,10 +11,10 @@ import ru.urfu.mathmechbot.storages.MathMechStorage;
  * <p>Состояние логического ядра, обрабатывающее четыре возможных типа сообщения.</p>
  *
  * <ul>
- *     <li>Команда согласия -- отправляет в FSM AcceptEvent</li>
- *     <li>Команда несогласия -- отправляет в FSM DeclineEvent</li>
- *     <li>Команда назад -- отправляет в FSM BackEvent</li>
- *     <li>Всё остальное -- отправляет в FSM InvalidInputEvent</li>
+ *     <li>Команда согласия -- возвращает AcceptEvent</li>
+ *     <li>Команда несогласия -- возвращает DeclineEvent</li>
+ *     <li>Команда назад -- возвращает BackEvent</li>
+ *     <li>Всё остальное -- возвращает InvalidInputEvent</li>
  * </ul>
  */
 public final class YesNoBackHandler implements MessageHandler {

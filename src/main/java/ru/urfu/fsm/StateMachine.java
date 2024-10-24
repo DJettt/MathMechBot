@@ -7,15 +7,17 @@ import org.jetbrains.annotations.NotNull;
 /**
  * <p>Интерфейс конечного автомата.</p>
  *
- * <p>Вдохновлялся тем, что видел в документации Spring Boot,
- * но пытался сделать максимально урезанную и простую версию.</p>
- *
  * @param <E> тип событий ядра.
  * @param <S> тип пользовательского состояния.
  * @param <C> тип контекста событий, который будет
  *            использоваться при совершении действий.
  */
 public interface StateMachine<S, E, C> {
+    /*
+     * Вдохновлялся тем, что увидел в документации Spring Boot,
+     * но пытался сделать максимально урезанную и простую версию.
+     */
+
     /**
      * <p>Запустить событие в FSM.</p>
      *
@@ -30,7 +32,7 @@ public interface StateMachine<S, E, C> {
      *
      * @param transition переход.
      */
-    void registerTransition(@NotNull Transition<S, E, C> transition);
+    void registerTransition(@NotNull Transition<S, E, C> transition) throws IllegalArgumentException;
 
     /**
      * <p>Сеттер текущего состояния. Полезно, когда автомат
@@ -39,6 +41,13 @@ public interface StateMachine<S, E, C> {
      * @param state состояние, которое автомат должен принять.
      */
     void setState(@NotNull S state);
+
+    /**
+     * <p>Геттер текущего состояния.</p>
+     *
+     * @return текущее состояние.
+     */
+    S getState();
 
     /**
      * <p>Геттер всех состояний.</p>
