@@ -17,7 +17,7 @@ import ru.urfu.mathmechbot.validators.MessageValidator;
  *     <li>Команда возврата -- отправляет в FSM BackEvent.</li>
  * </ul>
  */
-public class DataCheckMessageHandler implements MMBMessageHandler {
+public class DataCheckMessageHandler implements MessageHandler {
     private final MessageValidator validator;
 
     /**

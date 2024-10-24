@@ -16,7 +16,7 @@ import ru.urfu.mathmechbot.MMBCore;
  *     <li>Всё остальное -- отправляет в FSM InvalidInputEvent</li>
  * </ul>
  */
-public final class YesNoBackHandler implements MMBMessageHandler {
+public final class YesNoBackHandler implements MessageHandler {
     @Override
     public Event processMessage(@NotNull ContextProcessMessageRequest<MMBCore> request) {
         return switch (request.message().text()) {

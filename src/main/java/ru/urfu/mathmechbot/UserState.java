@@ -4,7 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import ru.urfu.mathmechbot.messagehandlers.DataCheckMessageHandler;
 import ru.urfu.mathmechbot.messagehandlers.DefaultStateHandler;
 import ru.urfu.mathmechbot.messagehandlers.EditingChooseHandler;
-import ru.urfu.mathmechbot.messagehandlers.MMBMessageHandler;
+import ru.urfu.mathmechbot.messagehandlers.MessageHandler;
 import ru.urfu.mathmechbot.messagehandlers.SpecialtyHandler;
 import ru.urfu.mathmechbot.messagehandlers.YesNoBackHandler;
 import ru.urfu.mathmechbot.messagehandlers.YesNoHandler;
@@ -36,7 +36,7 @@ public enum UserState {
 
     DELETION_CONFIRMATION(new YesNoBackHandler());
 
-    private final MMBMessageHandler stateInstance;
+    private final MessageHandler stateInstance;
 
     /**
      * <p>Устанавливает состояние логического ядра, которое должно
@@ -44,7 +44,7 @@ public enum UserState {
      *
      * @param stateInstance состояние логического ядра.
      */
-    UserState(@NotNull MMBMessageHandler stateInstance) {
+    UserState(@NotNull MessageHandler stateInstance) {
         this.stateInstance = stateInstance;
     }
 
@@ -54,7 +54,7 @@ public enum UserState {
      * @return состояние логического ядра.
      */
     @NotNull
-    public MMBMessageHandler logicCoreState() {
+    public MessageHandler logicCoreState() {
         return stateInstance;
     }
 }

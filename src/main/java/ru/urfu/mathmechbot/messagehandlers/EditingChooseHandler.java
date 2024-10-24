@@ -9,7 +9,7 @@ import ru.urfu.mathmechbot.MMBCore;
 /**
  * <p>Состояние в котором пользователь выбирает, какую информацию он хочет изменить.</p>
  */
-public final class EditingChooseHandler implements MMBMessageHandler {
+public final class EditingChooseHandler implements MessageHandler {
     @Override
     public Event processMessage(@NotNull ContextProcessMessageRequest<MMBCore> request) {
         return switch (request.message().text()) {
