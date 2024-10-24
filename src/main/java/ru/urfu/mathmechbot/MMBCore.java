@@ -4,7 +4,6 @@ import org.jetbrains.annotations.NotNull;
 import ru.urfu.bots.Bot;
 import ru.urfu.fsm.FiniteStateMachine;
 import ru.urfu.logics.LogicCore;
-import ru.urfu.logics.localobjects.ContextProcessMessageRequest;
 import ru.urfu.logics.localobjects.LocalMessage;
 import ru.urfu.mathmechbot.models.User;
 import ru.urfu.mathmechbot.storages.MathMechStorage;
@@ -43,19 +42,11 @@ public final class MMBCore implements LogicCore {
         final UserState currentState = user.currentState();
         fsm.setState(currentState);
 
-        final Event event = currentState.logicCoreState().processMessage(
-                        new ContextProcessMessageRequest<>(this, user, message, bot));
+        final Event event = currentState
+                .logicCoreState()
+                .processMessage(storage, user, message);
 
         final EventContext context = new EventContext(user, message, bot);
         userStorage.changeUserState(user.id(), fsm.sendEvent(event, context));
-    }
-
-    /**
-     * <p>Геттер поля storage.</p>
-     *
-     * @return storage
-     */
-    public MathMechStorage getStorage() {
-        return storage;
     }
 }

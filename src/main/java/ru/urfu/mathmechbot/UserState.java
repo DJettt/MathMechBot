@@ -5,12 +5,12 @@ import ru.urfu.mathmechbot.messagehandlers.DataCheckMessageHandler;
 import ru.urfu.mathmechbot.messagehandlers.DefaultStateHandler;
 import ru.urfu.mathmechbot.messagehandlers.EditingChooseHandler;
 import ru.urfu.mathmechbot.messagehandlers.MessageHandler;
-import ru.urfu.mathmechbot.messagehandlers.SpecialtyHandler;
 import ru.urfu.mathmechbot.messagehandlers.YesNoBackHandler;
 import ru.urfu.mathmechbot.messagehandlers.YesNoHandler;
 import ru.urfu.mathmechbot.validators.FullNameValidator;
 import ru.urfu.mathmechbot.validators.GroupValidator;
 import ru.urfu.mathmechbot.validators.MenValidator;
+import ru.urfu.mathmechbot.validators.SpecialtyValidator;
 import ru.urfu.mathmechbot.validators.YearValidator;
 
 /**
@@ -21,7 +21,7 @@ public enum UserState {
 
     REGISTRATION_NAME(new DataCheckMessageHandler(new FullNameValidator())),
     REGISTRATION_YEAR(new DataCheckMessageHandler(new YearValidator())),
-    REGISTRATION_SPECIALTY(new SpecialtyHandler()),
+    REGISTRATION_SPECIALTY(new DataCheckMessageHandler(new SpecialtyValidator())),
     REGISTRATION_GROUP(new DataCheckMessageHandler(new GroupValidator())),
     REGISTRATION_MEN(new DataCheckMessageHandler(new MenValidator())),
     REGISTRATION_CONFIRMATION(new YesNoBackHandler()),
@@ -29,7 +29,7 @@ public enum UserState {
     EDITING_CHOOSE(new EditingChooseHandler()),
     EDITING_FULL_NAME(new DataCheckMessageHandler(new FullNameValidator())),
     EDITING_YEAR(new DataCheckMessageHandler(new YearValidator())),
-    EDITING_SPECIALITY(new SpecialtyHandler()),
+    EDITING_SPECIALITY(new DataCheckMessageHandler(new SpecialtyValidator())),
     EDITING_GROUP(new DataCheckMessageHandler(new GroupValidator())),
     EDITING_MEN(new DataCheckMessageHandler(new MenValidator())),
     EDITING_ADDITIONAL_EDIT(new YesNoHandler()),

@@ -2,11 +2,12 @@ package ru.urfu.mathmechbot.messagehandlers;
 
 import java.util.Optional;
 import org.jetbrains.annotations.NotNull;
-import ru.urfu.logics.localobjects.ContextProcessMessageRequest;
+import ru.urfu.logics.localobjects.LocalMessage;
 import ru.urfu.mathmechbot.Constants;
 import ru.urfu.mathmechbot.Event;
-import ru.urfu.mathmechbot.MMBCore;
+import ru.urfu.mathmechbot.models.User;
 import ru.urfu.mathmechbot.models.UserEntry;
+import ru.urfu.mathmechbot.storages.MathMechStorage;
 
 
 /**
@@ -14,14 +15,14 @@ import ru.urfu.mathmechbot.models.UserEntry;
  */
 public final class DefaultStateHandler implements MessageHandler {
     @Override
-    public Event processMessage(@NotNull ContextProcessMessageRequest<MMBCore> request) {
-        final Optional<UserEntry> userEntryOptional = request
-                .context()
-                .getStorage()
+    public Event processMessage(@NotNull MathMechStorage storage,
+                                @NotNull User user,
+                                @NotNull LocalMessage message) {
+        final Optional<UserEntry> userEntryOptional = storage
                 .getUserEntries()
-                .get(request.user().id());
+                .get(user.id());
 
-        return switch (request.message().text()) {
+        return switch (message.text()) {
             case Constants.REGISTER_COMMAND -> {
                 if (userEntryOptional.isPresent()) {
                     yield Event.ALREADY_REGISTERED;

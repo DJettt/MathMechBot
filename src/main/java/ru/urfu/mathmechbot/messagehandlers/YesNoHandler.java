@@ -1,10 +1,11 @@
 package ru.urfu.mathmechbot.messagehandlers;
 
 import org.jetbrains.annotations.NotNull;
-import ru.urfu.logics.localobjects.ContextProcessMessageRequest;
+import ru.urfu.logics.localobjects.LocalMessage;
 import ru.urfu.mathmechbot.Constants;
 import ru.urfu.mathmechbot.Event;
-import ru.urfu.mathmechbot.MMBCore;
+import ru.urfu.mathmechbot.models.User;
+import ru.urfu.mathmechbot.storages.MathMechStorage;
 
 /**
  * <p>Состояние логического ядра, обрабатывающее три возможных типа сообщения.</p>
@@ -16,8 +17,10 @@ import ru.urfu.mathmechbot.MMBCore;
  * </ul> */
 public final class YesNoHandler implements MessageHandler {
     @Override
-    public Event processMessage(@NotNull ContextProcessMessageRequest<MMBCore> request) {
-        return switch (request.message().text()) {
+    public Event processMessage(@NotNull MathMechStorage storage,
+                                @NotNull User user,
+                                @NotNull LocalMessage message) {
+        return switch (message.text()) {
             case Constants.ACCEPT_COMMAND -> Event.ACCEPT;
             case Constants.DECLINE_COMMAND -> Event.DECLINE;
             case null, default -> Event.INVALID_INPUT;

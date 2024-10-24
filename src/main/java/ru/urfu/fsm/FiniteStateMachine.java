@@ -9,12 +9,15 @@ import org.jetbrains.annotations.NotNull;
  *
  * @param <E> тип событий ядра.
  * @param <S> тип пользовательского состояния.
+ * @param <C> тип контекста событий, который будет
+ *            использоваться при совершении действий.
  */
 public interface FiniteStateMachine<S, E, C> {
     /**
      * <p>Запустить событие в FSM.</p>
      *
      * @param event событие с запросом.
+     * @param context контекст переданного события.
      * @return состояние, которое автомат принял после обработки события.
      */
     S sendEvent(@NotNull E event, @NotNull C context);

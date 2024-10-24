@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
  *
  * @param <E> тип событий, которые провоцируют переходы.
  * @param <S> тип состояний, между которыми автомат совершает переходы.
+ * @param <C> тип контекста событий, который будет
+ *            использоваться при совершении действий.
  */
 public class FiniteStateMachineImpl<S, E, C> implements FiniteStateMachine<S, E, C> {
     private final Logger logger = LoggerFactory.getLogger(FiniteStateMachineImpl.class);

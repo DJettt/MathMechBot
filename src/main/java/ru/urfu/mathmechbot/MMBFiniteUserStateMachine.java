@@ -28,6 +28,9 @@ public final class MMBFiniteUserStateMachine
 
     /**
      * <p>Конструктор.</p>
+     *
+     * @param storage хранилище пользовательских записей,
+     *                требуется для некоторых действий.
      */
     public MMBFiniteUserStateMachine(@NotNull UserEntryStorage storage) {
         super(new HashSet<>(List.of(UserState.values())), UserState.DEFAULT);

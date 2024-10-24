@@ -4,6 +4,8 @@ package ru.urfu.mathmechbot.validators;
 import java.util.regex.Pattern;
 import org.jetbrains.annotations.NotNull;
 import ru.urfu.logics.localobjects.LocalMessage;
+import ru.urfu.mathmechbot.models.User;
+import ru.urfu.mathmechbot.storages.MathMechStorage;
 
 
 /**
@@ -16,7 +18,9 @@ public final class FullNameValidator implements MessageValidator {
                     + "(\\s+[А-ЯЁ][а-яё]+)?\\s*$");
 
     @Override
-    public boolean validateMessageContent(@NotNull LocalMessage message) {
+    public boolean validateMessageContent(@NotNull MathMechStorage storage,
+                                          @NotNull User user,
+                                          @NotNull LocalMessage message) {
         if (message.text() == null) {
             return false;
         }

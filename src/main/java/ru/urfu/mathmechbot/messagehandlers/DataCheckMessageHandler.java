@@ -2,10 +2,11 @@ package ru.urfu.mathmechbot.messagehandlers;
 
 
 import org.jetbrains.annotations.NotNull;
-import ru.urfu.logics.localobjects.ContextProcessMessageRequest;
+import ru.urfu.logics.localobjects.LocalMessage;
 import ru.urfu.mathmechbot.Constants;
 import ru.urfu.mathmechbot.Event;
-import ru.urfu.mathmechbot.MMBCore;
+import ru.urfu.mathmechbot.models.User;
+import ru.urfu.mathmechbot.storages.MathMechStorage;
 import ru.urfu.mathmechbot.validators.MessageValidator;
 
 /**
@@ -31,11 +32,13 @@ public class DataCheckMessageHandler implements MessageHandler {
     }
 
     @Override
-    public Event processMessage(@NotNull ContextProcessMessageRequest<MMBCore> request) {
-        return switch (request.message().text()) {
+    public Event processMessage(@NotNull MathMechStorage storage,
+                                @NotNull User user,
+                                @NotNull LocalMessage message) {
+        return switch (message.text()) {
             case Constants.BACK_COMMAND -> Event.BACK;
             case null, default -> {
-                if (validateData(request)) {
+                if (validateData(storage, user, message)) {
                     yield Event.VALID_INPUT;
                 }
                 yield Event.INVALID_INPUT;
@@ -46,10 +49,14 @@ public class DataCheckMessageHandler implements MessageHandler {
     /**
      * <p>Проверяет корректность отправленных данных.</p>
      *
-     * @param request запрос от ядра с сообщением.
+     * @param storage хранилище пользовательских записей.
+     * @param user пользователь, для которого проверяется валидность данных.
+     * @param message сообщение с данными.
      * @return результат проверки.
      */
-    public boolean validateData(@NotNull ContextProcessMessageRequest<MMBCore> request) {
-        return validator.validateMessageContent(request.message());
+    public boolean validateData(@NotNull MathMechStorage storage,
+                                @NotNull User user,
+                                @NotNull LocalMessage message) {
+        return validator.validateMessageContent(storage, user, message);
     }
 }

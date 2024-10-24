@@ -11,7 +11,7 @@ import ru.urfu.logics.localobjects.LocalMessage;
 import ru.urfu.logics.localobjects.LocalMessageBuilder;
 import ru.urfu.mathmechbot.Constants;
 import ru.urfu.mathmechbot.EventContext;
-import ru.urfu.mathmechbot.messagehandlers.SpecialtyHandler;
+import ru.urfu.mathmechbot.Utils;
 import ru.urfu.mathmechbot.models.UserEntry;
 import ru.urfu.mathmechbot.storages.UserEntryStorage;
 
@@ -21,6 +21,7 @@ import ru.urfu.mathmechbot.storages.UserEntryStorage;
  */
 public final class AskSpecialty implements Action<EventContext> {
     private final Logger logger = LoggerFactory.getLogger(AskSpecialty.class);
+    private final Utils utils = new Utils();
     private final UserEntryStorage userEntryStorage;
 
     /**
@@ -43,8 +44,7 @@ public final class AskSpecialty implements Action<EventContext> {
 
         assert userEntry.year() != null;
 
-        // TODO: избавиться от new SpecialtyHandler()
-        final List<LocalButton> buttons = new ArrayList<>(new SpecialtyHandler()
+        final List<LocalButton> buttons = new ArrayList<>(utils
                 .getAllowedSpecialties(userEntry.year())
                 .stream()
                 .map(specialty -> {

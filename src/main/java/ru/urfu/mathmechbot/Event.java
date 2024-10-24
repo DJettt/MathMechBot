@@ -1,5 +1,8 @@
 package ru.urfu.mathmechbot;
 
+/**
+ * <p>События, возможные в FSM MathMechBot'а.</p>
+ */
 public enum Event {
     ACCEPT,
     DECLINE,
