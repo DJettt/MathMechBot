@@ -16,6 +16,7 @@ import ru.urfu.mathmechbot.storages.MathMechStorage;
  *     <li>Всё остальное -- возвращает InvalidInputEvent</li>
  * </ul> */
 public final class YesNoHandler implements MessageHandler {
+    @NotNull
     @Override
     public Event processMessage(@NotNull MathMechStorage storage,
                                 @NotNull User user,

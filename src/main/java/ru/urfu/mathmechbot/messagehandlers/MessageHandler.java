@@ -25,10 +25,11 @@ public interface MessageHandler {
      * сейчас находится пользователь.</p>
      *
      * @param storage хранилище пользовательских записей.
-     * @param user пользователь, для которого обрабатывается сообщение.
+     * @param user    пользователь, для которого обрабатывается сообщение.
      * @param message сообщение с данными.
      * @return событие для FSM.
      */
+    @NotNull
     Event processMessage(@NotNull MathMechStorage storage,
                          @NotNull User user,
                          @NotNull LocalMessage message);

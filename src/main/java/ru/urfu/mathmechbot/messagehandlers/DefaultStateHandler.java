@@ -18,6 +18,7 @@ public final class DefaultStateHandler implements MessageHandler {
     public final static String EDIT_COMMAND = "/edit";
     public final static String DELETE_COMMAND = "/delete";
 
+    @NotNull
     @Override
     public Event processMessage(@NotNull MathMechStorage storage,
                                 @NotNull User user,

@@ -31,6 +31,7 @@ public final class DataCheckMessageHandler implements MessageHandler {
         this.validator = validator;
     }
 
+    @NotNull
     @Override
     public Event processMessage(@NotNull MathMechStorage storage,
                                 @NotNull User user,

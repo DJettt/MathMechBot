@@ -36,6 +36,7 @@ public class StateMachineImpl<S, E, C> implements StateMachine<S, E, C> {
         transitionValidator = new TransitionValidator<>();
     }
 
+    @NotNull
     @Override
     public synchronized S sendEvent(@NotNull E event, @NotNull C context) {
         for (final Transition<S, E, C> transition : transitions) {
@@ -76,6 +77,7 @@ public class StateMachineImpl<S, E, C> implements StateMachine<S, E, C> {
         this.currentState = state;
     }
 
+    @NotNull
     @Override
     public S getState() {
         return currentState;

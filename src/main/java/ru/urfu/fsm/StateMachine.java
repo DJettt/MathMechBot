@@ -16,6 +16,7 @@ public interface StateMachine<S, E, C> {
     /*
      * Вдохновлялся тем, что увидел в документации Spring Boot,
      * но пытался сделать максимально урезанную и простую версию.
+     * Реализацию адаптировал из org.jeasy.easy-states.
      */
 
     /**
@@ -25,6 +26,7 @@ public interface StateMachine<S, E, C> {
      * @param context контекст переданного события.
      * @return состояние, которое автомат принял после обработки события.
      */
+    @NotNull
     S sendEvent(@NotNull E event, @NotNull C context);
 
     /**
@@ -47,6 +49,7 @@ public interface StateMachine<S, E, C> {
      *
      * @return текущее состояние.
      */
+    @NotNull
     S getState();
 
     /**

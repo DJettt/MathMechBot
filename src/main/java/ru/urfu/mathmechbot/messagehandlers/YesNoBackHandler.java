@@ -18,6 +18,7 @@ import ru.urfu.mathmechbot.storages.MathMechStorage;
  * </ul>
  */
 public final class YesNoBackHandler implements MessageHandler {
+    @NotNull
     @Override
     public Event processMessage(@NotNull MathMechStorage storage,
                                 @NotNull User user,

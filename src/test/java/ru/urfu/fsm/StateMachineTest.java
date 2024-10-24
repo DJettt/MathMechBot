@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
  * <p>Тесты для конечного автомата.</p>
  */
 @DisplayName("Конечный автомат")
-public class StateMachineTest {
+public final class StateMachineTest {
     private final static String LOCKED = "Locked";
     private final static String UNLOCKED = "Unlocked";
     private final static String PUSH = "Push";
