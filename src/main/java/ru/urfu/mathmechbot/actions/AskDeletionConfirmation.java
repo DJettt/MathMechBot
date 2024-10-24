@@ -16,6 +16,7 @@ import ru.urfu.mathmechbot.storages.UserEntryStorage;
 public final class AskDeletionConfirmation implements MMBAction {
     private final Logger logger = LoggerFactory.getLogger(AskDeletionConfirmation.class);
     private final Utils utils = new Utils();
+
     private final UserEntryStorage userEntryStorage;
 
     /**

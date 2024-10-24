@@ -49,7 +49,7 @@ public final class MMBCore implements LogicCore {
         fsm.setState(currentState);
 
         final Event event = currentState
-                .logicCoreState()
+                .messageHandler()
                 .processMessage(storage, user, message);
 
         final EventContext context = new EventContext(user, message, bot);

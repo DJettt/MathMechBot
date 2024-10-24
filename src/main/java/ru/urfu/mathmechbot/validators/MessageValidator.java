@@ -8,6 +8,9 @@ import ru.urfu.mathmechbot.storages.MathMechStorage;
 /**
  * <p>Валидатор сообщений: проверяет, содержит
  * ли сообщение корректные данные.</p>
+ *
+ * <p><b>Ответственность</b>: исключительно проверить
+ * содержимое сообщения на валидность.</p>
  */
 public interface MessageValidator {
     /**

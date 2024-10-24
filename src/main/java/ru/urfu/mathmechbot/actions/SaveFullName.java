@@ -13,6 +13,7 @@ import ru.urfu.mathmechbot.storages.UserEntryStorage;
  */
 public final class SaveFullName implements Action<EventContext> {
     private final static int NUMBER_OF_WORDS_IN_FULL_NAME_WITH_PATRONYM = 3;
+
     private final UserEntryStorage userEntryStorage;
 
     /**

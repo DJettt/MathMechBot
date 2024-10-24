@@ -36,25 +36,25 @@ public enum UserState {
 
     DELETION_CONFIRMATION(new YesNoBackHandler());
 
-    private final MessageHandler stateInstance;
+    private final MessageHandler messageHandler;
 
     /**
-     * <p>Устанавливает состояние логического ядра, которое должно
-     * обрабатывать сообщения от пользователя в данном состоянии.</p>
+     * <p>Устанавливает обработчик сообщений, которое будет обрабатывать
+     * сообщения от пользователя в данном состоянии.</p>
      *
-     * @param stateInstance состояние логического ядра.
+     * @param messageHandler обработчик сообщений.
      */
-    UserState(@NotNull MessageHandler stateInstance) {
-        this.stateInstance = stateInstance;
+    UserState(@NotNull MessageHandler messageHandler) {
+        this.messageHandler = messageHandler;
     }
 
     /**
-     * <p>Возвращает состояние логического ядра, обрабатывающее данное состояние.</p>
+     * <p>Возвращает обработчик сообщений данного состояния.</p>
      *
-     * @return состояние логического ядра.
+     * @return обработчик сообщений.
      */
     @NotNull
-    public MessageHandler logicCoreState() {
-        return stateInstance;
+    public MessageHandler messageHandler() {
+        return messageHandler;
     }
 }

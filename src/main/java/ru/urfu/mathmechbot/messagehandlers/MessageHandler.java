@@ -8,6 +8,9 @@ import ru.urfu.mathmechbot.storages.MathMechStorage;
 
 /**
  * <p>Интерфейс обработчика сообщений для MathMechBot.</p>
+ *
+ * <p><b>Ответственность</b>: создать событие для FSM,
+ * основываясь на полученном сообщении.</p>
  */
 public interface MessageHandler {
     /**

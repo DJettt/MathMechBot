@@ -21,6 +21,7 @@ import ru.urfu.mathmechbot.storages.UserEntryStorage;
 public final class AskSpecialty implements Action<EventContext> {
     private final Logger logger = LoggerFactory.getLogger(AskSpecialty.class);
     private final Utils utils = new Utils();
+
     private final UserEntryStorage userEntryStorage;
 
     /**

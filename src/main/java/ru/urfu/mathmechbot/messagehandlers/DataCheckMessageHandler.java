@@ -38,25 +38,11 @@ public final class DataCheckMessageHandler implements MessageHandler {
         return switch (message.text()) {
             case Constants.BACK_COMMAND -> Event.BACK;
             case null, default -> {
-                if (validateData(storage, user, message)) {
+                if (validator.validateMessageContent(storage, user, message)) {
                     yield Event.VALID_INPUT;
                 }
                 yield Event.INVALID_INPUT;
             }
         };
-    }
-
-    /**
-     * <p>Проверяет корректность отправленных данных.</p>
-     *
-     * @param storage хранилище пользовательских записей.
-     * @param user пользователь, для которого проверяется валидность данных.
-     * @param message сообщение с данными.
-     * @return результат проверки.
-     */
-    public boolean validateData(@NotNull MathMechStorage storage,
-                                @NotNull User user,
-                                @NotNull LocalMessage message) {
-        return validator.validateMessageContent(storage, user, message);
     }
 }
