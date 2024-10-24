@@ -1,4 +1,4 @@
-package ru.urfu.logics.mathmechbot;
+package ru.urfu.mathmechbot;
 
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
@@ -8,11 +8,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
-import ru.urfu.logics.DummyBot;
 import ru.urfu.logics.localobjects.LocalButton;
 import ru.urfu.logics.localobjects.LocalMessage;
 import ru.urfu.logics.localobjects.LocalMessageBuilder;
-import ru.urfu.mathmechbot.MMBCore;
 import ru.urfu.mathmechbot.storages.MathMechStorage;
 
 /**

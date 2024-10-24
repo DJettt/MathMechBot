@@ -1,4 +1,4 @@
-package ru.urfu.logics;
+package ru.urfu.mathmechbot;
 
 import java.util.ArrayList;
 import java.util.List;

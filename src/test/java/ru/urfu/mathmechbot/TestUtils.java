@@ -1,12 +1,10 @@
-package ru.urfu.logics.mathmechbot;
+package ru.urfu.mathmechbot;
 
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
-import ru.urfu.logics.DummyBot;
 import ru.urfu.logics.LogicCore;
 import ru.urfu.logics.localobjects.LocalMessage;
 import ru.urfu.logics.localobjects.LocalMessageBuilder;
-import ru.urfu.mathmechbot.MMBCore;
 
 /**
  * Утилиты для тестирования матмех бота. В идеале должен быть статичным.
