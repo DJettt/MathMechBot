@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
  * @param <C> тип контекста событий, который будет
  *            использоваться при совершении действий.
  */
-public interface FiniteStateMachine<S, E, C> {
+public interface StateMachine<S, E, C> {
     /**
      * <p>Запустить событие в FSM.</p>
      *
@@ -21,6 +21,13 @@ public interface FiniteStateMachine<S, E, C> {
      * @return состояние, которое автомат принял после обработки события.
      */
     S sendEvent(@NotNull E event, @NotNull C context);
+
+    /**
+     * <p>Зарегистрировать переход между состояниями.</p>
+     *
+     * @param transition переход.
+     */
+    void registerTransition(@NotNull Transition<S, E, C> transition);
 
     /**
      * <p>Сеттер текущего состояния. Полезно, когда автомат

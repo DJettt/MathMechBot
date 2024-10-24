@@ -15,8 +15,8 @@ import org.slf4j.LoggerFactory;
  * @param <C> тип контекста событий, который будет
  *            использоваться при совершении действий.
  */
-public class FiniteStateMachineImpl<S, E, C> implements FiniteStateMachine<S, E, C> {
-    private final Logger logger = LoggerFactory.getLogger(FiniteStateMachineImpl.class);
+public class StateMachineImpl<S, E, C> implements StateMachine<S, E, C> {
+    private final Logger logger = LoggerFactory.getLogger(StateMachineImpl.class);
 
     private final TransitionValidator<S, E, C> transitionValidator;
     private final Set<S> states;
@@ -29,7 +29,7 @@ public class FiniteStateMachineImpl<S, E, C> implements FiniteStateMachine<S, E,
      * @param states       набор состояний.
      * @param initialState изначальное состояние.
      */
-    public FiniteStateMachineImpl(@NotNull Set<S> states, @NotNull S initialState) {
+    public StateMachineImpl(@NotNull Set<S> states, @NotNull S initialState) {
         currentState = initialState;
         this.states = states;
         transitions = new HashSet<>();
@@ -54,11 +54,7 @@ public class FiniteStateMachineImpl<S, E, C> implements FiniteStateMachine<S, E,
         return currentState;
     }
 
-    /**
-     * <p>Зарегистрировать переход между состояниями.</p>
-     *
-     * @param transition переход.
-     */
+    @Override
     public void registerTransition(@NotNull Transition<S, E, C> transition) {
         transitionValidator.validate(transition, this);
         this.transitions.add(transition);

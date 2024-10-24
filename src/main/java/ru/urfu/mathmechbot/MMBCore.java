@@ -1,8 +1,11 @@
 package ru.urfu.mathmechbot;
 
+import java.util.HashSet;
+import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import ru.urfu.bots.Bot;
-import ru.urfu.fsm.FiniteStateMachine;
+import ru.urfu.fsm.StateMachine;
+import ru.urfu.fsm.StateMachineImpl;
 import ru.urfu.logics.LogicCore;
 import ru.urfu.logics.localobjects.LocalMessage;
 import ru.urfu.mathmechbot.models.User;
@@ -16,7 +19,7 @@ import ru.urfu.mathmechbot.storages.UserStorage;
  */
 public final class MMBCore implements LogicCore {
     private final MathMechStorage storage;
-    private final FiniteStateMachine<UserState, Event, EventContext> fsm;
+    private final StateMachine<UserState, Event, EventContext> fsm;
 
     /**
      * <p>Конструктор.</p>
@@ -25,7 +28,10 @@ public final class MMBCore implements LogicCore {
      */
     public MMBCore(@NotNull MathMechStorage storage) {
         this.storage = storage;
-        this.fsm = new MMBFiniteUserStateMachine(storage.getUserEntries());
+        this.fsm = new StateMachineImpl<>(
+                new HashSet<>(List.of(UserState.values())),
+                UserState.DEFAULT);
+        new StateMachineConfig(this.fsm, this.storage.getUserEntries()).configure();
     }
 
     @Override
