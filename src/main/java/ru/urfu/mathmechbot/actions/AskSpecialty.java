@@ -9,7 +9,6 @@ import ru.urfu.fsm.Action;
 import ru.urfu.logics.localobjects.LocalButton;
 import ru.urfu.logics.localobjects.LocalMessage;
 import ru.urfu.logics.localobjects.LocalMessageBuilder;
-import ru.urfu.mathmechbot.Constants;
 import ru.urfu.mathmechbot.EventContext;
 import ru.urfu.mathmechbot.Utils;
 import ru.urfu.mathmechbot.models.UserEntry;
@@ -53,7 +52,7 @@ public final class AskSpecialty implements Action<EventContext> {
                 })
                 .toList());
 
-        buttons.add(Constants.BACK_BUTTON);
+        buttons.add(utils.makeBackButton());
 
         final LocalMessage message = new LocalMessageBuilder()
                 .text("""

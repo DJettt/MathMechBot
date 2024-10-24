@@ -3,7 +3,6 @@ package ru.urfu.mathmechbot.messagehandlers;
 import java.util.Optional;
 import org.jetbrains.annotations.NotNull;
 import ru.urfu.logics.localobjects.LocalMessage;
-import ru.urfu.mathmechbot.Constants;
 import ru.urfu.mathmechbot.Event;
 import ru.urfu.mathmechbot.models.User;
 import ru.urfu.mathmechbot.models.UserEntry;
@@ -14,6 +13,11 @@ import ru.urfu.mathmechbot.storages.MathMechStorage;
  * <p>Состояние, в котором изначально пребывает пользователь.</p>
  */
 public final class DefaultStateHandler implements MessageHandler {
+    public final static String REGISTER_COMMAND = "/register";
+    public final static String INFO_COMMAND = "/info";
+    public final static String EDIT_COMMAND = "/edit";
+    public final static String DELETE_COMMAND = "/delete";
+
     @Override
     public Event processMessage(@NotNull MathMechStorage storage,
                                 @NotNull User user,
@@ -23,28 +27,28 @@ public final class DefaultStateHandler implements MessageHandler {
                 .get(user.id());
 
         return switch (message.text()) {
-            case Constants.REGISTER_COMMAND -> {
+            case REGISTER_COMMAND -> {
                 if (userEntryOptional.isPresent()) {
                     yield Event.ALREADY_REGISTERED;
                 } else {
                     yield Event.REGISTER;
                 }
             }
-            case Constants.INFO_COMMAND -> {
+            case INFO_COMMAND -> {
                 if (userEntryOptional.isPresent()) {
                     yield Event.INFO;
                 } else {
                     yield Event.NOT_REGISTERED;
                 }
             }
-            case Constants.DELETE_COMMAND -> {
+            case DELETE_COMMAND -> {
                 if (userEntryOptional.isPresent()) {
                     yield Event.DELETE;
                 } else {
                     yield Event.NOT_REGISTERED;
                 }
             }
-            case Constants.EDIT_COMMAND -> {
+            case EDIT_COMMAND -> {
                 if (userEntryOptional.isPresent()) {
                     yield Event.EDIT;
                 } else {

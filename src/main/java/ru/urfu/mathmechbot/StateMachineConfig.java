@@ -1,8 +1,12 @@
 package ru.urfu.mathmechbot;
 
+import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import ru.urfu.fsm.StateMachine;
 import ru.urfu.fsm.TransitionBuilder;
+import ru.urfu.logics.localobjects.LocalButton;
+import ru.urfu.logics.localobjects.LocalMessage;
+import ru.urfu.logics.localobjects.LocalMessageBuilder;
 import ru.urfu.mathmechbot.actions.AskDeletionConfirmation;
 import ru.urfu.mathmechbot.actions.AskRegistrationConfirmation;
 import ru.urfu.mathmechbot.actions.AskSpecialty;
@@ -22,15 +26,76 @@ import ru.urfu.mathmechbot.storages.UserEntryStorage;
  * <p>FSM, настроенный для работы с MathMechBot.</p>
  */
 public final class StateMachineConfig {
+    private final Utils utils = new Utils();
+
+    private final LocalMessage registerFirst =
+            new LocalMessage("Сперва нужно зарегистрироваться.");
+    private final LocalMessage alreadyRegistered =
+            new LocalMessage("Вы уже зарегистрированы. Пока что " +
+                    "регистрировать можно только одного человека.");
+
+    private final LocalMessage tryAgain = new LocalMessage("Попробуйте снова.");
+    private final LocalMessage saved = new LocalMessage("Данные сохранены.");
+    private final LocalMessage cancel = new LocalMessage("Отмена...");
+    private final LocalMessage deleted = new LocalMessage("Удаляем...");
+
+    private final LocalMessage help = new LocalMessage("""
+            /start - начало общения с ботом
+            /help - выводит команды, которые принимает бот
+            /register - регистрация
+            /info - информация о Вас
+            /edit - изменить информацию
+            /delete - удалить информацию о Вас""");
+
+    private final LocalMessage fullName = new LocalMessageBuilder()
+            .text("""
+                    Введите свое ФИО в формате:
+                    Иванов Артём Иванович
+                    Без дополнительных пробелов и с буквой ё, если нужно.""")
+            .buttons(List.of(utils.makeBackButton()))
+            .build();
+
+    private final LocalMessage year = new LocalMessageBuilder()
+            .text("На каком курсе Вы обучаетесь?")
+            .buttons(List.of(
+                    new LocalButton("1 курс", "1"),
+                    new LocalButton("2 курс", "2"),
+                    new LocalButton("3 курс", "3"),
+                    new LocalButton("4 курс", "4"),
+                    new LocalButton("5 курс", "5"),
+                    new LocalButton("6 курс", "6"),
+                    utils.makeBackButton()))
+            .build();
+
+    private final LocalMessage group = new LocalMessageBuilder()
+            .text("Какая у Вас группа?")
+            .buttons(List.of(
+                    new LocalButton("1 группа", "1"),
+                    new LocalButton("2 группа", "2"),
+                    new LocalButton("3 группа", "3"),
+                    new LocalButton("4 группа", "4"),
+                    new LocalButton("5 группа", "5"),
+                    utils.makeBackButton()))
+            .build();
+
+    private final LocalMessage men = new LocalMessageBuilder()
+            .text("Введите свою академическую группу в формате:\nМЕН-123456")
+            .buttons(List.of(utils.makeBackButton()))
+            .build();
+
+    private final LocalMessage editChoose = new LocalMessageBuilder()
+            .text("Что Вы хотите изменить?")
+            .buttons(List.of(
+                    new LocalButton("ФИО", Constants.EDITING_FULL_NAME),
+                    new LocalButton("Курс", Constants.EDITING_YEAR),
+                    new LocalButton("Направление", Constants.EDITING_SPECIALITY),
+                    new LocalButton("Группа", Constants.EDITING_GROUP),
+                    new LocalButton("МЕН", Constants.EDITING_MEN),
+                    utils.makeBackButton()))
+            .build();
+
     private final StateMachine<UserState, Event, EventContext> fsm;
     private final UserEntryStorage userEntryStorage;
-
-    /**
-     * <p>Билдер объектов Transition с предустановленными типами для MathMechBot.</p>
-     */
-    private final class MMBTransitionBuilder
-            extends TransitionBuilder<UserState, Event, EventContext> {
-    }
 
 
     /**
@@ -59,6 +124,13 @@ public final class StateMachineConfig {
     }
 
     /**
+     * <p>Билдер объектов Transition с предустановленными типами для MathMechBot.</p>
+     */
+    private final class MMBTransitionBuilder
+            extends TransitionBuilder<UserState, Event, EventContext> {
+    }
+
+    /**
      * <p>Добавляем все переходы, действующие в рамках дефолтного состояния.</p>
      */
     private void setupDefaultTransitions() {
@@ -66,19 +138,19 @@ public final class StateMachineConfig {
                 .source(UserState.DEFAULT)
                 .target(UserState.DEFAULT)
                 .event(Event.HELP)
-                .action(new SendConstantMessage(Constants.HELP))
+                .action(new SendConstantMessage(help))
                 .build());
         fsm.registerTransition(new MMBTransitionBuilder()
                 .source(UserState.DEFAULT)
                 .target(UserState.DEFAULT)
                 .event(Event.ALREADY_REGISTERED)
-                .action(new SendConstantMessage(Constants.ALREADY_REGISTERED))
+                .action(new SendConstantMessage(alreadyRegistered))
                 .build());
         fsm.registerTransition(new MMBTransitionBuilder()
                 .source(UserState.DEFAULT)
                 .target(UserState.DEFAULT)
                 .event(Event.NOT_REGISTERED)
-                .action(new SendConstantMessage(Constants.REGISTER_FIRST))
+                .action(new SendConstantMessage(registerFirst))
                 .build());
         fsm.registerTransition(new MMBTransitionBuilder()
                 .source(UserState.DEFAULT)
@@ -96,7 +168,7 @@ public final class StateMachineConfig {
                 .source(UserState.DEFAULT)
                 .target(UserState.REGISTRATION_NAME)
                 .event(Event.REGISTER)
-                .action(new SendConstantMessage(Constants.FULL_NAME))
+                .action(new SendConstantMessage(fullName))
                 .build());
 
         fsm.registerTransition(new MMBTransitionBuilder()
@@ -105,20 +177,20 @@ public final class StateMachineConfig {
                 .event(Event.VALID_INPUT)
                 .action(new CreateUserEntry(userEntryStorage))
                 .action(new SaveFullName(userEntryStorage))
-                .action(new SendConstantMessage(Constants.YEAR))
+                .action(new SendConstantMessage(year))
                 .build());
         fsm.registerTransition(new MMBTransitionBuilder()
                 .source(UserState.REGISTRATION_NAME)
                 .target(UserState.REGISTRATION_NAME)
                 .event(Event.INVALID_INPUT)
-                .action(new SendConstantMessage(Constants.TRY_AGAIN))
+                .action(new SendConstantMessage(tryAgain))
                 .build());
         fsm.registerTransition(new MMBTransitionBuilder()
                 .source(UserState.REGISTRATION_NAME)
                 .target(UserState.DEFAULT)
                 .event(Event.BACK)
                 .action(new DeleteUserEntry(userEntryStorage))
-                .action(new SendConstantMessage(Constants.HELP))
+                .action(new SendConstantMessage(help))
                 .build());
 
         fsm.registerTransition(new MMBTransitionBuilder()
@@ -132,14 +204,14 @@ public final class StateMachineConfig {
                 .source(UserState.REGISTRATION_YEAR)
                 .target(UserState.REGISTRATION_YEAR)
                 .event(Event.INVALID_INPUT)
-                .action(new SendConstantMessage(Constants.TRY_AGAIN))
-                .action(new SendConstantMessage(Constants.YEAR))
+                .action(new SendConstantMessage(tryAgain))
+                .action(new SendConstantMessage(year))
                 .build());
         fsm.registerTransition(new MMBTransitionBuilder()
                 .source(UserState.REGISTRATION_YEAR)
                 .target(UserState.REGISTRATION_NAME)
                 .event(Event.BACK)
-                .action(new SendConstantMessage(Constants.FULL_NAME))
+                .action(new SendConstantMessage(fullName))
                 .build());
 
         fsm.registerTransition(new MMBTransitionBuilder()
@@ -147,20 +219,20 @@ public final class StateMachineConfig {
                 .target(UserState.REGISTRATION_GROUP)
                 .event(Event.VALID_INPUT)
                 .action(new SaveSpecialty(userEntryStorage))
-                .action(new SendConstantMessage(Constants.GROUP))
+                .action(new SendConstantMessage(group))
                 .build());
         fsm.registerTransition(new MMBTransitionBuilder()
                 .source(UserState.REGISTRATION_SPECIALTY)
                 .target(UserState.REGISTRATION_SPECIALTY)
                 .event(Event.INVALID_INPUT)
-                .action(new SendConstantMessage(Constants.TRY_AGAIN))
+                .action(new SendConstantMessage(tryAgain))
                 .action(new AskSpecialty(userEntryStorage))
                 .build());
         fsm.registerTransition(new MMBTransitionBuilder()
                 .source(UserState.REGISTRATION_SPECIALTY)
                 .target(UserState.REGISTRATION_YEAR)
                 .event(Event.BACK)
-                .action(new SendConstantMessage(Constants.YEAR))
+                .action(new SendConstantMessage(year))
                 .build());
 
         fsm.registerTransition(new MMBTransitionBuilder()
@@ -168,14 +240,14 @@ public final class StateMachineConfig {
                 .target(UserState.REGISTRATION_MEN)
                 .event(Event.VALID_INPUT)
                 .action(new SaveGroup(userEntryStorage))
-                .action(new SendConstantMessage(Constants.MEN))
+                .action(new SendConstantMessage(men))
                 .build());
         fsm.registerTransition(new MMBTransitionBuilder()
                 .source(UserState.REGISTRATION_GROUP)
                 .target(UserState.REGISTRATION_GROUP)
                 .event(Event.INVALID_INPUT)
-                .action(new SendConstantMessage(Constants.TRY_AGAIN))
-                .action(new SendConstantMessage(Constants.GROUP))
+                .action(new SendConstantMessage(tryAgain))
+                .action(new SendConstantMessage(group))
                 .build());
         fsm.registerTransition(new MMBTransitionBuilder()
                 .source(UserState.REGISTRATION_GROUP)
@@ -195,42 +267,42 @@ public final class StateMachineConfig {
                 .source(UserState.REGISTRATION_MEN)
                 .target(UserState.REGISTRATION_MEN)
                 .event(Event.INVALID_INPUT)
-                .action(new SendConstantMessage(Constants.TRY_AGAIN))
+                .action(new SendConstantMessage(tryAgain))
                 .build());
         fsm.registerTransition(new MMBTransitionBuilder()
                 .source(UserState.REGISTRATION_MEN)
                 .target(UserState.REGISTRATION_GROUP)
                 .event(Event.BACK)
-                .action(new SendConstantMessage(Constants.GROUP))
+                .action(new SendConstantMessage(group))
                 .build());
 
         fsm.registerTransition(new MMBTransitionBuilder()
                 .source(UserState.REGISTRATION_CONFIRMATION)
                 .target(UserState.DEFAULT)
                 .event(Event.ACCEPT)
-                .action(new SendConstantMessage(Constants.SAVED))
-                .action(new SendConstantMessage(Constants.HELP))
+                .action(new SendConstantMessage(saved))
+                .action(new SendConstantMessage(help))
                 .build());
         fsm.registerTransition(new MMBTransitionBuilder()
                 .source(UserState.REGISTRATION_CONFIRMATION)
                 .target(UserState.DEFAULT)
                 .event(Event.DECLINE)
                 .action(new DeleteUserEntry(userEntryStorage))
-                .action(new SendConstantMessage(Constants.CANCEL))
-                .action(new SendConstantMessage(Constants.HELP))
+                .action(new SendConstantMessage(cancel))
+                .action(new SendConstantMessage(help))
                 .build());
         fsm.registerTransition(new MMBTransitionBuilder()
                 .source(UserState.REGISTRATION_CONFIRMATION)
                 .target(UserState.REGISTRATION_CONFIRMATION)
                 .event(Event.INVALID_INPUT)
-                .action(new SendConstantMessage(Constants.TRY_AGAIN))
+                .action(new SendConstantMessage(tryAgain))
                 .action(new AskRegistrationConfirmation(userEntryStorage))
                 .build());
         fsm.registerTransition(new MMBTransitionBuilder()
                 .source(UserState.REGISTRATION_CONFIRMATION)
                 .target(UserState.REGISTRATION_MEN)
                 .event(Event.BACK)
-                .action(new SendConstantMessage(Constants.MEN))
+                .action(new SendConstantMessage(men))
                 .build());
     }
 
@@ -244,26 +316,26 @@ public final class StateMachineConfig {
                 .source(UserState.DEFAULT)
                 .target(UserState.EDITING_CHOOSE)
                 .event(Event.EDIT)
-                .action(new SendConstantMessage(Constants.EDIT_CHOOSE))
+                .action(new SendConstantMessage(editChoose))
                 .build());
 
         fsm.registerTransition(new MMBTransitionBuilder()
                 .source(UserState.EDITING_CHOOSE)
                 .target(UserState.DEFAULT)
                 .event(Event.BACK)
-                .action(new SendConstantMessage(Constants.HELP))
+                .action(new SendConstantMessage(help))
                 .build());
         fsm.registerTransition(new MMBTransitionBuilder()
                 .source(UserState.EDITING_CHOOSE)
                 .target(UserState.EDITING_FULL_NAME)
                 .event(Event.FULL_NAME_CHOSEN)
-                .action(new SendConstantMessage(Constants.FULL_NAME))
+                .action(new SendConstantMessage(fullName))
                 .build());
         fsm.registerTransition(new MMBTransitionBuilder()
                 .source(UserState.EDITING_CHOOSE)
                 .target(UserState.EDITING_YEAR)
                 .event(Event.YEAR_CHOSEN)
-                .action(new SendConstantMessage(Constants.YEAR))
+                .action(new SendConstantMessage(year))
                 .build());
         fsm.registerTransition(new MMBTransitionBuilder()
                 .source(UserState.EDITING_CHOOSE)
@@ -275,19 +347,19 @@ public final class StateMachineConfig {
                 .source(UserState.EDITING_CHOOSE)
                 .target(UserState.EDITING_GROUP)
                 .event(Event.GROUP_CHOSEN)
-                .action(new SendConstantMessage(Constants.GROUP))
+                .action(new SendConstantMessage(group))
                 .build());
         fsm.registerTransition(new MMBTransitionBuilder()
                 .source(UserState.EDITING_CHOOSE)
                 .target(UserState.EDITING_MEN)
                 .event(Event.MEN_CHOSEN)
-                .action(new SendConstantMessage(Constants.MEN))
+                .action(new SendConstantMessage(men))
                 .build());
         fsm.registerTransition(new MMBTransitionBuilder()
                 .source(UserState.EDITING_CHOOSE)
                 .target(UserState.EDITING_CHOOSE)
                 .event(Event.INVALID_INPUT)
-                .action(new SendConstantMessage(Constants.TRY_AGAIN))
+                .action(new SendConstantMessage(tryAgain))
                 .build());
 
         fsm.registerTransition(new MMBTransitionBuilder()
@@ -301,13 +373,13 @@ public final class StateMachineConfig {
                 .source(UserState.EDITING_FULL_NAME)
                 .target(UserState.EDITING_FULL_NAME)
                 .event(Event.INVALID_INPUT)
-                .action(new SendConstantMessage(Constants.TRY_AGAIN))
+                .action(new SendConstantMessage(tryAgain))
                 .build());
         fsm.registerTransition(new MMBTransitionBuilder()
                 .source(UserState.EDITING_FULL_NAME)
                 .target(UserState.EDITING_CHOOSE)
                 .event(Event.BACK)
-                .action(new SendConstantMessage(Constants.EDIT_CHOOSE))
+                .action(new SendConstantMessage(editChoose))
                 .build());
 
         fsm.registerTransition(new MMBTransitionBuilder()
@@ -321,14 +393,14 @@ public final class StateMachineConfig {
                 .source(UserState.EDITING_YEAR)
                 .target(UserState.EDITING_YEAR)
                 .event(Event.INVALID_INPUT)
-                .action(new SendConstantMessage(Constants.TRY_AGAIN))
-                .action(new SendConstantMessage(Constants.YEAR))
+                .action(new SendConstantMessage(tryAgain))
+                .action(new SendConstantMessage(year))
                 .build());
         fsm.registerTransition(new MMBTransitionBuilder()
                 .source(UserState.EDITING_YEAR)
                 .target(UserState.EDITING_CHOOSE)
                 .event(Event.BACK)
-                .action(new SendConstantMessage(Constants.EDIT_CHOOSE))
+                .action(new SendConstantMessage(editChoose))
                 .build());
 
         fsm.registerTransition(new MMBTransitionBuilder()
@@ -342,14 +414,14 @@ public final class StateMachineConfig {
                 .source(UserState.EDITING_SPECIALITY)
                 .target(UserState.EDITING_SPECIALITY)
                 .event(Event.INVALID_INPUT)
-                .action(new SendConstantMessage(Constants.TRY_AGAIN))
+                .action(new SendConstantMessage(tryAgain))
                 .action(new AskSpecialty(userEntryStorage))
                 .build());
         fsm.registerTransition(new MMBTransitionBuilder()
                 .source(UserState.EDITING_SPECIALITY)
                 .target(UserState.EDITING_CHOOSE)
                 .event(Event.BACK)
-                .action(new SendConstantMessage(Constants.EDIT_CHOOSE))
+                .action(new SendConstantMessage(editChoose))
                 .build());
 
         fsm.registerTransition(new MMBTransitionBuilder()
@@ -363,14 +435,14 @@ public final class StateMachineConfig {
                 .source(UserState.EDITING_GROUP)
                 .target(UserState.EDITING_GROUP)
                 .event(Event.INVALID_INPUT)
-                .action(new SendConstantMessage(Constants.TRY_AGAIN))
-                .action(new SendConstantMessage(Constants.GROUP))
+                .action(new SendConstantMessage(tryAgain))
+                .action(new SendConstantMessage(group))
                 .build());
         fsm.registerTransition(new MMBTransitionBuilder()
                 .source(UserState.EDITING_GROUP)
                 .target(UserState.EDITING_CHOOSE)
                 .event(Event.BACK)
-                .action(new SendConstantMessage(Constants.EDIT_CHOOSE))
+                .action(new SendConstantMessage(editChoose))
                 .build());
 
         fsm.registerTransition(new MMBTransitionBuilder()
@@ -384,33 +456,33 @@ public final class StateMachineConfig {
                 .source(UserState.EDITING_MEN)
                 .target(UserState.EDITING_MEN)
                 .event(Event.INVALID_INPUT)
-                .action(new SendConstantMessage(Constants.TRY_AGAIN))
+                .action(new SendConstantMessage(tryAgain))
                 .build());
         fsm.registerTransition(new MMBTransitionBuilder()
                 .source(UserState.EDITING_MEN)
                 .target(UserState.EDITING_CHOOSE)
                 .event(Event.BACK)
-                .action(new SendConstantMessage(Constants.EDIT_CHOOSE))
+                .action(new SendConstantMessage(editChoose))
                 .build());
 
         fsm.registerTransition(new MMBTransitionBuilder()
                 .source(UserState.EDITING_ADDITIONAL_EDIT)
                 .target(UserState.DEFAULT)
                 .event(Event.ACCEPT)
-                .action(new SendConstantMessage(Constants.SAVED))
-                .action(new SendConstantMessage(Constants.HELP))
+                .action(new SendConstantMessage(saved))
+                .action(new SendConstantMessage(help))
                 .build());
         fsm.registerTransition(new MMBTransitionBuilder()
                 .source(UserState.EDITING_ADDITIONAL_EDIT)
                 .target(UserState.EDITING_CHOOSE)
                 .event(Event.DECLINE)
-                .action(new SendConstantMessage(Constants.EDIT_CHOOSE))
+                .action(new SendConstantMessage(editChoose))
                 .build());
         fsm.registerTransition(new MMBTransitionBuilder()
                 .source(UserState.EDITING_ADDITIONAL_EDIT)
                 .target(UserState.EDITING_ADDITIONAL_EDIT)
                 .event(Event.INVALID_INPUT)
-                .action(new SendConstantMessage(Constants.TRY_AGAIN))
+                .action(new SendConstantMessage(tryAgain))
                 .build());
     }
 
@@ -430,28 +502,28 @@ public final class StateMachineConfig {
                 .target(UserState.DEFAULT)
                 .event(Event.ACCEPT)
                 .action(new DeleteUserEntry(userEntryStorage))
-                .action(new SendConstantMessage(Constants.DELETED))
-                .action(new SendConstantMessage(Constants.HELP))
+                .action(new SendConstantMessage(deleted))
+                .action(new SendConstantMessage(help))
                 .build());
         fsm.registerTransition(new MMBTransitionBuilder()
                 .source(UserState.DELETION_CONFIRMATION)
                 .target(UserState.DEFAULT)
                 .event(Event.DECLINE)
-                .action(new SendConstantMessage(Constants.CANCEL))
-                .action(new SendConstantMessage(Constants.HELP))
+                .action(new SendConstantMessage(cancel))
+                .action(new SendConstantMessage(help))
                 .build());
         fsm.registerTransition(new MMBTransitionBuilder()
                 .source(UserState.DELETION_CONFIRMATION)
                 .target(UserState.DELETION_CONFIRMATION)
                 .event(Event.INVALID_INPUT)
-                .action(new SendConstantMessage(Constants.TRY_AGAIN))
+                .action(new SendConstantMessage(tryAgain))
                 .action(new AskDeletionConfirmation(userEntryStorage))
                 .build());
         fsm.registerTransition(new MMBTransitionBuilder()
                 .source(UserState.DELETION_CONFIRMATION)
                 .target(UserState.DEFAULT)
                 .event(Event.BACK)
-                .action(new SendConstantMessage(Constants.HELP))
+                .action(new SendConstantMessage(help))
                 .build());
     }
 }

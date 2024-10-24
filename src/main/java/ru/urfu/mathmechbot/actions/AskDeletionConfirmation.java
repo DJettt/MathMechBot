@@ -1,13 +1,12 @@
 package ru.urfu.mathmechbot.actions;
 
-import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.urfu.logics.localobjects.LocalMessage;
 import ru.urfu.logics.localobjects.LocalMessageBuilder;
-import ru.urfu.mathmechbot.Constants;
 import ru.urfu.mathmechbot.EventContext;
+import ru.urfu.mathmechbot.Utils;
 import ru.urfu.mathmechbot.models.UserEntry;
 import ru.urfu.mathmechbot.storages.UserEntryStorage;
 
@@ -16,6 +15,7 @@ import ru.urfu.mathmechbot.storages.UserEntryStorage;
  */
 public final class AskDeletionConfirmation implements MMBAction {
     private final Logger logger = LoggerFactory.getLogger(AskDeletionConfirmation.class);
+    private final Utils utils = new Utils();
     private final UserEntryStorage userEntryStorage;
 
     /**
@@ -38,10 +38,7 @@ public final class AskDeletionConfirmation implements MMBAction {
 
         final LocalMessage message = new LocalMessageBuilder()
                 .text("Точно удаляем?\n\n" + userEntry.toHumanReadable())
-                .buttons(List.of(
-                        Constants.YES_BUTTON,
-                        Constants.NO_BUTTON,
-                        Constants.BACK_BUTTON))
+                .buttons(utils.makeYesNoButtons(utils.makeBackButton()))
                 .build();
         context.bot().sendMessage(message, context.user().id());
     }
