@@ -34,14 +34,16 @@ public final class RegistrationTest {
             backButton
     );
 
-    private final LocalMessage askForRegistration = new LocalMessage("Сперва нужно зарегистрироваться.");
+    private final LocalMessage askForRegistration =
+            new LocalMessage("Сперва нужно зарегистрироваться.");
 
     private final LocalMessage askFullName = new LocalMessageBuilder()
             .text("""
                     Введите свое ФИО в формате:
                     Иванов Артём Иванович
                     Без дополнительных пробелов и с буквой ё, если нужно.""")
-            .buttons(List.of(new LocalButton("Отменить регистрацию", Constants.BACK_COMMAND)))
+            .buttons(List.of(
+                    new LocalButton("Отменить регистрацию", BACK_COMMAND)))
             .build();
 
     private final LocalMessage askYear = new LocalMessageBuilder()
@@ -118,8 +120,8 @@ public final class RegistrationTest {
      * вводит корректные данные, а в конце подтверждает регистрацию.</p>
      */
     @Test
-    @DisplayName("Тест всей регистрации первокурсника с подтверждением в конце.")
-    void wholeRegistrationFirstYearAcceptTest() {
+    @DisplayName("Первокурсник с подтверждением в конце")
+    void firstYearAcceptTest() {
         logic.processMessage(TEST_ID, new LocalMessage(REGISTER_COMMAND), bot);
         Assertions.assertEquals(askFullName, bot.getOutcomingMessageList().getFirst());
 
@@ -164,8 +166,8 @@ public final class RegistrationTest {
      * вводит корректные данные, в конце подтверждает регистрацию.</p>
      */
     @Test
-    @DisplayName("Тест всей регистрации старшекурсника с подтверждением в конце.")
-    void wholeRegistrationLaterYearAcceptTest() {
+    @DisplayName("Старшекурсник с подтверждением в конце")
+    void laterYearAcceptTest() {
         logic.processMessage(TEST_ID, new LocalMessage(REGISTER_COMMAND), bot);
         logic.processMessage(TEST_ID, new LocalMessage("Артёмов  Артём  Артёмович "), bot);
         logic.processMessage(TEST_ID, new LocalMessage("3"), bot);
@@ -199,6 +201,38 @@ public final class RegistrationTest {
     }
 
     /**
+     * <p>Тестируем случай, где пользователь-четверокурсник последовательно
+     * вводит корректные данные, но в конце отказывается от регистрации.
+     * В конце проверяем, что на команду /info пользователь получает просьбу
+     * о регистрации (то есть никакие данные сохранены не были).</p>
+     */
+    @Test
+    @DisplayName("Отказ в конце")
+    void declineTest() {
+        logic.processMessage(TEST_ID, new LocalMessage(REGISTER_COMMAND), bot);
+        logic.processMessage(TEST_ID, new LocalMessage("Джун Даянч Даянчевич"), bot);
+        logic.processMessage(TEST_ID, new LocalMessage("4"), bot);
+        logic.processMessage(TEST_ID, new LocalMessage("КБ"), bot);
+        logic.processMessage(TEST_ID, new LocalMessage("4"), bot);
+        logic.processMessage(TEST_ID, new LocalMessage("МЕН-240104"), bot);
+
+        Assertions.assertEquals(new LocalMessageBuilder()
+                        .text("""
+                                Всё верно?
+
+                                ФИО: Джун Даянч Даянчевич
+                                Группа: КБ-404 (МЕН-240104)""")
+                        .buttons(yesNoBack)
+                        .build(),
+                bot.getOutcomingMessageList().get(5));
+
+        logic.processMessage(TEST_ID, new LocalMessage(DECLINE_COMMAND), bot);
+        logic.processMessage(TEST_ID, new LocalMessage(INFO_COMMAND), bot);
+        Assertions.assertEquals(askForRegistration,
+                bot.getOutcomingMessageList().get(8));
+    }
+
+    /**
      * <p>Тестируем случай, где пользователь-второкурсник последовательно
      * вводит корректные данные, но затем начинает нажимать кнопку "Назад"
      * до выхода из регистрации. В конце проверяем, что на команду /info
@@ -206,14 +240,14 @@ public final class RegistrationTest {
      * сохранены не были).</p>
      */
     @Test
-    @DisplayName("Тест всей регистрации, а затем пошаговый возврат.")
-    void wholeRegistrationThenAlwaysBackTest() {
-        logic.processMessage(TEST_ID, new LocalMessage(REGISTER_COMMAND), bot);
-        logic.processMessage(TEST_ID, new LocalMessage("Николаев Николай Кун"), bot);
-        logic.processMessage(TEST_ID, new LocalMessage("2"), bot);
-        logic.processMessage(TEST_ID, new LocalMessage("ФТ"), bot);
-        logic.processMessage(TEST_ID, new LocalMessage("5"), bot);
-        logic.processMessage(TEST_ID, new LocalMessage("МЕН-623754"), bot);
+    @DisplayName("Пошаговый возврат до выхода")
+    void backTest() {
+            logic.processMessage(TEST_ID, new LocalMessage(REGISTER_COMMAND), bot);
+            logic.processMessage(TEST_ID, new LocalMessage("Николаев Николай Кун"), bot);
+            logic.processMessage(TEST_ID, new LocalMessage("2"), bot);
+            logic.processMessage(TEST_ID, new LocalMessage("ФТ"), bot);
+            logic.processMessage(TEST_ID, new LocalMessage("5"), bot);
+            logic.processMessage(TEST_ID, new LocalMessage("МЕН-623754"), bot);
 
         Assertions.assertEquals(new LocalMessageBuilder()
                         .text("""

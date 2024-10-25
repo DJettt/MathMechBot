@@ -11,6 +11,7 @@ import ru.urfu.localobjects.LocalMessageBuilder;
 import ru.urfu.logics.mathmechbot.Constants;
 import ru.urfu.logics.mathmechbot.MathMechBotCore;
 import ru.urfu.logics.mathmechbot.models.MathMechBotUserState;
+import ru.urfu.logics.mathmechbot.models.UserEntry;
 import ru.urfu.logics.mathmechbot.states.MathMechBotState;
 import ru.urfu.logics.mathmechbot.storages.UserEntryStorage;
 import ru.urfu.logics.mathmechbot.storages.UserStorage;
@@ -60,6 +61,7 @@ public final class RegistrationYearState implements MathMechBotState {
 
     /**
      * Возвращаем пользователя на шаг назад, то есть на запрос ФИО.
+     * Удаляем пользовательскую запись.
      *
      * @param contextCore логического ядро (контекст для состояния).
      * @param chatId идентификатор чата
@@ -68,6 +70,9 @@ public final class RegistrationYearState implements MathMechBotState {
      */
     private void backCommandHandler(@NotNull MathMechBotCore contextCore, @NotNull Long chatId,
                                     @NotNull LocalMessage message, @NotNull Bot bot) {
+        final UserEntryStorage userEntryStorage = contextCore.getStorage().getUserEntries();
+        final UserEntry userEntry = userEntryStorage.get(chatId).orElseThrow();
+        userEntryStorage.delete(userEntry);
         contextCore.getStorage().getUsers().changeUserState(chatId, MathMechBotUserState.REGISTRATION_NAME);
         bot.sendMessage(new RegistrationFullNameState().enterMessage(contextCore, chatId, message, bot), chatId);
     }
