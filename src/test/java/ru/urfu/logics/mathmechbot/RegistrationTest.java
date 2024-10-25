@@ -209,18 +209,12 @@ public final class RegistrationTest {
     @Test
     @DisplayName("Отказ в конце")
     void declineTest() {
-        logic.processMessage(utils.makeRequestFromMessage(
-                new LocalMessage(REGISTER_COMMAND)));
-        logic.processMessage(utils.makeRequestFromMessage(
-                new LocalMessage("Джун Даянч Даянчевич")));
-        logic.processMessage(utils.makeRequestFromMessage(
-                new LocalMessage("4")));
-        logic.processMessage(utils.makeRequestFromMessage(
-                new LocalMessage("КБ")));
-        logic.processMessage(utils.makeRequestFromMessage(
-                new LocalMessage("4")));
-        logic.processMessage(utils.makeRequestFromMessage(
-                new LocalMessage("МЕН-240104")));
+        logic.processMessage(TEST_ID, new LocalMessage(REGISTER_COMMAND), bot);
+        logic.processMessage(TEST_ID, new LocalMessage("Джун Даянч Даянчевич"), bot);
+        logic.processMessage(TEST_ID, new LocalMessage("4"), bot);
+        logic.processMessage(TEST_ID, new LocalMessage("КБ"), bot);
+        logic.processMessage(TEST_ID, new LocalMessage("4"), bot);
+        logic.processMessage(TEST_ID, new LocalMessage("МЕН-240104"), bot);
 
         Assertions.assertEquals(new LocalMessageBuilder()
                         .text("""
@@ -232,10 +226,8 @@ public final class RegistrationTest {
                         .build(),
                 bot.getOutcomingMessageList().get(5));
 
-        logic.processMessage(utils.makeRequestFromMessage(
-                new LocalMessage(DECLINE_COMMAND)));
-        logic.processMessage(utils.makeRequestFromMessage(
-                new LocalMessage(INFO_COMMAND)));
+        logic.processMessage(TEST_ID, new LocalMessage(DECLINE_COMMAND), bot);
+        logic.processMessage(TEST_ID, new LocalMessage(INFO_COMMAND), bot);
         Assertions.assertEquals(askForRegistration,
                 bot.getOutcomingMessageList().get(8));
     }
