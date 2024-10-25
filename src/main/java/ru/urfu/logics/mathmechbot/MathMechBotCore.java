@@ -1,7 +1,8 @@
 package ru.urfu.logics.mathmechbot;
 
 import org.jetbrains.annotations.NotNull;
-import ru.urfu.localobjects.Request;
+import ru.urfu.bots.Bot;
+import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.logics.LogicCore;
 import ru.urfu.logics.mathmechbot.models.MathMechBotUserState;
 import ru.urfu.logics.mathmechbot.models.User;
@@ -29,18 +30,18 @@ public final class MathMechBotCore implements LogicCore {
     }
 
     @Override
-    public void processMessage(@NotNull Request request) {
+    public void processMessage(@NotNull Long chatId, @NotNull LocalMessage message, @NotNull Bot bot) {
         final UserStorage userStorage = getStorage().getUsers();
         final User user = userStorage
-                .get(request.id())
+                .get(chatId)
                 .orElseGet(() -> {
-                    final User newUser = new User(request.id(), MathMechBotUserState.DEFAULT);
+                    final User newUser = new User(chatId, MathMechBotUserState.DEFAULT);
                     userStorage.add(newUser);
                     return newUser;
                 });
 
         currentState = user.currentState().stateInstance();
-        currentState.processMessage(this, request);
+        currentState.processMessage(this, chatId, message, bot);
     }
 
     /**

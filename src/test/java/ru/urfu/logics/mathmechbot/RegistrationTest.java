@@ -20,6 +20,7 @@ import ru.urfu.logics.mathmechbot.storages.MathMechStorage;
 @DisplayName("Регистрация")
 @SuppressWarnings({"MagicNumber", "MultipleStringLiterals"})
 public final class RegistrationTest {
+    private final static Long TEST_ID = 0L;
     private final static String ACCEPT_COMMAND = "/yes";
     private final static String DECLINE_COMMAND = "/no";
     private final static String BACK_COMMAND = "/back";
@@ -102,7 +103,6 @@ public final class RegistrationTest {
             .buttons(List.of(backButton))
             .build();
 
-    private TestUtils utils;
     private MathMechBotCore logic;
     private DummyBot bot;
 
@@ -113,7 +113,6 @@ public final class RegistrationTest {
     void setupTest() {
         logic = new MathMechBotCore(new MathMechStorage());
         bot = new DummyBot();
-        utils = new TestUtils(logic, bot);
     }
 
     /**
@@ -123,28 +122,22 @@ public final class RegistrationTest {
     @Test
     @DisplayName("Первокурсник с подтверждением в конце")
     void firstYearAcceptTest() {
-        logic.processMessage(utils.makeRequestFromMessage(
-                new LocalMessage(REGISTER_COMMAND)));
+        logic.processMessage(TEST_ID, new LocalMessage(REGISTER_COMMAND), bot);
         Assertions.assertEquals(askFullName, bot.getOutcomingMessageList().getFirst());
 
-        logic.processMessage(utils.makeRequestFromMessage(
-                new LocalMessage("Дим-Димыч  Дима Артёмович")));
+        logic.processMessage(TEST_ID, new LocalMessage("Дим-Димыч  Дима Артёмович"), bot);
         Assertions.assertEquals(askYear, bot.getOutcomingMessageList().get(1));
 
-        logic.processMessage(utils.makeRequestFromMessage(
-                new LocalMessage("1")));
+        logic.processMessage(TEST_ID, new LocalMessage("1"), bot);
         Assertions.assertEquals(askFirstYearSpecialty, bot.getOutcomingMessageList().get(2));
 
-        logic.processMessage(utils.makeRequestFromMessage(
-                new LocalMessage("КНМО")));
+        logic.processMessage(TEST_ID, new LocalMessage("КНМО"), bot);
         Assertions.assertEquals(askGroupNumber, bot.getOutcomingMessageList().get(3));
 
-        logic.processMessage(utils.makeRequestFromMessage(
-                new LocalMessage("3")));
+        logic.processMessage(TEST_ID, new LocalMessage("3"), bot);
         Assertions.assertEquals(askMen, bot.getOutcomingMessageList().get(4));
 
-        logic.processMessage(utils.makeRequestFromMessage(
-                new LocalMessage("МЕН-123456 ")));
+        logic.processMessage(TEST_ID, new LocalMessage("МЕН-123456 "), bot);
         Assertions.assertEquals(new LocalMessageBuilder()
                         .text("""
                                 Всё верно?
@@ -155,10 +148,8 @@ public final class RegistrationTest {
                         .build(),
                 bot.getOutcomingMessageList().get(5));
 
-        logic.processMessage(utils.makeRequestFromMessage(
-                new LocalMessage(ACCEPT_COMMAND)));
-        logic.processMessage(utils.makeRequestFromMessage(
-                new LocalMessage(INFO_COMMAND)));
+        logic.processMessage(TEST_ID, new LocalMessage(ACCEPT_COMMAND), bot);
+        logic.processMessage(TEST_ID, new LocalMessage(INFO_COMMAND), bot);
 
         // Пропускаю 6-е и 7-е сообщение, так как они не содержат ничего примечательного.
 
@@ -177,23 +168,17 @@ public final class RegistrationTest {
     @Test
     @DisplayName("Старшекурсник с подтверждением в конце")
     void laterYearAcceptTest() {
-        logic.processMessage(utils.makeRequestFromMessage(
-                new LocalMessage(REGISTER_COMMAND)));
-        logic.processMessage(utils.makeRequestFromMessage(
-                new LocalMessage("Артёмов  Артём  Артёмович ")));
-        logic.processMessage(utils.makeRequestFromMessage(
-                new LocalMessage("3")));
+        logic.processMessage(TEST_ID, new LocalMessage(REGISTER_COMMAND), bot);
+        logic.processMessage(TEST_ID, new LocalMessage("Артёмов  Артём  Артёмович "), bot);
+        logic.processMessage(TEST_ID, new LocalMessage("3"), bot);
 
         Assertions.assertEquals(askLaterYearSpecialty,
                 bot.getOutcomingMessageList().get(2));
 
-        logic.processMessage(utils.makeRequestFromMessage(
-                new LocalMessage("МО")));
-        logic.processMessage(utils.makeRequestFromMessage(
-                new LocalMessage("1")));
+        logic.processMessage(TEST_ID, new LocalMessage("МО"), bot);
+        logic.processMessage(TEST_ID, new LocalMessage("1"), bot);
 
-        logic.processMessage(utils.makeRequestFromMessage(
-                new LocalMessage(" МЕН-999999")));
+        logic.processMessage(TEST_ID, new LocalMessage(" МЕН-999999"), bot);
         Assertions.assertEquals(new LocalMessageBuilder()
                         .text("""
                                 Всё верно?
@@ -204,10 +189,9 @@ public final class RegistrationTest {
                         .build(),
                 bot.getOutcomingMessageList().get(5));
 
-        logic.processMessage(utils.makeRequestFromMessage(
-                new LocalMessage(ACCEPT_COMMAND)));
-        logic.processMessage(utils.makeRequestFromMessage(
-                new LocalMessage(INFO_COMMAND)));
+        logic.processMessage(TEST_ID, new LocalMessage(ACCEPT_COMMAND), bot);
+        logic.processMessage(TEST_ID, new LocalMessage(INFO_COMMAND), bot);
+
         Assertions.assertEquals(new LocalMessage("""
                         Данные о Вас:
 
@@ -266,18 +250,12 @@ public final class RegistrationTest {
     @Test
     @DisplayName("Пошаговый возврат до выхода")
     void backTest() {
-        logic.processMessage(utils.makeRequestFromMessage(
-                new LocalMessage(REGISTER_COMMAND)));
-        logic.processMessage(utils.makeRequestFromMessage(
-                new LocalMessage("Николаев Николай Кун")));
-        logic.processMessage(utils.makeRequestFromMessage(
-                new LocalMessage("2")));
-        logic.processMessage(utils.makeRequestFromMessage(
-                new LocalMessage("ФТ")));
-        logic.processMessage(utils.makeRequestFromMessage(
-                new LocalMessage("5")));
-        logic.processMessage(utils.makeRequestFromMessage(
-                new LocalMessage("МЕН-623754")));
+            logic.processMessage(TEST_ID, new LocalMessage(REGISTER_COMMAND), bot);
+            logic.processMessage(TEST_ID, new LocalMessage("Николаев Николай Кун"), bot);
+            logic.processMessage(TEST_ID, new LocalMessage("2"), bot);
+            logic.processMessage(TEST_ID, new LocalMessage("ФТ"), bot);
+            logic.processMessage(TEST_ID, new LocalMessage("5"), bot);
+            logic.processMessage(TEST_ID, new LocalMessage("МЕН-623754"), bot);
 
         Assertions.assertEquals(new LocalMessageBuilder()
                         .text("""
@@ -289,32 +267,25 @@ public final class RegistrationTest {
                         .build(),
                 bot.getOutcomingMessageList().get(5));
 
-        logic.processMessage(utils.makeRequestFromMessage(
-                new LocalMessage(BACK_COMMAND)));
+        logic.processMessage(TEST_ID, new LocalMessage(BACK_COMMAND), bot);
         Assertions.assertEquals(askMen, bot.getOutcomingMessageList().get(6));
 
-        logic.processMessage(utils.makeRequestFromMessage(
-                new LocalMessage(BACK_COMMAND)));
+        logic.processMessage(TEST_ID, new LocalMessage(BACK_COMMAND), bot);
         Assertions.assertEquals(askGroupNumber, bot.getOutcomingMessageList().get(7));
 
-        logic.processMessage(utils.makeRequestFromMessage(
-                new LocalMessage(BACK_COMMAND)));
+        logic.processMessage(TEST_ID, new LocalMessage(BACK_COMMAND), bot);
         Assertions.assertEquals(askLaterYearSpecialty,
                 bot.getOutcomingMessageList().get(8));
 
-        logic.processMessage(utils.makeRequestFromMessage(
-                new LocalMessage(BACK_COMMAND)));
+        logic.processMessage(TEST_ID, new LocalMessage(BACK_COMMAND), bot);
         Assertions.assertEquals(askYear, bot.getOutcomingMessageList().get(9));
 
-        logic.processMessage(utils.makeRequestFromMessage(
-                new LocalMessage(BACK_COMMAND)));
+        logic.processMessage(TEST_ID, new LocalMessage(BACK_COMMAND), bot);
         Assertions.assertEquals(askFullName, bot.getOutcomingMessageList().get(10));
 
-        logic.processMessage(utils.makeRequestFromMessage(
-                new LocalMessage(BACK_COMMAND)));
+        logic.processMessage(TEST_ID, new LocalMessage(BACK_COMMAND), bot);
 
-        logic.processMessage(utils.makeRequestFromMessage(
-                new LocalMessage(INFO_COMMAND)));
+        logic.processMessage(TEST_ID, new LocalMessage(INFO_COMMAND), bot);
         Assertions.assertEquals(askForRegistration,
                 bot.getOutcomingMessageList().get(12));
     }

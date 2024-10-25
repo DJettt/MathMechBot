@@ -6,10 +6,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.urfu.bots.Bot;
 import ru.urfu.localobjects.LocalButton;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
-import ru.urfu.localobjects.Request;
 import ru.urfu.logics.mathmechbot.Constants;
 import ru.urfu.logics.mathmechbot.MathMechBotCore;
 import ru.urfu.logics.mathmechbot.models.MathMechBotUserState;
@@ -31,19 +31,21 @@ public final class RegistrationConfirmationState implements MathMechBotState {
     private final LocalMessage tryAgain = new LocalMessage("Попробуйте снова.");
 
     @Override
-    public void processMessage(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
-        switch (request.message().text()) {
-            case Constants.BACK_COMMAND -> backCommandHandler(contextCore, request);
-            case Constants.ACCEPT_COMMAND -> acceptCommandHandler(contextCore, request);
-            case Constants.DECLINE_COMMAND -> declineCommandHandler(contextCore, request);
-            case null, default -> request.bot().sendMessage(tryAgain, request.id());
+    public void processMessage(@NotNull MathMechBotCore contextCore, @NotNull Long chatId,
+                               @NotNull LocalMessage message, @NotNull Bot bot) {
+        switch (message.text()) {
+            case Constants.BACK_COMMAND -> backCommandHandler(contextCore, chatId, message, bot);
+            case Constants.ACCEPT_COMMAND -> acceptCommandHandler(contextCore, chatId, message, bot);
+            case Constants.DECLINE_COMMAND -> declineCommandHandler(contextCore, chatId, message, bot);
+            case null, default -> bot.sendMessage(tryAgain, chatId);
         }
     }
 
     @Override
     @Nullable
-    public LocalMessage enterMessage(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
-        final Optional<UserEntry> userEntryOptional = contextCore.getStorage().getUserEntries().get(request.id());
+    public LocalMessage enterMessage(@NotNull MathMechBotCore contextCore, @NotNull Long chatId,
+                                     @NotNull LocalMessage message, @NotNull Bot bot) {
+        final Optional<UserEntry> userEntryOptional = contextCore.getStorage().getUserEntries().get(chatId);
 
         if (userEntryOptional.isEmpty()) {
             logger.error("User without entry reached registration end");
@@ -60,38 +62,47 @@ public final class RegistrationConfirmationState implements MathMechBotState {
      * Возвращаем пользователя на шаг назад, то есть в состояние запрос МЕН-группы.
      *
      * @param contextCore логического ядро (контекст для состояния).
-     * @param request запрос.
+     * @param chatId идентификатор чата
+     * @param message текст сообщения
+     * @param bot бот в котором пришло сообщение
      */
-    private void backCommandHandler(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
-        contextCore.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.REGISTRATION_MEN);
-        request.bot().sendMessage(
-                new RegistrationMenGroupState().enterMessage(contextCore, request),
-                request.id());
+    private void backCommandHandler(@NotNull MathMechBotCore contextCore, @NotNull Long chatId,
+                                    @NotNull LocalMessage message, @NotNull Bot bot) {
+        contextCore.getStorage().getUsers().changeUserState(chatId, MathMechBotUserState.REGISTRATION_MEN);
+        bot.sendMessage(
+                new RegistrationMenGroupState().enterMessage(contextCore, chatId, message, bot),
+                chatId);
     }
 
     /**
      * Обрабатывает команду согласия: сохраняет данные пользователя, переносит в дефолтное состояние.
      *
      * @param contextCore логического ядро (контекст для состояния).
-     * @param request запрос.
+     * @param chatId идентификатор чата
+     * @param message текст сообщения
+     * @param bot бот в котором пришло сообщение
      */
-    private void acceptCommandHandler(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
-        contextCore.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.DEFAULT);
-        request.bot().sendMessage(new LocalMessage("Сохранил..."), request.id());
-        request.bot().sendMessage(new DefaultState().enterMessage(contextCore, request), request.id());
+    private void acceptCommandHandler(@NotNull MathMechBotCore contextCore, @NotNull Long chatId,
+                                      @NotNull LocalMessage message, @NotNull Bot bot) {
+        contextCore.getStorage().getUsers().changeUserState(chatId, MathMechBotUserState.DEFAULT);
+        bot.sendMessage(new LocalMessage("Сохранил..."), chatId);
+        bot.sendMessage(new DefaultState().enterMessage(contextCore, chatId, message, bot), chatId);
     }
 
     /**
      * Обрабатывает команду несогласия: удаляет данные пользователя, переносит в дефолтное состояние.
      *
      * @param contextCore логического ядро (контекст для состояния).
-     * @param request запрос.
+     * @param chatId идентификатор чата
+     * @param message текст сообщения
+     * @param bot бот в котором пришло сообщение
      */
-    private void declineCommandHandler(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
-        final Optional<UserEntry> userEntryOptional = contextCore.getStorage().getUserEntries().get(request.id());
+    private void declineCommandHandler(@NotNull MathMechBotCore contextCore, @NotNull Long chatId,
+                                       @NotNull LocalMessage message, @NotNull Bot bot) {
+        final Optional<UserEntry> userEntryOptional = contextCore.getStorage().getUserEntries().get(chatId);
         userEntryOptional.ifPresent(contextCore.getStorage().getUserEntries()::delete);
-        contextCore.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.DEFAULT);
-        request.bot().sendMessage(new LocalMessage("Отмена..."), request.id());
-        request.bot().sendMessage(new DefaultState().enterMessage(contextCore, request), request.id());
+        contextCore.getStorage().getUsers().changeUserState(chatId, MathMechBotUserState.DEFAULT);
+        bot.sendMessage(new LocalMessage("Отмена..."), chatId);
+        bot.sendMessage(new DefaultState().enterMessage(contextCore, chatId, message, bot), chatId);
     }
 }

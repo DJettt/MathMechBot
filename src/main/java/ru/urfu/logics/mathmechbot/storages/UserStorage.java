@@ -15,7 +15,5 @@ public interface UserStorage extends Storage<User, Long> {
      * @param id    идентификатор пользователя в хранилище.
      * @param state новое текущее состояние.
      */
-    default void changeUserState(@NotNull Long id, @NotNull MathMechBotUserState state) {
-        update(new User(id, state));
-    }
+    void changeUserState(@NotNull Long id, @NotNull MathMechBotUserState state);
 }

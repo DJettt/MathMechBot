@@ -17,7 +17,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.urfu.localobjects.LocalButton;
 import ru.urfu.localobjects.LocalMessage;
-import ru.urfu.localobjects.Request;
 import ru.urfu.logics.LogicCore;
 
 /**
@@ -160,12 +159,12 @@ public final class DiscordBot extends ListenerAdapter implements Bot {
             return;
         }
         LocalMessage msg = convertDiscordMessage(event.getMessage());
-        logicCore.processMessage(new Request(event.getChannel().getIdLong(), msg, this));
+        logicCore.processMessage(event.getChannel().getIdLong(), msg, this);
     }
 
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {
         LocalMessage msg = new LocalMessage(event.getButton().getId(), null);
-        logicCore.processMessage(new Request(event.getChannel().getIdLong(), msg, this));
+        logicCore.processMessage(event.getChannel().getIdLong(), msg, this);
     }
 }

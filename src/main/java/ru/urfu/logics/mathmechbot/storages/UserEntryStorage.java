@@ -3,7 +3,6 @@ package ru.urfu.logics.mathmechbot.storages;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import ru.urfu.logics.mathmechbot.models.UserEntry;
-import ru.urfu.logics.mathmechbot.models.UserEntryBuilder;
 import ru.urfu.storages.Storage;
 
 /**
@@ -15,33 +14,21 @@ public interface UserEntryStorage extends Storage<UserEntry, Long> {
      * @param id идентификатор записи в хранилище.
      * @param name новое значение
      */
-    default void changeUserEntryName(@NotNull Long id, @NotNull String name) {
-        get(id).ifPresent(userEntry -> update(new UserEntryBuilder(userEntry)
-                .name(name)
-                .build()));
-    }
+    void changeUserEntryName(@NotNull Long id, @NotNull String name);
 
     /**
      * Меняет поле surname.
      * @param id идентификатор записи в хранилище.
      * @param surname новое значение
      */
-    default void changeUserEntrySurname(@NotNull Long id, @NotNull String surname) {
-        get(id).ifPresent(userEntry -> update(new UserEntryBuilder(userEntry)
-                .surname(surname)
-                .build()));
-    }
+    void changeUserEntrySurname(@NotNull Long id, @NotNull String surname);
 
     /**
      * Меняет поле patronym.
      * @param id идентификатор записи в хранилище.
      * @param patronym новое значение
      */
-    default void changeUserEntryPatronym(@NotNull Long id, @Nullable String patronym) {
-        get(id).ifPresent(userEntry -> update(new UserEntryBuilder(userEntry)
-                .patronym(patronym)
-                .build()));
-    }
+    void changeUserEntryPatronym(@NotNull Long id, @Nullable String patronym);
 
     /**
      * Меняет поле year.
@@ -49,11 +36,7 @@ public interface UserEntryStorage extends Storage<UserEntry, Long> {
      * @param id   идентификатор записи в хранилище.
      * @param year новое значение.
      */
-    default void changeUserEntryYear(@NotNull Long id, @NotNull Integer year) {
-        get(id).ifPresent(userEntry -> update(new UserEntryBuilder(userEntry)
-                .year(year)
-                .build()));
-    }
+    void changeUserEntryYear(@NotNull Long id, @NotNull Integer year);
 
     /**
      * Меняет поле specialty.
@@ -61,11 +44,7 @@ public interface UserEntryStorage extends Storage<UserEntry, Long> {
      * @param id        идентификатор записи в хранилище.
      * @param specialty новое значение.
      */
-    default void changeUserEntrySpecialty(@NotNull Long id, @NotNull String specialty) {
-        get(id).ifPresent(userEntry -> update(new UserEntryBuilder(userEntry)
-                .specialty(specialty)
-                .build()));
-    }
+    void changeUserEntrySpecialty(@NotNull Long id, @NotNull String specialty);
 
     /**
      * Меняет поле men.
@@ -73,11 +52,7 @@ public interface UserEntryStorage extends Storage<UserEntry, Long> {
      * @param id  идентификатор записи в хранилище.
      * @param men новое значение.
      */
-    default void changeUserEntryMen(@NotNull Long id, @NotNull String men) {
-        get(id).ifPresent(userEntry -> update(new UserEntryBuilder(userEntry)
-                .men(men)
-                .build()));
-    }
+    void changeUserEntryMen(@NotNull Long id, @NotNull String men);
 
     /**
      * Меняет поле group.
@@ -85,9 +60,5 @@ public interface UserEntryStorage extends Storage<UserEntry, Long> {
      * @param id    идентификатор записи в хранилище.
      * @param group новое значение.
      */
-    default void changeUserEntryGroup(@NotNull Long id, @NotNull Integer group) {
-        get(id).ifPresent(userEntry -> update(new UserEntryBuilder(userEntry)
-                .group(group)
-                .build()));
-    }
+    void changeUserEntryGroup(@NotNull Long id, @NotNull Integer group);
 }

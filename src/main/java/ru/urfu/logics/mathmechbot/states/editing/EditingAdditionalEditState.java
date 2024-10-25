@@ -2,10 +2,10 @@ package ru.urfu.logics.mathmechbot.states.editing;
 
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
+import ru.urfu.bots.Bot;
 import ru.urfu.localobjects.LocalButton;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
-import ru.urfu.localobjects.Request;
 import ru.urfu.logics.mathmechbot.Constants;
 import ru.urfu.logics.mathmechbot.MathMechBotCore;
 import ru.urfu.logics.mathmechbot.models.MathMechBotUserState;
@@ -27,27 +27,29 @@ public final class EditingAdditionalEditState implements MathMechBotState {
             .build();
 
     @Override
-    public void processMessage(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
+    public void processMessage(@NotNull MathMechBotCore contextCore, @NotNull Long chatId,
+                               @NotNull LocalMessage message, @NotNull Bot bot) {
         final UserStorage userStorage = contextCore.getStorage().getUsers();
 
-        switch (request.message().text()) {
+        switch (message.text()) {
             case Constants.ACCEPT_COMMAND -> {
-                userStorage.changeUserState(request.id(), MathMechBotUserState.EDITING_CHOOSE);
-                request.bot().sendMessage(new EditingChooseState().enterMessage(contextCore, request), request.id());
+                userStorage.changeUserState(chatId, MathMechBotUserState.EDITING_CHOOSE);
+                bot.sendMessage(new EditingChooseState().enterMessage(contextCore, chatId, message, bot), chatId);
             }
             case Constants.DECLINE_COMMAND -> {
-                userStorage.changeUserState(request.id(), MathMechBotUserState.DEFAULT);
-                request.bot().sendMessage(new LocalMessage("Изменения успешно сохранены."), request.id());
-                new DefaultState().infoCommandHandler(contextCore, request);
-                request.bot().sendMessage(new DefaultState().enterMessage(contextCore, request), request.id());
+                userStorage.changeUserState(chatId, MathMechBotUserState.DEFAULT);
+                bot.sendMessage(new LocalMessage("Изменения успешно сохранены."), chatId);
+                new DefaultState().infoCommandHandler(contextCore, chatId, bot);
+                bot.sendMessage(new DefaultState().enterMessage(contextCore, chatId, message, bot), chatId);
             }
-            case null, default -> request.bot().sendMessage(tryAgain, request.id());
+            case null, default -> bot.sendMessage(tryAgain, chatId);
         }
     }
 
     @NotNull
     @Override
-    public LocalMessage enterMessage(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
+    public LocalMessage enterMessage(@NotNull MathMechBotCore contextCore, @NotNull Long chatId,
+                                     @NotNull LocalMessage message, @NotNull Bot bot) {
         return onEnterMessage;
     }
 }
