@@ -1,10 +1,8 @@
 package ru.urfu.logics.mathmechbot;
 
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
-import ru.urfu.localobjects.Request;
 import ru.urfu.logics.DummyBot;
 import ru.urfu.logics.LogicCore;
 
@@ -59,27 +57,8 @@ public final class TestUtils {
         );
 
         for (final LocalMessage message : messages) {
-            logic.processMessage(makeRequestFromMessage(message, id));
+            logic.processMessage(id, message, bot);
         }
         bot.getOutcomingMessageList().clear();
-    }
-
-    /**
-     * Оборачивает сообщение в Request с DummyBot и id=0L.
-     * @param message сообщение.
-     * @return запрос.
-     */
-    public Request makeRequestFromMessage(@NotNull LocalMessage message) {
-        return makeRequestFromMessage(message, 0L);
-    }
-
-    /**
-     * Оборачивает сообщение в Request с DummyBot и переданным id.
-     * @param message сообщение.
-     * @param id идентификатор пользователя.
-     * @return запрос.
-     */
-    public Request makeRequestFromMessage(@NotNull LocalMessage message, long id) {
-        return new Request(id, message, bot);
     }
 }

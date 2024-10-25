@@ -2,10 +2,10 @@ package ru.urfu.logics.mathmechbot.states.editing;
 
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
+import ru.urfu.bots.Bot;
 import ru.urfu.localobjects.LocalButton;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
-import ru.urfu.localobjects.Request;
 import ru.urfu.logics.mathmechbot.Constants;
 import ru.urfu.logics.mathmechbot.MathMechBotCore;
 import ru.urfu.logics.mathmechbot.models.MathMechBotUserState;
@@ -38,49 +38,53 @@ public final class EditingChooseState implements MathMechBotState {
             .build();
 
     @Override
-    public void processMessage(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
+    public void processMessage(@NotNull MathMechBotCore contextCore, @NotNull Long chatId,
+                               @NotNull LocalMessage message, @NotNull Bot bot) {
         final UserStorage userStorage = contextCore.getStorage().getUsers();
-
-        switch (request.message().text()) {
-            case Constants.BACK_COMMAND -> backCommandHandler(contextCore, request);
+        switch (message.text()) {
+            case Constants.BACK_COMMAND -> backCommandHandler(contextCore, chatId, message, bot);
             case EDITING_FULL_NAME -> {
-                userStorage.changeUserState(request.id(), MathMechBotUserState.EDITING_FULL_NAME);
-                request.bot().sendMessage(new EditingFullNameState().enterMessage(contextCore, request), request.id());
+                userStorage.changeUserState(chatId, MathMechBotUserState.EDITING_FULL_NAME);
+                bot.sendMessage(new EditingFullNameState().enterMessage(contextCore, chatId, message, bot), chatId);
             }
             case EDITING_YEAR -> {
-                userStorage.changeUserState(request.id(), MathMechBotUserState.EDITING_YEAR);
-                request.bot().sendMessage(new EditingYearState().enterMessage(contextCore, request), request.id());
+                userStorage.changeUserState(chatId, MathMechBotUserState.EDITING_YEAR);
+                bot.sendMessage(new EditingYearState().enterMessage(contextCore, chatId, message, bot), chatId);
             }
             case EDITING_SPECIALITY -> {
-                userStorage.changeUserState(request.id(), MathMechBotUserState.EDITING_SPECIALITY);
-                request.bot().sendMessage(new EditingSpecialityState()
-                        .enterMessage(contextCore, request), request.id());
+                userStorage.changeUserState(chatId, MathMechBotUserState.EDITING_SPECIALITY);
+                bot.sendMessage(new EditingSpecialityState()
+                        .enterMessage(contextCore, chatId, message, bot), chatId);
             }
             case EDITING_GROUP -> {
-                userStorage.changeUserState(request.id(), MathMechBotUserState.EDITING_GROUP);
-                request.bot().sendMessage(new EditingGroupState().enterMessage(contextCore, request), request.id());
+                userStorage.changeUserState(chatId, MathMechBotUserState.EDITING_GROUP);
+                bot.sendMessage(new EditingGroupState().enterMessage(contextCore, chatId, message, bot), chatId);
             }
             case EDITING_MEN -> {
-                userStorage.changeUserState(request.id(), MathMechBotUserState.EDITING_MEN);
-                request.bot().sendMessage(new EditingMenState().enterMessage(contextCore, request), request.id());
+                userStorage.changeUserState(chatId, MathMechBotUserState.EDITING_MEN);
+                bot.sendMessage(new EditingMenState().enterMessage(contextCore, chatId, message, bot), chatId);
             }
-            case null, default -> request.bot().sendMessage(tryAgain, request.id());
+            case null, default -> bot.sendMessage(tryAgain, chatId);
         }
     }
 
     @Override
     @NotNull
-    public LocalMessage enterMessage(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
+    public LocalMessage enterMessage(@NotNull MathMechBotCore contextCore, @NotNull Long chatId,
+                                     @NotNull LocalMessage message, @NotNull Bot bot) {
         return onEnterMessage;
     }
 
     /**
      * Обработка кнопки "назад".
      * @param contextCore логическое ядро
-     * @param request запрос
+     * @param chatId идентификатор чата
+     * @param message текст сообщения
+     * @param bot бот в котором пришло сообщение
      */
-    private void backCommandHandler(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
-        contextCore.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.DEFAULT);
-        request.bot().sendMessage(new DefaultState().enterMessage(contextCore, request), request.id());
+    private void backCommandHandler(@NotNull MathMechBotCore contextCore, @NotNull Long chatId,
+                                    @NotNull LocalMessage message, @NotNull Bot bot) {
+        contextCore.getStorage().getUsers().changeUserState(chatId, MathMechBotUserState.DEFAULT);
+        bot.sendMessage(new DefaultState().enterMessage(contextCore, chatId, message, bot), chatId);
     }
 }

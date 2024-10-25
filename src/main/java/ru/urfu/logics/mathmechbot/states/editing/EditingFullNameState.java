@@ -3,10 +3,10 @@ package ru.urfu.logics.mathmechbot.states.editing;
 import java.util.List;
 import java.util.regex.Pattern;
 import org.jetbrains.annotations.NotNull;
+import ru.urfu.bots.Bot;
 import ru.urfu.localobjects.LocalButton;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
-import ru.urfu.localobjects.Request;
 import ru.urfu.logics.mathmechbot.Constants;
 import ru.urfu.logics.mathmechbot.MathMechBotCore;
 import ru.urfu.logics.mathmechbot.models.MathMechBotUserState;
@@ -37,28 +37,33 @@ public final class EditingFullNameState implements MathMechBotState {
                     + "(\\s+[А-ЯЁ][а-яё]+)?$");
 
     @Override
-    public void processMessage(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
-        switch (request.message().text()) {
-            case Constants.BACK_COMMAND -> backCommandHandler(contextCore, request);
-            case null -> request.bot().sendMessage(tryAgain, request.id());
-            default -> textHandler(contextCore, request);
+    public void processMessage(@NotNull MathMechBotCore contextCore, @NotNull Long chatId,
+                               @NotNull LocalMessage message, @NotNull Bot bot) {
+        switch (message.text()) {
+            case Constants.BACK_COMMAND -> backCommandHandler(contextCore, chatId, message, bot);
+            case null -> bot.sendMessage(tryAgain, chatId);
+            default -> textHandler(contextCore, chatId, message, bot);
         }
     }
 
     @NotNull
     @Override
-    public LocalMessage enterMessage(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
+    public LocalMessage enterMessage(@NotNull MathMechBotCore contextCore, @NotNull Long chatId,
+                                     @NotNull LocalMessage message, @NotNull Bot bot) {
         return onEnterMessage;
     }
 
     /**
      * Обработка кнопки "назад".
      * @param contextCore ядро
-     * @param request запрос
+     * @param chatId идентификатор чата
+     * @param message текст сообщения
+     * @param bot бот в котором пришло сообщение
      */
-    private void backCommandHandler(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
-        contextCore.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.EDITING_CHOOSE);
-        request.bot().sendMessage(new EditingChooseState().enterMessage(contextCore, request), request.id());
+    private void backCommandHandler(@NotNull MathMechBotCore contextCore, @NotNull Long chatId,
+                                    @NotNull LocalMessage message, @NotNull Bot bot) {
+        contextCore.getStorage().getUsers().changeUserState(chatId, MathMechBotUserState.EDITING_CHOOSE);
+        bot.sendMessage(new EditingChooseState().enterMessage(contextCore, chatId, message, bot), chatId);
     }
 
     /**
@@ -73,33 +78,36 @@ public final class EditingFullNameState implements MathMechBotState {
     /**
      * Обработка текста.
      * @param contextCore ядро
-     * @param request запрос
+     * @param chatId идентификатор чата
+     * @param message текст сообщения
+     * @param bot бот в котором пришло сообщение
      */
-    private void textHandler(MathMechBotCore contextCore, Request request) {
+    private void textHandler(@NotNull MathMechBotCore contextCore, @NotNull Long chatId,
+                             @NotNull LocalMessage message, @NotNull Bot bot) {
         final UserStorage userStorage = contextCore.getStorage().getUsers();
         final UserEntryStorage userEntryStorage = contextCore.getStorage().getUserEntries();
 
-        assert request.message().text() != null;
-        final String trimmedText = request.message().text().trim();
+        assert message.text() != null;
+        final String trimmedText = message.text().trim();
 
         if (!validateFullName(trimmedText)) {
-            request.bot().sendMessage(tryAgain, request.id());
+            bot.sendMessage(tryAgain, chatId);
             return;
         }
 
         final List<String> strings = List.of(trimmedText.split("\\s+"));
 
-        userEntryStorage.changeUserEntrySurname(request.id(), strings.get(0));
-        userEntryStorage.changeUserEntryName(request.id(), strings.get(1));
+        userEntryStorage.changeUserEntrySurname(chatId, strings.get(0));
+        userEntryStorage.changeUserEntryName(chatId, strings.get(1));
         if (strings.size() == NUMBER_OF_WORDS_IN_FULL_NAME_WITH_PATRONYM) {
-            userEntryStorage.changeUserEntryPatronym(request.id(), strings.get(2));
+            userEntryStorage.changeUserEntryPatronym(chatId, strings.get(2));
         } else {
-            userEntryStorage.changeUserEntryPatronym(request.id(), null);
+            userEntryStorage.changeUserEntryPatronym(chatId, null);
         }
-        userStorage.changeUserState(request.id(), MathMechBotUserState.EDITING_ADDITIONAL_EDIT);
-        request.bot().sendMessage(new LocalMessage("Данные сохранены."), request.id());
+        userStorage.changeUserState(chatId, MathMechBotUserState.EDITING_ADDITIONAL_EDIT);
+        bot.sendMessage(new LocalMessage("Данные сохранены."), chatId);
 
-        final LocalMessage msg = new EditingAdditionalEditState().enterMessage(contextCore, request);
-        request.bot().sendMessage(msg, request.id());
+        final LocalMessage msg = new EditingAdditionalEditState().enterMessage(contextCore, chatId, message, bot);
+        bot.sendMessage(msg, chatId);
     }
 }

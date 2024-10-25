@@ -23,6 +23,7 @@ import ru.urfu.logics.mathmechbot.storages.MathMechStorage;
 @DisplayName("Удаление данных")
 @SuppressWarnings("MagicNumber")
 final class DeletionTest {
+    private final static Long TEST_ID = 0L;
     private final static String ACCEPT_COMMAND = "/yes";
     private final static String DECLINE_COMMAND = "/no";
     private final static String BACK_COMMAND = "/back";
@@ -51,7 +52,6 @@ final class DeletionTest {
             ФИО: Иванов Иван Иванович
             Группа: ММП-102 (МЕН-123456)""");
 
-    private TestUtils utils;
     private MathMechBotCore logic;
     private DummyBot bot;
 
@@ -63,12 +63,11 @@ final class DeletionTest {
     void setupTest() {
         logic = new MathMechBotCore(new MathMechStorage());
         bot = new DummyBot();
-        utils = new TestUtils(logic, bot);
+        TestUtils utils = new TestUtils(logic, bot);
 
         utils.registerUser(0L, "Иванов Иван Иванович", 1,
                 "ММП", 2, "МЕН-123456");
-        logic.processMessage(utils.makeRequestFromMessage(
-                new LocalMessage("/delete")));
+        logic.processMessage(TEST_ID, new LocalMessage("/delete"), bot);
     }
 
     /**
@@ -89,13 +88,11 @@ final class DeletionTest {
         Assertions.assertEquals(askConfirmation,
                 bot.getOutcomingMessageList().getFirst());
 
-        logic.processMessage(utils.makeRequestFromMessage(
-                new LocalMessage(ACCEPT_COMMAND)));
+        logic.processMessage(TEST_ID, new LocalMessage(ACCEPT_COMMAND), bot);
         Assertions.assertEquals(new LocalMessage("Удаляем..."),
                 bot.getOutcomingMessageList().get(1));
 
-        logic.processMessage(utils.makeRequestFromMessage(
-                new LocalMessage(INFO_COMMAND)));
+        logic.processMessage(TEST_ID, new LocalMessage(INFO_COMMAND), bot);
         Assertions.assertEquals(askForRegistration,
                 bot.getOutcomingMessageList().get(3));
     }
@@ -114,13 +111,11 @@ final class DeletionTest {
     @Test
     @DisplayName("Кнопка 'Нет'")
     void testRegisteredUserSaysNo() {
-        logic.processMessage(utils.makeRequestFromMessage(
-                new LocalMessage(DECLINE_COMMAND)));
+        logic.processMessage(TEST_ID, new LocalMessage(DECLINE_COMMAND), bot);
         Assertions.assertEquals(new LocalMessage("Отмена..."),
                 bot.getOutcomingMessageList().get(1));
 
-        logic.processMessage(utils.makeRequestFromMessage(
-                new LocalMessage(INFO_COMMAND)));
+        logic.processMessage(TEST_ID, new LocalMessage(INFO_COMMAND), bot);
         Assertions.assertEquals(userInfo, bot.getOutcomingMessageList().get(3));
     }
 
@@ -137,10 +132,8 @@ final class DeletionTest {
     @Test
     @DisplayName("Кнопка 'Назад'")
     void testRegisteredUserSaysBack() {
-        logic.processMessage(utils.makeRequestFromMessage(
-                new LocalMessage(BACK_COMMAND)));
-        logic.processMessage(utils.makeRequestFromMessage(
-                new LocalMessage(INFO_COMMAND)));
+        logic.processMessage(TEST_ID, new LocalMessage(BACK_COMMAND), bot);
+        logic.processMessage(TEST_ID, new LocalMessage(INFO_COMMAND), bot);
         Assertions.assertEquals(userInfo, bot.getOutcomingMessageList().get(2));
     }
 
@@ -164,15 +157,12 @@ final class DeletionTest {
     @ParameterizedTest(name = "\"{0}\" - не корректный ввод")
     void testRegisteredUserSaysSomethingElse(String text) {
         // Используем билдер, чтобы иметь возможность передать null.
-        logic.processMessage(utils.makeRequestFromMessage(
-                new LocalMessageBuilder().text(text).build()));
+        logic.processMessage(TEST_ID, new LocalMessageBuilder().text(text).build(), bot);
         Assertions.assertEquals(tryAgain, bot.getOutcomingMessageList().get(1));
         Assertions.assertEquals(askConfirmation, bot.getOutcomingMessageList().get(2));
 
-        logic.processMessage(utils.makeRequestFromMessage(
-                new LocalMessage(DECLINE_COMMAND)));
-        logic.processMessage(utils.makeRequestFromMessage(
-                new LocalMessage(INFO_COMMAND)));
+        logic.processMessage(TEST_ID, new LocalMessage(DECLINE_COMMAND), bot);
+        logic.processMessage(TEST_ID, new LocalMessage(INFO_COMMAND), bot);
         Assertions.assertEquals(userInfo, bot.getOutcomingMessageList().get(5));
     }
 }
