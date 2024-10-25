@@ -9,5 +9,5 @@ public interface Identifiable<I> {
      * Идентификатор.
      * @return идентификатор.
      */
-    I id();
+    I getId();
 }

@@ -17,6 +17,7 @@
         <log4j.version>2.24.0</log4j.version>
         <junit-platform.version>1.9.2</junit-platform.version>
         <telegrambots.version>7.10.0</telegrambots.version>
+        <JDA.version>5.1.2</JDA.version>
 
         <commons-lang3.version>3.12.0</commons-lang3.version>
         <commons-collections4.version>4.4</commons-collections4.version>
@@ -119,7 +120,7 @@
         <dependency>
             <groupId>net.dv8tion</groupId>
             <artifactId>JDA</artifactId>
-            <version>5.1.1</version>
+            <version>${JDA.version}</version>
         </dependency>
     </dependencies>
 

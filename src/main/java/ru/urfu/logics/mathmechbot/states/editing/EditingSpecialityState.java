@@ -1,4 +1,4 @@
-package ru.urfu.logics.mathmechbot.states.registration;
+package ru.urfu.logics.mathmechbot.states.editing;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,14 +19,11 @@ import ru.urfu.logics.mathmechbot.states.MathMechBotState;
 import ru.urfu.logics.mathmechbot.storages.UserEntryStorage;
 import ru.urfu.logics.mathmechbot.storages.UserStorage;
 
-
 /**
- * Состояние запроса направления подготовки.
- * Предлагает пользователю направление подготовки
- * из списка, который возвращает метод allowedSpecialties.
+ * Состояние изменения информации о направлении.
  */
-public final class RegistrationSpecialtyState implements MathMechBotState {
-    private final Logger logger = LoggerFactory.getLogger(RegistrationSpecialtyState.class);
+public final class EditingSpecialityState implements MathMechBotState {
+    private final Logger logger = LoggerFactory.getLogger(EditingSpecialityState.class);
 
     private final LocalButton backButton = new LocalButton("Назад", Constants.BACK_COMMAND);
     private final LocalMessage tryAgain = new LocalMessageBuilder().text("Попробуйте снова.").build();
@@ -35,17 +32,17 @@ public final class RegistrationSpecialtyState implements MathMechBotState {
      * Достаёт год пользователя из хранилища.
      *
      * @param contextCore контекст.
-     * @param chatId идентификатор чата
+     * @param id идентификатор
      * @return год для записи данного пользователя.
      */
-    private int getUserEntryYear(@NotNull MathMechBotCore contextCore, @NotNull Long chatId) {
-        final Optional<UserEntry> userEntryOptional = contextCore.getStorage().getUserEntries().get(chatId);
+    private int getUserEntryYear(@NotNull MathMechBotCore contextCore, @NotNull Long id) {
+        final Optional<UserEntry> userEntryOptional = contextCore.getStorage().getUserEntries().get(id);
 
         if (userEntryOptional.isEmpty()) {
-            logger.error("User without entry managed to reach registration_specialty state.");
+            logger.error("User without entry managed to reach editing_specialty state.");
             throw new RuntimeException();
         } else if (userEntryOptional.get().year() == null) {
-            logger.error("User without set year managed to reach registration_specialty state.");
+            logger.error("User without set year managed to reach editing_specialty state.");
             throw new RuntimeException();
         }
 
@@ -62,13 +59,12 @@ public final class RegistrationSpecialtyState implements MathMechBotState {
     @NotNull
     private List<Specialty> allowedSpecialties(int year) {
         if (year == 1) {
-            return List.of(
-                    Specialty.KNMO, Specialty.MMP, Specialty.KB, Specialty.FT
-            );
+            return List.of(Specialty.KNMO, Specialty.MMP, Specialty.KB, Specialty.FT);
         }
         return List.of(
                 Specialty.KN, Specialty.MO, Specialty.MH, Specialty.MT,
-                Specialty.PM, Specialty.KB, Specialty.FT);
+                Specialty.PM, Specialty.KB, Specialty.FT
+        );
     }
 
     @Override
@@ -93,7 +89,13 @@ public final class RegistrationSpecialtyState implements MathMechBotState {
             buttons.add(new LocalButton(specialty.getAbbreviation(), specialty.getAbbreviation()));
         }
         buttons.add(backButton);
-        return new LocalMessageBuilder().text("На каком направлении?").buttons(buttons).build();
+        return new LocalMessageBuilder()
+                .text("""
+                На каком направлении?
+                Если Вы не видите свое направление, то, возможно, Вы выбрали не тот курс.
+                """)
+                .buttons(buttons)
+                .build();
     }
 
     /**
@@ -106,8 +108,8 @@ public final class RegistrationSpecialtyState implements MathMechBotState {
      */
     private void backCommandHandler(@NotNull MathMechBotCore contextCore, @NotNull Long chatId,
                                     @NotNull LocalMessage message, @NotNull Bot bot) {
-        contextCore.getStorage().getUsers().changeUserState(chatId, MathMechBotUserState.REGISTRATION_YEAR);
-        bot.sendMessage(new RegistrationYearState().enterMessage(contextCore, chatId, message, bot), chatId);
+        contextCore.getStorage().getUsers().changeUserState(chatId, MathMechBotUserState.EDITING_CHOOSE);
+        bot.sendMessage(new EditingChooseState().enterMessage(contextCore, chatId, message, bot), chatId);
     }
 
     /**
@@ -138,7 +140,7 @@ public final class RegistrationSpecialtyState implements MathMechBotState {
         }
 
         userEntryStorage.changeUserEntrySpecialty(chatId, message.text());
-        userStorage.changeUserState(chatId, MathMechBotUserState.REGISTRATION_GROUP);
-        bot.sendMessage(new RegistrationGroupState().enterMessage(contextCore, chatId, message, bot), chatId);
+        userStorage.changeUserState(chatId, MathMechBotUserState.EDITING_ADDITIONAL_EDIT);
+        bot.sendMessage(new EditingAdditionalEditState().enterMessage(contextCore, chatId, message, bot), chatId);
     }
 }

@@ -8,8 +8,8 @@ import org.jetbrains.annotations.Nullable;
  */
 public final class UserEntryBuilder {
     private final Long id;
-    private final String surname;
-    private final String name;
+    private String surname;
+    private String name;
     private String patronym;
     private String specialty;
     private String men;
@@ -43,7 +43,7 @@ public final class UserEntryBuilder {
      * @param userEntry объект, у которого скопировать все поля.
      */
     public UserEntryBuilder(@NotNull UserEntry userEntry) {
-        this.id = userEntry.id();
+        this.id = userEntry.getId();
         this.surname = userEntry.surname();
         this.name = userEntry.name();
         this.patronym = userEntry.patronym();
@@ -52,6 +52,28 @@ public final class UserEntryBuilder {
         this.year = userEntry.year();
         this.group = userEntry.group();
         this.userId = userEntry.userId();
+    }
+
+    /**
+     * Устанавливает поле name будущего объекта.
+     *
+     * @param name строка, которую нужно положить в name
+     * @return себя же
+     */
+    public UserEntryBuilder name(@NotNull String name) {
+        this.name = name;
+        return this;
+    }
+
+    /**
+     * Устанавливает поле name будущего объекта.
+     *
+     * @param surname строка, которую нужно положить в name
+     * @return себя же
+     */
+    public UserEntryBuilder surname(@NotNull String surname) {
+        this.surname = surname;
+        return this;
     }
 
     /**

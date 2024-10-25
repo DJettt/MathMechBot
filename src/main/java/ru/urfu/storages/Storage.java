@@ -24,7 +24,10 @@ public interface Storage<T extends Identifiable<I>, I> {
     List<T> getAll();
 
     /**
-     * Добавляет элемент в хранилище.
+     * <p>Добавляет элемент в хранилище.</p>
+     *
+     * <p>Должен бросать IllegalArgumentException, если
+     * элемент с данным id уже существует внутри хранилища.</p>
      *
      * @param member элемент, который добавляем.
      */

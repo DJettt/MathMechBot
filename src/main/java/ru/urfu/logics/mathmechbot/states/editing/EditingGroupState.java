@@ -1,5 +1,4 @@
-package ru.urfu.logics.mathmechbot.states.registration;
-
+package ru.urfu.logics.mathmechbot.states.editing;
 
 import java.util.List;
 import java.util.regex.Pattern;
@@ -15,11 +14,10 @@ import ru.urfu.logics.mathmechbot.states.MathMechBotState;
 import ru.urfu.logics.mathmechbot.storages.UserEntryStorage;
 import ru.urfu.logics.mathmechbot.storages.UserStorage;
 
-
 /**
- * Состояние запроса номера группы во время регистрации.
+ * Состояние при котором пользователь меняет номер группы.
  */
-public final class RegistrationGroupState implements MathMechBotState {
+public final class EditingGroupState implements MathMechBotState {
     private final Pattern validGroupStringPattern = Pattern.compile("^[1-5]$");
 
     private final LocalButton backButton = new LocalButton("Назад", Constants.BACK_COMMAND);
@@ -54,7 +52,7 @@ public final class RegistrationGroupState implements MathMechBotState {
     }
 
     /**
-     * Возвращаем пользователя на шаг назад, то есть на запрос года обучения.
+     * Возвращаем пользователя на этап выбора поля, которое нужно изменить.
      *
      * @param contextCore логического ядро (контекст для состояния).
      * @param chatId идентификатор чата
@@ -63,8 +61,8 @@ public final class RegistrationGroupState implements MathMechBotState {
      */
     private void backCommandHandler(@NotNull MathMechBotCore contextCore, @NotNull Long chatId,
                                     @NotNull LocalMessage message, @NotNull Bot bot) {
-        contextCore.getStorage().getUsers().changeUserState(chatId, MathMechBotUserState.REGISTRATION_SPECIALTY);
-        final LocalMessage msg = new RegistrationSpecialtyState().enterMessage(contextCore, chatId, message, bot);
+        contextCore.getStorage().getUsers().changeUserState(chatId, MathMechBotUserState.EDITING_CHOOSE);
+        final LocalMessage msg = new EditingChooseState().enterMessage(contextCore, chatId, message, bot);
         bot.sendMessage(msg, chatId);
     }
 
@@ -89,11 +87,10 @@ public final class RegistrationGroupState implements MathMechBotState {
             return;
         }
 
-        userEntryStorage.changeUserEntryGroup(chatId,
-                Integer.parseInt(message.text()));
-        userStorage.changeUserState(chatId, MathMechBotUserState.REGISTRATION_MEN);
+        userEntryStorage.changeUserEntryGroup(chatId, Integer.parseInt(message.text()));
+        userStorage.changeUserState(chatId, MathMechBotUserState.EDITING_ADDITIONAL_EDIT);
 
-        final LocalMessage msg = new RegistrationMenGroupState().enterMessage(contextCore, chatId, message, bot);
+        final LocalMessage msg = new EditingAdditionalEditState().enterMessage(contextCore, chatId, message, bot);
         bot.sendMessage(msg, chatId);
     }
 }
