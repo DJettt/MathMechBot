@@ -50,9 +50,9 @@ final public class Main {
     public static void main(String[] args) {
         final MathMechStorage storage = new MathMechStorage(new UserArrayStorage(), new UserEntryArrayStorage());
         final LogicCore logicCore = new MathMechBotCore(storage);
-        startBot(logicCore, "TGMATHMECHBOT_TOKEN", TelegramBot.class);
+        startBot(logicCore, "TELEGRAM_BOT_TOKEN", TelegramBot.class);
 
 //        Выключил, потому что его нормально не запустить из-за блокировки.
-//        startBot(logicCore, "DISCORDBOT_TOKEN", DiscordBot.class);
+//        startBot(logicCore, "DISCORD_BOT_TOKEN", DiscordBot.class);
     }
 }

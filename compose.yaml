@@ -1,0 +1,47 @@
+name: mathmechbot
+
+
+services:
+  app:
+    build:
+      context: .
+    depends_on:
+      - postgres
+    environment:
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
+      DISCORD_BOT_TOKEN: ${DISCORD_BOT_TOKEN}
+    networks:
+      - postgres
+    restart: always
+
+  postgres:
+    image: postgres:17.0-alpine
+    environment:
+      POSTGRES_DB_FILE: /run/secrets/postgres_db
+      POSTGRES_USER_FILE: /run/secrets/postgres_user
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
+    networks:
+      - postgres
+    ports:
+      - 5432
+    restart: unless-stopped
+    secrets:
+      - postgres_db
+      - postgres_user
+      - postgres_password
+    volumes:
+      - ./.pgdata:/var/lib/postgresql/data
+
+
+networks:
+  postgres:
+    driver: bridge
+
+
+secrets:
+  postgres_db:
+    file: ./secrets/postgres_db.txt
+  postgres_user:
+    file: ./secrets/postgres_user.txt
+  postgres_password:
+    file: ./secrets/postgres_password.txt
