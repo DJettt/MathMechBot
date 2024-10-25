@@ -20,6 +20,7 @@ services:
       POSTGRES_USER_FILE: /run/secrets/postgres_user
       POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
     networks:
+      - pgadmin
       - postgres
     ports:
       - 5432
@@ -29,9 +30,28 @@ services:
       - postgres_user
       - postgres_password
     volumes:
-      - ./.pgdata:/var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql/data
+
+  pgadmin:
+    image: dpage/pgadmin4:8.12
+    depends_on:
+      - postgres
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD_FILE: /run/secrets/pgadmin_password
+    networks:
+      - pgadmin
+    ports:
+      - 5050:80
+    restart: always
+    secrets:
+      - pgadmin_password
+    volumes:
+      - pgadmin:/var/lib/pgadmin
 
 networks:
+  pgadmin:
+    driver: bridge
   postgres:
     driver: bridge
 
@@ -42,3 +62,10 @@ secrets:
     file: ./secrets/postgres_user.txt
   postgres_password:
     file: ./secrets/postgres_password.txt
+
+  pgadmin_password:
+    environment: PGADMIN_DEFAULT_PASSWORD
+
+volumes:
+  pgadmin:
+  pgdata:
