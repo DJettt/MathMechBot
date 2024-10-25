@@ -1,6 +1,5 @@
 name: mathmechbot
 
-
 services:
   app:
     build:
@@ -32,11 +31,9 @@ services:
     volumes:
       - ./.pgdata:/var/lib/postgresql/data
 
-
 networks:
   postgres:
     driver: bridge
-
 
 secrets:
   postgres_db:
