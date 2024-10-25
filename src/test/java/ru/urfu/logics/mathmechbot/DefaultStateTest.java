@@ -15,6 +15,7 @@ import ru.urfu.logics.mathmechbot.storages.MathMechStorage;
  */
 @DisplayName("Состояние по умолчанию")
 final class DefaultStateTest {
+    private final static Long TEST_ID = 0L;
     private final static String INFO_COMMAND = "/info";
 
     private final LocalMessage askForRegistration =
@@ -48,8 +49,7 @@ final class DefaultStateTest {
     @ValueSource(strings = {INFO_COMMAND, "/delete"})
     @ParameterizedTest(name = "{0} - команда, недоступная незарегистрированному пользователю")
     void testUnregisteredUser(final String command) {
-        logic.processMessage(utils.makeRequestFromMessage(
-                new LocalMessage(command)));
+        logic.processMessage(TEST_ID, new LocalMessage(command), bot);
         Assertions.assertEquals(askForRegistration,
                 bot.getOutcomingMessageList().getFirst());
     }
@@ -65,15 +65,13 @@ final class DefaultStateTest {
     @ValueSource(strings = {"Ильин Илья Ильич", "Ильин Илья"})
     @ParameterizedTest(name = "\"{0}\" - различные конфигурации ФИО")
     void testInfoExist(String fullName) {
-        logic.processMessage(utils.makeRequestFromMessage(
-                new LocalMessage(INFO_COMMAND)));
+        logic.processMessage(TEST_ID, new LocalMessage(INFO_COMMAND), bot);
         Assertions.assertEquals(askForRegistration,
                 bot.getOutcomingMessageList().getFirst());
 
         utils.registerUser(0L, fullName, 2,
                 "КН", 2, "МЕН-654321");
-        logic.processMessage(utils.makeRequestFromMessage(
-                new LocalMessage(INFO_COMMAND)));
+        logic.processMessage(TEST_ID, new LocalMessage(INFO_COMMAND), bot);
 
         Assertions.assertEquals(new LocalMessageBuilder()
                         .text("""

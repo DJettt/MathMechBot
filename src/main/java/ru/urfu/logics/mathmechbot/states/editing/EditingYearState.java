@@ -3,10 +3,10 @@ package ru.urfu.logics.mathmechbot.states.editing;
 import java.util.List;
 import java.util.regex.Pattern;
 import org.jetbrains.annotations.NotNull;
+import ru.urfu.bots.Bot;
 import ru.urfu.localobjects.LocalButton;
 import ru.urfu.localobjects.LocalMessage;
 import ru.urfu.localobjects.LocalMessageBuilder;
-import ru.urfu.localobjects.Request;
 import ru.urfu.logics.mathmechbot.Constants;
 import ru.urfu.logics.mathmechbot.MathMechBotCore;
 import ru.urfu.logics.mathmechbot.models.MathMechBotUserState;
@@ -36,60 +36,68 @@ public final class EditingYearState implements MathMechBotState {
             .build();
 
     @Override
-    public void processMessage(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
-        switch (request.message().text()) {
-            case Constants.BACK_COMMAND -> backCommandHandler(contextCore, request);
-            case null -> request.bot().sendMessage(tryAgain, request.id());
-            default -> textHandler(contextCore, request);
+    public void processMessage(@NotNull MathMechBotCore contextCore, @NotNull Long chatId,
+                               @NotNull LocalMessage message, @NotNull Bot bot) {
+        switch (message.text()) {
+            case Constants.BACK_COMMAND -> backCommandHandler(contextCore, chatId, message, bot);
+            case null -> bot.sendMessage(tryAgain, chatId);
+            default -> textHandler(contextCore, chatId, message, bot);
         }
     }
 
     @NotNull
     @Override
-    public LocalMessage enterMessage(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
+    public LocalMessage enterMessage(@NotNull MathMechBotCore contextCore, @NotNull Long chatId,
+                                     @NotNull LocalMessage message, @NotNull Bot bot) {
         return onEnterMessage;
     }
 
     /**
      * Обработка кнопки "назад".
      * @param contextCore ядро
-     * @param request запрос
+     * @param chatId идентификатор чата
+     * @param message текст сообщения
+     * @param bot бот в котором пришло сообщение
      */
-    private void backCommandHandler(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
-        contextCore.getStorage().getUsers().changeUserState(request.id(), MathMechBotUserState.EDITING_CHOOSE);
-        request.bot().sendMessage(new EditingChooseState().enterMessage(contextCore, request), request.id());
+    private void backCommandHandler(@NotNull MathMechBotCore contextCore, @NotNull Long chatId,
+                                    @NotNull LocalMessage message, @NotNull Bot bot) {
+        contextCore.getStorage().getUsers().changeUserState(chatId, MathMechBotUserState.EDITING_CHOOSE);
+        bot.sendMessage(new EditingChooseState().enterMessage(contextCore, chatId, message, bot), chatId);
     }
 
     /**
      * Обработка входящей информации от пользователя.
      *
      * @param contextCore логическое ядро
-     * @param request запрос
+     * @param chatId идентификатор чата
+     * @param message текст сообщения
+     * @param bot бот в котором пришло сообщение
      */
-    private void textHandler(@NotNull MathMechBotCore contextCore, @NotNull Request request) {
-        assert request.message().text() != null;
+    private void textHandler(@NotNull MathMechBotCore contextCore, @NotNull Long chatId,
+                             @NotNull LocalMessage message, @NotNull Bot bot) {
+        assert message.text() != null;
 
         final UserStorage userStorage = contextCore.getStorage().getUsers();
         final UserEntryStorage userEntryStorage = contextCore.getStorage().getUserEntries();
 
         int year;
         try {
-            year = Integer.parseInt(request.message().text().trim());
+            year = Integer.parseInt(message.text().trim());
         } catch (NumberFormatException e) {
-            request.bot().sendMessage(tryAgain, request.id());
-            request.bot().sendMessage(onEnterMessage, request.id());
+            bot.sendMessage(tryAgain, chatId);
+            bot.sendMessage(onEnterMessage, chatId);
             return;
         }
 
-        if (validYearStringPattern.matcher(request.message().text()).matches()) {
-            userEntryStorage.changeUserEntryYear(request.id(), year);
-            userStorage.changeUserState(request.id(), MathMechBotUserState.EDITING_ADDITIONAL_EDIT);
+        if (validYearStringPattern.matcher(message.text()).matches()) {
+            userEntryStorage.changeUserEntryYear(chatId, year);
+            userStorage.changeUserState(chatId, MathMechBotUserState.EDITING_ADDITIONAL_EDIT);
 
-            final LocalMessage msg = new EditingAdditionalEditState().enterMessage(contextCore, request);
-            request.bot().sendMessage(msg, request.id());
+            final LocalMessage msg = new EditingAdditionalEditState().enterMessage(contextCore, chatId, message, bot);
+            bot.sendMessage(msg, chatId);
         } else {
-            request.bot().sendMessage(tryAgain, request.id());
-            request.bot().sendMessage(onEnterMessage, request.id());
+            bot.sendMessage(tryAgain, chatId);
+            bot.sendMessage(onEnterMessage, chatId);
         }
     }
 }
