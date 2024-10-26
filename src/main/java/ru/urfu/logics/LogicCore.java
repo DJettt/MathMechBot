@@ -10,12 +10,11 @@ import ru.urfu.logics.localobjects.LocalMessage;
  */
 public interface LogicCore {
     /**
-     * <p>Точка входа для ботов. Они должны вызывать
-     * этот метод, чтобы обратиться к ядру.</p>
+     * <p>Решает, что делать с сообщениями. Боты вызывают этот метод.</p>
      *
-     * @param id      id отправителя сообщения на платформе.
+     * @param chatId  id отправителя сообщения на платформе.
      * @param message сообщение.
      * @param bot     бот, принявший сообщение.
      */
-    void processMessage(@NotNull Long id, @NotNull LocalMessage message, @NotNull Bot bot);
+    void processMessage(@NotNull Long chatId, @NotNull LocalMessage message, @NotNull Bot bot);
 }

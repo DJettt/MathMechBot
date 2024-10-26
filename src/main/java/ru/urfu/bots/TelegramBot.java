@@ -59,12 +59,6 @@ public final class TelegramBot implements Bot, LongPollingSingleThreadUpdateCons
         }).start();
     }
 
-    /**
-     * <p>Отправление сообщения, формат которого содержится в msg.</p>
-     *
-     * @param msg вся информация о том, что должно содержаться в сообщении
-     * @param id id пользователя
-     */
     @Override
     public void sendMessage(@NotNull LocalMessage msg, @NotNull Long id) {
         try {

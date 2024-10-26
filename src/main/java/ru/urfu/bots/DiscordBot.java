@@ -80,17 +80,17 @@ public final class DiscordBot extends ListenerAdapter implements Bot {
             return arrayOfButtons;
         }
 
-            int buttonIndex = 0;
-            while (buttonIndex < message.buttons().size()) {
-                List<LocalButton> localListOfFiveButtons = new ArrayList<>();
+        int buttonIndex = 0;
+        while (buttonIndex < message.buttons().size()) {
+            List<LocalButton> localListOfFiveButtons = new ArrayList<>();
 
-                for (int i = 0;
-                     i < MAX_BUTTONS_IN_MESSAGE && buttonIndex < message.buttons().size();
-                     i++, buttonIndex++) {
+            for (int i = 0;
+                 i < MAX_BUTTONS_IN_MESSAGE && buttonIndex < message.buttons().size();
+                 i++, buttonIndex++) {
 
-                    localListOfFiveButtons.add(message.buttons().get(buttonIndex));
-                }
-                arrayOfButtons.add(localListOfFiveButtons);
+                localListOfFiveButtons.add(message.buttons().get(buttonIndex));
+            }
+            arrayOfButtons.add(localListOfFiveButtons);
         }
         return arrayOfButtons;
     }
@@ -165,26 +165,15 @@ public final class DiscordBot extends ListenerAdapter implements Bot {
         return buttons;
     }
 
-    /**
-     * <p>Отслеживает отправление сообщения от пользователя боту.</p>
-     *
-     * @param event содержит всю информацию об обновлениях в чате.
-     */
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
         if (event.getAuthor().isBot()) {
             return;
         }
-
         LocalMessage msg = convertDiscordMessage(event.getMessage());
         logicCore.processMessage(event.getChannel().getIdLong(), msg, this);
     }
 
-    /**
-     * <p>Отслеживает взаимодействия с кнопками.</p>
-     *
-     * @param event содержит всю информацию об обновлениях.
-     */
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {
         LocalMessage msg = new LocalMessage(event.getButton().getId(), null);
