@@ -9,6 +9,7 @@ services:
     environment:
       TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
       DISCORD_BOT_TOKEN: ${DISCORD_BOT_TOKEN}
+      POSTGRES_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB}
     networks:
       - postgres
     restart: always
@@ -24,7 +25,7 @@ services:
       - postgres
     ports:
       - 5432
-    restart: unless-stopped
+    restart: always
     secrets:
       - postgres_db
       - postgres_user
@@ -57,12 +58,11 @@ networks:
 
 secrets:
   postgres_db:
-    file: ./secrets/postgres_db.txt
+    environment: POSTGRES_DB
   postgres_user:
-    file: ./secrets/postgres_user.txt
+    environment: POSTGRES_USER
   postgres_password:
-    file: ./secrets/postgres_password.txt
-
+    environment: POSTGRES_PASSWORD
   pgadmin_password:
     environment: PGADMIN_DEFAULT_PASSWORD
 
