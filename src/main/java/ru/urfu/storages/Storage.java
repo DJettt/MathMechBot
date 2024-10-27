@@ -30,7 +30,7 @@ public interface Storage<T extends Identifiable<I>, I> {
      *
      * @param member элемент, который добавляем.
      * @throws IllegalArgumentException элемент
-     * с данным id уже существует внутри хранилища.
+     *     с данным id уже существует внутри хранилища.
      */
     void add(T member) throws IllegalArgumentException;
 
