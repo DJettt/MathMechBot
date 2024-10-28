@@ -4,30 +4,27 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <!-- Идентификатор проекта (пакет, id, версия) -->
     <groupId>ru.urfu</groupId>
     <artifactId>MathMechBot</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <properties>
-        <!-- Определяет версию Java для исходных кодов -->
         <maven.compiler.source>21</maven.compiler.source>
-        <!-- Определяет версию Java для скомпилированных классов -->
         <maven.compiler.target>21</maven.compiler.target>
-        <!-- Кодировка проекта -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <junit-jupiter.version>5.9.2</junit-jupiter.version>
         <log4j.version>2.24.0</log4j.version>
         <junit-platform.version>1.9.2</junit-platform.version>
         <telegrambots.version>7.10.0</telegrambots.version>
+        <JDA.version>5.1.2</JDA.version>
 
         <commons-lang3.version>3.12.0</commons-lang3.version>
         <commons-collections4.version>4.4</commons-collections4.version>
         <commons-io.version>2.11.0</commons-io.version>
 
         <maven-checkstyle-plugin.version>3.5.0</maven-checkstyle-plugin.version>
-        <maven-surefire-plugin.version>3.5.0</maven-surefire-plugin.version>
+        <maven-surefire-plugin.version>3.5.1</maven-surefire-plugin.version>
     </properties>
 
     <dependencyManagement>
@@ -121,9 +118,8 @@
         <dependency>
             <groupId>net.dv8tion</groupId>
             <artifactId>JDA</artifactId>
-            <version>5.1.1</version>
+            <version>${JDA.version}</version>
         </dependency>
-
     </dependencies>
 
     <build>
@@ -146,14 +142,16 @@
                     <consoleOutput>true</consoleOutput>
                     <logViolationsToConsole>true</logViolationsToConsole>
                     <failsOnError>true</failsOnError>
+                    <includeTestSourceDirectory>true</includeTestSourceDirectory>
                 </configuration>
             </plugin>
+
+            <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-surefire-plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${maven-surefire-plugin.version}</version>
             </plugin>
-
         </plugins>
     </build>
 
