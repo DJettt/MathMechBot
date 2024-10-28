@@ -12,5 +12,6 @@ import ru.urfu.mathmechbot.EventContext;
  * Валидация данных в ответственность данного класса не входит (для этих целей
  * см. {@link ru.urfu.mathmechbot.validators.MessageValidator класс}).</p>
  */
+@FunctionalInterface
 public interface MMBAction extends Action<EventContext> {
 }

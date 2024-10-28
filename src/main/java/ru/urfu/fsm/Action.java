@@ -7,6 +7,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @param <C> тип контекста действия.
  */
+@FunctionalInterface
 public interface Action<C> {
     /**
      * <p>Выполняет действие.</p>
