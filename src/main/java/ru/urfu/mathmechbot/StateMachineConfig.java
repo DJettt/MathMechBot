@@ -285,10 +285,10 @@ public final class StateMachineConfig {
 
     /**
      * <p>Добавляем все переходы, связанные с редактированием.</p>
-     * TODO: решить, что делать с этими длинными методами.
      */
     @SuppressWarnings("MethodLength")
     private void setupEditingTransitions() {
+        // TODO: решить, что делать с этими длинными декларативными методами.
         final LocalMessage editChoose = new LocalMessageBuilder()
                 .text("Что Вы хотите изменить?")
                 .buttons(List.of(
