@@ -53,6 +53,7 @@ public final class MMBCore implements LogicCore {
                 .processMessage(storage, user, message);
 
         final EventContext context = new EventContext(user, message, bot);
-        userStorage.changeUserState(user.id(), fsm.sendEvent(event, context));
+        final UserState newState = fsm.sendEvent(event, context);
+        userStorage.changeUserState(user.id(), newState);
     }
 }
