@@ -22,6 +22,7 @@
         <log4j-bom.version>2.24.1</log4j-bom.version>
         <telegrambots.version>7.10.0</telegrambots.version>
         <JDA.version>5.1.2</JDA.version>
+        <postgresql.version>42.7.4</postgresql.version>
 
         <maven-checkstyle-plugin.version>3.5.0</maven-checkstyle-plugin.version>
         <maven-surefire-plugin.version>3.5.1</maven-surefire-plugin.version>
@@ -106,6 +107,14 @@
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-slf4j2-impl</artifactId>
+        </dependency>
+
+        <!-- JDBC -->
+        <!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.7.4</version>
         </dependency>
 
         <!-- Telegram -->
