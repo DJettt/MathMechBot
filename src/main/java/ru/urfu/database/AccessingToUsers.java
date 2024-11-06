@@ -67,7 +67,7 @@ public class AccessingToUsers {
             }
         }
         catch (SQLException e) {
-            logger.error("Ошибка при обновлении данных в таблице.");
+            logger.error("Ошибка при получении данных из таблицы.");
             e.printStackTrace();
         }
         return currentState;
@@ -84,7 +84,7 @@ public class AccessingToUsers {
             preparedStatement.executeUpdate();
         }
         catch (SQLException e) {
-            logger.error("Ошибка при обновлении данных в таблице.");
+            logger.error("Ошибка при удалении данных в таблице.");
             e.printStackTrace();
         }
     }
