@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class AccessingToUserEntry {
+    private final ConnectionManager connectionManager = new ConnectionManager();
     private final Logger logger = LoggerFactory.getLogger(AccessingToUserEntry.class);
     private final static String DELETE_INFO = "DELETE FROM user_table WHERE userid = ?";
     private final static String GET_INFO = "SELECT * FROM userentry WHERE userid = ?";
@@ -25,7 +26,7 @@ public class AccessingToUserEntry {
      * @param userEntry информация о пользователе.
      */
     public void createUserEntryIntoDb(UserEntry userEntry) {
-        try (Connection connection = ConnectionManager.open();
+        try (Connection connection = connectionManager.open();
              PreparedStatement preparedStatement = connection.prepareStatement(SET_INFO)) {
 
             preparedStatement.setString(1, userEntry.surname());
@@ -49,7 +50,7 @@ public class AccessingToUserEntry {
      * @param userEntry обновленная информация.
      */
     public void updateUserEntryIntoDb(UserEntry userEntry) {
-        try (Connection connection = ConnectionManager.open();
+        try (Connection connection = connectionManager.open();
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_INFO)) {
 
             preparedStatement.setString(1, userEntry.surname());
@@ -74,7 +75,7 @@ public class AccessingToUserEntry {
      * @return объект UserEntry
      */
     public UserEntry getUserEntry(Long chatId) {
-        try (Connection connection = ConnectionManager.open();
+        try (Connection connection = connectionManager.open();
             PreparedStatement preparedStatement = connection.prepareStatement(GET_INFO)) {
             preparedStatement.setString(1, String.valueOf(chatId));
             ResultSet results = preparedStatement.executeQuery();
@@ -98,7 +99,7 @@ public class AccessingToUserEntry {
      * @param chatId идентификатор пользователя
      */
     public void deleteUserEntryIntoDb(Long chatId) {
-        try (Connection connection = ConnectionManager.open();
+        try (Connection connection = connectionManager.open();
              PreparedStatement preparedStatement = connection.prepareStatement(DELETE_INFO)) {
             preparedStatement.setLong(1, chatId);
             int rowsAffected = preparedStatement.executeUpdate();

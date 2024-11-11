@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class AccessingToUsers {
+    private final ConnectionManager connectionManager = new ConnectionManager();
     private final Logger logger = LoggerFactory.getLogger(AccessingToUserEntry.class);
     private final static String CREATE_USER = "INSERT INTO users (id, current_state) VALUES ?, DEFAULT";
     private final static String UPDATE_CURRENT_STATE = "UPDATE users SET current_state = ? WHERE id = ?";
@@ -22,7 +23,7 @@ public class AccessingToUsers {
      * @param id идентификатор пользователя
      */
     public void createUser(Long id) {
-        try(Connection connection = ConnectionManager.open();
+        try(Connection connection = connectionManager.open();
             PreparedStatement preparedStatement = connection.prepareStatement(CREATE_USER)) {
             preparedStatement.setLong(1, id);
             preparedStatement.executeUpdate();
@@ -39,7 +40,7 @@ public class AccessingToUsers {
      * @param currentState новое состояние
      */
     public void updateCurrentState(Long id, String currentState) {
-        try(Connection connection = ConnectionManager.open();
+        try(Connection connection = connectionManager.open();
             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_CURRENT_STATE)) {
             preparedStatement.setString(1, currentState);
             preparedStatement.setLong(2, id);
@@ -58,7 +59,7 @@ public class AccessingToUsers {
      */
     public String getCurrentState(Long id) {
         String currentState = null;
-        try(Connection connection = ConnectionManager.open();
+        try(Connection connection = connectionManager.open();
             PreparedStatement preparedStatement = connection.prepareStatement(GET_CURRENT_STATE)) {
             preparedStatement.setLong(1, id);
             ResultSet results = preparedStatement.executeQuery();
@@ -78,7 +79,7 @@ public class AccessingToUsers {
      * @param id идентификатор.
      */
     public void deleteUser(Long id) {
-        try(Connection connection = ConnectionManager.open();
+        try(Connection connection = connectionManager.open();
             PreparedStatement preparedStatement = connection.prepareStatement(DELETE_USER)) {
             preparedStatement.setLong(1, id);
             preparedStatement.executeUpdate();

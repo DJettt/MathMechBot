@@ -9,9 +9,6 @@ import java.util.Properties;
  */
 public final class PropertiesUtils {
     private static final Properties PROPERTIES = new Properties();
-    static {
-        loadProperties();
-    }
 
     /**
      * Конструктор.
@@ -31,7 +28,7 @@ public final class PropertiesUtils {
     /**
      * Подгружаем properties файл в отдельном потоке.
      */
-    private static void loadProperties() {
+    private void loadProperties() {
         try (InputStream inputStream = PropertiesUtils.class.getClassLoader()
                 .getResourceAsStream("application.properties")) {
             PROPERTIES.load(inputStream);
