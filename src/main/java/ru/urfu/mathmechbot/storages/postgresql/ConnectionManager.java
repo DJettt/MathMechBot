@@ -1,4 +1,4 @@
-package ru.urfu.database;
+package ru.urfu.mathmechbot.storages.postgresql;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -11,6 +11,7 @@ public final class ConnectionManager {
     private final static String PASSWORD = "db.password";
     private final static String USERNAME = "db.username";
     private final static String URL = "db.url";
+    private final PropertiesUtils utils = new PropertiesUtils();
 
     /**
      * Конструктор
@@ -25,9 +26,9 @@ public final class ConnectionManager {
     public Connection open() {
         try {
             return DriverManager.getConnection(
-                    PropertiesUtils.get(PASSWORD),
-                    PropertiesUtils.get(USERNAME),
-                    PropertiesUtils.get(URL)
+                    utils.get(URL),
+                    utils.get(USERNAME),
+                    utils.get(PASSWORD)
             );
         } catch (SQLException e) {
             throw new RuntimeException(e);

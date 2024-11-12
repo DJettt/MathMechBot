@@ -11,7 +11,7 @@ public final class MathMechStorage {
      * <p>Конструктор.</p>
      */
     public MathMechStorage() {
-        this.users = new UserArrayStorage();
+        this.users = new UserPostgresStorage();
         this.userEntries = new UserEntryArrayStorage();
     }
 
