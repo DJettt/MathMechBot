@@ -1,6 +1,7 @@
 package ru.urfu.mathmechbot.storages.converter;
 
 
+import org.jetbrains.annotations.Nullable;
 import ru.urfu.mathmechbot.UserState;
 
 /**
@@ -48,7 +49,8 @@ public class CurrentStateConverter {
             case UserState.EDITING_MEN -> EDITING_MEN;
             case UserState.EDITING_ADDITIONAL_EDIT -> EDITING_ADDITIONAL_EDIT;
             case UserState.DELETION_CONFIRMATION -> DELETION_CONFIRMATION;
-            default -> DEFAULT;
+            case UserState.DEFAULT -> DEFAULT;
+            default -> null;
         };
     }
 
@@ -57,6 +59,7 @@ public class CurrentStateConverter {
      * @param stateName состояние пользователя
      * @return состояние
      */
+    @Nullable
     public UserState convert(String stateName) {
         return switch(stateName) {
             case REGISTRATION_NAME -> UserState.REGISTRATION_NAME;
@@ -73,7 +76,8 @@ public class CurrentStateConverter {
             case EDITING_MEN -> UserState.EDITING_MEN;
             case EDITING_ADDITIONAL_EDIT -> UserState.EDITING_ADDITIONAL_EDIT;
             case DELETION_CONFIRMATION -> UserState.DELETION_CONFIRMATION;
-            default -> UserState.DEFAULT;
+            case DEFAULT -> UserState.DEFAULT;
+            case null, default -> null;
         };
     }
 }
