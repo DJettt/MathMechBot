@@ -1,4 +1,4 @@
-package ru.urfu.database;
+package ru.urfu.mathmechbot.storages.postgresql;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,16 +13,7 @@ public final class PropertiesUtils {
     /**
      * Конструктор.
      */
-    private PropertiesUtils() {
-    }
-
-    /**
-     * Получаем значение по ключу.
-     * @param key ключ
-     * @return значение
-     */
-    public static String get(String key) {
-        return PROPERTIES.getProperty(key);
+    PropertiesUtils() {
     }
 
     /**
@@ -36,5 +27,15 @@ public final class PropertiesUtils {
         catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * Получаем значение по ключу.
+     * @param key ключ
+     * @return значение
+     */
+    public String get(String key) {
+        this.loadProperties();
+        return PROPERTIES.getProperty(key);
     }
 }
