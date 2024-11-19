@@ -80,6 +80,7 @@ public class UserEntryPostgresStorage implements UserEntryStorage {
             }
         } catch (SQLException e) {
             logger.error("При создании таблицы что-то пошло не так...");
+            throw new RuntimeException(e);
         }
     }
 
@@ -104,7 +105,7 @@ public class UserEntryPostgresStorage implements UserEntryStorage {
             }
         } catch (SQLException e) {
             logger.error("Ошибка при получении данных из таблицы.");
-            return Optional.empty();
+            throw new RuntimeException(e);
         }
     }
 
@@ -129,7 +130,7 @@ public class UserEntryPostgresStorage implements UserEntryStorage {
             return listUserEntry;
         } catch (SQLException e) {
             logger.error("Ошибка при получении всех данных из таблицы.");
-            return listUserEntry;
+            throw new RuntimeException(e);
         }
     }
 
@@ -157,6 +158,7 @@ public class UserEntryPostgresStorage implements UserEntryStorage {
             preparedStatement.executeUpdate();
         } catch (Exception e) {
             logger.error("Ошибка при добавлении данных в таблицу.");
+            throw new RuntimeException(e);
         }
     }
 
@@ -182,9 +184,10 @@ public class UserEntryPostgresStorage implements UserEntryStorage {
             }
             preparedStatement.setLong(SET_EIGHTH, userEntry.userId());
 
-            int rowsAffected = preparedStatement.executeUpdate();
+            preparedStatement.executeUpdate();
         } catch (Exception e) {
             logger.error("Ошибка при обновлении данных в таблице.");
+            throw new RuntimeException(e);
         }
     }
 
@@ -200,6 +203,7 @@ public class UserEntryPostgresStorage implements UserEntryStorage {
             }
         } catch (Exception e) {
             logger.error("Ошибка при удалении данных из таблицы.");
+            throw new RuntimeException(e);
         }
     }
 
@@ -247,6 +251,7 @@ public class UserEntryPostgresStorage implements UserEntryStorage {
             }
         } catch (SQLException e) {
             logger.error("Ошибка при изменении отчества пользователя.");
+            throw new RuntimeException(e);
         }
     }
 
@@ -262,6 +267,7 @@ public class UserEntryPostgresStorage implements UserEntryStorage {
             }
         } catch (SQLException e) {
             logger.error("Ошибка при изменении курса пользователя.");
+            throw new RuntimeException(e);
         }
     }
 
@@ -277,6 +283,7 @@ public class UserEntryPostgresStorage implements UserEntryStorage {
             }
         } catch (SQLException e) {
             logger.error("Ошибка при изменении направления пользователя.");
+            throw new RuntimeException(e);
         }
     }
 
@@ -292,6 +299,7 @@ public class UserEntryPostgresStorage implements UserEntryStorage {
             }
         } catch (SQLException e) {
             logger.error("Ошибка при изменении МЕН пользователя.");
+            throw new RuntimeException(e);
         }
     }
 
@@ -307,6 +315,7 @@ public class UserEntryPostgresStorage implements UserEntryStorage {
             }
         } catch (SQLException e) {
             logger.error("Ошибка при изменении группы пользователя.");
+            throw new RuntimeException(e);
         }
     }
 }
