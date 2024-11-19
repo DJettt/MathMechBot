@@ -23,17 +23,41 @@ public class UserPostgresStorage implements UserStorage {
     private final CurrentStateConverter converter = new CurrentStateConverter();
     private final ConnectionManager connectionManager = new ConnectionManager();
     private final Logger logger = LoggerFactory.getLogger(UserPostgresStorage.class);
+    private final static String TABLE_NAME = "users";
+    private final static String CREATE_TABLE = """
+            CREATE TABLE %s (
+            userid BIGINT,
+            current_state VARCHAR(50)
+            )""";
+    private final static String EXIST_CHECK = "SELECT COUNT(*) FROM information_schema.tables WHERE table_name = ?";
     private final static String CURRENT_STATE_STRING = "current_state";
     private final static String CREATE_USER = "INSERT INTO users (id, current_state) VALUES (?, ?);";
     private final static String UPDATE_CURRENT_STATE = "UPDATE users SET current_state = ? WHERE id = ?";
     private final static String GET_CURRENT_STATE = "SELECT current_state FROM users WHERE id = ?";
     private final static String GET_ALL = "SELECT * FROM users";
     private final static String DELETE_USER = "DELETE FROM users WHERE id = ?";
+    private final static int SET_FIRST = 1;
+    private final static int SET_SECOND = 2;
 
     /**
-     * Конструктор.
+     * Конструктор. Создает таблицу в БД если ее не существует.
      */
     public UserPostgresStorage() {
+        try (Connection connection = connectionManager.open();
+             PreparedStatement preparedStatement = connection.prepareStatement(EXIST_CHECK)) {
+            preparedStatement.setString(SET_FIRST, TABLE_NAME);
+            ResultSet result = preparedStatement.executeQuery();
+            result.next();
+            int count = result.getInt(1);
+            if (count == 0) {
+                try (PreparedStatement createStatement = connection.prepareStatement(
+                        String.format(CREATE_TABLE, TABLE_NAME))) {
+                    createStatement.executeUpdate();
+                }
+            }
+        } catch (SQLException e) {
+            logger.error("При создании таблицы что-то пошло не так...");
+        }
     }
 
     @Override
@@ -42,9 +66,9 @@ public class UserPostgresStorage implements UserStorage {
         String currentState = converter.convert(user.currentState());
         try (Connection connection = connectionManager.open();
             PreparedStatement preparedStatement = connection.prepareStatement(CREATE_USER)) {
-            preparedStatement.setLong(1, id);
-            preparedStatement.setString(2, currentState);
-            int result = preparedStatement.executeUpdate();
+            preparedStatement.setLong(SET_FIRST, id);
+            preparedStatement.setString(SET_SECOND, currentState);
+            preparedStatement.executeUpdate();
         } catch (SQLException e) {
             logger.error("Ошибка при добавлении данных в таблицу.");
         }
@@ -55,8 +79,8 @@ public class UserPostgresStorage implements UserStorage {
         String currentState = converter.convert(state);
         try (Connection connection = connectionManager.open();
             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_CURRENT_STATE)) {
-            preparedStatement.setString(1, currentState);
-            preparedStatement.setLong(2, id);
+            preparedStatement.setString(SET_FIRST, currentState);
+            preparedStatement.setLong(SET_SECOND, id);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             logger.error("Ошибка при изменении состояния.");
@@ -69,8 +93,8 @@ public class UserPostgresStorage implements UserStorage {
         Long id = user.id();
         try (Connection connection = connectionManager.open();
             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_CURRENT_STATE)) {
-            preparedStatement.setString(1, currentState);
-            preparedStatement.setLong(2, id);
+            preparedStatement.setString(SET_FIRST, currentState);
+            preparedStatement.setLong(SET_SECOND, id);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             logger.error("Ошибка при обновлении данных в таблице.");
@@ -82,7 +106,7 @@ public class UserPostgresStorage implements UserStorage {
         String currentState = null;
         try (Connection connection = connectionManager.open();
             PreparedStatement preparedStatement = connection.prepareStatement(GET_CURRENT_STATE)) {
-            preparedStatement.setLong(1, id);
+            preparedStatement.setLong(SET_FIRST, id);
             ResultSet results = preparedStatement.executeQuery();
             if (results.next()) {
                 currentState = results.getString(CURRENT_STATE_STRING);
@@ -106,7 +130,7 @@ public class UserPostgresStorage implements UserStorage {
             ResultSet result = preparedStatement.getResultSet();
             while (result.next()) {
                 newList.add(new User(result.getLong("id"),
-                        converter.convert(result.getString(CURRENT_STATE_STRING))));
+                        Objects.requireNonNull(converter.convert(result.getString(CURRENT_STATE_STRING)))));
             }
             return newList;
         } catch (SQLException e) {
@@ -120,7 +144,7 @@ public class UserPostgresStorage implements UserStorage {
         Long id = user.id();
         try (Connection connection = connectionManager.open();
             PreparedStatement preparedStatement = connection.prepareStatement(DELETE_USER)) {
-            preparedStatement.setLong(1, id);
+            preparedStatement.setLong(SET_FIRST, id);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             logger.error("Ошибка при удалении данных в таблице.");
