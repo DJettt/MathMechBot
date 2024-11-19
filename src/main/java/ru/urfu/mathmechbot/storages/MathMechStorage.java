@@ -12,7 +12,7 @@ public final class MathMechStorage {
      */
     public MathMechStorage() {
         this.users = new UserPostgresStorage();
-        this.userEntries = new UserEntryArrayStorage();
+        this.userEntries = new UserEntryFullStorage();
     }
 
     /**

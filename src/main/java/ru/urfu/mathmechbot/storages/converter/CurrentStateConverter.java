@@ -24,7 +24,9 @@ public class CurrentStateConverter {
     private final static String EDITING_ADDITIONAL_EDIT = "EDITING_ADDITIONAL_EDIT";
     private final static String DELETION_CONFIRMATION = "DELETION_CONFIRMATION";
 
-
+    /**
+     * Конструктор.
+     */
     public CurrentStateConverter() {
     }
 
@@ -49,8 +51,7 @@ public class CurrentStateConverter {
             case UserState.EDITING_MEN -> EDITING_MEN;
             case UserState.EDITING_ADDITIONAL_EDIT -> EDITING_ADDITIONAL_EDIT;
             case UserState.DELETION_CONFIRMATION -> DELETION_CONFIRMATION;
-            case UserState.DEFAULT -> DEFAULT;
-            default -> null;
+            case null, default -> DEFAULT;
         };
     }
 
@@ -61,7 +62,7 @@ public class CurrentStateConverter {
      */
     @Nullable
     public UserState convert(String stateName) {
-        return switch(stateName) {
+        return switch (stateName) {
             case REGISTRATION_NAME -> UserState.REGISTRATION_NAME;
             case REGISTRATION_YEAR -> UserState.REGISTRATION_YEAR;
             case REGISTRATION_SPECIALTY -> UserState.REGISTRATION_SPECIALTY;
@@ -76,8 +77,7 @@ public class CurrentStateConverter {
             case EDITING_MEN -> UserState.EDITING_MEN;
             case EDITING_ADDITIONAL_EDIT -> UserState.EDITING_ADDITIONAL_EDIT;
             case DELETION_CONFIRMATION -> UserState.DELETION_CONFIRMATION;
-            case DEFAULT -> UserState.DEFAULT;
-            case null, default -> null;
+            case null, default -> UserState.DEFAULT;
         };
     }
 }

@@ -14,7 +14,7 @@ public final class ConnectionManager {
     private final PropertiesUtils utils = new PropertiesUtils();
 
     /**
-     * Конструктор
+     * Конструктор.
      */
     public ConnectionManager() {
     }
