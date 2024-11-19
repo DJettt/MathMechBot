@@ -26,7 +26,7 @@ public class UserPostgresStorage implements UserStorage {
     private final static String TABLE_NAME = "users";
     private final static String CREATE_TABLE = """
             CREATE TABLE %s (
-            userid BIGINT,
+            id BIGINT,
             current_state VARCHAR(50)
             )""";
     private final static String EXIST_CHECK = "SELECT COUNT(*) FROM information_schema.tables WHERE table_name = ?";
