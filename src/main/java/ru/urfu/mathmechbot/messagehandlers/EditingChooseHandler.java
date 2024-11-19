@@ -5,7 +5,7 @@ import ru.urfu.logics.localobjects.LocalMessage;
 import ru.urfu.mathmechbot.Constants;
 import ru.urfu.mathmechbot.Event;
 import ru.urfu.mathmechbot.models.User;
-import ru.urfu.mathmechbot.storages.MathMechStorage;
+import ru.urfu.mathmechbot.storages.MathMechStorageInterface;
 
 /**
  * <p>Состояние в котором пользователь выбирает, какую информацию он хочет изменить.</p>
@@ -13,7 +13,7 @@ import ru.urfu.mathmechbot.storages.MathMechStorage;
 public final class EditingChooseHandler implements MessageHandler {
     @NotNull
     @Override
-    public Event processMessage(@NotNull MathMechStorage storage,
+    public Event processMessage(@NotNull MathMechStorageInterface storage,
                                 @NotNull User user,
                                 @NotNull LocalMessage message) {
         return switch (message.text()) {

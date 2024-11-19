@@ -5,7 +5,7 @@ import ru.urfu.logics.localobjects.LocalMessage;
 import ru.urfu.mathmechbot.Constants;
 import ru.urfu.mathmechbot.Event;
 import ru.urfu.mathmechbot.models.User;
-import ru.urfu.mathmechbot.storages.MathMechStorage;
+import ru.urfu.mathmechbot.storages.MathMechStorageInterface;
 
 /**
  * <p>Состояние логического ядра, обрабатывающее три возможных типа сообщения.</p>
@@ -18,7 +18,7 @@ import ru.urfu.mathmechbot.storages.MathMechStorage;
 public final class YesNoHandler implements MessageHandler {
     @NotNull
     @Override
-    public Event processMessage(@NotNull MathMechStorage storage,
+    public Event processMessage(@NotNull MathMechStorageInterface storage,
                                 @NotNull User user,
                                 @NotNull LocalMessage message) {
         return switch (message.text()) {
