@@ -2,27 +2,31 @@ package ru.urfu;
 
 import ru.urfu.bots.TelegramBot;
 import ru.urfu.logics.LogicCore;
-import ru.urfu.logics.mathmechbot.MathMechBotCore;
-import ru.urfu.logics.mathmechbot.storages.MathMechStorage;
+import ru.urfu.mathmechbot.MMBCore;
+import ru.urfu.mathmechbot.storages.MathMechStorage;
 
 /**
- * Основной класс для запуска приложения.
+ * <p>Основной класс для запуска приложения.</p>
  */
 final public class Main {
     /**
-     * Приватный конструктор, добавленный для того, чтобы явно сообщить, что не нужно создавать объекты этого класса.
+     * <p>Приватный конструктор, добавленный для того, чтобы явно
+     * сообщить, что не нужно создавать объекты этого класса.</p>
      */
     private Main() {
     }
 
     /**
-     * Точка входа в программу.
+     * <p>Точка входа в программу.</p>
+     *
+     * <p>Создаём хранилище пользователей и их записей,
+     * создаём объект логического ядра, запускаем ботов.</p>
      *
      * @param args аргументы командной строки
      */
     public static void main(String[] args) {
         final MathMechStorage storage = new MathMechStorage();
-        final LogicCore logicCore = new MathMechBotCore(storage);
+        final LogicCore logicCore = new MMBCore(storage);
 
         final TelegramBot telegramBot = new TelegramBot(
                 System.getenv("TGMATHMECHBOT_TOKEN"), logicCore);
