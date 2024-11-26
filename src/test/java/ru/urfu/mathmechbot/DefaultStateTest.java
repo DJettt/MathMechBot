@@ -7,7 +7,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import ru.urfu.logics.localobjects.LocalMessage;
 import ru.urfu.logics.localobjects.LocalMessageBuilder;
-import ru.urfu.mathmechbot.storages.MathMechStorage;
 
 /**
  * Тесты для дефолтного состояния.
@@ -27,7 +26,7 @@ final class DefaultStateTest {
      */
     @BeforeEach
     void setupTest() {
-        final MMBCore logic = new MMBCore(new MathMechStorage());
+        final MMBCore logic = new MMBCore(new MathMechArrayStorage());
         bot = new DummyBot();
         utils = new TestUtils(logic, bot);
     }

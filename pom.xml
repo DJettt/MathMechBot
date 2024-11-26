@@ -17,11 +17,13 @@
         <commons-io.version>2.17.0</commons-io.version>
         <commons-lang3.version>3.17.0</commons-lang3.version>
 
+        <google-guava.version>33.3.1-jre</google-guava.version>
         <jetbrains-annotations.version>26.0.1</jetbrains-annotations.version>
         <junit-bom.version>5.11.3</junit-bom.version>
         <log4j-bom.version>2.24.1</log4j-bom.version>
         <telegrambots.version>7.10.0</telegrambots.version>
         <JDA.version>5.1.2</JDA.version>
+        <postgresql.version>42.7.4</postgresql.version>
 
         <maven-checkstyle-plugin.version>3.5.0</maven-checkstyle-plugin.version>
         <maven-surefire-plugin.version>3.5.1</maven-surefire-plugin.version>
@@ -67,6 +69,15 @@
             <version>${commons-io.version}</version>
         </dependency>
 
+
+        <!-- Guava (bi-tree) -->
+        <!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${google-guava.version}</version>
+        </dependency>
+
         <!-- https://mvnrepository.com/artifact/org.jetbrains/annotations -->
         <dependency>
             <groupId>org.jetbrains</groupId>
@@ -106,6 +117,14 @@
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-slf4j2-impl</artifactId>
+        </dependency>
+
+        <!-- JDBC -->
+        <!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${postgresql.version}</version>
         </dependency>
 
         <!-- Telegram -->

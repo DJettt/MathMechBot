@@ -76,7 +76,7 @@ public final class TelegramBot implements Bot, LongPollingSingleThreadUpdateCons
      *
      * @param buttons      список кнопок
      * @param sizeOfSquare количество кнопок, которое должно быть в строчке
-     * @return возвращает  сетку кнопок нужного для вывода формата.
+     * @return возвращает сетку кнопок нужного для вывода формата.
      */
     private List<List<LocalButton>> splitButtonList(List<LocalButton> buttons, int sizeOfSquare) {
         List<List<LocalButton>> splitedButtonList = new ArrayList<>();
