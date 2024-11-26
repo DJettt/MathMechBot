@@ -1,9 +1,6 @@
 package ru.urfu.mathmechbot.storages;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -143,12 +140,12 @@ public class UserEntryPostgresStorage implements UserEntryStorage {
             if (userEntry.year() != null) {
                 preparedStatement.setInt(SET_SIXTH, userEntry.year());
             } else {
-                preparedStatement.setInt(SET_SIXTH, 0);
+                preparedStatement.setNull(SET_SIXTH, Types.INTEGER);
             }
             if (userEntry.group() != null) {
                 preparedStatement.setInt(SET_SEVENTH, userEntry.group());
             } else {
-                preparedStatement.setInt(SET_SEVENTH, 0);
+                preparedStatement.setNull(SET_SEVENTH, Types.INTEGER);
             }
             preparedStatement.setLong(SET_EIGHTH, userEntry.userId());
 
@@ -172,12 +169,12 @@ public class UserEntryPostgresStorage implements UserEntryStorage {
             if (userEntry.year() != null) {
                 preparedStatement.setInt(SET_SIXTH, userEntry.year());
             } else {
-                preparedStatement.setInt(SET_SIXTH, 0);
+                preparedStatement.setNull(SET_SIXTH, Types.INTEGER);
             }
             if (userEntry.group() != null) {
                 preparedStatement.setInt(SET_SEVENTH, userEntry.group());
             } else {
-                preparedStatement.setInt(SET_SEVENTH, 0);
+                preparedStatement.setNull(SET_SEVENTH, Types.INTEGER);
             }
             preparedStatement.setLong(SET_EIGHTH, userEntry.userId());
 

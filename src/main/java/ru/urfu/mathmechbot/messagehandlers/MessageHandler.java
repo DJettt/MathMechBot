@@ -4,7 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import ru.urfu.logics.localobjects.LocalMessage;
 import ru.urfu.mathmechbot.Event;
 import ru.urfu.mathmechbot.models.User;
-import ru.urfu.mathmechbot.storages.MathMechStorageInterface;
+import ru.urfu.mathmechbot.storages.MathMechStorage;
 
 /**
  * <p>Интерфейс обработчика сообщений для MathMechBot.</p>
@@ -30,7 +30,7 @@ public interface MessageHandler {
      * @return событие для FSM.
      */
     @NotNull
-    Event processMessage(@NotNull MathMechStorageInterface storage,
+    Event processMessage(@NotNull MathMechStorage storage,
                          @NotNull User user,
                          @NotNull LocalMessage message);
 }

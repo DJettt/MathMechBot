@@ -9,7 +9,7 @@ import ru.urfu.fsm.StateMachineImpl;
 import ru.urfu.logics.LogicCore;
 import ru.urfu.logics.localobjects.LocalMessage;
 import ru.urfu.mathmechbot.models.User;
-import ru.urfu.mathmechbot.storages.MathMechStorageInterface;
+import ru.urfu.mathmechbot.storages.MathMechStorage;
 import ru.urfu.mathmechbot.storages.UserStorage;
 
 
@@ -18,7 +18,7 @@ import ru.urfu.mathmechbot.storages.UserStorage;
  * Telegram-каналов на предмет упоминания студентов.<p/>
  */
 public final class MMBCore implements LogicCore {
-    private final MathMechStorageInterface storage;
+    private final MathMechStorage storage;
     private final StateMachine<UserState, Event, EventContext> fsm;
 
     /**
@@ -26,7 +26,7 @@ public final class MMBCore implements LogicCore {
      *
      * @param storage хранилище данных для логики.
      */
-    public MMBCore(@NotNull MathMechStorageInterface storage) {
+    public MMBCore(@NotNull MathMechStorage storage) {
         this.storage = storage;
         this.fsm = new StateMachineImpl<>(
                 new HashSet<>(List.of(UserState.values())),

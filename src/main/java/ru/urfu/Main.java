@@ -3,7 +3,7 @@ package ru.urfu;
 import ru.urfu.bots.TelegramBot;
 import ru.urfu.logics.LogicCore;
 import ru.urfu.mathmechbot.MMBCore;
-import ru.urfu.mathmechbot.storages.MathMechStorage;
+import ru.urfu.mathmechbot.storages.MathMechDbStorage;
 
 /**
  * <p>Основной класс для запуска приложения.</p>
@@ -25,7 +25,7 @@ final public class Main {
      * @param args аргументы командной строки
      */
     public static void main(String[] args) {
-        final MathMechStorage storage = new MathMechStorage();
+        final MathMechDbStorage storage = new MathMechDbStorage();
         final LogicCore logicCore = new MMBCore(storage);
 
         final TelegramBot telegramBot = new TelegramBot(

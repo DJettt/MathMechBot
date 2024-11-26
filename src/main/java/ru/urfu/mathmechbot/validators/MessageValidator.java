@@ -3,7 +3,7 @@ package ru.urfu.mathmechbot.validators;
 import org.jetbrains.annotations.NotNull;
 import ru.urfu.logics.localobjects.LocalMessage;
 import ru.urfu.mathmechbot.models.User;
-import ru.urfu.mathmechbot.storages.MathMechStorageInterface;
+import ru.urfu.mathmechbot.storages.MathMechStorage;
 
 /**
  * <p>Валидатор сообщений: проверяет, содержит
@@ -25,7 +25,7 @@ public interface MessageValidator {
      * @param message проверяемое сообщение.
      * @return результат проверки.
      */
-    boolean validateMessageContent(@NotNull MathMechStorageInterface storage,
+    boolean validateMessageContent(@NotNull MathMechStorage storage,
                                    @NotNull User user,
                                    @NotNull LocalMessage message);
 }

@@ -9,7 +9,7 @@ import ru.urfu.mathmechbot.Utils;
 import ru.urfu.mathmechbot.models.Specialty;
 import ru.urfu.mathmechbot.models.User;
 import ru.urfu.mathmechbot.models.UserEntry;
-import ru.urfu.mathmechbot.storages.MathMechStorageInterface;
+import ru.urfu.mathmechbot.storages.MathMechStorage;
 
 
 /**
@@ -20,7 +20,7 @@ public final class SpecialtyValidator implements MessageValidator {
     private final Utils utils = new Utils();
 
     @Override
-    public boolean validateMessageContent(@NotNull MathMechStorageInterface storage,
+    public boolean validateMessageContent(@NotNull MathMechStorage storage,
                                           @NotNull User user,
                                           @NotNull LocalMessage message) {
         final Optional<UserEntry> userEntryOptional = storage

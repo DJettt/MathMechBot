@@ -4,7 +4,7 @@ import java.util.regex.Pattern;
 import org.jetbrains.annotations.NotNull;
 import ru.urfu.logics.localobjects.LocalMessage;
 import ru.urfu.mathmechbot.models.User;
-import ru.urfu.mathmechbot.storages.MathMechStorageInterface;
+import ru.urfu.mathmechbot.storages.MathMechStorage;
 
 
 /**
@@ -14,7 +14,7 @@ public final class GroupValidator implements MessageValidator {
     private final Pattern validGroupStringPattern = Pattern.compile("^[1-5]$");
 
     @Override
-    public boolean validateMessageContent(@NotNull MathMechStorageInterface storage,
+    public boolean validateMessageContent(@NotNull MathMechStorage storage,
                                           @NotNull User user,
                                           @NotNull LocalMessage message) {
         if (message.text() == null) {

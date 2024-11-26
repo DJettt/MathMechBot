@@ -6,7 +6,7 @@ import ru.urfu.logics.localobjects.LocalMessage;
 import ru.urfu.mathmechbot.Event;
 import ru.urfu.mathmechbot.models.User;
 import ru.urfu.mathmechbot.models.UserEntry;
-import ru.urfu.mathmechbot.storages.MathMechStorageInterface;
+import ru.urfu.mathmechbot.storages.MathMechStorage;
 
 
 /**
@@ -20,7 +20,7 @@ public final class DefaultStateHandler implements MessageHandler {
 
     @NotNull
     @Override
-    public Event processMessage(@NotNull MathMechStorageInterface storage,
+    public Event processMessage(@NotNull MathMechStorage storage,
                                 @NotNull User user,
                                 @NotNull LocalMessage message) {
         final Optional<UserEntry> userEntryOptional = storage

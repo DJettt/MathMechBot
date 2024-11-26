@@ -1,27 +1,20 @@
 package ru.urfu.mathmechbot.storages;
 
 /**
- * <p>Структура, содержащая все хранилища для MathMechBot.</p>
+ * <p>Интерфейс структуры, содержащей все хранилища для MathMechBot.</p>
  */
-public final class MathMechStorage implements MathMechStorageInterface {
-    private final UserStorage users;
-    private final UserEntryStorage userEntries;
+public interface MathMechStorage {
+    /**
+     * <p>Геттер хранилища объектов User.</p>
+     *
+     * @return хранилище объектов User.
+     */
+    UserStorage getUsers();
 
     /**
-     * <p>Конструктор.</p>
+     * <p>Геттер хранилища объектов UserEntry.</p>
+     *
+     * @return хранилище объектов UserEntry.
      */
-    public MathMechStorage() {
-        this.users = new UserPostgresStorage();
-        this.userEntries = new UserEntryFullStorage();
-    }
-
-    @Override
-    public UserStorage getUsers() {
-        return users;
-    }
-
-    @Override
-    public UserEntryStorage getUserEntries() {
-        return userEntries;
-    }
+    UserEntryStorage getUserEntries();
 }

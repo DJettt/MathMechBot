@@ -11,8 +11,8 @@ import ru.urfu.mathmechbot.models.UserEntry;
  * обращается за получением к кэшу.
  */
 public class UserEntryFullStorage implements UserEntryStorage {
-    final UserEntryCacheStorage cache = new UserEntryCacheStorage();
-    final UserEntryPostgresStorage postgresStorage = new UserEntryPostgresStorage();
+    private final UserEntryStorage cache = new UserEntryCacheStorage();
+    private final UserEntryStorage postgresStorage = new UserEntryPostgresStorage();
 
     @Override
     public void changeUserEntryName(@NotNull Long id, @NotNull String name) {
@@ -80,12 +80,18 @@ public class UserEntryFullStorage implements UserEntryStorage {
     @Override
     public void update(UserEntry member) {
         postgresStorage.update(member);
-        cache.update(member);
+        if (cache.get(member.id()).isPresent()) {
+            cache.update(member);
+        } else {
+            cache.add(member);
+        }
     }
 
     @Override
     public void delete(UserEntry member) {
         postgresStorage.delete(member);
-        cache.delete(member);
+        if (cache.get(member.id()).isPresent()) {
+            cache.delete(member);
+        }
     }
 }

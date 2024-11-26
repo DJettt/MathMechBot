@@ -8,10 +8,9 @@ import java.sql.SQLException;
  * Создает соединение с базой данных.
  */
 public final class ConnectionManager {
-    private final static String PASSWORD = "db.password";
-    private final static String USERNAME = "db.username";
-    private final static String URL = "db.url";
-    private final PropertiesUtils utils = new PropertiesUtils();
+    private final static String PASSWORD = "DATABASE_PASSWORD";
+    private final static String USERNAME = "DATABASE_USERNAME";
+    private final static String URL = "DATABASE_URL";
 
     /**
      * Конструктор.
@@ -26,9 +25,9 @@ public final class ConnectionManager {
     public Connection open() {
         try {
             return DriverManager.getConnection(
-                    utils.get(URL),
-                    utils.get(USERNAME),
-                    utils.get(PASSWORD)
+                    System.getenv(URL),
+                    System.getenv(USERNAME),
+                    System.getenv(PASSWORD)
             );
         } catch (SQLException e) {
             throw new RuntimeException(e);
