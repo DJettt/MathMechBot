@@ -17,6 +17,7 @@
         <commons-io.version>2.17.0</commons-io.version>
         <commons-lang3.version>3.17.0</commons-lang3.version>
 
+        <google-guava.version>33.3.1-jre</google-guava.version>
         <jetbrains-annotations.version>26.0.1</jetbrains-annotations.version>
         <junit-bom.version>5.11.3</junit-bom.version>
         <log4j-bom.version>2.24.1</log4j-bom.version>
@@ -68,6 +69,15 @@
             <version>${commons-io.version}</version>
         </dependency>
 
+
+        <!-- Guava (bi-tree) -->
+        <!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${google-guava.version}</version>
+        </dependency>
+
         <!-- https://mvnrepository.com/artifact/org.jetbrains/annotations -->
         <dependency>
             <groupId>org.jetbrains</groupId>
@@ -114,7 +124,7 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.7.4</version>
+            <version>${postgresql.version}</version>
         </dependency>
 
         <!-- Telegram -->

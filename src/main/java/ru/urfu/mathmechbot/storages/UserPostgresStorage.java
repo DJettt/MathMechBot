@@ -108,17 +108,16 @@ public class UserPostgresStorage implements UserStorage {
             logger.error("Ошибка при получении данных из таблицы.");
             throw new RuntimeException(e);
         }
-        if (converter.convert(currentState) == null) {
-            User newUser = new User(id, UserState.DEFAULT);
-            this.add(newUser);
-            return Optional.of(newUser);
+        if (currentState == null) {
+            return Optional.empty();
+        } else {
+            return Optional.of(new User(id, Objects.requireNonNull(converter.convert(currentState))));
         }
-        return Optional.of(new User(id, Objects.requireNonNull(converter.convert(currentState))));
     }
 
     @Override
     public List<User> getAll() {
-        List<User> newListUsers = new ArrayList<User>();
+        List<User> newListUsers = new ArrayList<>();
         try (Connection connection = connectionManager.open();
             PreparedStatement preparedStatement = connection.prepareStatement(GET_ALL)) {
             ResultSet result = preparedStatement.getResultSet();
