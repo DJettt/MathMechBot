@@ -50,6 +50,19 @@ public class UserPostgresStorage implements UserStorage {
         }
     }
 
+    /**
+     * Создает PreparedStatement из UserEntry для дальнейшего выполнения запроса.
+     * @param preparedStatement интерфейс с текущим SQL запросом.
+     * @param id идентификатор пользователя.
+     * @param currentState текущее состояние пользователя.
+     * @throws SQLException обработчик исключений при работе с БД.
+     */
+    private void prepareStatementFromUser(PreparedStatement preparedStatement, String currentState, long id)
+            throws SQLException {
+        preparedStatement.setString(SET_FIRST, currentState);
+        preparedStatement.setLong(SET_SECOND, id);
+    }
+
     @Override
     public void add(User user) {
         long id = user.id();
@@ -70,8 +83,7 @@ public class UserPostgresStorage implements UserStorage {
         String currentState = converter.convert(state);
         try (Connection connection = connectionManager.open();
             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_CURRENT_STATE)) {
-            preparedStatement.setString(SET_FIRST, currentState);
-            preparedStatement.setLong(SET_SECOND, id);
+            prepareStatementFromUser(preparedStatement, currentState, id);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             logger.error("Ошибка при изменении состояния.");
@@ -85,8 +97,7 @@ public class UserPostgresStorage implements UserStorage {
         long id = user.id();
         try (Connection connection = connectionManager.open();
             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_CURRENT_STATE)) {
-            preparedStatement.setString(SET_FIRST, currentState);
-            preparedStatement.setLong(SET_SECOND, id);
+            prepareStatementFromUser(preparedStatement, currentState, id);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             logger.error("Ошибка при обновлении данных в таблице.");

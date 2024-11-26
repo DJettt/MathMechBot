@@ -98,6 +98,32 @@ public class UserEntryPostgresStorage implements UserEntryStorage {
                 .build();
     }
 
+    /**
+     * Создает PreparedStatement из UserEntry для дальнейшего выполнения запроса.
+     * @param preparedStatement интерфейс с текущим SQL запросом.
+     * @param userEntry объект, информацию о котором нужно запомнить/обновить.
+     * @throws SQLException обработчик исключений при работе с БД.
+     */
+    private void prepareStatementFromUserEntry(PreparedStatement preparedStatement, UserEntry userEntry)
+            throws SQLException {
+        preparedStatement.setString(SET_FIRST, userEntry.surname());
+        preparedStatement.setString(SET_SECOND, userEntry.name());
+        preparedStatement.setString(SET_THIRD, userEntry.patronym());
+        preparedStatement.setString(SET_FOURTH, userEntry.specialty());
+        preparedStatement.setString(SET_FIFTH, userEntry.men());
+        if (userEntry.year() != null) {
+            preparedStatement.setInt(SET_SIXTH, userEntry.year());
+        } else {
+            preparedStatement.setNull(SET_SIXTH, Types.INTEGER);
+        }
+        if (userEntry.group() != null) {
+            preparedStatement.setInt(SET_SEVENTH, userEntry.group());
+        } else {
+            preparedStatement.setNull(SET_SEVENTH, Types.INTEGER);
+        }
+        preparedStatement.setLong(SET_EIGHTH, userEntry.userId());
+    }
+
     @SuppressWarnings("MultipleStringLiterals")
     @Override
     public Optional<UserEntry> get(Long id) {
@@ -135,24 +161,8 @@ public class UserEntryPostgresStorage implements UserEntryStorage {
     @Override
     public void add(UserEntry userEntry) throws IllegalArgumentException {
         try (Connection connection = connectionManager.open();
-             PreparedStatement preparedStatement = connection.prepareStatement(SET_INFO_QUERY)) {
-            preparedStatement.setString(SET_FIRST, userEntry.surname());
-            preparedStatement.setString(SET_SECOND, userEntry.name());
-            preparedStatement.setString(SET_THIRD, userEntry.patronym());
-            preparedStatement.setString(SET_FOURTH, userEntry.specialty());
-            preparedStatement.setString(SET_FIFTH, userEntry.men());
-            if (userEntry.year() != null) {
-                preparedStatement.setInt(SET_SIXTH, userEntry.year());
-            } else {
-                preparedStatement.setNull(SET_SIXTH, Types.INTEGER);
-            }
-            if (userEntry.group() != null) {
-                preparedStatement.setInt(SET_SEVENTH, userEntry.group());
-            } else {
-                preparedStatement.setNull(SET_SEVENTH, Types.INTEGER);
-            }
-            preparedStatement.setLong(SET_EIGHTH, userEntry.userId());
-
+        PreparedStatement preparedStatement = connection.prepareStatement(SET_INFO_QUERY)) {
+            prepareStatementFromUserEntry(preparedStatement, userEntry);
             preparedStatement.executeUpdate();
         } catch (Exception e) {
             logger.error("Ошибка при добавлении данных в таблицу.");
@@ -164,24 +174,7 @@ public class UserEntryPostgresStorage implements UserEntryStorage {
     public void update(UserEntry userEntry) {
         try (Connection connection = connectionManager.open();
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_INFO_QUERY)) {
-
-            preparedStatement.setString(SET_FIRST, userEntry.surname());
-            preparedStatement.setString(SET_SECOND, userEntry.name());
-            preparedStatement.setString(SET_THIRD, userEntry.patronym());
-            preparedStatement.setString(SET_FOURTH, userEntry.specialty());
-            preparedStatement.setString(SET_FIFTH, userEntry.men());
-            if (userEntry.year() != null) {
-                preparedStatement.setInt(SET_SIXTH, userEntry.year());
-            } else {
-                preparedStatement.setNull(SET_SIXTH, Types.INTEGER);
-            }
-            if (userEntry.group() != null) {
-                preparedStatement.setInt(SET_SEVENTH, userEntry.group());
-            } else {
-                preparedStatement.setNull(SET_SEVENTH, Types.INTEGER);
-            }
-            preparedStatement.setLong(SET_EIGHTH, userEntry.userId());
-
+            prepareStatementFromUserEntry(preparedStatement, userEntry);
             preparedStatement.executeUpdate();
         } catch (Exception e) {
             logger.error("Ошибка при обновлении данных в таблице.");
