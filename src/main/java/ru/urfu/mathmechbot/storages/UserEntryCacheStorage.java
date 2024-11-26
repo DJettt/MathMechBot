@@ -15,7 +15,7 @@ import ru.urfu.mathmechbot.models.UserEntryBuilder;
  */
 public class UserEntryCacheStorage implements UserEntryStorage {
     private final static int INITIAL_CAPACITY = 5000;
-    private final static int maxSize = 5000;
+    private final static int MAX_SIZE = 5000;
     private final Map<Long, UserEntry> cache = new ConcurrentHashMap<>(INITIAL_CAPACITY);
 
     /**
@@ -26,57 +26,64 @@ public class UserEntryCacheStorage implements UserEntryStorage {
 
     @Override
     public void changeUserEntryName(@NotNull Long id, @NotNull String name) {
-        if (cache.containsKey(id))
+        if (cache.containsKey(id)) {
             cache.put(id, new UserEntryBuilder(cache.get(id))
                     .name(name)
                     .build());
+        }
     }
 
     @Override
     public void changeUserEntrySurname(@NotNull Long id, @NotNull String surname) {
-        if (cache.containsKey(id))
+        if (cache.containsKey(id)) {
             cache.put(id, new UserEntryBuilder(cache.get(id))
                     .surname(surname)
                     .build());
+        }
     }
 
     @Override
     public void changeUserEntryPatronym(@NotNull Long id, @Nullable String patronym) {
-        if (cache.containsKey(id))
+        if (cache.containsKey(id)) {
             cache.put(id, new UserEntryBuilder(cache.get(id))
                     .patronym(patronym)
                     .build());
+        }
     }
 
     @Override
     public void changeUserEntryYear(@NotNull Long id, @NotNull Integer year) {
-        if (cache.containsKey(id))
+        if (cache.containsKey(id)) {
             cache.put(id, new UserEntryBuilder(cache.get(id))
                     .year(year)
                     .build());
+        }
     }
 
     @Override
     public void changeUserEntrySpecialty(@NotNull Long id, @NotNull String specialty) {
-        if (cache.containsKey(id))
+        if (cache.containsKey(id)) {
             cache.put(id, new UserEntryBuilder(cache.get(id))
                     .specialty(specialty)
                     .build());
+        }
     }
 
     @Override
     public void changeUserEntryMen(@NotNull Long id, @NotNull String men) {
-        if (cache.containsKey(id))
+        if (cache.containsKey(id)) {
             cache.put(id, new UserEntryBuilder(cache.get(id))
                     .men(men)
                     .build());
+        }
     }
 
     @Override
     public void changeUserEntryGroup(@NotNull Long id, @NotNull Integer group) {
-        if (cache.containsKey(id))
+        if (cache.containsKey(id)) {
             cache.put(id, new UserEntryBuilder(cache.get(id)).group(group)
                     .build());
+        }
     }
 
     @Override
@@ -91,7 +98,7 @@ public class UserEntryCacheStorage implements UserEntryStorage {
 
     @Override
     public void add(UserEntry member) throws IllegalArgumentException {
-        if (cache.size() >= maxSize) {
+        if (cache.size() >= MAX_SIZE) {
             cache.clear();
         }
         cache.put(member.id(), member);
