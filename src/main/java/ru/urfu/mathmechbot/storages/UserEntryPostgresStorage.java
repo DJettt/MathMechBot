@@ -16,25 +16,23 @@ import ru.urfu.mathmechbot.models.UserEntryBuilder;
 import ru.urfu.mathmechbot.storages.postgresql.ConnectionManager;
 
 /**
- * Обеспечивает коннект с таблицей userentry в БД.
+ * Обеспечивает коннект с таблицей userentries в БД.
  */
 public class UserEntryPostgresStorage implements UserEntryStorage {
     private final ConnectionManager connectionManager = new ConnectionManager();
     private final Logger logger = LoggerFactory.getLogger(UserEntryPostgresStorage.class);
-    private final static String LOG_ERROR_UNTIL_UPDATE = "Информация не обновлена.";
-    //TODO было бы классно выделить всю структуру таблицы в отдельный файл, возможно properties
-    private final static String DELETE_INFO = "DELETE FROM userentry WHERE userid = ?";
-    private final static String GET_INFO = "SELECT * FROM userentry WHERE userid = ?";
-    private final static String GEL_ALL_INFO = "SELECT * FROM userentry";
-    private final static String UPDATE_INFO = """
-            UPDATE userentry SET surname = ?, name = ?, patronym = ?,
+    private final static String LOG_INFORMATION_UPDATE_FAILED = "Информация не обновлена.";
+    private final static String DELETE_INFO_QUERY = "DELETE FROM userentries WHERE userid = ?";
+    private final static String GET_INFO_QUERY = "SELECT * FROM userentries WHERE userid = ?";
+    private final static String GEL_ALL_INFO_QUERY = "SELECT * FROM userentries";
+    private final static String UPDATE_INFO_QUERY = """
+            UPDATE userentries SET surname = ?, name = ?, patronym = ?,
             speciality = ?, men = ?, year = ?, group_number = ? WHERE userid = ?""";
-    private final static String SET_INFO = """
-            INSERT INTO userentry (surname, name, patronym,
+    private final static String SET_INFO_QUERY = """
+            INSERT INTO userentries (surname, name, patronym,
             speciality, men, year, group_number, userid) VALUES (?, ?, ?, ?, ?, ?, ?, ?)""";
-    private final static String TABLE_NAME = "userentry";
-    private final static String CREATE_TABLE = """
-            CREATE TABLE %s (
+    private final static String CREATE_TABLE_IF_NOT_EXIST_QUERY = """
+            CREATE TABLE IF NOT EXISTS userentries (
             id SERIAL PRIMARY KEY,
             surname VARCHAR(50),
             name VARCHAR(50),
@@ -45,14 +43,21 @@ public class UserEntryPostgresStorage implements UserEntryStorage {
             group_number INT,
             userid BIGINT
             )""";
-    private final static String EXIST_CHECK = "SELECT COUNT(*) FROM information_schema.tables WHERE table_name = ?";
-    private final static String CHANGE_NAME = "UPDATE userentry SET name = ? WHERE userid = ?";
-    private final static String CHANGE_SURNAME = "UPDATE userentry SET surname = ? WHERE userid = ?";
-    private final static String CHANGE_PATRONYM = "UPDATE userentry SET patronym = ? WHERE userid = ?";
-    private final static String CHANGE_YEAR = "UPDATE userentry SET year = ? WHERE userid = ?";
-    private final static String CHANGE_SPECIALITY = "UPDATE userentry SET speciality = ? WHERE userid = ?";
-    private final static String CHANGE_GROUP = "UPDATE userentry SET group_number = ? WHERE userid = ?";
-    private final static String CHANGE_MEN = "UPDATE userentry SET men = ? WHERE userid = ?";
+    private final static String CHANGE_NAME_QUERY = "UPDATE userentries SET name = ? WHERE userid = ?";
+    private final static String CHANGE_SURNAME_QUERY = "UPDATE userentries SET surname = ? WHERE userid = ?";
+    private final static String CHANGE_PATRONYM_QUERY = "UPDATE userentries SET patronym = ? WHERE userid = ?";
+    private final static String CHANGE_YEAR_QUERY = "UPDATE userentries SET year = ? WHERE userid = ?";
+    private final static String CHANGE_SPECIALITY_QUERY = "UPDATE userentries SET speciality = ? WHERE userid = ?";
+    private final static String CHANGE_GROUP_QUERY = "UPDATE userentries SET group_number = ? WHERE userid = ?";
+    private final static String CHANGE_MEN_QUERY = "UPDATE userentries SET men = ? WHERE userid = ?";
+    private final static String USERID_STRING = "userid";
+    private final static String NAME_STRING = "name";
+    private final static String SURNAME_STRING = "surname";
+    private final static String PATRONYM_STRING = "patronym";
+    private final static String SPECIALITY_STRING = "speciality";
+    private final static String YEAR_STRING = "year";
+    private final static String GROUP_NUMBER_STRING = "group_number";
+    private final static String MEN_STRING = "men";
     private final static int SET_FIRST = 1;
     private final static int SET_SECOND = 2;
     private final static int SET_THIRD = 3;
@@ -67,39 +72,40 @@ public class UserEntryPostgresStorage implements UserEntryStorage {
      */
     public UserEntryPostgresStorage() {
         try (Connection connection = connectionManager.open();
-             PreparedStatement preparedStatement = connection.prepareStatement(EXIST_CHECK)) {
-            preparedStatement.setString(SET_FIRST, TABLE_NAME);
-            ResultSet result = preparedStatement.executeQuery();
-            result.next();
-            int count = result.getInt(1);
-            if (count == 0) {
-                try (PreparedStatement createStatement = connection.prepareStatement(
-                        String.format(CREATE_TABLE, TABLE_NAME))) {
-                    createStatement.executeUpdate();
-                }
-            }
+             PreparedStatement preparedStatement = connection.prepareStatement(CREATE_TABLE_IF_NOT_EXIST_QUERY)) {
+            preparedStatement.executeUpdate();
         } catch (SQLException e) {
             logger.error("При создании таблицы что-то пошло не так...");
             throw new RuntimeException(e);
         }
     }
 
+    /**
+     * Создает UserEntry из данных, полученных при SQL запросе.
+     * @param result данный из базы данных.
+     * @return объект UserEntry
+     */
+    private UserEntry createUserEntryFromResultSet(ResultSet result) throws SQLException {
+        return new UserEntryBuilder(result.getLong(USERID_STRING), result.getLong(USERID_STRING))
+                .name(result.getString(NAME_STRING))
+                .surname(result.getString(SURNAME_STRING))
+                .patronym(result.getString(PATRONYM_STRING))
+                .specialty(result.getString(SPECIALITY_STRING))
+                .year(result.getInt(YEAR_STRING))
+                .group(result.getInt(GROUP_NUMBER_STRING))
+                .men(result.getString(MEN_STRING))
+                .build();
+    }
+
     @SuppressWarnings("MultipleStringLiterals")
     @Override
-    public Optional<ru.urfu.mathmechbot.models.UserEntry> get(Long id) {
+    public Optional<UserEntry> get(Long id) {
         try (Connection connection = connectionManager.open();
-             PreparedStatement preparedStatement = connection.prepareStatement(GET_INFO)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(GET_INFO_QUERY)) {
             preparedStatement.setLong(SET_FIRST, id);
             ResultSet results = preparedStatement.executeQuery();
             if (results.next()) {
-                return Optional.of(new UserEntryBuilder(id, id)
-                        .surname(results.getString("surname"))
-                        .name(results.getString("name"))
-                        .men(results.getString("men"))
-                        .group(results.getInt("group_number"))
-                        .year(results.getInt("year"))
-                        .specialty(results.getString("speciality"))
-                        .build());
+                return Optional.of(createUserEntryFromResultSet(results));
             } else {
                 return Optional.empty();
             }
@@ -109,23 +115,14 @@ public class UserEntryPostgresStorage implements UserEntryStorage {
         }
     }
 
-    @SuppressWarnings("MultipleStringLiterals")
     @Override
     public List<UserEntry> getAll() {
         List<UserEntry> listUserEntry = new ArrayList<>();
         try (Connection connection = connectionManager.open();
-             PreparedStatement preparedStatement = connection.prepareStatement(GEL_ALL_INFO)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(GEL_ALL_INFO_QUERY)) {
             ResultSet results = preparedStatement.executeQuery();
             while (results.next()) {
-                listUserEntry.add(new UserEntryBuilder(results.getLong("userid"), results.getLong("userid"))
-                        .name(results.getString("name"))
-                        .surname(results.getString("surname"))
-                        .patronym(results.getString("patronym"))
-                        .specialty(results.getString("speciality"))
-                        .year(results.getInt("year"))
-                        .group(results.getInt("group_number"))
-                        .men(results.getString("men"))
-                        .build());
+                listUserEntry.add(createUserEntryFromResultSet(results));
             }
             return listUserEntry;
         } catch (SQLException e) {
@@ -137,7 +134,7 @@ public class UserEntryPostgresStorage implements UserEntryStorage {
     @Override
     public void add(UserEntry userEntry) throws IllegalArgumentException {
         try (Connection connection = connectionManager.open();
-             PreparedStatement preparedStatement = connection.prepareStatement(SET_INFO)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(SET_INFO_QUERY)) {
             preparedStatement.setString(SET_FIRST, userEntry.surname());
             preparedStatement.setString(SET_SECOND, userEntry.name());
             preparedStatement.setString(SET_THIRD, userEntry.patronym());
@@ -165,7 +162,7 @@ public class UserEntryPostgresStorage implements UserEntryStorage {
     @Override
     public void update(UserEntry userEntry) {
         try (Connection connection = connectionManager.open();
-             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_INFO)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_INFO_QUERY)) {
 
             preparedStatement.setString(SET_FIRST, userEntry.surname());
             preparedStatement.setString(SET_SECOND, userEntry.name());
@@ -193,13 +190,13 @@ public class UserEntryPostgresStorage implements UserEntryStorage {
 
     @Override
     public void delete(UserEntry userEntry) {
-        Long userId = userEntry.id();
+        long userId = userEntry.id();
         try (Connection connection = connectionManager.open();
-             PreparedStatement preparedStatement = connection.prepareStatement(DELETE_INFO)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(DELETE_INFO_QUERY)) {
             preparedStatement.setLong(SET_FIRST, userId);
             int rowsAffected = preparedStatement.executeUpdate();
             if (rowsAffected <= 0) {
-                logger.error("Информация не удалена.");
+                logger.warn("Информация не удалена.");
             }
         } catch (Exception e) {
             logger.error("Ошибка при удалении данных из таблицы.");
@@ -210,12 +207,12 @@ public class UserEntryPostgresStorage implements UserEntryStorage {
     @Override
     public void changeUserEntryName(@NotNull Long id, @NotNull String name) {
         try (Connection connection = connectionManager.open();
-             PreparedStatement preparedStatement = connection.prepareStatement(CHANGE_NAME)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(CHANGE_NAME_QUERY)) {
             preparedStatement.setString(SET_FIRST, name);
             preparedStatement.setLong(SET_SECOND, id);
             int rowsAffected = preparedStatement.executeUpdate();
             if (rowsAffected != 1) {
-                logger.error(LOG_ERROR_UNTIL_UPDATE);
+                logger.warn(LOG_INFORMATION_UPDATE_FAILED);
             }
         } catch (SQLException e) {
             logger.error("Ошибка при изменении имени пользователя.");
@@ -226,12 +223,12 @@ public class UserEntryPostgresStorage implements UserEntryStorage {
     @Override
     public void changeUserEntrySurname(@NotNull Long id, @NotNull String surname) {
         try (Connection connection = connectionManager.open();
-             PreparedStatement preparedStatement = connection.prepareStatement(CHANGE_SURNAME)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(CHANGE_SURNAME_QUERY)) {
             preparedStatement.setString(SET_FIRST, surname);
             preparedStatement.setLong(SET_SECOND, id);
             int rowsAffected = preparedStatement.executeUpdate();
             if (rowsAffected != 1) {
-                logger.error(LOG_ERROR_UNTIL_UPDATE);
+                logger.warn(LOG_INFORMATION_UPDATE_FAILED);
             }
         } catch (SQLException e) {
             logger.error("Ошибка при изменении фамилии пользователя.");
@@ -242,12 +239,12 @@ public class UserEntryPostgresStorage implements UserEntryStorage {
     @Override
     public void changeUserEntryPatronym(@NotNull Long id, @Nullable String patronym) {
         try (Connection connection = connectionManager.open();
-             PreparedStatement preparedStatement = connection.prepareStatement(CHANGE_PATRONYM)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(CHANGE_PATRONYM_QUERY)) {
             preparedStatement.setString(SET_FIRST, patronym);
             preparedStatement.setLong(SET_SECOND, id);
             int rowsAffected = preparedStatement.executeUpdate();
             if (rowsAffected != 1) {
-                logger.error(LOG_ERROR_UNTIL_UPDATE);
+                logger.warn(LOG_INFORMATION_UPDATE_FAILED);
             }
         } catch (SQLException e) {
             logger.error("Ошибка при изменении отчества пользователя.");
@@ -258,12 +255,12 @@ public class UserEntryPostgresStorage implements UserEntryStorage {
     @Override
     public void changeUserEntryYear(@NotNull Long id, @NotNull Integer year) {
         try (Connection connection = connectionManager.open();
-             PreparedStatement preparedStatement = connection.prepareStatement(CHANGE_YEAR)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(CHANGE_YEAR_QUERY)) {
             preparedStatement.setInt(SET_FIRST, year);
             preparedStatement.setLong(SET_SECOND, id);
             int rowsAffected = preparedStatement.executeUpdate();
             if (rowsAffected != 1) {
-                logger.error(LOG_ERROR_UNTIL_UPDATE);
+                logger.warn(LOG_INFORMATION_UPDATE_FAILED);
             }
         } catch (SQLException e) {
             logger.error("Ошибка при изменении курса пользователя.");
@@ -274,12 +271,12 @@ public class UserEntryPostgresStorage implements UserEntryStorage {
     @Override
     public void changeUserEntrySpecialty(@NotNull Long id, @NotNull String specialty) {
         try (Connection connection = connectionManager.open();
-             PreparedStatement preparedStatement = connection.prepareStatement(CHANGE_SPECIALITY)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(CHANGE_SPECIALITY_QUERY)) {
             preparedStatement.setString(SET_FIRST, specialty);
             preparedStatement.setLong(SET_SECOND, id);
             int rowsAffected = preparedStatement.executeUpdate();
             if (rowsAffected != 1) {
-                logger.error(LOG_ERROR_UNTIL_UPDATE);
+                logger.warn(LOG_INFORMATION_UPDATE_FAILED);
             }
         } catch (SQLException e) {
             logger.error("Ошибка при изменении направления пользователя.");
@@ -290,12 +287,12 @@ public class UserEntryPostgresStorage implements UserEntryStorage {
     @Override
     public void changeUserEntryMen(@NotNull Long id, @NotNull String men) {
         try (Connection connection = connectionManager.open();
-             PreparedStatement preparedStatement = connection.prepareStatement(CHANGE_MEN)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(CHANGE_MEN_QUERY)) {
             preparedStatement.setString(SET_FIRST, men);
             preparedStatement.setLong(SET_SECOND, id);
             int rowsAffected = preparedStatement.executeUpdate();
             if (rowsAffected != 1) {
-                logger.error(LOG_ERROR_UNTIL_UPDATE);
+                logger.warn(LOG_INFORMATION_UPDATE_FAILED);
             }
         } catch (SQLException e) {
             logger.error("Ошибка при изменении МЕН пользователя.");
@@ -306,12 +303,12 @@ public class UserEntryPostgresStorage implements UserEntryStorage {
     @Override
     public void changeUserEntryGroup(@NotNull Long id, @NotNull Integer group) {
         try (Connection connection = connectionManager.open();
-             PreparedStatement preparedStatement = connection.prepareStatement(CHANGE_GROUP)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(CHANGE_GROUP_QUERY)) {
             preparedStatement.setInt(SET_FIRST, group);
             preparedStatement.setLong(SET_SECOND, id);
             int rowsAffected = preparedStatement.executeUpdate();
             if (rowsAffected != 1) {
-                logger.error(LOG_ERROR_UNTIL_UPDATE);
+                logger.warn(LOG_INFORMATION_UPDATE_FAILED);
             }
         } catch (SQLException e) {
             logger.error("Ошибка при изменении группы пользователя.");

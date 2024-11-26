@@ -23,13 +23,11 @@ public class UserPostgresStorage implements UserStorage {
     private final CurrentStateConverter converter = new CurrentStateConverter();
     private final ConnectionManager connectionManager = new ConnectionManager();
     private final Logger logger = LoggerFactory.getLogger(UserPostgresStorage.class);
-    private final static String TABLE_NAME = "users";
     private final static String CREATE_TABLE = """
-            CREATE TABLE %s (
-            id BIGINT,
+            CREATE TABLE IF NOT EXISTS users (
+            id BIGINT PRIMARY KEY,
             current_state VARCHAR(50)
             )""";
-    private final static String EXIST_CHECK = "SELECT COUNT(*) FROM information_schema.tables WHERE table_name = ?";
     private final static String CURRENT_STATE_STRING = "current_state";
     private final static String CREATE_USER = "INSERT INTO users (id, current_state) VALUES (?, ?);";
     private final static String UPDATE_CURRENT_STATE = "UPDATE users SET current_state = ? WHERE id = ?";
@@ -44,25 +42,17 @@ public class UserPostgresStorage implements UserStorage {
      */
     public UserPostgresStorage() {
         try (Connection connection = connectionManager.open();
-             PreparedStatement preparedStatement = connection.prepareStatement(EXIST_CHECK)) {
-            preparedStatement.setString(SET_FIRST, TABLE_NAME);
-            ResultSet result = preparedStatement.executeQuery();
-            result.next();
-            int count = result.getInt(1);
-            if (count == 0) {
-                try (PreparedStatement createStatement = connection.prepareStatement(
-                        String.format(CREATE_TABLE, TABLE_NAME))) {
-                    createStatement.executeUpdate();
-                }
-            }
+             PreparedStatement preparedStatement = connection.prepareStatement(CREATE_TABLE)) {
+            preparedStatement.executeUpdate();
         } catch (SQLException e) {
             logger.error("При создании таблицы что-то пошло не так...");
+            throw new RuntimeException(e);
         }
     }
 
     @Override
     public void add(User user) {
-        Long id = user.id();
+        long id = user.id();
         String currentState = converter.convert(user.currentState());
         try (Connection connection = connectionManager.open();
             PreparedStatement preparedStatement = connection.prepareStatement(CREATE_USER)) {
@@ -71,6 +61,7 @@ public class UserPostgresStorage implements UserStorage {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             logger.error("Ошибка при добавлении данных в таблицу.");
+            throw new RuntimeException(e);
         }
     }
 
@@ -84,13 +75,14 @@ public class UserPostgresStorage implements UserStorage {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             logger.error("Ошибка при изменении состояния.");
+            throw new RuntimeException(e);
         }
     }
 
     @Override
     public void update(User user) {
         String currentState = converter.convert(user.currentState());
-        Long id = user.id();
+        long id = user.id();
         try (Connection connection = connectionManager.open();
             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_CURRENT_STATE)) {
             preparedStatement.setString(SET_FIRST, currentState);
@@ -98,6 +90,7 @@ public class UserPostgresStorage implements UserStorage {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             logger.error("Ошибка при обновлении данных в таблице.");
+            throw new RuntimeException(e);
         }
     }
 
@@ -113,6 +106,7 @@ public class UserPostgresStorage implements UserStorage {
             }
         } catch (SQLException e) {
             logger.error("Ошибка при получении данных из таблицы.");
+            throw new RuntimeException(e);
         }
         if (converter.convert(currentState) == null) {
             User newUser = new User(id, UserState.DEFAULT);
@@ -124,30 +118,31 @@ public class UserPostgresStorage implements UserStorage {
 
     @Override
     public List<User> getAll() {
-        List<User> newList = new ArrayList<User>();
+        List<User> newListUsers = new ArrayList<User>();
         try (Connection connection = connectionManager.open();
             PreparedStatement preparedStatement = connection.prepareStatement(GET_ALL)) {
             ResultSet result = preparedStatement.getResultSet();
             while (result.next()) {
-                newList.add(new User(result.getLong("id"),
+                newListUsers.add(new User(result.getLong("id"),
                         Objects.requireNonNull(converter.convert(result.getString(CURRENT_STATE_STRING)))));
             }
-            return newList;
+            return newListUsers;
         } catch (SQLException e) {
             logger.error("Ошибка при получении всех данных из таблицы.");
-            return null;
+            throw new RuntimeException(e);
         }
     }
 
     @Override
     public void delete(User user) {
-        Long id = user.id();
+        long id = user.id();
         try (Connection connection = connectionManager.open();
             PreparedStatement preparedStatement = connection.prepareStatement(DELETE_USER)) {
             preparedStatement.setLong(SET_FIRST, id);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             logger.error("Ошибка при удалении данных в таблице.");
+            throw new RuntimeException(e);
         }
     }
 }
