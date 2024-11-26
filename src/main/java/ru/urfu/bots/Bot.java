@@ -1,14 +1,15 @@
 package ru.urfu.bots;
 
 import org.jetbrains.annotations.NotNull;
-import ru.urfu.localobjects.LocalMessage;
+import ru.urfu.logics.localobjects.LocalMessage;
 
 /**
- * Интерфейс бота, описывающий методы, которые ожидаются в каждом боте.
+ * <p>Интерфейс бота, описывающий методы, которые ожидаются в каждом боте.</p>
  */
 public interface Bot {
     /**
-     * Отправляет сообщение.
+     * <p>Отправляет сообщение.</p>
+     *
      * @param msg сообщение, которое требуется отправить
      * @param id идентификатор получателя
      */

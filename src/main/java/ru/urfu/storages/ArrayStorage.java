@@ -6,7 +6,8 @@ import java.util.Objects;
 import java.util.Optional;
 
 /**
- * Хранилище данных, реализованное на простом массиве.
+ * <p>Хранилище данных, реализованное на простом массиве.</p>
+ *
  * @param <T> тип хранимого значения.
  * @param <I> тип идентификатора у хранимых объектов.
  */
@@ -14,7 +15,7 @@ public class ArrayStorage<T extends Identifiable<I>, I> implements Storage<T, I>
     private final List<T> array;
 
     /**
-     * Конструктор.
+     * <p>Конструктор.</p>
      */
     public ArrayStorage() {
         array = new ArrayList<>();

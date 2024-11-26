@@ -2,19 +2,19 @@ package ru.urfu.logics;
 
 import org.jetbrains.annotations.NotNull;
 import ru.urfu.bots.Bot;
-import ru.urfu.localobjects.LocalMessage;
+import ru.urfu.logics.localobjects.LocalMessage;
 
 /**
- * Интерфейс логического ядра.
+ * <p>Логическое ядро -- объект, получающий сообщения с различных
+ * платформ и определяющий действия, которые необходимо предпринять.</p>
  */
 public interface LogicCore {
     /**
-     * Обработчик запросов.
-     * В процессе обработки может вызывать методы ботов, чтобы, например, отправлять сообщения.
+     * <p>Решает, что делать с сообщениями. Боты вызывают этот метод.</p>
      *
-     * @param chatId идентификатор чата
-     * @param message текст сообщения
-     * @param bot бот в котором пришло сообщение
+     * @param chatId  id отправителя сообщения на платформе.
+     * @param message сообщение.
+     * @param bot     бот, принявший сообщение.
      */
     void processMessage(@NotNull Long chatId, @NotNull LocalMessage message, @NotNull Bot bot);
 }
