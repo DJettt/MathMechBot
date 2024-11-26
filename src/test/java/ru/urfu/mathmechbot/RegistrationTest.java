@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import ru.urfu.logics.localobjects.LocalButton;
 import ru.urfu.logics.localobjects.LocalMessage;
 import ru.urfu.logics.localobjects.LocalMessageBuilder;
-import ru.urfu.mathmechbot.storages.MathMechStorage;
 
 /**
  * <p>Тесты регистрации.</p>
@@ -112,7 +111,7 @@ public final class RegistrationTest {
      */
     @BeforeEach
     void setupTest() {
-        final MMBCore logic = new MMBCore(new MathMechStorage());
+        final MMBCore logic = new MMBCore(new MathMechArrayStorage());
         bot = new DummyBot();
         utils = new TestUtils(logic, bot);
     }
