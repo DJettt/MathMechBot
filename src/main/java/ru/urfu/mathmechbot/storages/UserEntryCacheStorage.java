@@ -15,13 +15,23 @@ import ru.urfu.mathmechbot.models.UserEntryBuilder;
  */
 public class UserEntryCacheStorage implements UserEntryStorage {
     private final static int INITIAL_CAPACITY = 5000;
-    private final static int MAX_SIZE = 5000;
+    private final static int DEFAULT_MAX_SIZE = 5000;
+    private final int maxSize;
     private final Map<Long, UserEntry> cache = new ConcurrentHashMap<>(INITIAL_CAPACITY);
 
     /**
      * Конструктор.
      */
     public UserEntryCacheStorage() {
+        this.maxSize = DEFAULT_MAX_SIZE;
+    }
+
+    /**
+     * Конструктор со значением максимального размера.
+     * @param maxSize максимальный размер.
+     */
+    public UserEntryCacheStorage(int maxSize) {
+        this.maxSize = maxSize;
     }
 
     @Override
@@ -98,7 +108,7 @@ public class UserEntryCacheStorage implements UserEntryStorage {
 
     @Override
     public void add(UserEntry member) throws IllegalArgumentException {
-        if (cache.size() >= MAX_SIZE) {
+        if (cache.size() >= maxSize) {
             cache.clear();
         }
         cache.put(member.id(), member);
