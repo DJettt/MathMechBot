@@ -51,7 +51,7 @@ public class CacheTest {
 
     /**
      * Первоначальные настройки тестов.
-     * В эше находится только 1 объект
+     * В кэше находится только 1 объект
      */
     @BeforeEach
     void setupTest() {
@@ -84,7 +84,7 @@ public class CacheTest {
                 .men("МЕН-111111")
                 .build();
         cache.add(testMember);
-        Assertions.assertEquals(Optional.empty(), cache.get(0L));
+        Assertions.assertTrue(cache.get(TEST_ID).isEmpty());
     }
 
     /**
@@ -112,7 +112,7 @@ public class CacheTest {
         cache.changeUserEntryYear(TEST_ID, NEW_TEST_YEAR);
         cache.changeUserEntryGroup(TEST_ID, NEW_TEST_GROUP);
         cache.changeUserEntryMen(TEST_ID, NEW_TEST_MEN);
-        Assertions.assertEquals(Optional.of(newMember), cache.get(TEST_ID));
+        Assertions.assertEquals(newMember, cache.get(TEST_ID).orElseThrow());
     }
 
     /**
@@ -122,6 +122,6 @@ public class CacheTest {
     @DisplayName("Проверка на удаление.")
     void testDelete() {
         cache.delete(member);
-        Assertions.assertEquals(Optional.empty(), cache.get(TEST_ID));
+        Assertions.assertTrue(cache.get(TEST_ID).isEmpty());
     }
 }
