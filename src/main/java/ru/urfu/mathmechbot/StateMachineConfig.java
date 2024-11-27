@@ -20,7 +20,7 @@ import ru.urfu.mathmechbot.actions.SaveSpecialty;
 import ru.urfu.mathmechbot.actions.SaveYear;
 import ru.urfu.mathmechbot.actions.SendConstantMessage;
 import ru.urfu.mathmechbot.actions.SendUserInfo;
-import ru.urfu.mathmechbot.storages.UserEntryStorage;
+import ru.urfu.mathmechbot.storages.userentry.UserEntryStorage;
 
 /**
  * <p>FSM, настроенный для работы с MathMechBot.</p>

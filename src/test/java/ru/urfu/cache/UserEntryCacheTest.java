@@ -1,5 +1,6 @@
 package ru.urfu.cache;
 
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -7,12 +8,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ru.urfu.mathmechbot.models.UserEntry;
 import ru.urfu.mathmechbot.models.UserEntryBuilder;
-import ru.urfu.mathmechbot.storages.UserEntryCacheStorage;
+import ru.urfu.mathmechbot.storages.userentry.UserEntryCacheStorage;
 
 /**
- * Тесты внутреннего кэша.
+ * Тесты внутреннего кэша UserEntryCacheStorage.
  */
-public class CacheTest {
+public class UserEntryCacheTest {
     private final static int MAX_SIZE = 2;
     private final static String TEST_SURNAME = "Иванов";
     private final static String TEST_NAME = "Иван";
@@ -29,7 +30,7 @@ public class CacheTest {
     private final static int NEW_TEST_GROUP = 3;
     private final static int NEW_TEST_YEAR = 3;
     private final static String NEW_TEST_MEN = "МЕН-333333";
-    private final UserEntry member = new UserEntryBuilder(TEST_ID, TEST_ID)
+    private final UserEntry testMember = new UserEntryBuilder(TEST_ID, TEST_ID)
             .surname(TEST_SURNAME)
             .name(TEST_NAME)
             .patronym(TEST_PATRONYM)
@@ -47,6 +48,15 @@ public class CacheTest {
             .year(NEW_TEST_YEAR)
             .men(NEW_TEST_MEN)
             .build();
+    private final UserEntry testMember2 = new UserEntryBuilder(1L, 1L)
+            .surname("Константинов")
+            .name("Константин")
+            .patronym("Константинович")
+            .specialty("КН")
+            .group(1)
+            .year(2)
+            .men("МЕН-122222")
+            .build();
     UserEntryCacheStorage cache = new UserEntryCacheStorage(MAX_SIZE);
 
     /**
@@ -55,7 +65,7 @@ public class CacheTest {
      */
     @BeforeEach
     void setupTest() {
-        cache.add(member);
+        cache.add(testMember);
     }
 
     /**
@@ -64,17 +74,8 @@ public class CacheTest {
     @Test
     @DisplayName("Overflow")
     void testOverflow() {
-        UserEntry testMember = new UserEntryBuilder(1L, 1L)
-                .surname("Константинов")
-                .name("Константин")
-                .patronym("Константинович")
-                .specialty("КН")
-                .group(1)
-                .year(2)
-                .men("МЕН-122222")
-                .build();
-        cache.add(testMember);
-        testMember = new UserEntryBuilder(2L, 2L)
+        cache.add(testMember2);
+        UserEntry member = new UserEntryBuilder(2L, 2L)
                 .surname("Петров")
                 .name("Пётр")
                 .patronym("Петрович")
@@ -83,15 +84,25 @@ public class CacheTest {
                 .year(2)
                 .men("МЕН-111111")
                 .build();
-        cache.add(testMember);
+        cache.add(member);
         Assertions.assertTrue(cache.get(TEST_ID).isEmpty());
     }
 
     /**
-     * Тестирует разовое полное обновление информации.
+     * Тестирует метод getAll у кэша UserEntryCacheStorage.
      */
     @Test
-    @DisplayName("Тест полного обновления.")
+    @DisplayName("Тест getAll")
+    void testGetAll() {
+        cache.add(testMember2);
+        Assertions.assertEquals(List.of(testMember, testMember2), cache.getAll());
+    }
+
+    /**
+     * Тестирует разовое полное обновление информации у пользователя.
+     */
+    @Test
+    @DisplayName("Тест полного обновления информации.")
     void testUpdate() {
         cache.update(newMember);
         Assertions.assertEquals(Optional.of(newMember), cache.get(TEST_ID));
@@ -121,7 +132,7 @@ public class CacheTest {
     @Test
     @DisplayName("Проверка на удаление.")
     void testDelete() {
-        cache.delete(member);
+        cache.delete(testMember);
         Assertions.assertTrue(cache.get(TEST_ID).isEmpty());
     }
 }

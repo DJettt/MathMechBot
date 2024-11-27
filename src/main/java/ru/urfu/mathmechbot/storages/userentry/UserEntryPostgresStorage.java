@@ -1,4 +1,4 @@
-package ru.urfu.mathmechbot.storages;
+package ru.urfu.mathmechbot.storages.userentry;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

@@ -10,7 +10,7 @@ import ru.urfu.logics.LogicCore;
 import ru.urfu.logics.localobjects.LocalMessage;
 import ru.urfu.mathmechbot.models.User;
 import ru.urfu.mathmechbot.storages.MathMechStorage;
-import ru.urfu.mathmechbot.storages.UserStorage;
+import ru.urfu.mathmechbot.storages.user.UserStorage;
 
 
 /**

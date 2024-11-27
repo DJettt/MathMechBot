@@ -9,7 +9,7 @@ import ru.urfu.logics.localobjects.LocalMessageBuilder;
 import ru.urfu.mathmechbot.EventContext;
 import ru.urfu.mathmechbot.Utils;
 import ru.urfu.mathmechbot.models.UserEntry;
-import ru.urfu.mathmechbot.storages.UserEntryStorage;
+import ru.urfu.mathmechbot.storages.userentry.UserEntryStorage;
 
 /**
  * <p>Спрашивает у пользователя подтверждение регистрации.</p>

@@ -6,7 +6,7 @@ import ru.urfu.logics.localobjects.LocalMessage;
 import ru.urfu.mathmechbot.EventContext;
 import ru.urfu.mathmechbot.models.User;
 import ru.urfu.mathmechbot.models.UserEntry;
-import ru.urfu.mathmechbot.storages.UserEntryStorage;
+import ru.urfu.mathmechbot.storages.userentry.UserEntryStorage;
 
 /**
  * <p>Посылает пользователю информацию зарегистрированные данные.</p>

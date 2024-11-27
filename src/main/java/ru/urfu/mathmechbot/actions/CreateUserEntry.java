@@ -5,7 +5,7 @@ import ru.urfu.fsm.Action;
 import ru.urfu.mathmechbot.EventContext;
 import ru.urfu.mathmechbot.models.UserEntry;
 import ru.urfu.mathmechbot.models.UserEntryBuilder;
-import ru.urfu.mathmechbot.storages.UserEntryStorage;
+import ru.urfu.mathmechbot.storages.userentry.UserEntryStorage;
 
 /**
  * <p>Создаёт пустую пользовательскую запись.</p>

@@ -1,5 +1,10 @@
 package ru.urfu.mathmechbot.storages;
 
+import ru.urfu.mathmechbot.storages.user.UserFullStorage;
+import ru.urfu.mathmechbot.storages.user.UserStorage;
+import ru.urfu.mathmechbot.storages.userentry.UserEntryFullStorage;
+import ru.urfu.mathmechbot.storages.userentry.UserEntryStorage;
+
 /**
  * <p>Структура, содержащая все хранилища для MathMechBot.</p>
  */
@@ -11,7 +16,7 @@ public final class MathMechDbStorage implements MathMechStorage {
      * <p>Конструктор.</p>
      */
     public MathMechDbStorage() {
-        this.users = new UserPostgresStorage();
+        this.users = new UserFullStorage();
         this.userEntries = new UserEntryFullStorage();
     }
 
