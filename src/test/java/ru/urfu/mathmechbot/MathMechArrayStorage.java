@@ -1,10 +1,10 @@
 package ru.urfu.mathmechbot;
 
 import ru.urfu.mathmechbot.storages.MathMechStorage;
-import ru.urfu.mathmechbot.storages.UserArrayStorage;
-import ru.urfu.mathmechbot.storages.UserEntryArrayStorage;
-import ru.urfu.mathmechbot.storages.UserEntryStorage;
-import ru.urfu.mathmechbot.storages.UserStorage;
+import ru.urfu.mathmechbot.storages.user.UserArrayStorage;
+import ru.urfu.mathmechbot.storages.user.UserStorage;
+import ru.urfu.mathmechbot.storages.userentry.UserEntryArrayStorage;
+import ru.urfu.mathmechbot.storages.userentry.UserEntryStorage;
 
 /**
  * Реализация двух хранилищ в массивах для запуска тестов.

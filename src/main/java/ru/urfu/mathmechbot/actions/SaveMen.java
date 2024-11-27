@@ -3,7 +3,7 @@ package ru.urfu.mathmechbot.actions;
 import org.jetbrains.annotations.NotNull;
 import ru.urfu.fsm.Action;
 import ru.urfu.mathmechbot.EventContext;
-import ru.urfu.mathmechbot.storages.UserEntryStorage;
+import ru.urfu.mathmechbot.storages.userentry.UserEntryStorage;
 
 /**
  * <p>Сохраняет номер МЕН-группы из сообщения.</p>
