@@ -1,5 +1,8 @@
 package ru.urfu.mathmechbot.storages;
 
+import ru.urfu.mathmechbot.storages.user.UserStorage;
+import ru.urfu.mathmechbot.storages.userentry.UserEntryStorage;
+
 /**
  * <p>Интерфейс структуры, содержащей все хранилища для MathMechBot.</p>
  */

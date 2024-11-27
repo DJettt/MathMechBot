@@ -1,0 +1,28 @@
+# Docker
+**/.dockerignore
+**/compose.y*ml
+**/docker-compose*
+**/Dockerfile*
+
+# Docs
+**/LICENSE
+**/README
+**/*.md
+
+# Git
+**/.git
+**/.gitignore
+
+# GitHub
+**/.github
+
+# IDEA
+**/.idea
+
+# Java
+**/checkstyle.xml
+**/target
+
+# Secrets
+**/.env
+**/secrets

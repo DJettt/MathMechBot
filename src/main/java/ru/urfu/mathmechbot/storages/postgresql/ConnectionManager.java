@@ -8,9 +8,9 @@ import java.sql.SQLException;
  * Создает соединение с базой данных.
  */
 public final class ConnectionManager {
-    private final static String PASSWORD = "DATABASE_PASSWORD";
-    private final static String USERNAME = "DATABASE_USERNAME";
-    private final static String URL = "DATABASE_URL";
+    private final static String PASSWORD = "POSTGRES_PASSWORD";
+    private final static String USERNAME = "POSTGRES_USER";
+    private final static String URL = "POSTGRES_URL";
 
     /**
      * Конструктор.
