@@ -1,6 +1,3 @@
-# Настройки игнорирования файлов для Git
-# Эти файлы и папки Git не будет предлагать закоммитить
-
 # Compiled class file
 *.class
 
@@ -26,6 +23,6 @@ hs_err_pid*
 # Maven
 target/
 
-# Environment variables
+# Secrets
+secrets/
 *.env
-*.properties

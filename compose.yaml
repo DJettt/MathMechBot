@@ -1,0 +1,71 @@
+name: mathmechbot
+
+services:
+  app:
+    build:
+      context: .
+    depends_on:
+      - postgres
+    environment:
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
+      DISCORD_BOT_TOKEN: ${DISCORD_BOT_TOKEN}
+      POSTGRES_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB}
+    networks:
+      - postgres
+    restart: always
+
+  postgres:
+    image: postgres:17.0-alpine
+    environment:
+      POSTGRES_DB_FILE: /run/secrets/postgres_db
+      POSTGRES_USER_FILE: /run/secrets/postgres_user
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
+    networks:
+      - pgadmin
+      - postgres
+    ports:
+      - 5432
+    restart: always
+    secrets:
+      - postgres_db
+      - postgres_user
+      - postgres_password
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  pgadmin:
+    image: dpage/pgadmin4:8.12
+    depends_on:
+      - postgres
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD_FILE: /run/secrets/pgadmin_password
+    networks:
+      - pgadmin
+    ports:
+      - 5050:80
+    restart: always
+    secrets:
+      - pgadmin_password
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+
+networks:
+  pgadmin:
+    driver: bridge
+  postgres:
+    driver: bridge
+
+secrets:
+  postgres_db:
+    environment: POSTGRES_DB
+  postgres_user:
+    environment: POSTGRES_USER
+  postgres_password:
+    environment: POSTGRES_PASSWORD
+  pgadmin_password:
+    environment: PGADMIN_DEFAULT_PASSWORD
+
+volumes:
+  pgadmin:
+  pgdata:
