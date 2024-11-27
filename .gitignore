@@ -28,4 +28,3 @@ target/
 
 # Environment variables
 *.env
-*.properties

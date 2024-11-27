@@ -29,7 +29,7 @@ final public class Main {
         final LogicCore logicCore = new MMBCore(storage);
 
         final TelegramBot telegramBot = new TelegramBot(
-                System.getenv("TG_MATHMECHBOT_TOKEN"), logicCore);
+                System.getenv("TELEGRAM_BOT_TOKEN"), logicCore);
         telegramBot.start();
 
 //        final DiscordBot discordBot = new DiscordBot(
