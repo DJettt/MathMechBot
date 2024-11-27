@@ -17,43 +17,71 @@ public class UserEntryFullStorage implements UserEntryStorage {
     @Override
     public void changeUserEntryName(@NotNull Long id, @NotNull String name) {
         postgresStorage.changeUserEntryName(id, name);
-        cache.changeUserEntryName(id, name);
+        if (cache.get(id).isPresent()) {
+            cache.changeUserEntryName(id, name);
+        } else {
+            postgresStorage.get(id).ifPresent(cache::add);
+        }
     }
 
     @Override
     public void changeUserEntrySurname(@NotNull Long id, @NotNull String surname) {
         postgresStorage.changeUserEntrySurname(id, surname);
-        cache.changeUserEntrySurname(id, surname);
+        if (cache.get(id).isPresent()) {
+            cache.changeUserEntrySurname(id, surname);
+        } else {
+            postgresStorage.get(id).ifPresent(cache::add);
+        }
     }
 
     @Override
     public void changeUserEntryPatronym(@NotNull Long id, @Nullable String patronym) {
         postgresStorage.changeUserEntryPatronym(id, patronym);
-        cache.changeUserEntryPatronym(id, patronym);
+        if (cache.get(id).isPresent()) {
+            cache.changeUserEntryPatronym(id, patronym);
+        } else {
+            postgresStorage.get(id).ifPresent(cache::add);
+        }
     }
 
     @Override
     public void changeUserEntryYear(@NotNull Long id, @NotNull Integer year) {
         postgresStorage.changeUserEntryYear(id, year);
-        cache.changeUserEntryYear(id, year);
+        if (cache.get(id).isPresent()) {
+            cache.changeUserEntryYear(id, year);
+        } else {
+            postgresStorage.get(id).ifPresent(cache::add);
+        }
     }
 
     @Override
     public void changeUserEntrySpecialty(@NotNull Long id, @NotNull String specialty) {
         postgresStorage.changeUserEntrySpecialty(id, specialty);
-        cache.changeUserEntrySpecialty(id, specialty);
+        if (cache.get(id).isPresent()) {
+            cache.changeUserEntrySpecialty(id, specialty);
+        } else {
+            postgresStorage.get(id).ifPresent(cache::add);
+        }
     }
 
     @Override
     public void changeUserEntryMen(@NotNull Long id, @NotNull String men) {
         postgresStorage.changeUserEntryMen(id, men);
-        cache.changeUserEntryMen(id, men);
+        if (cache.get(id).isPresent()) {
+            cache.changeUserEntryMen(id, men);
+        } else {
+            postgresStorage.get(id).ifPresent(cache::add);
+        }
     }
 
     @Override
     public void changeUserEntryGroup(@NotNull Long id, @NotNull Integer group) {
         postgresStorage.changeUserEntryGroup(id, group);
-        cache.changeUserEntryGroup(id, group);
+        if (cache.get(id).isPresent()) {
+            cache.changeUserEntryGroup(id, group);
+        } else {
+            postgresStorage.get(id).ifPresent(cache::add);
+        }
     }
 
     @Override
