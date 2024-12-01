@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
  * @param date    дата расписания.
  * @param lessons занятия на неделе.
  */
-public record Timetable(
+public record DailyTimetable(
         @NotNull LocalDate date,
         @NotNull List<Lesson> lessons
 ) {

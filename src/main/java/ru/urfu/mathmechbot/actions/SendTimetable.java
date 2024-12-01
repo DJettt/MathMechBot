@@ -9,7 +9,7 @@ import ru.urfu.mathmechbot.EventContext;
 import ru.urfu.mathmechbot.models.User;
 import ru.urfu.mathmechbot.models.UserEntry;
 import ru.urfu.mathmechbot.storages.userentry.UserEntryStorage;
-import ru.urfu.mathmechbot.timetable.Timetable;
+import ru.urfu.mathmechbot.timetable.DailyTimetable;
 import ru.urfu.mathmechbot.timetable.TimetableGetter;
 
 
@@ -18,7 +18,7 @@ import ru.urfu.mathmechbot.timetable.TimetableGetter;
  * уведомляет пользователя о возможной ошибке в ввёднных данных.</p>
  */
 public final class SendTimetable implements MMBAction {
-    private final static String TIMETABLE_NOT_FOUND = "Расписание для указанной"
+    private final static String TIMETABLE_NOT_FOUND = "Расписание для указанной "
             + "группы не найдено. Проверьте корректность введённой группы в формате МЕН.";
 
     private final Logger logger = LoggerFactory.getLogger(SendTimetable.class);
@@ -42,7 +42,7 @@ public final class SendTimetable implements MMBAction {
         final User user = context.user();
 
         final String userMen = getUserMen(user);
-        final Optional<Timetable> t = getTimetable(userMen);
+        final Optional<DailyTimetable> t = getTimetable(userMen);
 
         if (t.isPresent()) {
             sendHumanReadableTimetable(t.get(), context);
@@ -59,7 +59,7 @@ public final class SendTimetable implements MMBAction {
      * @return Optional с расписанием для данной группы.
      */
     @NotNull
-    private Optional<Timetable> getTimetable(@NotNull String men) {
+    private Optional<DailyTimetable> getTimetable(@NotNull String men) {
         return timetableGetter.getForGroup(men);
     }
 
@@ -90,7 +90,7 @@ public final class SendTimetable implements MMBAction {
      * @param timetable расписание для данного пользователя.
      * @param context   контекст события.
      */
-    private void sendHumanReadableTimetable(@NotNull Timetable timetable,
+    private void sendHumanReadableTimetable(@NotNull DailyTimetable timetable,
                                             @NotNull EventContext context) {
         // TODO
     }

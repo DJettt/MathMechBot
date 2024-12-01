@@ -38,7 +38,8 @@ public final class StateMachineConfig {
             /register - регистрация
             /info - информация о Вас
             /edit - изменить информацию
-            /delete - удалить информацию о Вас""");
+            /delete - удалить информацию о Вас
+            /timetable - показывает расписание на текущий день""");
     private final LocalMessage fullName = new LocalMessageBuilder()
             .text("""
                     Введите свое ФИО в формате:
