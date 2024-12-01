@@ -24,6 +24,7 @@
         <telegrambots.version>7.10.0</telegrambots.version>
         <JDA.version>5.1.2</JDA.version>
         <postgresql.version>42.7.4</postgresql.version>
+        <iCalendar.version>4.0.6</iCalendar.version>
 
         <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
         <maven-assembly-plugin.version>3.7.1</maven-assembly-plugin.version>
@@ -119,6 +120,14 @@
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-slf4j2-impl</artifactId>
+        </dependency>
+
+        <!-- iCalendar -->
+        <!-- https://mvnrepository.com/artifact/org.mnode.ical4j/ical4j -->
+        <dependency>
+            <groupId>org.mnode.ical4j</groupId>
+            <artifactId>ical4j</artifactId>
+            <version>${iCalendar.version}</version>
         </dependency>
 
         <!-- JDBC -->
