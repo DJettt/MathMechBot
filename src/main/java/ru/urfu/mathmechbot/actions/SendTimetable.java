@@ -10,7 +10,8 @@ import ru.urfu.mathmechbot.models.User;
 import ru.urfu.mathmechbot.models.UserEntry;
 import ru.urfu.mathmechbot.storages.userentry.UserEntryStorage;
 import ru.urfu.mathmechbot.timetable.DailyTimetable;
-import ru.urfu.mathmechbot.timetable.TimetableGetter;
+import ru.urfu.mathmechbot.timetable.TimetableCachedFactory;
+import ru.urfu.mathmechbot.timetable.TimetableFactory;
 
 
 /**
@@ -22,7 +23,7 @@ public final class SendTimetable implements MMBAction {
             + "группы не найдено. Проверьте корректность введённой группы в формате МЕН.";
 
     private final Logger logger = LoggerFactory.getLogger(SendTimetable.class);
-    private final TimetableGetter timetableGetter = new TimetableGetter();
+    private final TimetableFactory timetableFactory = new TimetableCachedFactory();
     private final UserEntryStorage userEntryStorage;
 
     /**
@@ -60,7 +61,7 @@ public final class SendTimetable implements MMBAction {
      */
     @NotNull
     private Optional<DailyTimetable> getTimetable(@NotNull String men) {
-        return timetableGetter.getForGroup(men);
+        return timetableFactory.getForGroup(men);
     }
 
     /**

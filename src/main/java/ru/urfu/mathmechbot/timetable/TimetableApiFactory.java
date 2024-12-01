@@ -9,12 +9,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDate;
-import java.time.temporal.WeekFields;
-import java.util.Locale;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 import org.apache.commons.io.IOUtils;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -26,46 +21,17 @@ import org.slf4j.LoggerFactory;
  * <p>Достаёт расписание с <a href="https://urfu.ru/ru/students/study/schedule/#/groups">
  * сайта</a>.</p>
  */
-public final class TimetableGetter {
+public final class TimetableApiFactory implements TimetableFactory {
     private final static String GROUP_SEARCH_URL_TEMPLATE =
             "https://urfu.ru/api/v2/schedule/groups?search=%s";
     private final static String GROUP_SCHEDULE_URL_TEMPLATE =
             "https://urfu.ru/api/v2/schedule/groups/%d/schedule.ics";
 
-    private final Logger logger = LoggerFactory.getLogger(TimetableGetter.class);
-    private final Locale ruLocale = new Locale.Builder()
-            .setLanguage("ru").setRegion("RU").build();
+    private final Logger logger = LoggerFactory.getLogger(TimetableCachedFactory.class);
 
-    private final ConcurrentMap<String, DailyTimetable> cache = new ConcurrentHashMap<>();
-
-    /**
-     * <p>Достаёт расписание для переданной группы. Если расписания не нашлось,
-     * возвращает пустой Optional.</p>
-     *
-     * @param men номер группы, чьё расписание ищется.
-     * @return Optional с расписанием.
-     */
+    @Override
     @NotNull
     public Optional<DailyTimetable> getForGroup(@NotNull String men) {
-        final DailyTimetable timetable = cache.get(men);
-        if (timetable != null && !isTimetableExpired(timetable)) {
-            return Optional.of(timetable);
-        }
-
-        final Optional<DailyTimetable> newTimetable = getFromApi(men);
-        newTimetable.ifPresent(t -> cache.put(men, t));
-        return newTimetable;
-    }
-
-    /**
-     * <p>Ищет расписание на <a href="https://urfu.ru/ru/students/study/schedule/#/groups">
-     * *     сайте</a> для данной группы.</p>
-     *
-     * @param men группа, для которой ищется расписание.
-     * @return расписание для данной группы.
-     */
-    @NotNull
-    private Optional<DailyTimetable> getFromApi(@NotNull String men) {
         final Optional<Long> groupId = getGroupId(men);
         if (groupId.isEmpty()) {
             return Optional.empty();
@@ -135,21 +101,6 @@ public final class TimetableGetter {
         }
     }
 
-    /**
-     * <p>Проверяет, истёк ли срок актуальности расписания. Расписание должно
-     * перестаёт быть актульным, если с момента его создания закончилась одна неделя,
-     * то есть прошло воскресенье той недели, на которой расписание было создано.</p>
-     *
-     * @param timetable расписание.
-     * @return результат проверки.
-     */
-    private boolean isTimetableExpired(@NotNull DailyTimetable timetable) {
-        final int timetableWeek = timetable.date()
-                .get(WeekFields.of(ruLocale).weekOfYear());
-        final int currentWeek = LocalDate.now()
-                .get(WeekFields.of(ruLocale).weekOfYear());
-        return timetableWeek != currentWeek;
-    }
 
     /**
      * <p>Загружает JSON с переданного URL.</p>
