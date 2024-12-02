@@ -1,7 +1,6 @@
-package ru.urfu.mathmechbot.calendarparser;
+package ru.urfu.mathmechbot.jsonparser;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -17,17 +16,11 @@ public class Timetable {
      * Конструктор. Создает 7 дневных расписаний в виде списка.
      * @param date дата, находящаяся в текущей неделе.
      */
-    //TODO избавиться от заглушки warning-а
-    @SuppressWarnings("MagicNumber")
     Timetable(LocalDate date) {
         LocalDate mondayDate = findMonday(date);
-        timetable.add(new DatedTimetable(mondayDate));
-        timetable.add(new DatedTimetable(mondayDate.plusDays(1)));
-        timetable.add(new DatedTimetable(mondayDate.plusDays(2)));
-        timetable.add(new DatedTimetable(mondayDate.plusDays(3)));
-        timetable.add(new DatedTimetable(mondayDate.plusDays(4)));
-        timetable.add(new DatedTimetable(mondayDate.plusDays(5)));
-        timetable.add(new DatedTimetable(mondayDate.plusDays(6)));
+        for (int i = 0; i < 7; i++) {
+            timetable.add(new DatedTimetable(mondayDate.plusDays(i)));
+        }
     }
 
     /**
@@ -35,25 +28,24 @@ public class Timetable {
      * @param date текущая дата
      * @return дату понедельника
      */
-    //TODO избавиться от заглушки warning-а
-    @SuppressWarnings("ParameterAssignment")
     private LocalDate findMonday(LocalDate date) {
-        while (date.getDayOfWeek().getValue() != 1) {
-            date = date.minusDays(1);
+        LocalDate currentDate = date;
+        while (currentDate.getDayOfWeek().getValue() != 1) {
+            currentDate = currentDate.minusDays(1);
         }
-        return date;
+        return currentDate;
     }
 
     /**
      * Добавляет пару в расписание на неделю.
      * @param lesson пара
      * @param date дата пары
-     * @param time время начала пары
+     * @param lessonNumber порядковый номер пары
      */
-    public void add(Lesson lesson, LocalDate date, LocalTime time) {
+    public void add(Lesson lesson, LocalDate date, Integer lessonNumber) {
         for (DatedTimetable datedTimetable : timetable) {
             if (date.equals(datedTimetable.getDate())) {
-                datedTimetable.add(lesson, time);
+                datedTimetable.add(lesson, lessonNumber);
                 return;
             }
         }
