@@ -65,7 +65,7 @@ public final class DailyTimetable {
      */
     public String showDailyTimetable() {
         StringBuilder result = new StringBuilder();
-        for (Integer lessonNumber = 1; lessonNumber <= lastLessonNumber; lessonNumber++) {
+        for (int lessonNumber = 1; lessonNumber <= lastLessonNumber; lessonNumber++) {
             result.append(lessonNumber).append(".");
             if (dailyTimetable.containsKey(lessonNumber)) {
                 for (Lesson lesson : dailyTimetable.get(lessonNumber)) {
