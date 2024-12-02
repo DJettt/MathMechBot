@@ -16,7 +16,6 @@ public enum Event {
     INFO,
     EDIT,
     DELETE,
-    TIMETABLE,
 
     INVALID_INPUT,
     VALID_INPUT,
