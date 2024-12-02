@@ -19,7 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * <p>Достаёт расписание с сайта УрФУ сайта</a> на текущую неделю.</p>
+ * <p>Достаёт расписание с сайта УрФУ сайта на текущую неделю.</p>
  */
 public final class TimetableApiFactory implements TimetableFactory {
     private final static String GROUP_SEARCH_URL_TEMPLATE =
