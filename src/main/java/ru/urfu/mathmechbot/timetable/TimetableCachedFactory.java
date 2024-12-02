@@ -7,7 +7,7 @@ import java.util.concurrent.ConcurrentMap;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * <p>Обёртка для TimetableApiFactory, которая добавляет прослойку
+ * <p>Обёртка для {@link TimetableApiFactory TimetableApiFactory}, которая добавляет прослойку
  * с кэшем и проверяет актуальность расписания.</p>
  */
 public final class TimetableCachedFactory implements TimetableFactory {
