@@ -85,6 +85,7 @@ public final class StateMachineConfig {
      * @param fsm     настраиваемый конечный автомат.
      * @param storage хранилище пользовательских записей,
      *                требуется для некоторых действий.
+     * @param timetableFactory фабрика расписаний, откуда расписания будут браться.
      */
     public StateMachineConfig(@NotNull StateMachine<UserState, Event, EventContext> fsm,
                               @NotNull UserEntryStorage storage,

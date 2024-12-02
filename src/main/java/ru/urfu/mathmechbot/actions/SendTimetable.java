@@ -30,6 +30,7 @@ public final class SendTimetable implements MMBAction {
      * <p>Конструктор.</p>
      *
      * @param storage {@link UserEntryStorage хранилище} для записи.
+     * @param timetableFactory фабрика расписаний, откуда они будут браться.
      */
     public SendTimetable(@NotNull UserEntryStorage storage,
                          @NotNull TimetableFactory timetableFactory) {
