@@ -22,6 +22,7 @@ import ru.urfu.mathmechbot.actions.SendConstantMessage;
 import ru.urfu.mathmechbot.actions.SendTimetable;
 import ru.urfu.mathmechbot.actions.SendUserInfo;
 import ru.urfu.mathmechbot.storages.userentry.UserEntryStorage;
+import ru.urfu.mathmechbot.timetable.TimetableFactory;
 
 /**
  * <p>FSM, настроенный для работы с MathMechBot.</p>
@@ -75,6 +76,7 @@ public final class StateMachineConfig {
 
     private final StateMachine<UserState, Event, EventContext> fsm;
     private final UserEntryStorage userEntryStorage;
+    private final TimetableFactory timetableFactory;
 
 
     /**
@@ -83,11 +85,14 @@ public final class StateMachineConfig {
      * @param fsm     настраиваемый конечный автомат.
      * @param storage хранилище пользовательских записей,
      *                требуется для некоторых действий.
+     * @param timetableFactory фабрика расписаний, откуда расписания будут браться.
      */
     public StateMachineConfig(@NotNull StateMachine<UserState, Event, EventContext> fsm,
-                              @NotNull UserEntryStorage storage) {
+                              @NotNull UserEntryStorage storage,
+                              @NotNull TimetableFactory timetableFactory) {
         this.fsm = fsm;
         this.userEntryStorage = storage;
+        this.timetableFactory = timetableFactory;
     }
 
     /**
@@ -140,7 +145,7 @@ public final class StateMachineConfig {
                 .source(UserState.DEFAULT)
                 .target(UserState.DEFAULT)
                 .event(Event.TIMETABLE)
-                .action(new SendTimetable(userEntryStorage))
+                .action(new SendTimetable(userEntryStorage, timetableFactory))
                 .build());
     }
 

@@ -4,6 +4,8 @@ import ru.urfu.bots.TelegramBot;
 import ru.urfu.logics.LogicCore;
 import ru.urfu.mathmechbot.MMBCore;
 import ru.urfu.mathmechbot.storages.MathMechDbStorage;
+import ru.urfu.mathmechbot.timetable.TimetableCachedFactory;
+import ru.urfu.mathmechbot.timetable.TimetableFactory;
 
 /**
  * <p>Основной класс для запуска приложения.</p>
@@ -25,8 +27,9 @@ final public class Main {
      * @param args аргументы командной строки
      */
     public static void main(String[] args) {
+        final TimetableFactory timetableFactory = new TimetableCachedFactory();
         final MathMechDbStorage storage = new MathMechDbStorage();
-        final LogicCore logicCore = new MMBCore(storage);
+        final LogicCore logicCore = new MMBCore(storage, timetableFactory);
 
         final TelegramBot telegramBot = new TelegramBot(
                 System.getenv("TELEGRAM_BOT_TOKEN"), logicCore);

@@ -11,7 +11,6 @@ import ru.urfu.mathmechbot.models.User;
 import ru.urfu.mathmechbot.models.UserEntry;
 import ru.urfu.mathmechbot.storages.userentry.UserEntryStorage;
 import ru.urfu.mathmechbot.timetable.DailyTimetable;
-import ru.urfu.mathmechbot.timetable.TimetableCachedFactory;
 import ru.urfu.mathmechbot.timetable.TimetableFactory;
 
 
@@ -24,16 +23,19 @@ public final class SendTimetable implements MMBAction {
             + "группы не найдено. Проверьте корректность введённой группы в формате МЕН.";
 
     private final Logger logger = LoggerFactory.getLogger(SendTimetable.class);
-    private final TimetableFactory timetableFactory = new TimetableCachedFactory();
+    private final TimetableFactory timetableFactory;
     private final UserEntryStorage userEntryStorage;
 
     /**
      * <p>Конструктор.</p>
      *
      * @param storage {@link UserEntryStorage хранилище} для записи.
+     * @param timetableFactory фабрика расписаний, откуда они будут браться.
      */
-    public SendTimetable(@NotNull UserEntryStorage storage) {
+    public SendTimetable(@NotNull UserEntryStorage storage,
+                         @NotNull TimetableFactory timetableFactory) {
         this.userEntryStorage = storage;
+        this.timetableFactory = timetableFactory;
     }
 
     @Override
