@@ -72,7 +72,6 @@
             <version>${commons-io.version}</version>
         </dependency>
 
-
         <!-- Guava (bi-tree) -->
         <!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
         <dependency>
@@ -81,11 +80,20 @@
             <version>${google-guava.version}</version>
         </dependency>
 
+        <!-- JetBrains Annotations -->
         <!-- https://mvnrepository.com/artifact/org.jetbrains/annotations -->
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
             <version>${jetbrains-annotations.version}</version>
+        </dependency>
+
+        <!-- JSON -->
+        <!-- https://mvnrepository.com/artifact/org.json/json -->
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>${json.version}</version>
         </dependency>
 
         <!-- JUnit 5 -->

@@ -13,10 +13,11 @@ import ru.urfu.mathmechbot.storages.MathMechStorage;
  * <p>Состояние, в котором изначально пребывает пользователь.</p>
  */
 public final class DefaultStateHandler implements MessageHandler {
-    public final static String REGISTER_COMMAND = "/register";
-    public final static String INFO_COMMAND = "/info";
-    public final static String EDIT_COMMAND = "/edit";
-    public final static String DELETE_COMMAND = "/delete";
+    private final static String REGISTER_COMMAND = "/register";
+    private final static String INFO_COMMAND = "/info";
+    private final static String EDIT_COMMAND = "/edit";
+    private final static String DELETE_COMMAND = "/delete";
+    private final static String TIMETABLE_COMMAND = "/timetable";
 
     @NotNull
     @Override
@@ -52,6 +53,13 @@ public final class DefaultStateHandler implements MessageHandler {
             case EDIT_COMMAND -> {
                 if (userEntryOptional.isPresent()) {
                     yield Event.EDIT;
+                } else {
+                    yield Event.NOT_REGISTERED;
+                }
+            }
+            case TIMETABLE_COMMAND -> {
+                if (userEntryOptional.isPresent()) {
+                    yield Event.TIMETABLE;
                 } else {
                     yield Event.NOT_REGISTERED;
                 }

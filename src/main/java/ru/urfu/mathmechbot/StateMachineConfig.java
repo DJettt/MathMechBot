@@ -19,6 +19,7 @@ import ru.urfu.mathmechbot.actions.SaveMen;
 import ru.urfu.mathmechbot.actions.SaveSpecialty;
 import ru.urfu.mathmechbot.actions.SaveYear;
 import ru.urfu.mathmechbot.actions.SendConstantMessage;
+import ru.urfu.mathmechbot.actions.SendTimetable;
 import ru.urfu.mathmechbot.actions.SendUserInfo;
 import ru.urfu.mathmechbot.storages.userentry.UserEntryStorage;
 
@@ -37,7 +38,8 @@ public final class StateMachineConfig {
             /register - регистрация
             /info - информация о Вас
             /edit - изменить информацию
-            /delete - удалить информацию о Вас""");
+            /delete - удалить информацию о Вас
+            /timetable - показывает расписание на текущий день""");
     private final LocalMessage fullName = new LocalMessageBuilder()
             .text("""
                     Введите свое ФИО в формате:
@@ -133,6 +135,12 @@ public final class StateMachineConfig {
                 .target(UserState.DEFAULT)
                 .event(Event.INFO)
                 .action(new SendUserInfo(userEntryStorage))
+                .build());
+        fsm.registerTransition(new MMBTransitionBuilder()
+                .source(UserState.DEFAULT)
+                .target(UserState.DEFAULT)
+                .event(Event.TIMETABLE)
+                .action(new SendTimetable(userEntryStorage))
                 .build());
     }
 
