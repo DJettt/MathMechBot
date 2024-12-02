@@ -109,10 +109,8 @@ public class Parser {
      */
     public Timetable getTimetable(String filename) {
         JSONArray jsonArray = jsonObjectBuilder.getJsonObject(filename);
-        //Calendar cal = founder.getCalendar(filename);
         LocalDate today = LocalDate.now();
         Timetable timetable = new Timetable(today);
-        //for (Component component : cal.getComponents()) {
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject event = jsonArray.getJSONObject(i);
             Optional<LocalDate> eventDate = getDate(event);
