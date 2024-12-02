@@ -1,18 +1,19 @@
-package ru.urfu.mathmechbot.jsonparser;
+package ru.urfu.mathmechbot.timetable;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
- * Парсер объекта Calendar.
+ * Парсер JSON объекта.
  */
-public class Parser {
-    private final JSONObjectBuilder jsonObjectBuilder = new JSONObjectBuilder();
+public class ScheduleJsonParser {
     private final static int DEFAULT_LESSON_NUMBER = 0;
 
     /**
@@ -20,9 +21,8 @@ public class Parser {
      * @param event ивент
      * @return порядковый номер
      */
-    private Optional<Integer> getLessonNumber(JSONObject event) {
-        Integer lessonNumber = event.optInt("pairNumber", DEFAULT_LESSON_NUMBER);
-        return Optional.of(lessonNumber);
+    private int getLessonNumber(JSONObject event) {
+        return event.optInt("pairNumber", DEFAULT_LESSON_NUMBER);
     }
 
     /**
@@ -103,14 +103,22 @@ public class Parser {
     }
 
     /**
-     * Собирает расписание текущей недели из файла .ics в объект Tabletime.
-     * @param filename имя файла
-     * @return объект Timetable с расписанием
+     * Вытаскивает все ивенты из JSON объекта расписания.
+     * @param jsonObject json объект расписания
+     * @return json массив с ивентами
      */
-    public Timetable getTimetable(String filename) {
-        JSONArray jsonArray = jsonObjectBuilder.getJsonObject(filename);
-        LocalDate today = LocalDate.now();
-        Timetable timetable = new Timetable(today);
+    private JSONArray extractEvents(JSONObject jsonObject) {
+        return jsonObject.getJSONArray("events");
+    }
+
+    /**
+     * Собирает объект WeeklyTimetable из JSON объекта с расписанием.
+     * @param jsonObject объект с расписанием
+     * @return объект WeeklyTimetable с расписанием
+     */
+    public Map<LocalDate, DailyTimetable> parseScheduleJson(JSONObject jsonObject) {
+        Map<LocalDate, DailyTimetable> dailyTimetables = new HashMap<>();
+        JSONArray jsonArray = extractEvents(jsonObject);
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject event = jsonArray.getJSONObject(i);
             Optional<LocalDate> eventDate = getDate(event);
@@ -119,12 +127,18 @@ public class Parser {
             Optional<String> teacher = getTeacher(event);
             Optional<String> location = getLocation(event);
             Optional<String> format = getLessonFormat(event);
-            Optional<Integer> lessonNumber = getLessonNumber(event);
-            if (eventDate.isPresent() && lessonNumber.isPresent()) {
-                timetable.add(new Lesson(title, teacher, format, location, eventTime),
-                        eventDate.get(), lessonNumber.get());
+            int lessonNumber = getLessonNumber(event);
+            if (eventDate.isPresent() && title.isPresent()) {
+                if (dailyTimetables.containsKey(eventDate.get())) {
+                    Lesson lesson = new Lesson(title.get(), teacher, format, location, eventTime);
+                    dailyTimetables.get(eventDate.get()).add(lesson, lessonNumber);
+                } else {
+                    dailyTimetables.put(eventDate.get(), new DailyTimetable(eventDate.get()));
+                    Lesson lesson = new Lesson(title.get(), teacher, format, location, eventTime);
+                    dailyTimetables.get(eventDate.get()).add(lesson, lessonNumber);
+                }
             }
         }
-        return timetable;
+        return dailyTimetables;
     }
 }

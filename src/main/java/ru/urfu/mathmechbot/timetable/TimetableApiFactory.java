@@ -28,13 +28,13 @@ public final class TimetableApiFactory implements TimetableFactory {
             "https://urfu.ru/api/v2/schedule/groups/%d/schedule?date_gte=%s&date_lte=%s";
     private final DateTimeFormatter dateFormatter =
             DateTimeFormatter.ofPattern("yyyy-MM-dd");
-    private final TimetableUtils utils = new TimetableUtils();
+    private final ScheduleJsonParser parser = new ScheduleJsonParser();
 
     private final Logger logger = LoggerFactory.getLogger(TimetableCachedFactory.class);
 
     @Override
     @NotNull
-    public Optional<DailyTimetable> getForGroup(@NotNull String men) {
+    public Optional<DailyTimetable> getForGroup(@NotNull String men, @NotNull LocalDate date) {
         final Optional<Long> groupId = getGroupId(men);
         if (groupId.isEmpty()) {
             return Optional.empty();
@@ -44,7 +44,7 @@ public final class TimetableApiFactory implements TimetableFactory {
                 getScheduleJson(groupId.get());
         if (scheduleJsonOptional.isPresent()) {
             final JSONObject scheduleJson = scheduleJsonOptional.get();
-            return Optional.of(jsonToTimetable(scheduleJson));
+            return jsonToTimetable(scheduleJson, date);
         }
 
         return Optional.empty();
@@ -55,12 +55,16 @@ public final class TimetableApiFactory implements TimetableFactory {
      * Если расписания не оказалось, возвращает </p>
      *
      * @param scheduleJson JSON с расписанием с сайта УрФУ.
+     * @param date текущий день с расписанием.
      * @return расписание на день как объект класса DailyTimetable.
      */
     @NotNull
-    private DailyTimetable jsonToTimetable(@NotNull JSONObject scheduleJson) {
-        // TODO: scheduleJson -> Timetable
-        return null;
+    private Optional<DailyTimetable> jsonToTimetable(@NotNull JSONObject scheduleJson, @NotNull LocalDate date) {
+        DailyTimetable dailyTimetable = parser.parseScheduleJson(scheduleJson).get(date);
+        if (dailyTimetable == null) {
+            return Optional.empty();
+        }
+        return Optional.of(dailyTimetable);
     }
 
     /**

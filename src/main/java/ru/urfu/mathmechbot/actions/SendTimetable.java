@@ -1,5 +1,6 @@
 package ru.urfu.mathmechbot.actions;
 
+import java.time.LocalDate;
 import java.util.Optional;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -16,7 +17,7 @@ import ru.urfu.mathmechbot.timetable.TimetableFactory;
 
 /**
  * <p>Отправляет пользователю расписание для его группы. Если расписания нет,
- * уведомляет пользователя о возможной ошибке в ввёднных данных.</p>
+ * уведомляет пользователя о возможной ошибке в введённых данных.</p>
  */
 public final class SendTimetable implements MMBAction {
     private final static String TIMETABLE_NOT_FOUND = "Расписание для указанной "
@@ -43,7 +44,7 @@ public final class SendTimetable implements MMBAction {
         final User user = context.user();
 
         final String userMen = getUserMen(user);
-        final Optional<DailyTimetable> t = getTimetable(userMen);
+        final Optional<DailyTimetable> t = getDailyTimetable(userMen, LocalDate.now());
 
         if (t.isPresent()) {
             sendHumanReadableTimetable(t.get(), context);
@@ -54,14 +55,15 @@ public final class SendTimetable implements MMBAction {
 
     /**
      * <p>Возвращает расписание для данной группы. Если
-     * расписание найти не удалось возращает пустой Optional.</p>
+     * расписание найти не удалось возвращает пустой Optional.</p>
      *
      * @param men группа в формате МЕН.
+     * @param date дата по которой идет поиск.
      * @return Optional с расписанием для данной группы.
      */
     @NotNull
-    private Optional<DailyTimetable> getTimetable(@NotNull String men) {
-        return timetableFactory.getForGroup(men);
+    private Optional<DailyTimetable> getDailyTimetable(@NotNull String men, @NotNull LocalDate date) {
+        return timetableFactory.getForGroup(men, date);
     }
 
     /**
@@ -88,11 +90,12 @@ public final class SendTimetable implements MMBAction {
     /**
      * <p>Отправляет пользователю сообщение с расписанием.</p>
      *
-     * @param timetable расписание для данного пользователя.
+     * @param dailyTimetable расписание для данного пользователя.
      * @param context   контекст события.
      */
-    private void sendHumanReadableTimetable(@NotNull DailyTimetable timetable,
+    private void sendHumanReadableTimetable(@NotNull DailyTimetable dailyTimetable,
                                             @NotNull EventContext context) {
-        // TODO
+        LocalMessage localMessage = new LocalMessage(dailyTimetable.showDailyTimetable());
+        context.bot().sendMessage(localMessage, context.user().id());
     }
 }

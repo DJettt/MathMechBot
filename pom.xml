@@ -130,14 +130,6 @@
             <artifactId>log4j-slf4j2-impl</artifactId>
         </dependency>
 
-        <!-- JSON -->
-        <!-- https://mvnrepository.com/artifact/org.json/json -->
-        <dependency>
-            <groupId>org.json</groupId>
-            <artifactId>json</artifactId>
-            <version>${json.version}</version>
-        </dependency>
-
         <!-- JDBC -->
         <!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
         <dependency>
