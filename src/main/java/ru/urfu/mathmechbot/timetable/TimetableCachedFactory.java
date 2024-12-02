@@ -17,13 +17,13 @@ public final class TimetableCachedFactory implements TimetableFactory {
 
     @Override
     @NotNull
-    public Optional<DailyTimetable> getForGroup(@NotNull String men) {
+    public Optional<DailyTimetable> getForGroup(@NotNull String men, @NotNull LocalDate date) {
         final DailyTimetable timetable = cache.get(men);
         if (timetable != null && !isTimetableExpired(timetable)) {
             return Optional.of(timetable);
         }
 
-        final Optional<DailyTimetable> newTimetable = timetableFactory.getForGroup(men);
+        final Optional<DailyTimetable> newTimetable = timetableFactory.getForGroup(men, date);
         newTimetable.ifPresent(t -> cache.put(men, t));
         return newTimetable;
     }
@@ -37,7 +37,7 @@ public final class TimetableCachedFactory implements TimetableFactory {
      * @return результат проверки.
      */
     private boolean isTimetableExpired(@NotNull DailyTimetable timetable) {
-        final int timetableWeek = utils.getWeekNumber(timetable.date());
+        final int timetableWeek = utils.getWeekNumber(timetable.getDate());
         final int currentWeek = utils.getWeekNumber(LocalDate.now());
         return timetableWeek != currentWeek;
     }

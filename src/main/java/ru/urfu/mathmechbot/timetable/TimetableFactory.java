@@ -1,5 +1,6 @@
 package ru.urfu.mathmechbot.timetable;
 
+import java.time.LocalDate;
 import java.util.Optional;
 import org.jetbrains.annotations.NotNull;
 
@@ -12,8 +13,9 @@ public interface TimetableFactory {
      * Если расписания не нашлось, возвращает пустой Optional.</p>
      *
      * @param men номер группы, чьё расписание ищется.
+     * @param date текущая дата.
      * @return Optional с расписанием.
      */
     @NotNull
-    Optional<DailyTimetable> getForGroup(@NotNull String men);
+    Optional<DailyTimetable> getForGroup(@NotNull String men, @NotNull LocalDate date);
 }
