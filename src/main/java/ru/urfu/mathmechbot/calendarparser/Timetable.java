@@ -5,100 +5,101 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
+/**
+ * Расписание пар на текущую неделю.
+ */
 public class Timetable {
-    private final List<DatedLessons> timetable = new ArrayList<>();
+    private final List<DatedTimetable> timetable = new ArrayList<>();
 
+    /**
+     * Конструктор. Создает 7 дневных расписаний в виде списка.
+     * @param date дата, находящаяся в текущей неделе.
+     */
+    //TODO избавиться от заглушки warning-а
+    @SuppressWarnings("MagicNumber")
     Timetable(LocalDate date) {
-        timetable.add(new DatedLessons(date));
-        timetable.add(new DatedLessons(date.plusDays(1)));
-        timetable.add(new DatedLessons(date.plusDays(2)));
-        timetable.add(new DatedLessons(date.plusDays(3)));
-        timetable.add(new DatedLessons(date.plusDays(4)));
-        timetable.add(new DatedLessons(date.plusDays(5)));
-        timetable.add(new DatedLessons(date.plusDays(6)));
-        timetable.add(new DatedLessons(date.plusDays(7)));
+        LocalDate mondayDate = findMonday(date);
+        timetable.add(new DatedTimetable(mondayDate));
+        timetable.add(new DatedTimetable(mondayDate.plusDays(1)));
+        timetable.add(new DatedTimetable(mondayDate.plusDays(2)));
+        timetable.add(new DatedTimetable(mondayDate.plusDays(3)));
+        timetable.add(new DatedTimetable(mondayDate.plusDays(4)));
+        timetable.add(new DatedTimetable(mondayDate.plusDays(5)));
+        timetable.add(new DatedTimetable(mondayDate.plusDays(6)));
     }
 
+    /**
+     * Ищет дату понедельника на неделе с текущей датой.
+     * @param date текущая дата
+     * @return дату понедельника
+     */
+    //TODO избавиться от заглушки warning-а
+    @SuppressWarnings("ParameterAssignment")
+    private LocalDate findMonday(LocalDate date) {
+        while (date.getDayOfWeek().getValue() != 1) {
+            date = date.minusDays(1);
+        }
+        return date;
+    }
+
+    /**
+     * Добавляет пару в расписание на неделю.
+     * @param lesson пара
+     * @param date дата пары
+     * @param time время начала пары
+     */
     public void add(Lesson lesson, LocalDate date, LocalTime time) {
-        for (DatedLessons datedLessons : timetable) {
-            if (date.equals(datedLessons.getDate())) {
-                datedLessons.add(lesson, time);
+        for (DatedTimetable datedTimetable : timetable) {
+            if (date.equals(datedTimetable.getDate())) {
+                datedTimetable.add(lesson, time);
                 return;
             }
         }
     }
 
+    /**
+     * Возвращает дневное расписание по дате.
+     * @param date дата
+     * @return искомое расписание дня
+     */
     public List<List<Lesson>> getByDate(LocalDate date) {
-        for (DatedLessons datedLessons : timetable) {
-            if (date.equals(datedLessons.getDate())) {
-                return datedLessons.getAll();
+        for (DatedTimetable datedTimetable : timetable) {
+            if (date.equals(datedTimetable.getDate())) {
+                return datedTimetable.getAll();
             }
         }
         return Collections.emptyList();
     }
 
-    public String showByDate(LocalDate date) {
+    /**
+     * Возвращает Optional строки с дневным расписанием по искомому дню.
+     * @param date день
+     * @return Optional по строке с расписанием
+     */
+    public Optional<String> showByDate(LocalDate date) {
         StringBuilder result = new StringBuilder();
-        for (DatedLessons datedLessons : timetable) { //зашли в день недели
-            if (date.equals(datedLessons.getDate())) {
-                result.append(datedLessons.getDate().toString()).append("\n");
-                int i = 1;
-                for (TimedLesson timedLesson : datedLessons.getDatedTimetable()) { // зашли в пары
-                    result.append(i).append(". ");
-                    for (Lesson lesson : timedLesson.getAll()) { //зашли в лист одновременных пар
-                        if (lesson.lessonName().isPresent()) {
-                            result.append('\t')
-                                    .append(lesson.lessonName().get())
-                                    .append('\n');
-                        }
-                        if (lesson.teacher().isPresent()) {
-                            result.append('\t')
-                                    .append(lesson.teacher().get())
-                                    .append('\n');
-                        }
-                        if (lesson.location().isPresent()) {
-                            result.append('\t')
-                                    .append(lesson.location().get())
-                                    .append('\n');
-                        }
-                    }
-                    result.append('\n');
-                    i++;
-                }
+        for (DatedTimetable datedTimetable : timetable) { //зашли в день недели
+            if (date.equals(datedTimetable.getDate())) {
+                result.append(datedTimetable.showDatedTimetable()).append("\n");
             }
         }
-        return result.toString();
+        return Optional.of(result.toString());
     }
 
-    public String showTimetable() {
+    /**
+     * Возвращает Optional по строке с расписанием на всю текущую неделю.
+     * @return Optional по строке с расписанием
+     */
+    public Optional<String> showTimetable() {
         StringBuilder result = new StringBuilder();
-        for (DatedLessons datedLessons : timetable) { //зашли в день недели
-            result.append(datedLessons.getDate().toString()).append("\n");
-            int i = 1;
-            for (TimedLesson timedLesson : datedLessons.getDatedTimetable()) { // зашли в пары
-                result.append(i).append(". ");
-                for (Lesson lesson : timedLesson.getAll()) { //зашли в лист одновременных пар
-                    if (lesson.lessonName().isPresent()) {
-                        result.append('\t')
-                                .append(lesson.lessonName().get())
-                                .append('\n');
-                    }
-                    if (lesson.teacher().isPresent()) {
-                        result.append('\t')
-                                .append(lesson.teacher().get())
-                                .append('\n');
-                    }
-                    if (lesson.location().isPresent()) {
-                        result.append('\t')
-                                .append(lesson.location().get())
-                                .append('\n');
-                    }
-                }
-                result.append('\n');
-                i++;
-            }
+        for (DatedTimetable datedTimetable : timetable) { //зашли в день недели
+            result.append('\n')
+                    .append(datedTimetable.getDate().toString())
+                    .append("\n")
+                    .append(datedTimetable.showDatedTimetable());
         }
-        return result.toString();
+        return Optional.of(result.toString());
     }
 }
