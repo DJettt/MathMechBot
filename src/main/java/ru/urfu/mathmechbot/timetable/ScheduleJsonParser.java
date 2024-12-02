@@ -11,9 +11,9 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
- * Парсер JSON объекта.
+ * Парсер JSON объекта расписания.
  */
-public class ScheduleJsonParser {
+public final class ScheduleJsonParser {
     private final static int DEFAULT_LESSON_NUMBER = 0;
 
     /**

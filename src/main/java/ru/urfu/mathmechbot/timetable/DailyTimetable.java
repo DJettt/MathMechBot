@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Содержит в себе всё расписание на текущий день.
  */
-public class DailyTimetable {
+public final class DailyTimetable {
     private final LocalDate date;
     private int lastLessonNumber = -1;
     private final List<Lesson> lessonsWithoutNumber = new ArrayList<>();
