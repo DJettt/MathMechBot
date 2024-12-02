@@ -40,14 +40,27 @@ public final class TimetableApiFactory implements TimetableFactory {
             return Optional.empty();
         }
 
-        final Optional<JSONObject> scheduleJsonOptional = getScheduleJson(groupId.get());
+        final Optional<JSONObject> scheduleJsonOptional =
+                getScheduleJson(groupId.get());
         if (scheduleJsonOptional.isPresent()) {
-            final JSONObject jsonSchedule = scheduleJsonOptional.get();
-            // TODO: jsonSchedule -> Timetable
-            return Optional.empty();
+            final JSONObject scheduleJson = scheduleJsonOptional.get();
+            return Optional.of(jsonToTimetable(scheduleJson));
         }
 
         return Optional.empty();
+    }
+
+    /**
+     * <p>Преобразует JSON с расписанием, взятый с сайта УрФУ, в DailyTimetable.
+     * Если расписания не оказалось, возвращает </p>
+     *
+     * @param scheduleJson JSON с расписанием с сайта УрФУ.
+     * @return расписание на день как объект класса DailyTimetable.
+     */
+    @NotNull
+    private DailyTimetable jsonToTimetable(@NotNull JSONObject scheduleJson) {
+        // TODO: scheduleJson -> Timetable
+        return null;
     }
 
     /**
@@ -88,9 +101,7 @@ public final class TimetableApiFactory implements TimetableFactory {
     @NotNull
     private Optional<JSONObject> getScheduleJson(long groupId) {
         final LocalDate today = LocalDate.now();
-        final URL scheduleUrl = prepareScheduleUrl(groupId,
-                utils.getWeekStartDate(today),
-                utils.getWeekEndDate(today));
+        final URL scheduleUrl = prepareScheduleUrl(groupId, today, today);
 
         try {
             getJsonObject(scheduleUrl);
