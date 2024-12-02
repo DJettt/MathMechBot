@@ -7,8 +7,7 @@ import net.fortuna.ical4j.model.Calendar;
 
 
 public class CalendarBuilder {
-    private final static String FILE_PATH = "C:\\Users\\ddget\\IdeaProjects\\MathMechBot\\src\\main"
-            + "\\java\\ru\\urfu\\mathmechbot\\calendarparser\\";
+    private final static String FILE_PATH = "src\\main\\java\\ru\\urfu\\mathmechbot\\calendarparser\\";
 
     public Calendar getCalendar(String filename) {
         try (FileInputStream fin = new FileInputStream(FILE_PATH + filename + ".ics")) {
