@@ -76,7 +76,7 @@ public final class DailyTimetable {
             }
         }
         if (!lessonsWithoutNumber.isEmpty()) {
-            result.append("\nЗанятия без точного времени:\n");
+            result.append("\nЗанятия без точного времени:\n\n");
             for (Lesson lesson : lessonsWithoutNumber) {
                 result.append(lesson.getLessonInfo());
             }
