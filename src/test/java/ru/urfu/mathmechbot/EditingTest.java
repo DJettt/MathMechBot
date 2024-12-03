@@ -47,8 +47,7 @@ final class EditingTest {
                     /register - регистрация
                     /info - информация о Вас
                     /edit - изменить информацию
-                    /delete - удалить информацию о Вас
-                    /timetable - показывает расписание на текущий день""")
+                    /delete - удалить информацию о Вас""")
             .build();
 
     private final List<LocalButton> editingChooseButtons = List.of(
