@@ -38,7 +38,8 @@ public record Lesson(@NotNull String lessonName,
 //                .append('\n'));
         location.ifPresent(s -> stringInfo.append(BIG_SPACE)
                 .append(s)
-                .append("\n\n"));
+                .append("\n"));
+        stringInfo.append('\n');
         return stringInfo.toString();
     }
 }
