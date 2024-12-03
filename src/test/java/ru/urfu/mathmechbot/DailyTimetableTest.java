@@ -14,6 +14,8 @@ public class DailyTimetableTest {
     private DummyBot bot;
     private TestUtils utils;
     private final static String GET_TIMETABLE_COMMAND = "/timetable";
+    private final static String NO_TIMETABLE_TEST = "Расписание для указанной "
+            + "группы не найдено. Проверьте корректность введённой группы в формате МЕН.";
     @SuppressWarnings("RegexpSingleline")
     private final static String STANDARD_OUT_CHECK_TEST = """
             1.   Английский язык
@@ -157,5 +159,16 @@ public class DailyTimetableTest {
         utils.registerUser(1L, "Соколов Сокол", 2, "КН", 1, "МЕН-333333");
         utils.sendMessageToLogic(1L, new LocalMessage(GET_TIMETABLE_COMMAND));
         Assertions.assertEquals(ONLY_LESSONS_WITHOUT_NUMBER_TEST, bot.getOutcomingMessageList().getLast().text());
+    }
+
+    /**
+     * Тестируем тот случай, когда для какой-то группы никакого расписания не нашлось.
+     */
+    @Test
+    @DisplayName("Такой группы нет.")
+    void testNotExist() {
+        utils.registerUser(1L, "Яесть Грут", 2, "ФТ", 1, "МЕН-444444");
+        utils.sendMessageToLogic(1L, new LocalMessage(GET_TIMETABLE_COMMAND));
+        Assertions.assertEquals(NO_TIMETABLE_TEST, bot.getOutcomingMessageList().getLast().text());
     }
 }
