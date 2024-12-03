@@ -11,6 +11,8 @@ import ru.urfu.logics.localobjects.LocalMessage;
 import ru.urfu.mathmechbot.models.User;
 import ru.urfu.mathmechbot.storages.MathMechStorage;
 import ru.urfu.mathmechbot.storages.user.UserStorage;
+import ru.urfu.mathmechbot.timetable.TimetableCachedFactory;
+import ru.urfu.mathmechbot.timetable.TimetableFactory;
 
 
 /**
@@ -25,13 +27,27 @@ public final class MMBCore implements LogicCore {
      * <p>Конструктор.</p>
      *
      * @param storage хранилище данных для логики.
+     * @param timetableFactory фабрика расписаний.
      */
-    public MMBCore(@NotNull MathMechStorage storage) {
+    public MMBCore(@NotNull MathMechStorage storage,
+                   @NotNull TimetableFactory timetableFactory) {
         this.storage = storage;
         this.fsm = new StateMachineImpl<>(
                 new HashSet<>(List.of(UserState.values())),
                 UserState.DEFAULT);
-        new StateMachineConfig(this.fsm, this.storage.getUserEntries()).configure();
+        new StateMachineConfig(this.fsm,
+                this.storage.getUserEntries(),
+                timetableFactory).configure();
+    }
+
+    /**
+     * <p>Конструктор, использующий в качестве фабрики расписаний --
+     * кэшированную фабрику, берущую информация с API УрФУ.</p>
+     *
+     * @param storage хранилище данных для логики.
+     */
+    public MMBCore(@NotNull MathMechStorage storage) {
+        this(storage, new TimetableCachedFactory());
     }
 
     @Override

@@ -19,8 +19,10 @@ import ru.urfu.mathmechbot.actions.SaveMen;
 import ru.urfu.mathmechbot.actions.SaveSpecialty;
 import ru.urfu.mathmechbot.actions.SaveYear;
 import ru.urfu.mathmechbot.actions.SendConstantMessage;
+import ru.urfu.mathmechbot.actions.SendTimetable;
 import ru.urfu.mathmechbot.actions.SendUserInfo;
 import ru.urfu.mathmechbot.storages.userentry.UserEntryStorage;
+import ru.urfu.mathmechbot.timetable.TimetableFactory;
 
 /**
  * <p>FSM, настроенный для работы с MathMechBot.</p>
@@ -37,7 +39,8 @@ public final class StateMachineConfig {
             /register - регистрация
             /info - информация о Вас
             /edit - изменить информацию
-            /delete - удалить информацию о Вас""");
+            /delete - удалить информацию о Вас
+            /timetable - показывает расписание на текущий день""");
     private final LocalMessage fullName = new LocalMessageBuilder()
             .text("""
                     Введите свое ФИО в формате:
@@ -73,6 +76,7 @@ public final class StateMachineConfig {
 
     private final StateMachine<UserState, Event, EventContext> fsm;
     private final UserEntryStorage userEntryStorage;
+    private final TimetableFactory timetableFactory;
 
 
     /**
@@ -81,11 +85,14 @@ public final class StateMachineConfig {
      * @param fsm     настраиваемый конечный автомат.
      * @param storage хранилище пользовательских записей,
      *                требуется для некоторых действий.
+     * @param timetableFactory фабрика расписаний, откуда расписания будут браться.
      */
     public StateMachineConfig(@NotNull StateMachine<UserState, Event, EventContext> fsm,
-                              @NotNull UserEntryStorage storage) {
+                              @NotNull UserEntryStorage storage,
+                              @NotNull TimetableFactory timetableFactory) {
         this.fsm = fsm;
         this.userEntryStorage = storage;
+        this.timetableFactory = timetableFactory;
     }
 
     /**
@@ -133,6 +140,12 @@ public final class StateMachineConfig {
                 .target(UserState.DEFAULT)
                 .event(Event.INFO)
                 .action(new SendUserInfo(userEntryStorage))
+                .build());
+        fsm.registerTransition(new MMBTransitionBuilder()
+                .source(UserState.DEFAULT)
+                .target(UserState.DEFAULT)
+                .event(Event.TIMETABLE)
+                .action(new SendTimetable(userEntryStorage, timetableFactory))
                 .build());
     }
 

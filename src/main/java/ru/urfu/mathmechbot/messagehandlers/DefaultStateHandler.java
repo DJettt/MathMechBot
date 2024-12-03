@@ -17,6 +17,7 @@ public final class DefaultStateHandler implements MessageHandler {
     public final static String INFO_COMMAND = "/info";
     public final static String EDIT_COMMAND = "/edit";
     public final static String DELETE_COMMAND = "/delete";
+    public final static String TIMETABLE_COMMAND = "/timetable";
 
     @NotNull
     @Override
@@ -52,6 +53,13 @@ public final class DefaultStateHandler implements MessageHandler {
             case EDIT_COMMAND -> {
                 if (userEntryOptional.isPresent()) {
                     yield Event.EDIT;
+                } else {
+                    yield Event.NOT_REGISTERED;
+                }
+            }
+            case TIMETABLE_COMMAND -> {
+                if (userEntryOptional.isPresent()) {
+                    yield Event.TIMETABLE;
                 } else {
                     yield Event.NOT_REGISTERED;
                 }
